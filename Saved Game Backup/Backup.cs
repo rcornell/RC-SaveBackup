@@ -64,26 +64,80 @@ namespace Saved_Game_Backup
             //You need to make it recursive to also look through subdirectories
             //and create them and copy their files. test
             
-            foreach (Game g in gamesList){
-            
-                DirectoryInfo dir = new DirectoryInfo(g.Path);
-                DirectoryInfo[] dirs = dir.GetDirectories();
+            foreach (Game g in gamesList) {
+                BackupGame(g.Path, destination + "\\" + g.Name, false);
 
-                FileInfo[] fileInfo = dir.GetFiles();
-
-                string newDir = destination + "\\" + g.Name;
-
-                if (!Directory.Exists(newDir)) {
-                    Directory.CreateDirectory(newDir);
-                }
-
-                foreach (FileInfo f in fileInfo) {
-                    string newFile = Path.Combine(newDir, f.Name);
-                    f.CopyTo(newFile, false);
-                }        
             }
 
         }
+
+        private static void BackupGame(string sourceDirName, string destDirName, bool copySubDirs) {
+            #region 
+
+            //if (!copysub) sourceDirectory = g.Path;
+            //DirectoryInfo dir = new DirectoryInfo(sourceDirectory);
+            //DirectoryInfo[] dirs = dir.GetDirectories();
+
+            //FileInfo[] fileInfo = dir.GetFiles();
+
+            //string newDir = destinationDirectory + "\\" + g.Name;
+
+            //if (!Directory.Exists(newDir))
+            //{
+            //    Directory.CreateDirectory(newDir);
+            //}
+
+            //foreach (FileInfo f in fileInfo)
+            //{
+            //    string newFile = Path.Combine(newDir, f.Name);
+            //    f.CopyTo(newFile, false);
+            //}
+
+            //foreach (DirectoryInfo subdir in dirs)
+            //{
+            //    string temppath = Path.Combine(newDir, subdir.Name);
+            //    BackupGame(g, temppath);
+            //}
+
+            #endregion 
+            // Get the subdirectories for the specified directory.
+            DirectoryInfo dir = new DirectoryInfo(sourceDirName);
+            DirectoryInfo[] dirs = dir.GetDirectories();
+
+            if (!dir.Exists) {
+                throw new DirectoryNotFoundException(
+                    "Source directory does not exist or could not be found: "
+                    + sourceDirName);
+            }
+
+            // If the destination directory doesn't exist, create it. 
+            if (!Directory.Exists(destDirName)) {
+                Directory.CreateDirectory(destDirName);
+            }
+
+            // Get the files in the directory and copy them to the new location.
+            FileInfo[] files = dir.GetFiles();
+            foreach (FileInfo file in files) {
+                string temppath = Path.Combine(destDirName, file.Name);
+                file.CopyTo(temppath, false);
+            } 
+            
+            foreach (DirectoryInfo subdir in dirs) {
+                string temppath = Path.Combine(destDirName, subdir.Name);
+                BackupGame(subdir.FullName, temppath, copySubDirs);
+            }
+            
+        }
+
+        private static void BackupAndZip(ObservableCollection<Game> gamesList, string harddrive, string specifiedfolder = null) {
+                BackupSaves(gamesList, harddrive, specifiedfolder);
+
+                string zipSource = harddrive + "SaveBackups";
+                string zipResult = harddrive + "SaveBackups.zip";
+                ZipFile.CreateFromDirectory(zipSource, zipResult);
+
+        }
+        
 
         private static string CreateFolderPath(string harddrive) {
             string username;
