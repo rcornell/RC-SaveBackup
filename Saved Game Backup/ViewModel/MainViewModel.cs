@@ -69,6 +69,9 @@ namespace Saved_Game_Backup.ViewModel
         public RelayCommand BackupSaves {
             get { return new RelayCommand(() => ExecuteBackup());}
         }
+        public RelayCommand BackupAndZip {
+            get { return new RelayCommand(() => ExecuteBackupAndZip()); }
+        }
         public RelayCommand ResetList
         {
             get { return new RelayCommand(() => ExecuteReset()); }
@@ -145,6 +148,10 @@ namespace Saved_Game_Backup.ViewModel
 
         private void ExecuteBackup() {
             Backup.BackupSaves(GamesToBackup, SelectedHardDrive, _specifiedFolder);
+        }
+        
+        private void ExecuteBackupAndZip() {
+            Backup.BackupAndZip(GamesToBackup, SelectedHardDrive, _specifiedFolder);
         }
 
         private void ExecuteReset() {

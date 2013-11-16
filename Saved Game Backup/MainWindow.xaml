@@ -5,7 +5,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         Title="MainWindow"
         Width="525"
-        Height="400"
+        Height="425"
         DataContext="{Binding Path=Main,
                               Source={StaticResource Locator}}"
         Padding="3">
@@ -17,6 +17,7 @@
         </StackPanel>
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition />
                 <RowDefinition />
                 <RowDefinition />
                 <RowDefinition />
@@ -97,7 +98,13 @@
                     Grid.Column="2"
                     Margin="3"
                     Command="{Binding BackupSaves}"
-                    Content="Backup Saves" />
+                    Content="Backup To Folder" />
+            <Button Grid.Row="5"
+                    Grid.Column="2"
+                    Margin="3"
+                    Command="{Binding BackupAndZip}"
+                    Content="Backup And Zip" />
+            
             <Button Grid.Row="4"
                     Grid.Column="1"
                     Margin="3"

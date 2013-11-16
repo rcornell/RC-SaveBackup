@@ -66,8 +66,9 @@ namespace Saved_Game_Backup
             
             foreach (Game g in gamesList) {
                 BackupGame(g.Path, destination + "\\" + g.Name, false);
-
             }
+
+            MessageBox.Show("Backup folders created in " + harddrive + "SaveBackups.");
 
         }
 
@@ -129,12 +130,14 @@ namespace Saved_Game_Backup
             
         }
 
-        private static void BackupAndZip(ObservableCollection<Game> gamesList, string harddrive, string specifiedfolder = null) {
-                BackupSaves(gamesList, harddrive, specifiedfolder);
+        public static void BackupAndZip(ObservableCollection<Game> gamesList, string harddrive, string specifiedfolder = null) {
+            BackupSaves(gamesList, harddrive, specifiedfolder);
 
-                string zipSource = harddrive + "SaveBackups";
-                string zipResult = harddrive + "SaveBackups.zip";
-                ZipFile.CreateFromDirectory(zipSource, zipResult);
+            string zipSource = harddrive + "SaveBackups";
+            string zipResult = harddrive + "SaveBackups.zip";
+            ZipFile.CreateFromDirectory(zipSource, zipResult);
+
+            MessageBox.Show("SaveBackups.zip created in " + harddrive);
 
         }
         
