@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Ookii.Dialogs.Wpf;
 
 namespace Saved_Game_Backup
 {
@@ -37,7 +38,7 @@ namespace Saved_Game_Backup
                 BackupGame(g.Path, destination + "\\" + g.Name, false);
             }
 
-            MessageBox.Show("Backup folders created in " + harddrive + "SaveBackups.");
+            
 
         }
 
@@ -54,9 +55,12 @@ namespace Saved_Game_Backup
             }
 
             // If the destination directory doesn't exist, create it. 
-            if (!Directory.Exists(destDirName)) {
-                Directory.CreateDirectory(destDirName);
-            }
+            if (Directory.Exists(destDirName)) {
+                DeleteDirectory(destDirName);
+            } 
+                
+            Directory.CreateDirectory(destDirName);
+  
 
             // Get the files in the directory and copy them to the new location.
             FileInfo[] files = dir.GetFiles();
@@ -72,14 +76,67 @@ namespace Saved_Game_Backup
             
         }
 
+        private static void DeleteDirectory(string deleteDirName) {
+            //var dir = new DirectoryInfo(destDirName);
+            //var dirs = dir.GetDirectories();
+
+            //foreach (DirectoryInfo subdir in dirs) {
+
+            //    var filesToDelete = subdir.GetFiles();
+            //    foreach (FileInfo f in filesToDelete) {
+            //        File.Delete(f.Name);
+            //    }
+            //}
+
+            //foreach (DirectoryInfo subdir in dirs)
+            //{
+            //    var temppath = Path.Combine(destDirName, subdir.Name);
+            //    DeleteDirectory(temppath);
+            //}
+
+            var dir = new DirectoryInfo(deleteDirName);
+            var dirs = dir.GetDirectories();
+
+            // Get the files in the directory and copy them to the new location.
+            FileInfo[] files = dir.GetFiles();
+            foreach (FileInfo file in files)
+            {
+                File.Delete(file.FullName);
+            }
+
+            foreach (DirectoryInfo subdir in dirs)
+            {
+                var temppath = Path.Combine(deleteDirName, subdir.Name);
+                DeleteDirectory(temppath);
+                Directory.Delete(subdir.FullName);
+            }
+
+
+
+
+
+
+
+
+        }
+
         public static void BackupAndZip(ObservableCollection<Game> gamesList, string harddrive, string specifiedfolder = null) {
             BackupSaves(gamesList, harddrive, specifiedfolder);
 
             var zipSource = harddrive + "SaveBackups";
-            var zipResult = harddrive + "SaveBackups.zip";
+            var zipResult =  Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\SaveBackups.zip";
+
+            if (File.Exists(zipResult)) {
+                var fd = new VistaSaveFileDialog();
+                MessageBox.Show("SaveBackups.zip for today already exists. Specify a new file name.");
+                fd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                fd.ShowDialog();
+                zipResult = fd.FileName;
+            }
+
             ZipFile.CreateFromDirectory(zipSource, zipResult);
 
-            MessageBox.Show("SaveBackups.zip created in " + harddrive);
+            
 
         }
         

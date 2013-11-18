@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Security.RightsManagement;
+using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Documents;
 using GalaSoft.MvvmLight;
@@ -94,15 +95,8 @@ namespace Saved_Game_Backup.ViewModel
             
             //GameNames = (ObservableCollection<string>) (from s in GamesList select s.Name);
             //^^This breaks everything.
-
-
-            //CreateGameNames();
             CreateHardDriveCollection();
         }
-
-        //private void CreateGameNames() {
-        //    GameNames = DirectoryFinder.ReturnGameNames();
-        //}
 
         private void CreateHardDriveCollection() {
             DriveInfo[] drives = DriveInfo.GetDrives();
@@ -148,14 +142,27 @@ namespace Saved_Game_Backup.ViewModel
 
         private void ExecuteBackup() {
             Backup.BackupSaves(GamesToBackup, SelectedHardDrive, _specifiedFolder);
+            MessageBox.Show("Backup folders created in " + _selectedHardDrive + "SaveBackups.");
         }
         
         private void ExecuteBackupAndZip() {
             Backup.BackupAndZip(GamesToBackup, SelectedHardDrive, _specifiedFolder);
+            MessageBox.Show("SaveBackups.zip created in your MyDocuments folder. \r\n");
         }
 
         private void ExecuteReset() {
-            
+            GamesList = DirectoryFinder.ReturnGamesList();
+            GamesToBackup.Clear();
+            _specifiedFolder = null;
+            _selectedHardDrive = null;
+            _selectedGame = null;
+            _selectedBackupGame = null;
+
+            RaisePropertyChanged(() => GamesList);
+            RaisePropertyChanged(() => GamesToBackup);
+            RaisePropertyChanged(() => SelectedHardDrive);
+            RaisePropertyChanged(() => SelectedBackupGame);
+            RaisePropertyChanged(() => SelectedGame);
         }
 
     }
