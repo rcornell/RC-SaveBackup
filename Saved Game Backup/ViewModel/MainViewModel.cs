@@ -85,16 +85,12 @@ namespace Saved_Game_Backup.ViewModel
            _specifiedFolder = DirectoryFinder.SpecifyFolder();
         }
 
-        public MainViewModel()
-        {
+        public MainViewModel() {
 
             HardDrives = new ObservableCollection<string>();
             GamesList = DirectoryFinder.ReturnGamesList();
             GamesToBackup = new ObservableCollection<Game>();
-            
-            
-            //GameNames = (ObservableCollection<string>) (from s in GamesList select s.Name);
-            //^^This breaks everything.
+                
             CreateHardDriveCollection();
         }
 
@@ -147,7 +143,7 @@ namespace Saved_Game_Backup.ViewModel
         
         private void ExecuteBackupAndZip() {
             Backup.BackupAndZip(GamesToBackup, SelectedHardDrive, _specifiedFolder);
-            MessageBox.Show("SaveBackups.zip created in your MyDocuments folder. \r\n");
+            MessageBox.Show("Saved games successfully backed up. \r\n");
         }
 
         private void ExecuteReset() {

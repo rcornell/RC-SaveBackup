@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -122,22 +123,36 @@ namespace Saved_Game_Backup
 
         public static void BackupAndZip(ObservableCollection<Game> gamesList, string harddrive, string specifiedfolder = null) {
             BackupSaves(gamesList, harddrive, specifiedfolder);
-
-            var zipSource = harddrive + "SaveBackups";
-            var zipResult =  Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\SaveBackups.zip";
-
-            if (File.Exists(zipResult)) {
-                var fd = new VistaSaveFileDialog();
-                MessageBox.Show("SaveBackups.zip for today already exists. Specify a new file name.");
-                fd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                fd.ShowDialog();
-                zipResult = fd.FileName;
-            }
-
-            ZipFile.CreateFromDirectory(zipSource, zipResult);
-
             
+            var zipSource = harddrive + "SaveBackups";
 
+            #region 
+
+            //Old code from when the save location was predetermined.
+            //
+            //var myDocs = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            //if (File.Exists(zipResult)) {
+
+            //    int i = 1;
+            //    while (File.Exists(zipResult)) {
+            //       zipResult = myDocs + "\\SaveBackups (" + i + ").zip";
+            //        i++;
+            //    }
+
+            #endregion
+
+            var fd = new VistaSaveFileDialog {
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                FileName = "SaveBackups.zip",
+                Filter = "Zip files (*.zip) | *.zip"
+            };
+            fd.ShowDialog();
+            var zipResult = fd.FileName;
+
+            if(fd.OverwritePrompt)
+                File.Delete(zipResult);
+            
+            ZipFile.CreateFromDirectory(zipSource, zipResult);
         }
         
 
