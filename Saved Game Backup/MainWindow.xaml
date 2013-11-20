@@ -104,7 +104,7 @@
                     Margin="3"
                     Command="{Binding BackupAndZip}"
                     Content="Backup And Zip" />
-            
+
             <Button Grid.Row="4"
                     Grid.Column="1"
                     Margin="3"

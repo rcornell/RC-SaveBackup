@@ -21,9 +21,15 @@ namespace Saved_Game_Backup
 
         //Need to allow overwriting of previous saves? Maybe archive old ones?
 
-        public static void BackupSaves(ObservableCollection<Game> gamesList, string harddrive, string specifiedfolder = null) {
+        public static void BackupSaves(ObservableCollection<Game> gamesList, string harddrive, bool zipping, string specifiedfolder = null) {
+            var destination = harddrive + "SaveBackups";
 
-            string destination = harddrive + "SaveBackups";
+            if (!zipping) {
+                var fd = new VistaFolderBrowserDialog { RootFolder = Environment.SpecialFolder.MyDocuments };
+                fd.ShowDialog();
+                destination = fd.SelectedPath + "\\SaveBackups";
+            }
+
             Directory.CreateDirectory(destination);
 
             //If user chooses a specific place where they store their saves, this 
@@ -36,14 +42,11 @@ namespace Saved_Game_Backup
 
             //This backs up each game using BackupGame()
             foreach (Game g in gamesList) {
-                BackupGame(g.Path, destination + "\\" + g.Name, false);
+                BackupGame(g.Path, destination + "\\" + g.Name);
             }
-
-            
-
         }
 
-        private static void BackupGame(string sourceDirName, string destDirName, bool copySubDirs) {
+        private static void BackupGame(string sourceDirName, string destDirName) {
 
             // Get the subdirectories for the specified directory.
             var dir = new DirectoryInfo(sourceDirName);
@@ -72,28 +75,11 @@ namespace Saved_Game_Backup
             
             foreach (DirectoryInfo subdir in dirs) {
                 var temppath = Path.Combine(destDirName, subdir.Name);
-                BackupGame(subdir.FullName, temppath, copySubDirs);
+                BackupGame(subdir.FullName, temppath);
             }
-            
         }
 
         private static void DeleteDirectory(string deleteDirName) {
-            //var dir = new DirectoryInfo(destDirName);
-            //var dirs = dir.GetDirectories();
-
-            //foreach (DirectoryInfo subdir in dirs) {
-
-            //    var filesToDelete = subdir.GetFiles();
-            //    foreach (FileInfo f in filesToDelete) {
-            //        File.Delete(f.Name);
-            //    }
-            //}
-
-            //foreach (DirectoryInfo subdir in dirs)
-            //{
-            //    var temppath = Path.Combine(destDirName, subdir.Name);
-            //    DeleteDirectory(temppath);
-            //}
 
             var dir = new DirectoryInfo(deleteDirName);
             var dirs = dir.GetDirectories();
@@ -113,16 +99,10 @@ namespace Saved_Game_Backup
             }
 
 
-
-
-
-
-
-
         }
 
-        public static void BackupAndZip(ObservableCollection<Game> gamesList, string harddrive, string specifiedfolder = null) {
-            BackupSaves(gamesList, harddrive, specifiedfolder);
+        public static void BackupAndZip(ObservableCollection<Game> gamesList, string harddrive, bool zipping,string specifiedfolder = null) {
+            BackupSaves(gamesList, harddrive, zipping, specifiedfolder);
             
             var zipSource = harddrive + "SaveBackups";
 
@@ -153,6 +133,8 @@ namespace Saved_Game_Backup
                 File.Delete(zipResult);
             
             ZipFile.CreateFromDirectory(zipSource, zipResult);
+
+            DeleteDirectory(zipSource);
         }
         
 

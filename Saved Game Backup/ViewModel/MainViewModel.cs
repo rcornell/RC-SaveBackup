@@ -137,13 +137,15 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ExecuteBackup() {
-            Backup.BackupSaves(GamesToBackup, SelectedHardDrive, _specifiedFolder);
-            MessageBox.Show("Backup folders created in " + _selectedHardDrive + "SaveBackups.");
+            Backup.BackupSaves(GamesToBackup, SelectedHardDrive, false, _specifiedFolder);
+            MessageBox.Show("Saved games successfully backed up. \r\n");
+            ExecuteReset();
         }
         
         private void ExecuteBackupAndZip() {
-            Backup.BackupAndZip(GamesToBackup, SelectedHardDrive, _specifiedFolder);
+            Backup.BackupAndZip(GamesToBackup, SelectedHardDrive, true, _specifiedFolder);
             MessageBox.Show("Saved games successfully backed up. \r\n");
+            ExecuteReset();
         }
 
         private void ExecuteReset() {
