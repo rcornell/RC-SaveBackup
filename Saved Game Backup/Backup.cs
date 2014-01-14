@@ -21,6 +21,7 @@ namespace Saved_Game_Backup
             
         }
 
+        //WHAT THE FUCK IS HAPPENING
         //Doesn't know if you cancel out of a dialog.
         //Needs threading when it is processing lots of files. Progress bar? Progress animation?
 
