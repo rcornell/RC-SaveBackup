@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using Microsoft.Win32;
-using Ookii.Dialogs.Wpf;
+using System.Windows.Forms;
 
 namespace Saved_Game_Backup
 {
@@ -58,7 +58,7 @@ namespace Saved_Game_Backup
         /// </summary>
         /// <returns></returns>
         public static string SpecifyFolder() {
-            var dialog = new VistaFolderBrowserDialog();
+            var dialog = new FolderBrowserDialog();
             dialog.ShowDialog();
             return dialog.SelectedPath;
         }

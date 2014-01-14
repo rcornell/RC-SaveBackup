@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
-using Ookii.Dialogs.Wpf;
+
 
 namespace Saved_Game_Backup
 {
@@ -21,7 +21,6 @@ namespace Saved_Game_Backup
             
         }
 
-        //WHAT THE FUCK IS HAPPENING
         //Doesn't know if you cancel out of a dialog.
         //Needs threading when it is processing lots of files. Progress bar? Progress animation?
 
@@ -117,11 +116,11 @@ namespace Saved_Game_Backup
 
             var fd = new SaveFileDialog()
             {
-                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer),
                 FileName = "SaveBackups.zip",
                 Filter = "Zip files (*.zip) | *.zip",
                 Title = "Select the root folder where this utility will create the SaveBackups folder.",
-                CheckFileExists = true,
+                CheckFileExists = false,
                 OverwritePrompt = true
             };
 
@@ -145,6 +144,8 @@ namespace Saved_Game_Backup
             ZipFile.CreateFromDirectory(zipSource, zipResult);
 
             DeleteDirectory(zipSource);
+            Directory.Delete(zipSource);
+
             return true;
         }
         
