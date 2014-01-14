@@ -134,15 +134,40 @@ namespace Saved_Game_Backup.ViewModel
                 GamesList.Add(game);
                 RaisePropertyChanged(() => GamesList);
             }
+
         }
 
         private void ExecuteBackup() {
+            if (SelectedHardDrive == null) {
+                MessageBox.Show("Storage disk not selected. \r\nPlease select the drive where your \r\nsaved games are stored.");
+                ExecuteReset();
+                return;
+            }
+
+            if (!GamesToBackup.Any()) {
+                MessageBox.Show("No games selected. \n\rPlease select at least one game.");
+                ExecuteReset();
+                return;
+            }
+
             if(Backup.BackupSaves(GamesToBackup, SelectedHardDrive, false, _specifiedFolder))
                 MessageBox.Show("Saved games successfully backed up. \r\n");
             ExecuteReset();
         }
         
         private void ExecuteBackupAndZip() {
+            if (SelectedHardDrive == null) {
+                MessageBox.Show("Storage disk not selected. \r\nPlease select the drive where your \r\nsaved games are stored.");
+                ExecuteReset();
+                return;
+            }
+
+            if (!GamesToBackup.Any()) {
+                MessageBox.Show("No games selected. \n\rPlease select at least one game.");
+                ExecuteReset();
+                return;
+            }
+
             if(Backup.BackupAndZip(GamesToBackup, SelectedHardDrive, true, _specifiedFolder))
                 MessageBox.Show("Saved games successfully backed up. \r\n");
             ExecuteReset();

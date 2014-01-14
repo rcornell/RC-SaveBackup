@@ -8,12 +8,15 @@
         Height="425"
         DataContext="{Binding Path=Main,
                               Source={StaticResource Locator}}"
-        Padding="3">
+        Padding="3"
+        Background="{StaticResource MainBackgroundBrush}">
     <StackPanel>
         <StackPanel Margin="3"
                     HorizontalAlignment="Center"
                     Orientation="Horizontal">
-            <TextBlock Text="Saved Game Backup Tool by Rob Cornell" />
+            <TextBlock Text="Saved Game Backup Tool by Rob Cornell" 
+                       FontSize="14"
+                       FontFamily="Segoe UI Semibold"/>
         </StackPanel>
         <Grid>
             <Grid.RowDefinitions>
@@ -35,7 +38,7 @@
                        Grid.Column="0"
                        Margin="3"
                        HorizontalAlignment="Left"
-                       Text="Select the Hard Drive where your game save are stored."
+                       Text="Drive where saves are stored:"
                        TextWrapping="Wrap" />
 
             <ComboBox Grid.Row="1"
