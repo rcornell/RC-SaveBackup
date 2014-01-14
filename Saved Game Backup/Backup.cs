@@ -5,10 +5,12 @@ using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using Ookii.Dialogs.Wpf;
 
 namespace Saved_Game_Backup
@@ -19,15 +21,22 @@ namespace Saved_Game_Backup
             
         }
 
-        //Need to allow overwriting of previous saves? Maybe archive old ones?
+        //Doesn't know if you cancel out of a dialog.
+        //Needs threading when it is processing lots of files. Progress bar? Progress animation?
 
-        public static void BackupSaves(ObservableCollection<Game> gamesList, string harddrive, bool zipping, string specifiedfolder = null) {
+        public static bool BackupSaves(ObservableCollection<Game> gamesList, string harddrive, bool zipping, string specifiedfolder = null) {
             var destination = harddrive + "SaveBackups";
 
             if (!zipping) {
-                var fd = new VistaFolderBrowserDialog { RootFolder = Environment.SpecialFolder.MyDocuments };
-                fd.ShowDialog();
-                destination = fd.SelectedPath + "\\SaveBackups";
+                var fd = new FolderBrowserDialog() { RootFolder = Environment.SpecialFolder.MyComputer, 
+                        Description = "Select the root folder where this utility will create the SaveBackups folder.",
+                        ShowNewFolderButton = true };
+
+                if (fd.ShowDialog() == DialogResult.OK)
+                    destination = fd.SelectedPath + "\\SaveBackups";
+                else {
+                    return false;
+                }
             }
 
             Directory.CreateDirectory(destination);
@@ -44,6 +53,8 @@ namespace Saved_Game_Backup
             foreach (Game g in gamesList) {
                 BackupGame(g.Path, destination + "\\" + g.Name);
             }
+
+            return true;
         }
 
         private static void BackupGame(string sourceDirName, string destDirName) {
@@ -101,40 +112,39 @@ namespace Saved_Game_Backup
 
         }
 
-        public static void BackupAndZip(ObservableCollection<Game> gamesList, string harddrive, bool zipping,string specifiedfolder = null) {
+        public static bool BackupAndZip(ObservableCollection<Game> gamesList, string harddrive, bool zipping,string specifiedfolder = null) {
+
+            var fd = new SaveFileDialog()
+            {
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                FileName = "SaveBackups.zip",
+                Filter = "Zip files (*.zip) | *.zip",
+                Title = "Select the root folder where this utility will create the SaveBackups folder.",
+                CheckFileExists = true,
+                OverwritePrompt = true
+            };
+
+            string zipResult;
+            if (fd.ShowDialog() == DialogResult.OK) {
+
+                zipResult = fd.FileName;
+            }
+            else {
+                return false;
+            }
+
+            //Run the main BackupSaves method.
             BackupSaves(gamesList, harddrive, zipping, specifiedfolder);
             
             var zipSource = harddrive + "SaveBackups";
 
-            #region 
-
-            //Old code from when the save location was predetermined.
-            //
-            //var myDocs = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            //if (File.Exists(zipResult)) {
-
-            //    int i = 1;
-            //    while (File.Exists(zipResult)) {
-            //       zipResult = myDocs + "\\SaveBackups (" + i + ").zip";
-            //        i++;
-            //    }
-
-            #endregion
-
-            var fd = new VistaSaveFileDialog {
-                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                FileName = "SaveBackups.zip",
-                Filter = "Zip files (*.zip) | *.zip"
-            };
-            fd.ShowDialog();
-            var zipResult = fd.FileName;
-
-            if(fd.OverwritePrompt)
+            if(File.Exists(zipResult))
                 File.Delete(zipResult);
             
             ZipFile.CreateFromDirectory(zipSource, zipResult);
 
             DeleteDirectory(zipSource);
+            return true;
         }
         
 
@@ -148,7 +158,7 @@ namespace Saved_Game_Backup
             }
             catch (NullReferenceException ex)
             {
-                MessageBox.Show("Cannot find the MyDocuments folder on your computer. \r\n" + ex);
+                System.Windows.MessageBox.Show("Cannot find the MyDocuments folder on your computer. \r\n" + ex);
                 return null;
             }
 
