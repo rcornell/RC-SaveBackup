@@ -13,5 +13,9 @@
             <GradientStop Color="DeepSkyBlue" Offset="0"/>
             <GradientStop Color="#FF1AC6FF" Offset="1"/>
         </LinearGradientBrush>
+        <Style x:Key="FontStyle" TargetType="Control">
+            <Setter Property="FontFamily" Value="Segoe UI"></Setter>
+            <Setter Property="Foreground" Value="White"></Setter>
+        </Style>
     </Application.Resources>
 </Application>
