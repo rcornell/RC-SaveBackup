@@ -133,7 +133,24 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ExecuteAutoBackupToggle() {
-            throw new NotImplementedException();
+            
+            //First, toggle the visibility for the UI
+            bool enabledBeforeClick;
+            if (_autoBackupEnabled == Visibility.Visible) {
+                enabledBeforeClick = true;
+                _autoBackupEnabled = Visibility.Hidden;
+            }
+            else {
+
+                //This is for turning **ON** AutoBackup
+                _autoBackupEnabled = Visibility.Visible;
+                enabledBeforeClick = false;
+                _specifiedFolder = DirectoryFinder.SpecifyFolder();
+            } 
+                
+
+            //Make Backup.cs listen for save modification events.
+            
         }
 
         private void ToBackupList() {
