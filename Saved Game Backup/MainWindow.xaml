@@ -3,13 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:command="http://www.galasoft.ch/mvvmlight"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        Title="MainWindow"
+        Title="Saved Game Backup Tool"
         Width="525"
         Height="425"
         Background="{StaticResource MainBackgroundBrush}"
         DataContext="{Binding Path=Main,
                               Source={StaticResource Locator}}"
-        Padding="3">
+        Padding="3"
+        WindowStartupLocation="CenterScreen">
     <Window.Style>
         <Style BasedOn="{StaticResource FontStyle}" TargetType="Control" />
     </Window.Style>
@@ -29,6 +30,8 @@
                 <RowDefinition Height="172*" />
                 <RowDefinition Height="28*" />
                 <RowDefinition Height="28*" />
+                <RowDefinition />
+                <RowDefinition />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -104,22 +107,39 @@
                 </ListBox>
             </StackPanel>
 
-            <Button Grid.Row="4"
-                    Grid.Column="2"
-                    Margin="3"
-                    Command="{Binding BackupSaves}"
-                    Content="Backup To Folder" />
-            <Button Grid.Row="5"
-                    Grid.Column="2"
-                    Margin="3"
-                    Command="{Binding BackupAndZip}"
-                    Content="Backup And Zip" />
 
             <Button Grid.Row="4"
                     Grid.Column="1"
                     Margin="3"
                     Command="{Binding ResetList}"
                     Content="Reset List" />
+
+            <Button Grid.Row="6"
+                    Grid.Column="1"
+                    Margin="3"
+                    Command="{Binding BackupSaves}"
+                    Content="Backup To Folder" />
+            <Button Grid.Row="6"
+                    Grid.Column="2"
+                    Margin="3"
+                    Command="{Binding BackupAndZip}"
+                    Content="Backup And Zip" />
+
+
+            <TextBlock Grid.Row="6"
+                       Grid.RowSpan="2"
+                       Grid.Column="0"
+                       VerticalAlignment="Center"
+                       TextWrapping="Wrap"
+                       FontSize="14"
+                       Text="Choose a backup method." />
+            <Button Grid.Row="7"
+                    Grid.Column="1"
+                    Grid.ColumnSpan="2"
+                    Margin="3"
+                    
+                    Content="Activate Autobackup"
+                    ToolTip="Autobackup will watch the save folders for the games you have selected. When new save files are added or modified, they will be backed up to a folder of your choosing." />
         </Grid>
     </StackPanel>
 </Window>
