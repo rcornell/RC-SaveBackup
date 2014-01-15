@@ -5,7 +5,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         Title="Saved Game Backup Tool"
         Width="525"
-        Height="425"
+        Height="450"
         Background="{StaticResource MainBackgroundBrush}"
         DataContext="{Binding Path=Main,
                               Source={StaticResource Locator}}"
@@ -55,6 +55,11 @@
                       VerticalAlignment="Center"
                       ItemsSource="{Binding HardDrives}"
                       SelectedItem="{Binding SelectedHardDrive}" />
+            <Button Grid.Row="1" Grid.Column="2"
+                    Content="Detect Games"
+                    VerticalAlignment="Center"
+                    Margin="3"
+                    Command="{Binding DetectGames}"/>
             <TextBlock Grid.Row="2"
                        Grid.Column="0"
                        Margin="3"
@@ -78,7 +83,7 @@
                        Text="Double click the games you want to back up."
                        TextWrapping="Wrap" />
             <StackPanel Grid.Row="3" Grid.Column="1">
-                <TextBlock HorizontalAlignment="Center" Text="Games List" />
+                <TextBlock HorizontalAlignment="Center" Text="Games List" FontSize="14" />
                 <ListBox MinHeight="150"
                          Margin="3"
                          ItemsSource="{Binding GamesList}"
@@ -94,7 +99,7 @@
             </StackPanel>
 
             <StackPanel Grid.Row="3" Grid.Column="2">
-                <TextBlock HorizontalAlignment="Center" Text="Games to Backup" />
+                <TextBlock HorizontalAlignment="Center" Text="Games to Backup" FontSize="14"/>
                 <ListBox MinHeight="150"
                          Margin="3"
                          ItemsSource="{Binding GamesToBackup}"
@@ -110,9 +115,11 @@
 
             <Button Grid.Row="4"
                     Grid.Column="1"
+                    Grid.ColumnSpan="2"
+                    HorizontalAlignment="Center"
                     Margin="3"
                     Command="{Binding ResetList}"
-                    Content="Reset List" />
+                    Content="Reset Lists" />
 
             <Button Grid.Row="6"
                     Grid.Column="1"
@@ -129,6 +136,7 @@
             <TextBlock Grid.Row="6"
                        Grid.RowSpan="2"
                        Grid.Column="0"
+                       Margin="3"
                        VerticalAlignment="Center"
                        TextWrapping="Wrap"
                        FontSize="14"
@@ -140,6 +148,24 @@
                     
                     Content="Activate Autobackup"
                     ToolTip="Autobackup will watch the save folders for the games you have selected. When new save files are added or modified, they will be backed up to a folder of your choosing." />
+            <Border Grid.Row="7" 
+                       
+                    Grid.Column="3" 
+                    Margin="3"
+                    CornerRadius="15"
+                    Background="Lime"
+                    Visibility="{Binding AutoBackupEnabled}">
+                <TextBlock 
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Text="Autobackup Enabled"
+                       Visibility="{Binding AutoBackupEnabled}"/>    
+            </Border>
+            
+            <!--<StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal" >
+                <CheckBox IsChecked="{Binding AutoBackupEnabled}"/>
+                
+            </StackPanel>-->
         </Grid>
     </StackPanel>
 </Window>

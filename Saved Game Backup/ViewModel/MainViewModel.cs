@@ -29,6 +29,12 @@ namespace Saved_Game_Backup.ViewModel
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
 
+        private Visibility _autoBackupEnabled;
+        public Visibility AutoBackupEnabled {
+            get { return _autoBackupEnabled; }
+            set { _autoBackupEnabled = value; }
+        }
+
         public ObservableCollection<string> HardDrives { get; set; } 
         public ObservableCollection<Game> GamesList { get; set; } 
         public ObservableCollection<Game> GamesToBackup { get; set; }
@@ -80,20 +86,14 @@ namespace Saved_Game_Backup.ViewModel
         public RelayCommand SpecifyFolder {
             get {return new RelayCommand(() => ExecuteSpecifyFolder());}
         }
-
+        public RelayCommand AutoBackup {
+            get { return new RelayCommand(() => ExecuteAutoBackupToggle()); }
+        }
         public RelayCommand DetectGames {
             get { return new RelayCommand(() => ExecuteDetectGames()); }
         }
 
-        private void ExecuteDetectGames() {
-            if (_selectedHardDrive != null)
-                GamesToBackup = DirectoryFinder.PollDirectories(_selectedHardDrive, GamesList);
-            RaisePropertyChanged(() => GamesToBackup);
-        }
-
-        private void ExecuteSpecifyFolder() {
-           _specifiedFolder = DirectoryFinder.SpecifyFolder();
-        }
+        
 
         public MainViewModel() {
 
@@ -104,11 +104,32 @@ namespace Saved_Game_Backup.ViewModel
             CreateHardDriveCollection();
         }
 
+        private void ExecuteDetectGames() {
+            if (_selectedHardDrive == null) {
+                MessageBox.Show("Storage disk not selected. \r\nPlease select the drive where your \r\nsaved games are stored.");
+                ExecuteReset();
+                return;
+            }
+            
+            GamesToBackup = DirectoryFinder.PollDirectories(_selectedHardDrive, GamesList);
+            RaisePropertyChanged(() => GamesToBackup);
+        
+        }
+
+        private void ExecuteSpecifyFolder() {
+            _specifiedFolder = DirectoryFinder.SpecifyFolder();
+        }
+
+
         private void CreateHardDriveCollection() {
             DriveInfo[] drives = DriveInfo.GetDrives();
             foreach (DriveInfo drive in drives) {
                 HardDrives.Add(drive.RootDirectory.ToString());
             }
+        }
+
+        private void ExecuteAutoBackupToggle() {
+            throw new NotImplementedException();
         }
 
         private void ToBackupList() {
