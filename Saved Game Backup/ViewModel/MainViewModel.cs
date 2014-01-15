@@ -81,6 +81,16 @@ namespace Saved_Game_Backup.ViewModel
             get {return new RelayCommand(() => ExecuteSpecifyFolder());}
         }
 
+        public RelayCommand DetectGames {
+            get { return new RelayCommand(() => ExecuteDetectGames()); }
+        }
+
+        private void ExecuteDetectGames() {
+            if (_selectedHardDrive != null)
+                GamesToBackup = DirectoryFinder.PollDirectories(_selectedHardDrive, GamesList);
+            RaisePropertyChanged(() => GamesToBackup);
+        }
+
         private void ExecuteSpecifyFolder() {
            _specifiedFolder = DirectoryFinder.SpecifyFolder();
         }
