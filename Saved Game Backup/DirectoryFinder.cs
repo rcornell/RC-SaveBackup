@@ -23,6 +23,15 @@ namespace Saved_Game_Backup
             }
         }
 
+        public string FindDirectory(string game)
+        {
+
+            if (_gameSaveDirectories.ContainsKey(game))
+                return _gameSaveDirectories["game"];
+            return "Unknown Game";
+            //return _gameSaveDirectories.TryGetValue(game, out "Unknown Game");
+        }
+
         public DirectoryFinder() {
             GenerateDictionary();
         }
@@ -31,13 +40,7 @@ namespace Saved_Game_Backup
             _gameSaveDirectories.Add("Terraria", @"C:\Users\Rob\Documents\My Games\Terraria");
         }
 
-        public string FindDirectory(string game) {
-            
-            if(_gameSaveDirectories.ContainsKey(game))
-                return _gameSaveDirectories["game"];
-            return "Unknown Game";
-            //return _gameSaveDirectories.TryGetValue(game, out "Unknown Game");
-        }
+        
 
         /// <summary>
         /// Reads the CSV file and returns the name and default path of each game.
@@ -72,6 +75,15 @@ namespace Saved_Game_Backup
                 gamesNames.Add(data[0]);
             }
             return gamesNames;
+        }
+
+        public static ObservableCollection<Game> PollDirectories(string hardDrive, ObservableCollection<Game> gamesList) {
+            var detectedGamesList = new ObservableCollection<Game>();
+            foreach (Game game in gamesList) {
+                if(Directory.Exists(game.Path))
+                    detectedGamesList.Add(game);
+            }
+            return detectedGamesList;
         }
     }
 }
