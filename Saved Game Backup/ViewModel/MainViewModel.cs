@@ -96,7 +96,7 @@ namespace Saved_Game_Backup.ViewModel
         
 
         public MainViewModel() {
-
+            _autoBackupEnabled = Visibility.Hidden;
             HardDrives = new ObservableCollection<string>();
             GamesList = DirectoryFinder.ReturnGamesList();
             GamesToBackup = new ObservableCollection<Game>();
@@ -112,7 +112,11 @@ namespace Saved_Game_Backup.ViewModel
             }
             
             GamesToBackup = DirectoryFinder.PollDirectories(_selectedHardDrive, GamesList);
+            foreach (Game game in GamesToBackup)
+                GamesList.Remove(game);
+
             RaisePropertyChanged(() => GamesToBackup);
+            RaisePropertyChanged(() => GamesList);
         
         }
 
