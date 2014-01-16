@@ -59,6 +59,11 @@ namespace Saved_Game_Backup.ViewModel
         }
         private string _specifiedFolder;
         private bool _backupEnabled;
+        private int _maxBackups;
+        public int MaxBackups {
+            get { return _maxBackups; }
+            set { _maxBackups = value; }
+        }
 
         public RelayCommand MoveToBackupList
         {
@@ -147,7 +152,7 @@ namespace Saved_Game_Backup.ViewModel
                 _autoBackupVisibility = Visibility.Visible;
                 _backupEnabled = true;
                 _specifiedFolder = DirectoryFinder.SpecifyFolder();
-                Backup.ActivateAutoBackup(_specifiedFolder, GamesToBackup);
+                Backup.ActivateAutoBackup(GamesToBackup, _selectedHardDrive, _specifiedFolder);
             } 
                 
             

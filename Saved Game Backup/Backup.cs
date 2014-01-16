@@ -18,9 +18,12 @@ namespace Saved_Game_Backup
 {
     public class Backup {
 
-
+        private static ObservableCollection<Game> gamesToAutoBackup = new ObservableCollection<Game>();
         private static Dictionary<string, FileSystemWatcher> fileWatchers;
-        //private FileSystemWatcher fileWatcher = new FileSystemWatcher();
+        private static FileSystemWatcher fileWatcher = new FileSystemWatcher();
+        private static List<FileSystemWatcher> fileWatcherList;
+        private static string _specifiedAutoBackupFolder;
+        private static string _hardDrive;
 
         public Backup() {
             
@@ -156,12 +159,40 @@ namespace Saved_Game_Backup
             return true;
         }
 
-        public static void ActivateAutoBackup(ObservableCollection<Game> gamesToBackup, string specifiedFolder = null) {
+        public static void ActivateAutoBackup(ObservableCollection<Game> gamesToBackup, string harddrive, string specifiedFolder = null) {
             fileWatchers = new Dictionary<string, FileSystemWatcher>();
+            fileWatcherList = new List<FileSystemWatcher>();
 
+            gamesToAutoBackup = gamesToBackup;
+
+            if (specifiedFolder == null) {
+                specifiedFolder = Environment.SpecialFolder.MyDocuments.ToString();
+                _specifiedAutoBackupFolder = specifiedFolder;
+            }
+
+            _hardDrive = harddrive;
+            
+
+            int watcherNumber = 0;
             foreach (Game game in gamesToBackup) {
-                fileWatchers.Add(game.Name, new FileSystemWatcher(game.Path));
-                
+                //fileWatchers.Add(game.Name, new FileSystemWatcher(game.Path));
+                fileWatcherList.Add(new FileSystemWatcher(game.Path));
+                fileWatcherList[watcherNumber].Changed += OnChanged;
+                fileWatcherList[watcherNumber].EnableRaisingEvents = true;
+                watcherNumber++;
+            }
+
+            
+        }
+
+        public static void DeactivateAutoBackup() {
+            throw new NotImplementedException();
+        }
+
+        private static void OnChanged(object source, FileSystemEventArgs e) {
+            foreach (Game game in gamesToAutoBackup) {
+                if (e.FullPath.Contains(game.Path))
+                    BackupGame(game.Path, _hardDrive + "\\" + game.Path);
             }
         }
         
@@ -181,5 +212,7 @@ namespace Saved_Game_Backup
 
             return path;
         }
+
+        
     }
 }
