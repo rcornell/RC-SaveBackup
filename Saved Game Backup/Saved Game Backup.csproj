@@ -70,6 +70,7 @@
     <Compile Include="Backup.cs" />
     <Compile Include="DirectoryFinder.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="UserPrefs.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="MainWindow.xaml">

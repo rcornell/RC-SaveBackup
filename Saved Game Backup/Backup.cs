@@ -6,6 +6,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,12 +18,18 @@ namespace Saved_Game_Backup
 {
     public class Backup {
 
+
+        private static Dictionary<string, FileSystemWatcher> fileWatchers;
+        //private FileSystemWatcher fileWatcher = new FileSystemWatcher();
+
         public Backup() {
             
         }
 
         //Doesn't know if you cancel out of a dialog.
         //Needs threading when it is processing lots of files. Progress bar? Progress animation?
+
+
 
         public static bool BackupSaves(ObservableCollection<Game> gamesList, string harddrive, bool zipping, string specifiedfolder = null) {
             var destination = harddrive + "SaveBackups";
@@ -148,8 +155,16 @@ namespace Saved_Game_Backup
 
             return true;
         }
-        
 
+        public static void ActivateAutoBackup(ObservableCollection<Game> gamesToBackup, string specifiedFolder = null) {
+            fileWatchers = new Dictionary<string, FileSystemWatcher>();
+
+            foreach (Game game in gamesToBackup) {
+                fileWatchers.Add(game.Name, new FileSystemWatcher(game.Path));
+                
+            }
+        }
+        
         private static string CreateFolderPath() {
             string path;
             

@@ -29,10 +29,10 @@ namespace Saved_Game_Backup.ViewModel
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
 
-        private Visibility _autoBackupEnabled;
-        public Visibility AutoBackupEnabled {
-            get { return _autoBackupEnabled; }
-            set { _autoBackupEnabled = value; }
+        private Visibility _autoBackupVisibility;
+        public Visibility AutoBackupVisibility {
+            get { return _autoBackupVisibility; }
+            set { _autoBackupVisibility = value; }
         }
 
         public ObservableCollection<string> HardDrives { get; set; } 
@@ -58,6 +58,7 @@ namespace Saved_Game_Backup.ViewModel
             set { _selectedBackupGame = value; }
         }
         private string _specifiedFolder;
+        private bool _backupEnabled;
 
         public RelayCommand MoveToBackupList
         {
@@ -96,7 +97,7 @@ namespace Saved_Game_Backup.ViewModel
         
 
         public MainViewModel() {
-            _autoBackupEnabled = Visibility.Hidden;
+            _autoBackupVisibility = Visibility.Hidden;
             HardDrives = new ObservableCollection<string>();
             GamesList = DirectoryFinder.ReturnGamesList();
             GamesToBackup = new ObservableCollection<Game>();
@@ -135,20 +136,21 @@ namespace Saved_Game_Backup.ViewModel
         private void ExecuteAutoBackupToggle() {
             
             //First, toggle the visibility for the UI
-            bool enabledBeforeClick;
-            if (_autoBackupEnabled == Visibility.Visible) {
-                enabledBeforeClick = true;
-                _autoBackupEnabled = Visibility.Hidden;
+            if (_backupEnabled) {
+                //This is for turning **OFF** AutoBackup
+                _backupEnabled = false;
+                _autoBackupVisibility = Visibility.Hidden;
+                Backup.DeactivateAutoBackup();
             }
             else {
-
                 //This is for turning **ON** AutoBackup
-                _autoBackupEnabled = Visibility.Visible;
-                enabledBeforeClick = false;
+                _autoBackupVisibility = Visibility.Visible;
+                _backupEnabled = true;
                 _specifiedFolder = DirectoryFinder.SpecifyFolder();
+                Backup.ActivateAutoBackup(_specifiedFolder, GamesToBackup);
             } 
                 
-
+            
             //Make Backup.cs listen for save modification events.
             
         }

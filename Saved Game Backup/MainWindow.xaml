@@ -14,7 +14,17 @@
     <Window.Style>
         <Style BasedOn="{StaticResource FontStyle}" TargetType="Control" />
     </Window.Style>
+
     <StackPanel>
+        <Menu IsMainMenu="True">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Theme">
+                    <MenuItem Header="_Light" />
+                    <MenuItem Header="_Dark" />
+                </MenuItem>
+                <MenuItem Header="_Exit" />
+            </MenuItem>
+        </Menu>
         <StackPanel Margin="3"
                     HorizontalAlignment="Center"
                     Orientation="Horizontal">
@@ -55,11 +65,12 @@
                       VerticalAlignment="Center"
                       ItemsSource="{Binding HardDrives}"
                       SelectedItem="{Binding SelectedHardDrive}" />
-            <Button Grid.Row="1" Grid.Column="2"
-                    Content="Detect Games"
-                    VerticalAlignment="Center"
+            <Button Grid.Row="1"
+                    Grid.Column="2"
                     Margin="3"
-                    Command="{Binding DetectGames}"/>
+                    VerticalAlignment="Center"
+                    Command="{Binding DetectGames}"
+                    Content="Detect Games" />
             <TextBlock Grid.Row="2"
                        Grid.Column="0"
                        Margin="3"
@@ -83,7 +94,9 @@
                        Text="Double click the games you want to back up."
                        TextWrapping="Wrap" />
             <StackPanel Grid.Row="3" Grid.Column="1">
-                <TextBlock HorizontalAlignment="Center" Text="Games List" FontSize="14" />
+                <TextBlock HorizontalAlignment="Center"
+                           FontSize="14"
+                           Text="Games List" />
                 <ListBox MinHeight="150"
                          Margin="3"
                          ItemsSource="{Binding GamesList}"
@@ -99,7 +112,9 @@
             </StackPanel>
 
             <StackPanel Grid.Row="3" Grid.Column="2">
-                <TextBlock HorizontalAlignment="Center" Text="Games to Backup" FontSize="14"/>
+                <TextBlock HorizontalAlignment="Center"
+                           FontSize="14"
+                           Text="Games to Backup" />
                 <ListBox MinHeight="150"
                          Margin="3"
                          ItemsSource="{Binding GamesToBackup}"
@@ -116,8 +131,8 @@
             <Button Grid.Row="4"
                     Grid.Column="1"
                     Grid.ColumnSpan="2"
-                    HorizontalAlignment="Center"
                     Margin="3"
+                    HorizontalAlignment="Center"
                     Command="{Binding ResetList}"
                     Content="Reset Lists" />
 
@@ -138,34 +153,33 @@
                        Grid.Column="0"
                        Margin="3"
                        VerticalAlignment="Center"
-                       TextWrapping="Wrap"
                        FontSize="14"
-                       Text="Choose a backup method." />
+                       Text="Choose a backup method."
+                       TextWrapping="Wrap" />
             <Button Grid.Row="7"
                     Grid.Column="1"
                     Grid.ColumnSpan="2"
                     Margin="3"
-                    
                     Content="Activate Autobackup"
                     ToolTip="Autobackup will watch the save folders for the games you have selected. When new save files are added or modified, they will be backed up to a folder of your choosing." />
-            <Border Grid.Row="7" 
-                       
-                    Grid.Column="3" 
+            <Border Grid.Row="7"
+                    Grid.Column="3"
                     Margin="3"
-                    CornerRadius="15"
                     Background="Lime"
+                    CornerRadius="15"
                     Visibility="{Binding AutoBackupEnabled}">
-                <TextBlock 
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       Text="Autobackup Enabled"
-                       Visibility="{Binding AutoBackupEnabled}"/>    
+                <TextBlock HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Text="Autobackup Enabled"
+                           Visibility="{Binding AutoBackupEnabled}" />
             </Border>
-            
-            <!--<StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal" >
+
+            <!--
+                <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal" >
                 <CheckBox IsChecked="{Binding AutoBackupEnabled}"/>
                 
-            </StackPanel>-->
+                </StackPanel>
+            -->
         </Grid>
     </StackPanel>
 </Window>

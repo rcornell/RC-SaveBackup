@@ -10,12 +10,12 @@
                              x:Key="Locator"
                              d:IsDataSource="True" />
         <LinearGradientBrush x:Key="MainBackgroundBrush">
-            <GradientStop Color="DeepSkyBlue" Offset="0"/>
-            <GradientStop Color="#FF1AC6FF" Offset="1"/>
+            <GradientStop Offset="0" Color="DeepSkyBlue" />
+            <GradientStop Offset="1" Color="#FF1AC6FF" />
         </LinearGradientBrush>
         <Style x:Key="FontStyle" TargetType="Control">
-            <Setter Property="FontFamily" Value="Segoe UI"></Setter>
-            <Setter Property="Foreground" Value="White"></Setter>
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="Foreground" Value="White" />
         </Style>
     </Application.Resources>
 </Application>
