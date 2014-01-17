@@ -165,7 +165,6 @@ namespace Saved_Game_Backup.ViewModel
 
         private void ExecuteAutoBackupToggle() {
             
-            //First, toggle the visibility for the UI
             if (_backupEnabled) {
                 //This is for turning **OFF** AutoBackup
                 _backupEnabled = false;

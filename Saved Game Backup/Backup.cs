@@ -186,7 +186,10 @@ namespace Saved_Game_Backup
         }
 
         public static void DeactivateAutoBackup() {
-            throw new NotImplementedException();
+            foreach (FileSystemWatcher f in fileWatcherList) {
+                f.EnableRaisingEvents = false;
+            }
+            fileWatcherList.Clear();
         }
 
         private static void OnChanged(object source, FileSystemEventArgs e) {
