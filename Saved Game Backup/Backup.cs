@@ -166,7 +166,7 @@ namespace Saved_Game_Backup
             gamesToAutoBackup = gamesToBackup;
 
             if (specifiedFolder == null) {
-                specifiedFolder = Environment.SpecialFolder.MyDocuments.ToString();
+                specifiedFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                 _specifiedAutoBackupFolder = specifiedFolder;
             }
 
