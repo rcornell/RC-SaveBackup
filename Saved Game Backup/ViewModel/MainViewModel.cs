@@ -164,7 +164,9 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ExecuteAutoBackupToggle() {
-            
+            if (CanBackup())
+                return;
+
             if (_backupEnabled) {
                 //This is for turning **OFF** AutoBackup
                 _backupEnabled = false;
@@ -221,17 +223,8 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ExecuteBackup() {
-            if (SelectedHardDrive == null) {
-                MessageBox.Show("Storage disk not selected. \r\nPlease select the drive where your \r\nsaved games are stored.");
-                ExecuteReset();
+            if (CanBackup())
                 return;
-            }
-
-            if (!GamesToBackup.Any()) {
-                MessageBox.Show("No games selected. \n\rPlease select at least one game.");
-                ExecuteReset();
-                return;
-            }
 
             if(Backup.BackupSaves(GamesToBackup, SelectedHardDrive, false, _specifiedFolder))
                 MessageBox.Show("Saved games successfully backed up. \r\n");
@@ -240,17 +233,8 @@ namespace Saved_Game_Backup.ViewModel
         }
         
         private void ExecuteBackupAndZip() {
-            if (SelectedHardDrive == null) {
-                MessageBox.Show("Storage disk not selected. \r\nPlease select the drive where your \r\nsaved games are stored.");
-                ExecuteReset();
+            if (CanBackup())
                 return;
-            }
-
-            if (!GamesToBackup.Any()) {
-                MessageBox.Show("No games selected. \n\rPlease select at least one game.");
-                ExecuteReset();
-                return;
-            }
 
             if(Backup.BackupAndZip(GamesToBackup, SelectedHardDrive, true, _specifiedFolder))
                 MessageBox.Show("Saved games successfully backed up. \r\n");
@@ -276,6 +260,22 @@ namespace Saved_Game_Backup.ViewModel
         public void OnWindowClosing() {
             var p = new PrefSaver();
             p.SavePrefs(new UserPrefs(_theme, _maxBackups));
+        }
+
+        private bool CanBackup() {
+            if (SelectedHardDrive == null) {
+                MessageBox.Show("Storage disk not selected. \r\nPlease select the drive where your \r\nsaved games are stored.");
+                ExecuteReset();
+                return false;
+            }
+
+            if (!GamesToBackup.Any()) {
+                MessageBox.Show("No games selected. \n\rPlease select at least one game.");
+                ExecuteReset();
+                return false;
+            }
+            
+            return true;
         }
     }
 }

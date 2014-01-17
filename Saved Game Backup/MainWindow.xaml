@@ -163,6 +163,7 @@
                     Grid.ColumnSpan="2"
                     Margin="3"
                     Content="Activate Autobackup"
+                    Command="{Binding AutoBackup}"
                     ToolTip="Autobackup will watch the save folders for the games you have selected. When new save files are added or modified, they will be backed up to a folder of your choosing." />
             <Border Grid.Row="7"
                     Grid.Column="3"
