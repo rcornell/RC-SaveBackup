@@ -12,27 +12,31 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
+using Timer = System.Timers.Timer;
 
 
 namespace Saved_Game_Backup
 {
     public class Backup {
 
-        private static ObservableCollection<Game> gamesToAutoBackup = new ObservableCollection<Game>();
-        private static Dictionary<string, FileSystemWatcher> fileWatchers;
-        private static FileSystemWatcher fileWatcher = new FileSystemWatcher();
-        private static List<FileSystemWatcher> fileWatcherList;
+        private static ObservableCollection<Game> _gamesToAutoBackup = new ObservableCollection<Game>();
+        private static List<FileSystemWatcher> _fileWatcherList;
         private static string _specifiedAutoBackupFolder;
         private static string _hardDrive;
-
+        private static bool _autoBackupAllowed;
+        private static Timer _timer;
+        
         public Backup() {
             
         }
 
+        
+
         //Doesn't know if you cancel out of a dialog.
         //Needs threading when it is processing lots of files. Progress bar? Progress animation?
 
-
+        
 
         public static bool BackupSaves(ObservableCollection<Game> gamesList, string harddrive, bool zipping, string specifiedfolder = null) {
             var destination = harddrive + "SaveBackups";
@@ -160,10 +164,12 @@ namespace Saved_Game_Backup
         }
 
         public static void ActivateAutoBackup(ObservableCollection<Game> gamesToBackup, string harddrive, string specifiedFolder = null) {
-            fileWatchers = new Dictionary<string, FileSystemWatcher>();
-            fileWatcherList = new List<FileSystemWatcher>();
-
-            gamesToAutoBackup = gamesToBackup;
+            _timer = new Timer { Interval = 10000 };
+            _timer.Elapsed += _timer_Elapsed;
+            _timer.Start();
+            
+            _fileWatcherList = new List<FileSystemWatcher>();
+            _gamesToAutoBackup = gamesToBackup;
 
             _specifiedAutoBackupFolder = specifiedFolder;
 
@@ -172,17 +178,14 @@ namespace Saved_Game_Backup
                 _specifiedAutoBackupFolder = specifiedFolder;
             }
 
-            
-
             _hardDrive = harddrive;
             
 
             int watcherNumber = 0;
             foreach (Game game in gamesToBackup) {
-                //fileWatchers.Add(game.Name, new FileSystemWatcher(game.Path));
-                fileWatcherList.Add(new FileSystemWatcher(game.Path));
-                fileWatcherList[watcherNumber].Changed += OnChanged;
-                fileWatcherList[watcherNumber].EnableRaisingEvents = true;
+                _fileWatcherList.Add(new FileSystemWatcher(game.Path));
+                _fileWatcherList[watcherNumber].Changed += OnChanged;
+                _fileWatcherList[watcherNumber].EnableRaisingEvents = true;
                 watcherNumber++;
             }
 
@@ -190,17 +193,24 @@ namespace Saved_Game_Backup
         }
 
         public static void DeactivateAutoBackup() {
-            foreach (FileSystemWatcher f in fileWatcherList) {
+            foreach (FileSystemWatcher f in _fileWatcherList) {
                 f.EnableRaisingEvents = false;
             }
-            fileWatcherList.Clear();
+            _fileWatcherList.Clear();
+        }
+
+        private static void _timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
+            _autoBackupAllowed = true;
         }
 
         private static void OnChanged(object source, FileSystemEventArgs e) {
-            foreach (Game game in gamesToAutoBackup) {
-                if (e.FullPath.Contains(game.Path))
-                    BackupGame(game.Path, _specifiedAutoBackupFolder);
-            }
+            
+            if(_autoBackupAllowed)
+                foreach (Game game in _gamesToAutoBackup) {
+                    if (e.FullPath.Contains(game.Path))
+                        BackupGame(game.Path, _specifiedAutoBackupFolder);
+                }
+            _autoBackupAllowed = false;
         }
         
         private static string CreateFolderPath() {
