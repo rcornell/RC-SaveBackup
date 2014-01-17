@@ -64,6 +64,11 @@ namespace Saved_Game_Backup.ViewModel
             get { return _maxBackups; }
             set { _maxBackups = value; }
         }
+        private int _theme;
+        public int Theme {
+            get { return _theme; }
+            set { _theme = value; }
+        }
 
         public RelayCommand MoveToBackupList
         {
@@ -102,12 +107,27 @@ namespace Saved_Game_Backup.ViewModel
         
 
         public MainViewModel() {
-            _autoBackupVisibility = Visibility.Hidden;
+
             HardDrives = new ObservableCollection<string>();
             GamesList = DirectoryFinder.ReturnGamesList();
             GamesToBackup = new ObservableCollection<Game>();
-                
+            SetUpUI();
             CreateHardDriveCollection();
+        }
+
+        private void SetUpUI() {
+            if (!UserPrefs.LoadPrefs()) {
+                _maxBackups = 5;
+                
+                //THIS ISN"T WORKING
+                _autoBackupVisibility = Visibility.Hidden;
+                RaisePropertyChanged(() => AutoBackupVisibility);
+            }
+
+        }
+
+        private void SaveUserPrefs(MainViewModel main) {
+            UserPrefs.SavePrefs(main);
         }
 
         private void ExecuteDetectGames() {

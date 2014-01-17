@@ -88,6 +88,7 @@
     <Compile Include="Backup.cs" />
     <Compile Include="DirectoryFinder.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="PrefSaver.cs" />
     <Compile Include="UserPrefs.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />

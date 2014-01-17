@@ -6,6 +6,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="Saved Game Backup Tool"
         Width="525"
+        Height="500"
         Background="{StaticResource MainBackgroundBrush}"
         DataContext="{Binding Path=Main,
                               Source={StaticResource Locator}}"
