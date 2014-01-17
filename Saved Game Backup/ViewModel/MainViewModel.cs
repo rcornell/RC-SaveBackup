@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Security.RightsManagement;
@@ -111,23 +112,27 @@ namespace Saved_Game_Backup.ViewModel
             HardDrives = new ObservableCollection<string>();
             GamesList = DirectoryFinder.ReturnGamesList();
             GamesToBackup = new ObservableCollection<Game>();
-            SetUpUI();
+            SetUpInterface();
             CreateHardDriveCollection();
         }
 
-        private void SetUpUI() {
+        private void SetUpInterface() {
             if (!PrefSaver.CheckForPrefs()) {
                 _maxBackups = 5;
                 _theme = 0;
             }
             else {
-                PrefSaver.LoadPrefs();
+                var p = new PrefSaver();
+                var prefs = p.LoadPrefs();
+                _maxBackups = prefs.MaxBackups;
+                _theme = prefs.Theme;
             }
 
         }
 
         private void SaveUserPrefs() {
-            PrefSaver.SavePrefs(new UserPrefs(_theme, _maxBackups));
+            var p = new PrefSaver();
+            p.SavePrefs(new UserPrefs(_theme, _maxBackups));
         }
 
         private void ExecuteDetectGames() {
@@ -175,7 +180,7 @@ namespace Saved_Game_Backup.ViewModel
                 Backup.ActivateAutoBackup(GamesToBackup, _selectedHardDrive, _specifiedFolder);
             } 
                 
-            
+            SaveUserPrefs();
             //Make Backup.cs listen for save modification events.
             
         }
@@ -231,6 +236,7 @@ namespace Saved_Game_Backup.ViewModel
 
             if(Backup.BackupSaves(GamesToBackup, SelectedHardDrive, false, _specifiedFolder))
                 MessageBox.Show("Saved games successfully backed up. \r\n");
+            SaveUserPrefs();
             ExecuteReset();
         }
         
@@ -249,6 +255,7 @@ namespace Saved_Game_Backup.ViewModel
 
             if(Backup.BackupAndZip(GamesToBackup, SelectedHardDrive, true, _specifiedFolder))
                 MessageBox.Show("Saved games successfully backed up. \r\n");
+            SaveUserPrefs();
             ExecuteReset();
         }
 
@@ -267,5 +274,9 @@ namespace Saved_Game_Backup.ViewModel
             RaisePropertyChanged(() => SelectedGame);
         }
 
+        public void OnWindowClosing() {
+            var p = new PrefSaver();
+            p.SavePrefs(new UserPrefs(_theme, _maxBackups));
+        }
     }
 }

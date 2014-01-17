@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Saved_Game_Backup.ViewModel;
 
 namespace Saved_Game_Backup
 {
@@ -23,6 +25,8 @@ namespace Saved_Game_Backup
         public MainWindow()
         {
             InitializeComponent();
+            //Closing += ViewModel.MainViewModel.OnWindowClosing;
+            //Application.Current.MainWindow.Closing += new CancelEventHandler(ViewModelLocator.Main.OnWindowClosing());
         }
     }
 }

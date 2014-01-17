@@ -14,9 +14,7 @@ namespace Saved_Game_Backup
 
         public PrefSaver(){}
 
-        //******Needs to return more than BOOL******
-
-        public static UserPrefs LoadPrefs() {
+        public UserPrefs LoadPrefs() {
             UserPrefs prefs;
             string path = Environment.SpecialFolder.MyDocuments + "SaveBackupTool\\";
             if (Directory.Exists(path))
@@ -33,7 +31,7 @@ namespace Saved_Game_Backup
             return new UserPrefs(0,5);
         }
 
-        public static bool SavePrefs(UserPrefs prefs) {
+        public bool SavePrefs(UserPrefs prefs) {
             string path = Environment.SpecialFolder.MyDocuments + "SaveBackupTool\\";
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
