@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Runtime.Serialization;
 
 namespace Saved_Game_Backup
-{
+{               [Serializable]
     public class UserPrefs {
         
         private int _theme;

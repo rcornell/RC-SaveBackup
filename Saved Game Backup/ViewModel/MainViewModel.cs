@@ -164,7 +164,7 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ExecuteAutoBackupToggle() {
-            if (CanBackup())
+            if (!CanBackup())
                 return;
 
             if (_backupEnabled) {
@@ -223,7 +223,7 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ExecuteBackup() {
-            if (CanBackup())
+            if (!CanBackup())
                 return;
 
             if(Backup.BackupSaves(GamesToBackup, SelectedHardDrive, false, _specifiedFolder))
@@ -233,7 +233,7 @@ namespace Saved_Game_Backup.ViewModel
         }
         
         private void ExecuteBackupAndZip() {
-            if (CanBackup())
+            if (!CanBackup())
                 return;
 
             if(Backup.BackupAndZip(GamesToBackup, SelectedHardDrive, true, _specifiedFolder))
