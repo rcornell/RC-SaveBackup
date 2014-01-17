@@ -165,10 +165,14 @@ namespace Saved_Game_Backup
 
             gamesToAutoBackup = gamesToBackup;
 
+            _specifiedAutoBackupFolder = specifiedFolder;
+
             if (specifiedFolder == null) {
-                specifiedFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                specifiedFolder = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Save Backups\\";
                 _specifiedAutoBackupFolder = specifiedFolder;
             }
+
+            
 
             _hardDrive = harddrive;
             
@@ -195,7 +199,7 @@ namespace Saved_Game_Backup
         private static void OnChanged(object source, FileSystemEventArgs e) {
             foreach (Game game in gamesToAutoBackup) {
                 if (e.FullPath.Contains(game.Path))
-                    BackupGame(game.Path, _hardDrive + "\\" + game.Path);
+                    BackupGame(game.Path, _specifiedAutoBackupFolder);
             }
         }
         

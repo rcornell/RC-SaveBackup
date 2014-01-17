@@ -16,7 +16,7 @@ namespace Saved_Game_Backup
 
         public UserPrefs LoadPrefs() {
             UserPrefs prefs;
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "SaveBackupTool\\";
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Save Backup Tool\\";
             if (Directory.Exists(path))
             {
                 using (Stream input = File.OpenRead(path + "UserPrefs.dat")) {
@@ -32,7 +32,7 @@ namespace Saved_Game_Backup
         }
 
         public bool SavePrefs(UserPrefs prefs) {
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "SaveBackupTool\\";
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Save Backup Tool\\";
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
 
