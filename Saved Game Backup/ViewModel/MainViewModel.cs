@@ -116,18 +116,18 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void SetUpUI() {
-            if (!UserPrefs.LoadPrefs()) {
+            if (!PrefSaver.CheckForPrefs()) {
                 _maxBackups = 5;
-                
-                //THIS ISN"T WORKING
-                _autoBackupVisibility = Visibility.Hidden;
-                RaisePropertyChanged(() => AutoBackupVisibility);
+                _theme = 0;
+            }
+            else {
+                PrefSaver.LoadPrefs();
             }
 
         }
 
-        private void SaveUserPrefs(MainViewModel main) {
-            UserPrefs.SavePrefs(main);
+        private void SaveUserPrefs() {
+            PrefSaver.SavePrefs(new UserPrefs(_theme, _maxBackups));
         }
 
         private void ExecuteDetectGames() {
