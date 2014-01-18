@@ -7,7 +7,7 @@
         Title="Saved Game Backup Tool"
         Width="525"
         Height="500"
-        Background="{StaticResource MainBackgroundBrush}"
+        Background="{Binding Background}"
         DataContext="{Binding Path=Main,
                               Source={StaticResource Locator}}"
         Padding="3"
@@ -20,8 +20,8 @@
         <Menu IsMainMenu="True">
             <MenuItem Header="_File">
                 <MenuItem Header="_Theme">
-                    <MenuItem Header="_Light" />
-                    <MenuItem Header="_Dark" />
+                    <MenuItem Header="_Light" Command="{Binding SetThemeLight}" />
+                    <MenuItem Header="_Dark" Command="{Binding SetThemeDark}"/>
                 </MenuItem>
                 <MenuItem Header="_Exit" />
             </MenuItem>

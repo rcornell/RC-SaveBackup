@@ -8,6 +8,7 @@ using System.Security.RightsManagement;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Documents;
+using System.Windows.Media;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 
@@ -39,8 +40,13 @@ namespace Saved_Game_Backup.ViewModel
         public ObservableCollection<string> HardDrives { get; set; } 
         public ObservableCollection<Game> GamesList { get; set; } 
         public ObservableCollection<Game> GamesToBackup { get; set; }
-        public ObservableCollection<string> GameNames { get; set; } 
+        public ObservableCollection<string> GameNames { get; set; }
 
+        private Brush _background;
+        public Brush Background {
+            get { return _background; }
+            set { _background = value; }
+        }
         private string _selectedHardDrive;
         public string SelectedHardDrive {
             get { return _selectedHardDrive; }
@@ -104,11 +110,17 @@ namespace Saved_Game_Backup.ViewModel
         public RelayCommand DetectGames {
             get { return new RelayCommand(() => ExecuteDetectGames()); }
         }
-
-        
+        public RelayCommand SetThemeLight
+        {
+            get { return new RelayCommand(() => ExecuteSetThemeLight()); }
+        }
+        public RelayCommand SetThemeDark
+        {
+            get { return new RelayCommand(() => ExecuteSetThemeDark()); }
+        }
 
         public MainViewModel() {
-
+            Background = Brushes.DeepSkyBlue;
             HardDrives = new ObservableCollection<string>();
             GamesList = DirectoryFinder.ReturnGamesList();
             GamesToBackup = new ObservableCollection<Game>();
@@ -154,7 +166,6 @@ namespace Saved_Game_Backup.ViewModel
         private void ExecuteSpecifyFolder() {
             _specifiedFolder = DirectoryFinder.SpecifyFolder();
         }
-
 
         private void CreateHardDriveCollection() {
             DriveInfo[] drives = DriveInfo.GetDrives();
@@ -276,6 +287,25 @@ namespace Saved_Game_Backup.ViewModel
             }
             
             return true;
+        }
+
+        private void ExecuteSetThemeLight() {
+            _theme = 0;
+            ToggleTheme();
+        }
+        
+        private void ExecuteSetThemeDark() {
+            _theme = 1;
+            ToggleTheme();
+        }
+
+        private void ToggleTheme() {
+            //if (_theme == 0)
+            //    Background = Brushes.DeepSkyBlue;
+            //else
+            //    Background = Brushes.DarkSlateBlue;
+            _background = (_theme == 0) ? Brushes.DeepSkyBlue : Brushes.SlateGray;
+            RaisePropertyChanged(() => Background);
         }
     }
 }

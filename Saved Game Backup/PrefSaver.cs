@@ -31,7 +31,7 @@ namespace Saved_Game_Backup
             return new UserPrefs(0,5);
         }
 
-        public bool SavePrefs(UserPrefs prefs) {
+        public void SavePrefs(UserPrefs prefs) {
             string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Save Backup Tool\\";
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
@@ -42,7 +42,6 @@ namespace Saved_Game_Backup
 
             }
 
-            return false;
         }
 
         public static bool CheckForPrefs() {
