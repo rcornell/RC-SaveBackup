@@ -205,12 +205,20 @@ namespace Saved_Game_Backup
 
         private static void OnChanged(object source, FileSystemEventArgs e) {
             
+            Console.WriteLine(e.FullPath);
+            Console.WriteLine(e.Name);
+            Console.WriteLine(e.ChangeType);
+            var file = new FileInfo(e.FullPath);
+            Console.WriteLine(file.Name);
+
             if(_autoBackupAllowed)
                 foreach (Game game in _gamesToAutoBackup) {
                     if (e.FullPath.Contains(game.Path))
-                        BackupGame(game.Path, _specifiedAutoBackupFolder);
+                        BackupGame(game.Path, _specifiedAutoBackupFolder + "\\" + game.Name + "\\");
                 }
             _autoBackupAllowed = false;
+
+            //BackupFile(e);
         }
         
         private static string CreateFolderPath() {
@@ -228,6 +236,10 @@ namespace Saved_Game_Backup
             }
 
             return path;
+        }
+
+        private static void BackupFile(FileSystemEventArgs e) {
+            
         }
 
         

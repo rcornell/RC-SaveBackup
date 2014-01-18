@@ -12,7 +12,7 @@
                               Source={StaticResource Locator}}"
         Padding="3"
         WindowStartupLocation="CenterScreen"
-        WindowStyle="None">
+        WindowStyle="SingleBorderWindow">
     <Window.Style>
         <Style BasedOn="{StaticResource FontStyle}" TargetType="Control" />
     </Window.Style>
@@ -164,23 +164,25 @@
                     Grid.ColumnSpan="2"
                     Margin="3"
                     Command="{Binding AutoBackup}"
-                    Content="Activate Autobackup"
+                    Content="Toggle Autobackup"
                     ToolTip="Autobackup will watch the save folders for the games you have selected. When new save files are added or modified, they will be backed up to a folder of your choosing." />
             <Border Grid.Row="7"
                     Grid.Column="3"
                     Margin="3"
                     Background="Lime"
                     CornerRadius="15"
-                    Visibility="{Binding AutoBackupEnabled}">
+                    Visibility="{Binding AutoBackupVisibility,
+                                         UpdateSourceTrigger=PropertyChanged}">
                 <TextBlock HorizontalAlignment="Center"
                            VerticalAlignment="Center"
                            Text="Autobackup Enabled"
-                           Visibility="{Binding AutoBackupEnabled}" />
+                           Visibility="{Binding AutoBackupVisibility,
+                                                UpdateSourceTrigger=PropertyChanged}" />
             </Border>
             <TextBlock Grid.Row="8"
                        Grid.Column="0"
                        FontSize="14"
-                       Text="Maximum # of Backups"
+                       Text="Maximum # of AutoBackups"
                        TextWrapping="Wrap" />
 
             <xctk:IntegerUpDown Grid.Row="8"

@@ -148,6 +148,8 @@ namespace Saved_Game_Backup.ViewModel
                 }
                 ToggleTheme();
             }
+            AutoBackupVisibility = Visibility.Hidden;
+            RaisePropertyChanged(() => AutoBackupVisibility);
         }
 
         private void SaveUserPrefs() {
@@ -183,8 +185,7 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ExecuteAutoBackupToggle() {
-            if (!CanBackup())
-                return;
+            
 
             if (_backupEnabled) {
                 //This is for turning **OFF** AutoBackup
@@ -194,12 +195,15 @@ namespace Saved_Game_Backup.ViewModel
             }
             else {
                 //This is for turning **ON** AutoBackup
-                _autoBackupVisibility = Visibility.Visible;
+                if (!CanBackup())
+                    return;
+
+                AutoBackupVisibility = Visibility.Visible;
                 _backupEnabled = true;
                 _specifiedFolder = DirectoryFinder.SpecifyFolder();
                 Backup.ActivateAutoBackup(GamesToBackup, _selectedHardDrive, _specifiedFolder);
-            } 
-                
+            }
+            RaisePropertyChanged(() => AutoBackupVisibility);    
             SaveUserPrefs();
             //Make Backup.cs listen for save modification events.
             
@@ -312,7 +316,12 @@ namespace Saved_Game_Backup.ViewModel
             //    Background = Brushes.DeepSkyBlue;
             //else
             //    Background = Brushes.DarkSlateBlue;
-            _background = (_theme == 0) ? Brushes.DeepSkyBlue : Brushes.SlateGray;
+
+            var bc = new BrushConverter();  
+            var brush = (Brush)bc.ConvertFrom("#FF2D2D30"); 
+            brush.Freeze();
+
+            _background = (_theme == 0) ? Brushes.DeepSkyBlue : brush;
             RaisePropertyChanged(() => Background);
             
         }

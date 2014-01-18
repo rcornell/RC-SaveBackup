@@ -61,7 +61,7 @@ namespace Saved_Game_Backup
         /// </summary>
         /// <returns></returns>
         public static string SpecifyFolder() {
-            var dialog = new FolderBrowserDialog();
+            var dialog = new FolderBrowserDialog() { Description = "Select a folder to save your backups."};
             dialog.ShowDialog();
             return dialog.SelectedPath;
         }
