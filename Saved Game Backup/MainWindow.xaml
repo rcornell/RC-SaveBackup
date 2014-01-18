@@ -4,12 +4,13 @@
         xmlns:command="http://www.galasoft.ch/mvvmlight"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        Title="Saved Game Backup Tool"
+        Title="Save Game Backup Tool"
         Width="525"
         Height="500"
         Background="DeepSkyBlue"
         DataContext="{Binding Path=Main,
                               Source={StaticResource Locator}}"
+        Icon="Resources/SGBIcon.ico"
         Padding="3"
         WindowStartupLocation="CenterScreen"
         WindowStyle="SingleBorderWindow">
