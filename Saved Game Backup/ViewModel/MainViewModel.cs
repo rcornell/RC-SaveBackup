@@ -8,6 +8,7 @@ using System.Security.RightsManagement;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Documents;
+using System.Windows.Forms.VisualStyles;
 using System.Windows.Media;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -118,6 +119,9 @@ namespace Saved_Game_Backup.ViewModel
         {
             get { return new RelayCommand(() => ExecuteSetThemeDark()); }
         }
+        public RelayCommand Close {
+            get { return new RelayCommand(() => CloseApplication()); }
+        }
 
         public MainViewModel() {
             Background = Brushes.DeepSkyBlue;
@@ -138,13 +142,23 @@ namespace Saved_Game_Backup.ViewModel
                 var prefs = p.LoadPrefs();
                 _maxBackups = prefs.MaxBackups;
                 _theme = prefs.Theme;
+                GamesToBackup = prefs.SelectedGames;
+                _selectedHardDrive = prefs.HardDrive;
+
+                foreach (Game game in prefs.SelectedGames) {
+                    GamesList.Remove(game);
+                }
+
+                //RaisePropertyChanged(() => SelectedHardDrive);
+                //RaisePropertyChanged(() => Background);
+                
             }
 
         }
 
         private void SaveUserPrefs() {
             var p = new PrefSaver();
-            p.SavePrefs(new UserPrefs(_theme, _maxBackups));
+            p.SavePrefs(new UserPrefs(_theme, _maxBackups, _selectedHardDrive, GamesToBackup));
         }
 
         private void ExecuteDetectGames() {
@@ -268,10 +282,10 @@ namespace Saved_Game_Backup.ViewModel
             RaisePropertyChanged(() => SelectedGame);
         }
 
-        public void OnWindowClosing() {
-            var p = new PrefSaver();
-            p.SavePrefs(new UserPrefs(_theme, _maxBackups));
-        }
+        //public void OnWindowClosing() {
+        //    var p = new PrefSaver();
+        //    p.SavePrefs(new UserPrefs(_theme, _maxBackups, _selectedHardDrive, GamesToBackup));
+        //}
 
         private bool CanBackup() {
             if (SelectedHardDrive == null) {
@@ -306,6 +320,12 @@ namespace Saved_Game_Backup.ViewModel
             //    Background = Brushes.DarkSlateBlue;
             _background = (_theme == 0) ? Brushes.DeepSkyBlue : Brushes.SlateGray;
             RaisePropertyChanged(() => Background);
+            
+        }
+
+        private void CloseApplication() {
+            SaveUserPrefs();
+            Application.Current.MainWindow.Close();
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Saved_Game_Backup
-{
+{   [Serializable]
     public class Game {
         public string Name;
         public string Path;

@@ -20,10 +20,10 @@
         <Menu IsMainMenu="True">
             <MenuItem Header="_File">
                 <MenuItem Header="_Theme">
-                    <MenuItem Header="_Light" Command="{Binding SetThemeLight}" />
-                    <MenuItem Header="_Dark" Command="{Binding SetThemeDark}"/>
+                    <MenuItem Command="{Binding SetThemeLight}" Header="_Light" />
+                    <MenuItem Command="{Binding SetThemeDark}" Header="_Dark" />
                 </MenuItem>
-                <MenuItem Header="_Exit" />
+                <MenuItem Command="{Binding Close}" Header="_Exit" />
             </MenuItem>
         </Menu>
         <StackPanel Margin="3"
@@ -162,8 +162,8 @@
                     Grid.Column="1"
                     Grid.ColumnSpan="2"
                     Margin="3"
-                    Content="Activate Autobackup"
                     Command="{Binding AutoBackup}"
+                    Content="Activate Autobackup"
                     ToolTip="Autobackup will watch the save folders for the games you have selected. When new save files are added or modified, they will be backed up to a folder of your choosing." />
             <Border Grid.Row="7"
                     Grid.Column="3"
@@ -188,7 +188,8 @@
                                 Height="23"
                                 Margin="3"
                                 HorizontalAlignment="Left"
-                                Text="{Binding MaxBackups}" />
+                                Text="{Binding MaxBackups}"
+                                CommandBindings=""/>
         </Grid>
 
     </StackPanel>
