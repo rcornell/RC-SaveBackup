@@ -9,7 +9,7 @@
         <vm:ViewModelLocator xmlns:vm="clr-namespace:Saved_Game_Backup.ViewModel"
                              x:Key="Locator"
                              d:IsDataSource="True" />
-        <LinearGradientBrush x:Key="MainBackgroundBrush">
+        <LinearGradientBrush x:Key="Background">
             <GradientStop Offset="0" Color="DeepSkyBlue" />
         </LinearGradientBrush>
         <Style x:Key="FontStyle" TargetType="Control">

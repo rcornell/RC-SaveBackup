@@ -7,11 +7,13 @@
         Title="Saved Game Backup Tool"
         Width="525"
         Height="500"
-        Background="{Binding Background}"
+        Background="{Binding Background,
+                             UpdateSourceTrigger=PropertyChanged}"
         DataContext="{Binding Path=Main,
                               Source={StaticResource Locator}}"
         Padding="3"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None">
     <Window.Style>
         <Style BasedOn="{StaticResource FontStyle}" TargetType="Control" />
     </Window.Style>
@@ -188,8 +190,9 @@
                                 Height="23"
                                 Margin="3"
                                 HorizontalAlignment="Left"
-                                Text="{Binding MaxBackups}"
-                                CommandBindings=""/>
+                                Text="{Binding MaxBackups,
+                                               UpdateSourceTrigger=PropertyChanged,
+                                               Delay=100}" />
         </Grid>
 
     </StackPanel>
