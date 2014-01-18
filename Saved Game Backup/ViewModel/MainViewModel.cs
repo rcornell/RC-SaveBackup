@@ -7,6 +7,7 @@ using System.Linq;
 using System.Security.RightsManagement;
 using System.Windows;
 using System.Windows.Automation;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Forms.VisualStyles;
 using System.Windows.Media;
@@ -143,9 +144,19 @@ namespace Saved_Game_Backup.ViewModel
                 _theme = prefs.Theme;
                 GamesToBackup = prefs.SelectedGames;
                 _selectedHardDrive = prefs.HardDrive;
+
+                //CAN THIS BE CLEANED UP?
+                var listToRemove = new ObservableCollection<Game>();
                 foreach (Game game in prefs.SelectedGames) {
-                    GamesList.Remove(game);
+                    foreach (Game g in GamesList) {
+                        if (game.Name == g.Name)
+                            listToRemove.Add(g);
+                    }
+                    foreach (Game gameBeingRemoved in listToRemove)
+                        GamesList.Remove(gameBeingRemoved);
+
                 }
+                RaisePropertyChanged(() => GamesList);
                 ToggleTheme();
             }
             AutoBackupVisibility = Visibility.Hidden;
@@ -205,7 +216,6 @@ namespace Saved_Game_Backup.ViewModel
             }
             RaisePropertyChanged(() => AutoBackupVisibility);    
             SaveUserPrefs();
-            //Make Backup.cs listen for save modification events.
             
         }
 
@@ -252,7 +262,7 @@ namespace Saved_Game_Backup.ViewModel
             if(Backup.BackupSaves(GamesToBackup, SelectedHardDrive, false, _specifiedFolder))
                 MessageBox.Show("Saved games successfully backed up. \r\n");
             SaveUserPrefs();
-            ExecuteReset();
+            
         }
         
         private void ExecuteBackupAndZip() {
@@ -262,7 +272,6 @@ namespace Saved_Game_Backup.ViewModel
             if(Backup.BackupAndZip(GamesToBackup, SelectedHardDrive, true, _specifiedFolder))
                 MessageBox.Show("Saved games successfully backed up. \r\n");
             SaveUserPrefs();
-            ExecuteReset();
         }
 
         private void ExecuteReset() {
@@ -279,11 +288,6 @@ namespace Saved_Game_Backup.ViewModel
             RaisePropertyChanged(() => SelectedBackupGame);
             RaisePropertyChanged(() => SelectedGame);
         }
-
-        //public void OnWindowClosing() {
-        //    var p = new PrefSaver();
-        //    p.SavePrefs(new UserPrefs(_theme, _maxBackups, _selectedHardDrive, GamesToBackup));
-        //}
 
         private bool CanBackup() {
             if (SelectedHardDrive == null) {
@@ -312,15 +316,9 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ToggleTheme() {
-            //if (_theme == 0)
-            //    Background = Brushes.DeepSkyBlue;
-            //else
-            //    Background = Brushes.DarkSlateBlue;
-
             var bc = new BrushConverter();  
             var brush = (Brush)bc.ConvertFrom("#FF2D2D30"); 
             brush.Freeze();
-
             _background = (_theme == 0) ? Brushes.DeepSkyBlue : brush;
             RaisePropertyChanged(() => Background);
             
