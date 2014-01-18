@@ -124,10 +124,6 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         public MainViewModel() {
-            
-            Background = Brushes.DeepSkyBlue;
-
-
             HardDrives = new ObservableCollection<string>();
             GamesList = DirectoryFinder.ReturnGamesList();
             GamesToBackup = new ObservableCollection<Game>();
@@ -149,7 +145,8 @@ namespace Saved_Game_Backup.ViewModel
                 _selectedHardDrive = prefs.HardDrive;
                 foreach (Game game in prefs.SelectedGames) {
                     GamesList.Remove(game);
-                } 
+                }
+                ToggleTheme();
             }
         }
 

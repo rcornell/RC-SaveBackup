@@ -7,8 +7,7 @@
         Title="Saved Game Backup Tool"
         Width="525"
         Height="500"
-        Background="{Binding Background,
-                             UpdateSourceTrigger=PropertyChanged}"
+        Background="DeepSkyBlue"
         DataContext="{Binding Path=Main,
                               Source={StaticResource Locator}}"
         Padding="3"
@@ -18,7 +17,7 @@
         <Style BasedOn="{StaticResource FontStyle}" TargetType="Control" />
     </Window.Style>
 
-    <StackPanel>
+    <StackPanel Background="{Binding Background}">
         <Menu IsMainMenu="True">
             <MenuItem Header="_File">
                 <MenuItem Header="_Theme">
