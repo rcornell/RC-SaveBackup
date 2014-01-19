@@ -9,12 +9,19 @@ namespace Saved_Game_Backup
     public class Game {
         public string Name;
         public string Path;
+        public string ID;
 
         public Game() {
             
         }
 
         public Game(string name, string path) {
+            Name = name;
+            Path = path;
+        }
+        
+        public Game(string name, string path, string id) {
+            ID = id;
             Name = name;
             Path = path;
         }

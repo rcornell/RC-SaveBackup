@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Forms.VisualStyles;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 
@@ -41,11 +42,22 @@ namespace Saved_Game_Backup.ViewModel
             set { _autoBackupVisibility = value; }
         }
 
+
+
         public ObservableCollection<string> HardDrives { get; set; } 
         public ObservableCollection<Game> GamesList { get; set; } 
         public ObservableCollection<Game> GamesToBackup { get; set; }
         public ObservableCollection<string> GameNames { get; set; }
 
+        private BitmapImage _thumbnail;
+        public BitmapImage Thumbnail {
+            get { return _thumbnail; }
+            set
+            {
+                if (_thumbnail == value) return;
+                _thumbnail = value;
+            }
+        }
         private Brush _background;
         public Brush Background {
             get { return _background; }
