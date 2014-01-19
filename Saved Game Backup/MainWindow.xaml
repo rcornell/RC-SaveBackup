@@ -197,11 +197,14 @@
                                                Delay=100}" />
             <Button Grid.Row="1"
                     Grid.Column="3"
-                    Content="TEST DOWNLOAD" />
+                    Content="TEST DOWNLOAD" Command="{Binding TestThumbDownload}"/>
             <Image Grid.Row="3"
                    Grid.Column="3"
                    Width="130"
-                   Height="160" Source="{Binding Thumbnail, UpdateSourceTrigger=PropertyChanged}"/>
+                   Height="160"
+                   
+                   Source="{Binding Thumbnail,
+                                    UpdateSourceTrigger=PropertyChanged}" />
         </Grid>
 
     </StackPanel>
