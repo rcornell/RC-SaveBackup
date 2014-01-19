@@ -14,6 +14,7 @@ namespace Saved_Game_Backup
 {
     public class GiantBombAPI {
 
+        //private const string path = "C:\\Users\\Rob\\Desktop\\Image.jpg";
         //private string _queryString;
         private BitmapImage _thumbNail;
         public BitmapImage ThumbNail {
@@ -25,7 +26,7 @@ namespace Saved_Game_Backup
         }
 
         private const string _apiKey = "ab63aeba2395b10932897115dc4bf3fa048e1734";
-        private const string _stringBase = "http://www.giantbomb.com/api/";
+        private const string _stringBase = "http://www.giantbomb.com/api";
         private const string _format = "json";
         private const string _fieldsRequested = "name,image";
         private const string _resource_Type = "game";
@@ -39,8 +40,10 @@ namespace Saved_Game_Backup
 
         }
 
-        public GiantBombAPI(int game_ID) {
+        public GiantBombAPI(int game_ID, string name) {
+            _gameName = name;
             _game_ID = game_ID;
+            CreateThumbnail(_game_ID);
         }
 
         public GiantBombAPI(string name) {
@@ -76,6 +79,7 @@ namespace Saved_Game_Backup
             using (var client = new HttpClient())
                 _responseString = await client.GetStringAsync(queryURL);
 
+            string b = _responseString;
             //var resultObject = await JsonConvert.DeserializeObjectAsync<ImageResponse>(_responseString);
 
             var blob = await JsonConvert.DeserializeObjectAsync<dynamic>(_responseString);
@@ -93,20 +97,26 @@ namespace Saved_Game_Backup
 
         private void BuildThumbnail(string url) {
             
-            var webRequest = (HttpWebRequest)HttpWebRequest.Create(url);
+            //var webRequest = (HttpWebRequest)HttpWebRequest.Create(url);
 
-            using (var httpWebResponse = (HttpWebResponse)webRequest.GetResponse())
-            {
-                using (var stream = httpWebResponse.GetResponseStream())
-                {
-                    //BitmapImage source = System.Drawing.Image.FromStream(stream);
+            //using (var httpWebResponse = (HttpWebResponse)webRequest.GetResponse())
+            //{
+            //    using (var stream = httpWebResponse.GetResponseStream())
+            //    {
+            //        //BitmapImage source = System.Drawing.Image.FromStream(stream);
                     
-                    var bitmapImage = new BitmapImage();
-                    bitmapImage.BeginInit();
-                    bitmapImage.StreamSource = stream;
-                    bitmapImage.EndInit();
-                    ThumbNail = bitmapImage;
-                }
+            //        var bitmapImage = new BitmapImage();
+            //        bitmapImage.BeginInit();
+            //        bitmapImage.StreamSource = stream;
+            //        bitmapImage.EndInit();
+            //        ThumbNail = bitmapImage;
+            //    }
+            //}
+
+            var path = string.Format("{0}\\{1}.jpg", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), _gameName);
+
+            using (WebClient client = new WebClient()) {
+                client.DownloadFile(url, path);
             }
         }
 
