@@ -31,39 +31,64 @@ namespace Saved_Game_Backup
         private const string _resource_Type = "game";
         //private string _resource_ID;
         private string _responseString;
+        private string _gameName;
         
-        private string _game_ID;
+        private int _game_ID;
 
         public GiantBombAPI() {
 
         }
 
-        public GiantBombAPI(string game_ID) {
-            CreateThumbnail(game_ID);
+        public GiantBombAPI(int game_ID) {
+            _game_ID = game_ID;
         }
 
-        private string BuildQueryString(string game_ID) {
+        public GiantBombAPI(string name) {
+            _gameName = name;
+            GetGameID(_gameName);
+            CreateThumbnail(_game_ID);
+        }
+
+        private void GetGameID(string name) {
+            var searchString = BuildSearchString(name);
+            DownloadData(searchString, false);
+        }
+
+        private string BuildThumbQueryString(int game_ID) {
             var queryString = String.Format("{0}/{1}/{2}/?api_key={3}&format={4}&field_list={5}", _stringBase,
                 _resource_Type, game_ID, _apiKey, _format, _fieldsRequested);
             return queryString;
         }
 
-        public void CreateThumbnail(string game_ID) {
-            var queryURL = BuildQueryString(game_ID);
-            DownloadThumbData(queryURL);
+        private string BuildSearchString(string name) {
+            //http://www.giantbomb.com/api/search/?api_key=ab63aeba2395b10932897115dc4bf3fa048e1734&format=json&query=%22skyrim%22&resources=game
+            var searchString = String.Format("{0}/search/?api_key={1}&format={2}&query={3}&resources=game", _stringBase,
+                _apiKey, _format, name);
+            return searchString;
         }
 
-        private async void DownloadThumbData(string queryURL) {
+        public void CreateThumbnail(int game_ID) {
+            var queryURL = BuildThumbQueryString(game_ID);
+            DownloadData(queryURL, true);
+        }
+
+        private async void DownloadData(string queryURL, bool thumbRequest) {
             using (var client = new HttpClient())
                 _responseString = await client.GetStringAsync(queryURL);
 
             //var resultObject = await JsonConvert.DeserializeObjectAsync<ImageResponse>(_responseString);
 
             var blob = await JsonConvert.DeserializeObjectAsync<dynamic>(_responseString);
-            string thumbURL = blob.results.image.thumb_url;
 
-            if (!string.IsNullOrWhiteSpace(thumbURL))
-                BuildThumbnail(thumbURL);
+            if (thumbRequest) {
+                string thumbURL = blob.results.image.thumb_url;
+                if (!string.IsNullOrWhiteSpace(thumbURL))
+                    BuildThumbnail(thumbURL);
+            }
+            else {
+                int gameID = blob.results.id;
+                CreateThumbnail(gameID);
+            }
         }
 
         private void BuildThumbnail(string url) {
@@ -83,6 +108,10 @@ namespace Saved_Game_Backup
                     ThumbNail = bitmapImage;
                 }
             }
+        }
+
+        public void SearchForID(string name) {
+            
         }
      }
 
