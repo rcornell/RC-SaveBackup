@@ -52,9 +52,9 @@ namespace Saved_Game_Backup
             CreateThumbnail(_game_ID);
         }
 
-        private void GetGameID(string name) {
+        private async void GetGameID(string name) {
             var searchString = BuildSearchString(name);
-            DownloadData(searchString, false);
+           await DownloadData(searchString, false);
         }
 
         private string BuildThumbQueryString(int game_ID) {
@@ -70,12 +70,12 @@ namespace Saved_Game_Backup
             return searchString;
         }
 
-        public void CreateThumbnail(int game_ID) {
+        public async void CreateThumbnail(int game_ID) {
             var queryURL = BuildThumbQueryString(game_ID);
-            DownloadData(queryURL, true);
+            await DownloadData(queryURL, true);
         }
 
-        private async void DownloadData(string queryURL, bool thumbRequest) {
+        private async Task DownloadData(string queryURL, bool thumbRequest) {
             using (var client = new HttpClient())
                 _responseString = await client.GetStringAsync(queryURL);
 
@@ -97,14 +97,19 @@ namespace Saved_Game_Backup
 
         private void BuildThumbnail(string url) {
             
+            var bitmap = new BitmapImage();
+            bitmap.BeginInit();
+            bitmap.UriSource = new Uri(url, UriKind.Absolute);
+            bitmap.EndInit();
+            ThumbNail = bitmap;
+
+            #region MyRegion
             //var webRequest = (HttpWebRequest)HttpWebRequest.Create(url);
 
             //using (var httpWebResponse = (HttpWebResponse)webRequest.GetResponse())
             //{
             //    using (var stream = httpWebResponse.GetResponseStream())
             //    {
-            //        //BitmapImage source = System.Drawing.Image.FromStream(stream);
-                    
             //        var bitmapImage = new BitmapImage();
             //        bitmapImage.BeginInit();
             //        bitmapImage.StreamSource = stream;
@@ -112,12 +117,13 @@ namespace Saved_Game_Backup
             //        ThumbNail = bitmapImage;
             //    }
             //}
+            
+            #endregion
+            //var path = string.Format("{0}\\{1}.jpg", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), _gameName);
 
-            var path = string.Format("{0}\\{1}.jpg", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), _gameName);
-
-            using (WebClient client = new WebClient()) {
-                client.DownloadFile(url, path);
-            }
+            //using (WebClient client = new WebClient()) {
+            //    client.DownloadFile(url, path);
+            //}
         }
 
         public void SearchForID(string name) {
