@@ -32,7 +32,9 @@ namespace Saved_Game_Backup.ViewModel
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
-
+        
+        //GiantBomb API Key ab63aeba2395b10932897115dc4bf3fa048e1734
+        //generic game search string http://www.giantbomb.com/api/search/?api_key=ab63aeba2395b10932897115dc4bf3fa048e1734&format=json&query=%22Skyrim%22&resources=game
         private Visibility _autoBackupVisibility;
         public Visibility AutoBackupVisibility {
             get { return _autoBackupVisibility; }
