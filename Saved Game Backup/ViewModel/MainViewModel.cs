@@ -348,8 +348,9 @@ namespace Saved_Game_Backup.ViewModel
             Application.Current.MainWindow.Close();
         }
 
-        private void ThumbDownload() {
+        private async void ThumbDownload() {
             var gb = new GiantBombAPI(33394, "Skryim");
+            await gb.CreateThumbnail(33394);
             Thumbnail = gb.ThumbNail;
         }
     }

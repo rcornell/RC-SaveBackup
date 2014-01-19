@@ -43,13 +43,13 @@ namespace Saved_Game_Backup
         public GiantBombAPI(int game_ID, string name) {
             _gameName = name;
             _game_ID = game_ID;
-            CreateThumbnail(_game_ID);
+            //CreateThumbnail(_game_ID);
         }
 
         public GiantBombAPI(string name) {
             _gameName = name;
             GetGameID(_gameName);
-            CreateThumbnail(_game_ID);
+            //CreateThumbnail(_game_ID);
         }
 
         private async void GetGameID(string name) {
@@ -70,7 +70,7 @@ namespace Saved_Game_Backup
             return searchString;
         }
 
-        public async void CreateThumbnail(int game_ID) {
+        public async Task CreateThumbnail(int game_ID) {
             var queryURL = BuildThumbQueryString(game_ID);
             await DownloadData(queryURL, true);
         }
@@ -91,7 +91,7 @@ namespace Saved_Game_Backup
             }
             else {
                 int gameID = blob.results.id;
-                CreateThumbnail(gameID);
+                await CreateThumbnail(gameID);
             }
         }
 
@@ -129,6 +129,7 @@ namespace Saved_Game_Backup
         public void SearchForID(string name) {
             
         }
+
      }
 
     public class StandardResponse
