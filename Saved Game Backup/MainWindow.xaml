@@ -201,7 +201,7 @@
             <Image Grid.Row="3"
                    Grid.Column="3"
                    Width="130"
-                   Height="160" />
+                   Height="160" Source="{Binding Thumbnail, UpdateSourceTrigger=PropertyChanged}"/>
         </Grid>
 
     </StackPanel>

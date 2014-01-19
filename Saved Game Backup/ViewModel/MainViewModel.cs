@@ -56,6 +56,7 @@ namespace Saved_Game_Backup.ViewModel
             {
                 if (_thumbnail == value) return;
                 _thumbnail = value;
+                RaisePropertyChanged(() => Thumbnail);
             }
         }
         private Brush _background;
@@ -136,6 +137,10 @@ namespace Saved_Game_Backup.ViewModel
         }
         public RelayCommand Close {
             get { return new RelayCommand(() => CloseApplication()); }
+        }
+
+        public RelayCommand TestThumbDownload {
+            get { return new RelayCommand(() => ThumbDownload());}
         }
 
         public MainViewModel() {
@@ -341,6 +346,10 @@ namespace Saved_Game_Backup.ViewModel
         private void CloseApplication() {
             SaveUserPrefs();
             Application.Current.MainWindow.Close();
+        }
+
+        private void ThumbDownload() {
+            var gb = new GiantBombAPI(33394);
         }
     }
 }
