@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
@@ -13,13 +14,22 @@ namespace Saved_Game_Backup
 {
     public class GiantBombAPI {
 
-        private string _queryString;
+        //private string _queryString;
+        private BitmapImage _thumbNail;
+        public BitmapImage ThumbNail {
+            get { return _thumbNail; }
+            set {
+                if (_thumbNail == value) return;
+                _thumbNail = value;
+            }
+        }
+
         private const string _apiKey = "ab63aeba2395b10932897115dc4bf3fa048e1734";
         private const string _stringBase = "http://www.giantbomb.com/api/";
         private const string _format = "json";
         private const string _fieldsRequested = "name,image";
         private const string _resource_Type = "game";
-        private string _resource_ID;
+        //private string _resource_ID;
         private string _responseString;
         
         private string _game_ID;
@@ -29,22 +39,51 @@ namespace Saved_Game_Backup
         }
 
         public GiantBombAPI(string game_ID) {
-            _game_ID = game_ID;
-            BuildQueryString();
+            CreateThumbnail(game_ID);
         }
 
-        private void BuildQueryString() {
-            _queryString = String.Format("{0}/{1}/{2}/?api_key={3}&format={4}&field_list={5}", _stringBase,
-                _resource_Type, _resource_ID, _apiKey, _format, _fieldsRequested);
+        private string BuildQueryString(string game_ID) {
+            var queryString = String.Format("{0}/{1}/{2}/?api_key={3}&format={4}&field_list={5}", _stringBase,
+                _resource_Type, game_ID, _apiKey, _format, _fieldsRequested);
+            return queryString;
         }
 
-        public async void DownloadThumbnail() {
+        public void CreateThumbnail(string game_ID) {
+            var queryURL = BuildQueryString(game_ID);
+            DownloadThumbData(queryURL);
+        }
+
+        private async void DownloadThumbData(string queryURL) {
             using (var client = new HttpClient())
-                _responseString = await client.GetStringAsync(_queryString);
+                _responseString = await client.GetStringAsync(queryURL);
 
-            var httpResponse = new HttpResponseMessage()
+            //var resultObject = await JsonConvert.DeserializeObjectAsync<ImageResponse>(_responseString);
+
+            var blob = await JsonConvert.DeserializeObjectAsync<dynamic>(_responseString);
+            string thumbURL = blob.results.image.thumb_url;
+
+            if (!string.IsNullOrWhiteSpace(thumbURL))
+                BuildThumbnail(thumbURL);
         }
+
+        private void BuildThumbnail(string url) {
             
+            var webRequest = (HttpWebRequest)HttpWebRequest.Create(url);
+
+            using (var httpWebResponse = (HttpWebResponse)webRequest.GetResponse())
+            {
+                using (var stream = httpWebResponse.GetResponseStream())
+                {
+                    //BitmapImage source = System.Drawing.Image.FromStream(stream);
+                    
+                    var bitmapImage = new BitmapImage();
+                    bitmapImage.BeginInit();
+                    bitmapImage.StreamSource = stream;
+                    bitmapImage.EndInit();
+                    ThumbNail = bitmapImage;
+                }
+            }
+        }
      }
 
     public class StandardResponse
@@ -71,7 +110,7 @@ namespace Saved_Game_Backup
         public string Version { get; set; }
     }
 
-    public class Image
+    public class ImageURLs
     {
         [JsonProperty("icon_url")]
         public string IconUrl { get; set; }
@@ -98,9 +137,8 @@ namespace Saved_Game_Backup
     public class ImageResult
     {
         [JsonProperty("image")]
-        public Image Image { get; set; }
+        public ImageURLs ImageURLs { get; set; }
     }
-
 
     public class ImageResponse : StandardResponse
     {
