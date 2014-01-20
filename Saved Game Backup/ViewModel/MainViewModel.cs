@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using Saved_Game_Backup.Assets;
 
 namespace Saved_Game_Backup.ViewModel
 {
@@ -42,8 +43,14 @@ namespace Saved_Game_Backup.ViewModel
             set { _autoBackupVisibility = value; }
         }
 
-
-
+        public ObservableCollection<GameIconControl> _gameIcons;
+        public ObservableCollection<GameIconControl> GameIcons {
+            get { return _gameIcons; }
+            set {
+                if (_gameIcons == value) return;
+                _gameIcons = value;
+            }
+        }
         public ObservableCollection<string> HardDrives { get; set; } 
         public ObservableCollection<Game> GamesList { get; set; } 
         public ObservableCollection<Game> GamesToBackup { get; set; }
@@ -144,6 +151,7 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         public MainViewModel() {
+            GameIcons = new ObservableCollection<GameIconControl>();
             HardDrives = new ObservableCollection<string>();
             GamesList = DirectoryFinder.ReturnGamesList();
             GamesToBackup = new ObservableCollection<Game>();
@@ -354,6 +362,7 @@ namespace Saved_Game_Backup.ViewModel
             //await gb.GetGameID();
             await gb.CreateThumbnail();
             Thumbnail = gb.ThumbNail;
+            GameIcons.Add(new GameIconControl("Test", Thumbnail));
         }
     }
 }
