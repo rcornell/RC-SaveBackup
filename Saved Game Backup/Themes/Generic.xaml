@@ -10,7 +10,8 @@
                 <ControlTemplate TargetType="{x:Type assets:GameIconControl}">
                     <Border Background="Transparent"
                             BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}">
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Margin="3">
                         <StackPanel HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
                                     Orientation="Vertical">
