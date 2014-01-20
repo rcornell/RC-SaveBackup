@@ -66,10 +66,7 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <StackPanel Orientation="Vertical">
-                                    <Image Margin="0,2,0,2" Source="{Binding Icon}" />
-                                    <TextBlock HorizontalAlignment="Center" Text="{Binding GameName}" />
-                                </StackPanel>
+                                <cc:GameIconControl Icon="{Binding Icon}" GameName="{Binding GameName}"/>
                             </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
