@@ -363,6 +363,7 @@ namespace Saved_Game_Backup.ViewModel
             await gb.CreateThumbnail();
             Thumbnail = gb.ThumbNail;
             GameIcons.Add(new GameIconControl("Test", Thumbnail));
+            GameIcons.Add(new GameIconControl("Test 2", Thumbnail));
         }
     }
 }

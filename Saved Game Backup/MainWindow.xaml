@@ -6,7 +6,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="Save Game Backup Tool"
-        Width="625"
+        Width="985"
         Height="500"
         Background="DeepSkyBlue"
         DataContext="{Binding Path=Main,
@@ -53,10 +53,22 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
                 <ColumnDefinition />
-                <ColumnDefinition />
+                <ColumnDefinition Width="450" />
             </Grid.ColumnDefinitions>
-            <StackPanel Grid.Row="3" Grid.Column="4">
-                <ListView ItemsSource="{Binding GameIcons, UpdateSourceTrigger=PropertyChanged}" />
+            <StackPanel Grid.Row="3"
+                        Grid.Column="4"
+                        Orientation="Horizontal">
+                <ItemsControl ItemsSource="{Binding GameIcons}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel FlowDirection="LeftToRight"
+                                       ItemHeight="180"
+                                       ItemWidth="160"
+                                       Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+
             </StackPanel>
             <TextBlock Grid.Row="1"
                        Grid.Column="0"
@@ -203,10 +215,12 @@
                     Grid.Column="3"
                     Command="{Binding TestThumbDownload}"
                     Content="TEST DOWNLOAD" />
-            <Image Grid.Row="3"
-                   Grid.Column="3"
-                   Source="{Binding Thumbnail}"
-                   Stretch="None" />
+            <!--
+                <Image Grid.Row="3"
+                Grid.Column="3"
+                Source="{Binding Thumbnail}"
+                Stretch="None" />
+            -->
         </Grid>
 
     </StackPanel>

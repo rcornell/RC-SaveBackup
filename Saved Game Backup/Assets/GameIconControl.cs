@@ -52,9 +52,10 @@ namespace Saved_Game_Backup.Assets
             DefaultStyleKeyProperty.OverrideMetadata(typeof(GameIconControl), new FrameworkPropertyMetadata(typeof(GameIconControl)));
         }
 
+        public GameIconControl(){}
+
         public GameIconControl(string name, BitmapImage icon)
         {
-            //DefaultStyleKeyProperty.OverrideMetadata(typeof(GameIconControl), new FrameworkPropertyMetadata(typeof(GameIconControl)));
             Icon = icon;
             GameName = name;
         }
@@ -84,7 +85,7 @@ namespace Saved_Game_Backup.Assets
 
         // Using a DependencyProperty as the backing store for Icon.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IconProperty =
-            DependencyProperty.Register(IconPropertyName, typeof(BitmapImage), typeof(GameIconControl), new PropertyMetadata(default(FrameworkElement)));
+            DependencyProperty.Register(IconPropertyName, typeof(BitmapImage), typeof(GameIconControl), new PropertyMetadata(default(BitmapImage)));
 
         
         
