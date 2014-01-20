@@ -7,7 +7,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="Save Game Backup Tool"
         Width="855"
-        Height="500"
+        Height="Auto"
         Background="DeepSkyBlue"
         DataContext="{Binding Path=Main,
                               Source={StaticResource Locator}}"
@@ -57,19 +57,34 @@
             <StackPanel Grid.Row="3"
                         Grid.Column="3"
                         Orientation="Horizontal">
-                <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Auto">
+                <ListBox ItemsSource="{Binding GameIcons}">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Width="430" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Vertical">
+                                    <Image Margin="0,2,0,2" Source="{Binding Icon}" />
+                                    <TextBlock HorizontalAlignment="Center" Text="{Binding GameName}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <!--
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                     <ItemsControl ItemsSource="{Binding GameIcons}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-
-                                <WrapPanel FlowDirection="LeftToRight"
-                                           ItemHeight="180"
-                                           ItemWidth="160"
-                                           Orientation="Horizontal" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                    <WrapPanel />
+                    </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
                     </ItemsControl>
-                </ScrollViewer>
+                    </ScrollViewer>
+                -->
             </StackPanel>
             <TextBlock Grid.Row="1"
                        Grid.Column="0"
