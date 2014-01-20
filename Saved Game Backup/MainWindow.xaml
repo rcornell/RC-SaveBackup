@@ -201,9 +201,8 @@
                     Content="TEST DOWNLOAD" />
             <Image Grid.Row="3"
                    Grid.Column="3"
-                   Width="130"
-                   Height="160"
-                   Source="{Binding Thumbnail}" />
+                   Source="{Binding Thumbnail}"
+                   Stretch="None" />
         </Grid>
 
     </StackPanel>

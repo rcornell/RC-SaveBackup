@@ -97,6 +97,8 @@ namespace Saved_Game_Backup
             bitmap.EndInit();
             ThumbNail = bitmap;
 
+            //Save thumb to HDD
+
             #region MyRegion
             //var webRequest = (HttpWebRequest)HttpWebRequest.Create(url);
 
