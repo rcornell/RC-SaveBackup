@@ -13,9 +13,6 @@ using Newtonsoft.Json;
 namespace Saved_Game_Backup
 {
     public class GiantBombAPI {
-
-        //private const string path = "C:\\Users\\Rob\\Desktop\\Image.jpg";
-        //private string _queryString;
         private BitmapImage _thumbNail;
         public BitmapImage ThumbNail {
             get { return _thumbNail; }
@@ -30,10 +27,8 @@ namespace Saved_Game_Backup
         private const string _format = "json";
         private const string _fieldsRequested = "name,image";
         private const string _resource_Type = "game";
-        //private string _resource_ID;
         private string _responseString;
         private string _gameName;
-        
         private int _game_ID;
 
         public GiantBombAPI() {
@@ -48,12 +43,11 @@ namespace Saved_Game_Backup
 
         public GiantBombAPI(string name) {
             _gameName = name;
-            GetGameID(_gameName);
-            //CreateThumbnail(_game_ID);
+            //GetGameID(_gameName);
         }
 
-        private async void GetGameID(string name) {
-            var searchString = BuildSearchString(name);
+        public async Task GetGameID() {
+            var searchString = BuildSearchString(_gameName);
            await DownloadData(searchString, false);
         }
 
@@ -70,8 +64,8 @@ namespace Saved_Game_Backup
             return searchString;
         }
 
-        public async Task CreateThumbnail(int game_ID) {
-            var queryURL = BuildThumbQueryString(game_ID);
+        public async Task CreateThumbnail() {
+            var queryURL = BuildThumbQueryString(_game_ID);
             await DownloadData(queryURL, true);
         }
 
@@ -79,7 +73,7 @@ namespace Saved_Game_Backup
             using (var client = new HttpClient())
                 _responseString = await client.GetStringAsync(queryURL);
 
-            string b = _responseString;
+            //string b = _responseString;
             //var resultObject = await JsonConvert.DeserializeObjectAsync<ImageResponse>(_responseString);
 
             var blob = await JsonConvert.DeserializeObjectAsync<dynamic>(_responseString);
@@ -90,8 +84,8 @@ namespace Saved_Game_Backup
                     BuildThumbnail(thumbURL);
             }
             else {
-                int gameID = blob.results.id;
-                await CreateThumbnail(gameID);
+                _game_ID = blob.results[0].id;
+                //await CreateThumbnail(gameID);
             }
         }
 

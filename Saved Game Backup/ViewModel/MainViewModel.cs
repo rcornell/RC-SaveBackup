@@ -349,8 +349,10 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private async void ThumbDownload() {
-            var gb = new GiantBombAPI(33394, "Skryim");
-            await gb.CreateThumbnail(33394);
+            //var gb = new GiantBombAPI(33394, "Skryim");
+            var gb = new GiantBombAPI("Skyrim");
+            await gb.GetGameID();
+            await gb.CreateThumbnail();
             Thumbnail = gb.ThumbNail;
         }
     }
