@@ -122,8 +122,42 @@ namespace Saved_Game_Backup
             //}
         }
 
-        public void SearchForID(string name) {
+
+        /// <summary>
+        /// This method is completely broken and does not work.
+        /// 
+        /// Add try/catch for null reference exception
+        /// </summary>
+        public void UpdateGameID() {
+            int row = 0;
+            string line= "";
+
+            var sr =
+                new StreamReader(
+                    @"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\Games.csv");
+            var sw =
+                new StreamWriter(
+                    @"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\Games-New.csv");
+
+            if (string.IsNullOrWhiteSpace(sr.Peek().ToString()))
+                return;
+                
+            line = sr.ReadLine();
+
+            if (line.StartsWith(_gameName)) {
+                var data = line.Split(',');
+                data[2] = _game_ID.ToString();
+            }
+            else {
+                //This doesn't work because row keeps getting set back to 0.
+                row++;
+                UpdateGameID();
+            }
+                
             
+
+            //sw.WriteLine();
+
         }
 
      }

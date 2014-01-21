@@ -358,9 +358,8 @@ namespace Saved_Game_Backup.ViewModel
             SaveUserPrefs();
             Application.Current.MainWindow.Close();
         }
-
-        //Add an ID property to Game.cs and give it a default value. If
-        //GiantBombAPI gets the actual ID, have it update the CSV.
+         
+        //If GiantBombAPI gets the actual ID, have it update the CSV.
         private async void ThumbDownload(string name, int id) {
             GiantBombAPI gb;
             if (id == 999999) {
