@@ -9,7 +9,7 @@ namespace Saved_Game_Backup
     public class Game {
         public string Name;
         public string Path;
-        public string ID;
+        public int ID;
 
         public Game() {
             
@@ -20,7 +20,7 @@ namespace Saved_Game_Backup
             Path = path;
         }
         
-        public Game(string name, string path, string id) {
+        public Game(string name, string path, int id) {
             ID = id;
             Name = name;
             Path = path;

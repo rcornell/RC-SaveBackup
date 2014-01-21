@@ -146,9 +146,9 @@ namespace Saved_Game_Backup.ViewModel
             get { return new RelayCommand(() => CloseApplication()); }
         }
 
-        public RelayCommand TestThumbDownload {
-            get { return new RelayCommand(() => ThumbDownload());}
-        }
+        //public RelayCommand TestThumbDownload {
+        //    get { return new RelayCommand(() => ThumbDownload());}
+        //}
 
         public MainViewModel() {
             GameIcons = new ObservableCollection<GameIconControl>();
@@ -260,6 +260,9 @@ namespace Saved_Game_Backup.ViewModel
                 RaisePropertyChanged(() => GamesList);
                 GamesToBackup.Add(game);
                 RaisePropertyChanged(() => GamesToBackup);
+                //Add code to pull down GiantBombAPI data here:
+                ThumbDownload(game.Name, game.ID);
+
             }
         }
 
@@ -356,17 +359,36 @@ namespace Saved_Game_Backup.ViewModel
             Application.Current.MainWindow.Close();
         }
 
-        private async void ThumbDownload() {
-            var gb = new GiantBombAPI(33394, "Skryim");
-            //var gb = new GiantBombAPI("Skyrim");
-            //await gb.GetGameID();
+        //Add an ID property to Game.cs and give it a default value. If
+        //GiantBombAPI gets the actual ID, have it update the CSV.
+        private async void ThumbDownload(string name, int id) {
+            GiantBombAPI gb;
+            if (id == 999999) {
+                gb = new GiantBombAPI(name);
+                await gb.GetGameID();
+                //gb.UpdateGameID();
+            }
+            else {
+                gb = new GiantBombAPI(id, name);
+            }
+
             await gb.CreateThumbnail();
             Thumbnail = gb.ThumbNail;
-            GameIcons.Add(new GameIconControl("Test", Thumbnail));
-            GameIcons.Add(new GameIconControl("Test 2", Thumbnail));
-            GameIcons.Add(new GameIconControl("Test 3", Thumbnail));
-            GameIcons.Add(new GameIconControl("Test 4", Thumbnail));
-            GameIcons.Add(new GameIconControl("Test 5", Thumbnail));
+            GameIcons.Add(new GameIconControl(name, Thumbnail));
+
+
+
+            #region Old Test Code
+            //var gb = new GiantBombAPI(33394, "Skyrim");
+            //var gb = new GiantBombAPI("Skyrim");
+            //await gb.GetGameID();
+            //GameIcons.Add(new GameIconControl("Test 2", Thumbnail));
+            //GameIcons.Add(new GameIconControl("Test 3", Thumbnail));
+            //GameIcons.Add(new GameIconControl("Test 4", Thumbnail));
+            //GameIcons.Add(new GameIconControl("Test 5", Thumbnail)); 
+            #endregion
+
+
         }
     }
 }

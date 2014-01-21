@@ -51,7 +51,7 @@ namespace Saved_Game_Backup
             var lines = File.ReadAllLines(@"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\Games.csv");
             foreach (string s in lines) {
                 var data = s.Split(','); //Can't split on a space
-                gamesList.Add(new Game(data[0], data[1]));
+                gamesList.Add(new Game(data[0], data[1], int.Parse(data[2])));
             }
             return gamesList;
         }
