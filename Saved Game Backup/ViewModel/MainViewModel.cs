@@ -365,7 +365,7 @@ namespace Saved_Game_Backup.ViewModel
             if (id == 999999) {
                 gb = new GiantBombAPI(name);
                 await gb.GetGameID();
-                //gb.UpdateGameID();
+                gb.UpdateGameID();
             }
             else {
                 gb = new GiantBombAPI(id, name);
