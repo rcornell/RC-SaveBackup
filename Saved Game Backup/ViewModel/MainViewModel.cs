@@ -276,7 +276,7 @@ namespace Saved_Game_Backup.ViewModel
                 GamesToBackup.Add(game);
                 RaisePropertyChanged(() => GamesToBackup);
                 //Add code to pull down GiantBombAPI data here:
-                ThumbDownload(game.Name, game.ID);
+                ThumbDownload(game, game.ID);
 
             }
         }
@@ -374,21 +374,21 @@ namespace Saved_Game_Backup.ViewModel
             Application.Current.MainWindow.Close();
         }
          
-        //If GiantBombAPI gets the actual ID, have it update the CSV.
-        private async void ThumbDownload(string name, int id) {
+        //If GiantBombAPI gets the actual ID, have it update the json.
+        private async void ThumbDownload(Game game, int id) {
             GiantBombAPI gb;
             if (id == 999999) {
-                gb = new GiantBombAPI(name);
+                gb = new GiantBombAPI(game);
                 await gb.GetGameID();
                 gb.UpdateGameID();
             }
             else {
-                gb = new GiantBombAPI(id, name);
+                gb = new GiantBombAPI(id, game);
             }
 
             await gb.CreateThumbnail();
             Thumbnail = gb.ThumbNail;
-            GameIcons.Add(new GameIconControl(name, Thumbnail));
+            GameIcons.Add(new GameIconControl(game.Name, Thumbnail));
 
 
 
