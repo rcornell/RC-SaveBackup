@@ -399,7 +399,8 @@ namespace Saved_Game_Backup.ViewModel
 
             await gb.CreateThumbnail();
             Thumbnail = gb.ThumbNail;
-            GameIcons.Add(new GameIconControl(game.Name, Thumbnail));
+            var newControl = new GameIconControl(game.Name, Thumbnail) {DataContext = this };
+            GameIcons.Add(newControl);
 
 
 

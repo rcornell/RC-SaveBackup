@@ -60,6 +60,12 @@ namespace Saved_Game_Backup.Assets
             GameName = name;
         }
 
+        public GameIconControl(string name, BitmapImage icon, Game game) {
+            GameForControl = game;
+            Icon = icon;
+            GameName = name;
+        }
+
         public const string IconPropertyName = "Icon";
         public const string GameNamePropertyName = "GameName";
         public const string GamePropertyName = "Game";
@@ -81,13 +87,11 @@ namespace Saved_Game_Backup.Assets
             set { SetValue(IconProperty, value); }
         }
 
-    
         public static readonly DependencyProperty IconProperty =
             DependencyProperty.Register(IconPropertyName, typeof(BitmapImage), typeof(GameIconControl), new PropertyMetadata(default(BitmapImage)));
 
 
-
-        public Game Game
+        public Game GameForControl
         {
             get { return (Game)GetValue(GameProperty); }
             set { SetValue(GameProperty, value); }
@@ -95,8 +99,5 @@ namespace Saved_Game_Backup.Assets
    
         public static readonly DependencyProperty GameProperty =
             DependencyProperty.Register(GamePropertyName, typeof(Game), typeof(GameIconControl), new PropertyMetadata(default(Game)));
-
-        
-        
     }
 }
