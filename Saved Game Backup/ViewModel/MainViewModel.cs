@@ -296,6 +296,15 @@ namespace Saved_Game_Backup.ViewModel
                 RaisePropertyChanged(() => GamesToBackup);
                 GamesList.Add(game);
                 RaisePropertyChanged(() => GamesList);
+
+                var iconToRemove = new GameIconControl();
+
+                foreach (var g in GameIcons) {
+                    if (g.GameName == game.Name)
+                        iconToRemove = g;
+                }
+                
+                GameIcons.Remove(iconToRemove);
             }
 
         }
@@ -326,7 +335,9 @@ namespace Saved_Game_Backup.ViewModel
             _selectedHardDrive = null;
             _selectedGame = null;
             _selectedBackupGame = null;
+            _gameIcons.Clear();
 
+            RaisePropertyChanged(() => GameIcons);
             RaisePropertyChanged(() => GamesList);
             RaisePropertyChanged(() => GamesToBackup);
             RaisePropertyChanged(() => SelectedHardDrive);
@@ -374,7 +385,7 @@ namespace Saved_Game_Backup.ViewModel
             Application.Current.MainWindow.Close();
         }
          
-        //If GiantBombAPI gets the actual ID, have it update the json.
+        //Not MVVM?
         private async void ThumbDownload(Game game, int id) {
             GiantBombAPI gb;
             if (id == 999999) {
