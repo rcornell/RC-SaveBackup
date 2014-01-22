@@ -43,6 +43,7 @@ namespace Saved_Game_Backup.ViewModel
             set { _autoBackupVisibility = value; }
         }
 
+        
         public ObservableCollection<GameIconControl> _gameIcons;
         public ObservableCollection<GameIconControl> GameIcons {
             get { return _gameIcons; }
@@ -56,6 +57,17 @@ namespace Saved_Game_Backup.ViewModel
         public ObservableCollection<Game> GamesToBackup { get; set; }
         public ObservableCollection<string> GameNames { get; set; }
 
+
+        private GameIconControl _selectedGameIcon;
+        public GameIconControl SelectedGameIcon
+        {
+            get { return _selectedGameIcon; }
+            set
+            {
+                if (_selectedGameIcon == value) return;
+                _selectedGameIcon = value;
+            }
+        }
         private BitmapImage _thumbnail;
         public BitmapImage Thumbnail {
             get { return _thumbnail; }
@@ -144,6 +156,9 @@ namespace Saved_Game_Backup.ViewModel
         }
         public RelayCommand Close {
             get { return new RelayCommand(() => CloseApplication()); }
+        }
+        public RelayCommand MoveGameIconToGamesList {
+            get {return  new RelayCommand(() => ExecuteMoveIconToGamesList());}
         }
 
         //public RelayCommand TestThumbDownload {
@@ -388,6 +403,10 @@ namespace Saved_Game_Backup.ViewModel
             #endregion
 
 
+        }
+
+        public void ExecuteMoveIconToGamesList() {
+            
         }
     }
 }

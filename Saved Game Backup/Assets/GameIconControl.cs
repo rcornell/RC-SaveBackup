@@ -62,7 +62,7 @@ namespace Saved_Game_Backup.Assets
 
         public const string IconPropertyName = "Icon";
         public const string GameNamePropertyName = "GameName";
-
+        public const string GamePropertyName = "Game";
 
 
         public string GameName
@@ -71,21 +71,30 @@ namespace Saved_Game_Backup.Assets
             set { SetValue(GameNameProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for GameName.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty GameNameProperty =
             DependencyProperty.Register(GameNamePropertyName, typeof(string), typeof(GameIconControl), new UIPropertyMetadata(default(string)));
 
         
-
         public BitmapImage Icon
         {
             get { return (BitmapImage)GetValue(IconProperty); }
             set { SetValue(IconProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Icon.  This enables animation, styling, binding, etc...
+    
         public static readonly DependencyProperty IconProperty =
             DependencyProperty.Register(IconPropertyName, typeof(BitmapImage), typeof(GameIconControl), new PropertyMetadata(default(BitmapImage)));
+
+
+
+        public Game Game
+        {
+            get { return (Game)GetValue(GameProperty); }
+            set { SetValue(GameProperty, value); }
+        }
+   
+        public static readonly DependencyProperty GameProperty =
+            DependencyProperty.Register(GamePropertyName, typeof(Game), typeof(GameIconControl), new PropertyMetadata(default(Game)));
 
         
         

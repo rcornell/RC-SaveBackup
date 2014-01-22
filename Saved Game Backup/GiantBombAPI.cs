@@ -130,103 +130,73 @@ namespace Saved_Game_Backup
         /// 
         /// Add try/catch for null reference exception
         /// </summary>
-        public void UpdateGameID() {
-            string lineToEdit = "";
-            var row = 0;
-            StreamReader sr;
-            string[] allRows;
-            try {
-                sr =
-                    new StreamReader(
-                        @"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\Games.csv");
-                allRows =
-                    File.ReadAllLines(
-                        @"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\Games.csv");
-            }
-            catch (FileNotFoundException ex) {
-                MessageBox.Show("Not able to find the Games.csv file this\r\nprogram uses for game data.\r\n\r\n"+ex.Message);
-                return;
-            }
+        public void UpdateGameID()
+        {
 
-            try {
-                while (!sr.EndOfStream) {
-                    var line = sr.ReadLine();
-                    //Console.WriteLine(line);
-                    if (line.StartsWith(_gameName)) {
-                        var lineCells = line.Split(',');
-                        lineCells[2] = _game_ID.ToString(CultureInfo.InvariantCulture);
-                        for (var i = 0; i <= 2; i++) {
-                            lineToEdit += lineCells[i];
-                            if (i < 2)
-                                lineToEdit += ",";
-                        }
-                        allRows[row] = lineToEdit;
-                        File.WriteAllLines(
-                            @"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\Games - New.csv",
-                            allRows);
+            #region Code that Eric made me give up
+        //    string lineToEdit = "";
+        //    var row = 0;
+        //    StreamReader sr;
+        //    string[] allRows;
+        //    try {
+        //        sr =
+        //            new StreamReader(
+        //                @"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\Games.csv");
+        //        allRows =
+        //            File.ReadAllLines(
+        //                @"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\Games.csv");
+        //    }
+        //    catch (FileNotFoundException ex) {
+        //        MessageBox.Show("Not able to find the Games.csv file this\r\nprogram uses for game data.\r\n\r\n"+ex.Message);
+        //        return;
+        //    }
 
-                    }
-                    else {
-                        row++;
-                    }
-                }
-                sr.Close();
-                File.Replace(
-                    @"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\Games - New.csv",
-                    @"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\Games.csv",
-                    @"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\GamesBackup.csv");
-                //File.Delete(@"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\GamesBackup.csv");
-            }
-            catch (Exception ex) {
-                using (
-                    var sw =
-                        new StreamWriter(
-                            string.Format(
-                                @"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\Error Logs\Log {0}.txt",
-                                DateTime.Now))) {
-                 sw.WriteLine(ex.Message);
-                 sw.WriteLine(ex.InnerException);
-                 sw.WriteLine(ex.Source);
-                 sw.WriteLine(ex.StackTrace);
-                 sw.WriteLine(ex.TargetSite);
-                }
-                MessageBox.Show("Unexpected error writing to Games.csv.\r\n\r\nLog file written.");
-            }
-            #region Old Code
-
-            //int row = 0;
-            //string line= "";
-
-            //var sr =
-            //    new StreamReader(
-            //        @"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\Games.csv");
-            //var sw =
-            //    new StreamWriter(
-            //        @"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\Games-New.csv");
-
-            //if (string.IsNullOrWhiteSpace(sr.Peek().ToString()))
-            //    return;
-
-            //line = sr.ReadLine();
-
-            //if (line.StartsWith(_gameName)) {
-            //    var data = line.Split(',');
-            //    data[2] = _game_ID.ToString();
-            //}
-            //else {
-            //    //This doesn't work because row keeps getting set back to 0.
-            //    row++;
-            //    UpdateGameID();
-            //}
-
-
-
-            //sw.WriteLine();
-
+        //    try {
+        //        while (!sr.EndOfStream) {
+        //            var line = sr.ReadLine();
+        //            if (line.StartsWith(_gameName)) {
+        //                var lineCells = line.Split(',');
+        //                lineCells[2] = _game_ID.ToString(CultureInfo.InvariantCulture);
+        //                for (var i = 0; i <= 2; i++) {
+        //                    lineToEdit += lineCells[i];
+        //                    if (i < 2)
+        //                        lineToEdit += ",";
+        //                }
+        //                allRows[row] = lineToEdit;
+        //                File.WriteAllLines(
+        //                    @"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\Games - New.csv",
+        //                    allRows);
+        //            }
+        //            else {
+        //                row++;
+        //            }
+        //        }
+        //        sr.Close();
+        //        File.Replace(
+        //            @"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\Games - New.csv",
+        //            @"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\Games.csv",
+        //            @"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\GamesBackup.csv");
+        //        //File.Delete(@"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\GamesBackup.csv");
+        //    }
+        //    catch (Exception ex) {
+        //        using (
+        //            var sw =
+        //                new StreamWriter(
+        //                    string.Format(
+        //                        @"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\Error Logs\Log {0}.txt",
+        //                        DateTime.Now))) {
+        //         sw.WriteLine(ex.Message);
+        //         sw.WriteLine(ex.InnerException);
+        //         sw.WriteLine(ex.Source);
+        //         sw.WriteLine(ex.StackTrace);
+        //         sw.WriteLine(ex.TargetSite);
+        //        }
+        //        MessageBox.Show("Unexpected error writing to Games.csv.\r\n\r\nLog file written.");
+        //    }
             #endregion
         }
-
-     }
+            
+    }
 
     public class StandardResponse
     {

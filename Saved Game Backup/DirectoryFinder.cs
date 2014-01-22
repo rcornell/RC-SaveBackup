@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using Microsoft.Win32;
 using System.Windows.Forms;
+using Newtonsoft.Json;
 
 namespace Saved_Game_Backup
 {
@@ -15,44 +16,45 @@ namespace Saved_Game_Backup
 
         private Dictionary<string, string> _gameSaveDirectories;
         public Dictionary<string, string> GameSaveDirectories {
-            get {
+            get
+            {
                 return _gameSaveDirectories;
             }
-            set {
+            set
+            {
                 _gameSaveDirectories = value;
             }
         }
 
-        public string FindDirectory(string game)
-        {
+        private const string dataPath = @"C:\Users\Rob\Documents\Save Backup Tool\Games.json";
 
-            if (_gameSaveDirectories.ContainsKey(game))
-                return _gameSaveDirectories["game"];
-            return "Unknown Game";
-            //return _gameSaveDirectories.TryGetValue(game, out "Unknown Game");
-        }
+        //public string FindDirectory(string game)
+        //{
+
+        //    if (_gameSaveDirectories.ContainsKey(game))
+        //        return _gameSaveDirectories["game"];
+        //    return "Unknown Game";
+        //    //return _gameSaveDirectories.TryGetValue(game, out "Unknown Game");
+        //}
 
         public DirectoryFinder() {
-            GenerateDictionary();
+            //GenerateDictionary();
         }
 
-        private void GenerateDictionary() {
-            _gameSaveDirectories.Add("Terraria", @"C:\Users\Rob\Documents\My Games\Terraria");
-        }
+        //private void GenerateDictionary()
+        //{
+        //    _gameSaveDirectories.Add("Terraria", @"C:\Users\Rob\Documents\My Games\Terraria");
+        //}
 
         
 
         /// <summary>
-        /// Reads the CSV file and returns the name and default path of each game.
+        /// Reads the json file and returns the list of games.
         /// </summary>
         /// <returns></returns>
         public static ObservableCollection<Game> ReturnGamesList() {
-            var gamesList = new ObservableCollection<Game>();
-            var lines = File.ReadAllLines(@"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\Games.csv");
-            foreach (string s in lines) {
-                var data = s.Split(','); //Can't split on a space
-                gamesList.Add(new Game(data[0], data[1], int.Parse(data[2])));
-            }
+            var gamesList = JsonConvert.DeserializeObject<ObservableCollection<Game>>(File.ReadAllText(dataPath));
+
             return gamesList;
         }
 
@@ -66,16 +68,20 @@ namespace Saved_Game_Backup
             return dialog.SelectedPath;
         }
 
-        public static ObservableCollection<string> ReturnGameNames() {
-            var gamesNames = new ObservableCollection<string>();
-            var lines = File.ReadAllLines(@"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\Games.csv");
-            foreach (string s in lines)
-            {
-                var data = s.Split(','); //Can't split on a space
-                gamesNames.Add(data[0]);
-            }
-            return gamesNames;
-        }
+        //public static ObservableCollection<string> ReturnGameNames() {
+        //    var gamesNames = new ObservableCollection<string>();
+        //    var testGame = new Game();
+        //    JsonConvert.PopulateObject(@"C:\Users\Rob\Documents\Save Backup Tool\Games.json", testGame);
+
+        //    var lines = File.ReadAllLines(@"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\Games.csv");
+        //    foreach (string s in lines)
+        //    {
+        //        var data = s.Split(','); //Can't split on a space
+        //        gamesNames.Add(data[0]);
+        //    }
+
+        //    return gamesNames;
+        //}
 
         public static ObservableCollection<Game> PollDirectories(string hardDrive, ObservableCollection<Game> gamesList) {
             var detectedGamesList = new ObservableCollection<Game>();
