@@ -9,10 +9,31 @@ namespace Saved_Game_Backup {
     
     [Serializable]    
     public class Game {
-        public string Name;
-        public string Path;
-        public int ID;
-        public BitmapImage Icon;
+        
+        private string _name;
+        public string Name {
+            get { return _name; }
+            set { _name = value; }
+        }
+
+        private string _path;
+        public string Path {
+            get { return _path; }
+            set { _path = value; }
+        }
+
+        private int _id;
+        public int ID {
+            get { return _id; }
+            set { _id = value; }
+        }
+
+        private BitmapImage _icon;
+        public BitmapImage Icon {
+            get { return _icon; }
+            set { _icon = value; }
+        }
+
 
         public Game() {
             

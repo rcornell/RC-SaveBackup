@@ -14,7 +14,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using Saved_Game_Backup.Assets;
 
 namespace Saved_Game_Backup.ViewModel
 {
