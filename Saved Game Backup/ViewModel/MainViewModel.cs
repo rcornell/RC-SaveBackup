@@ -43,31 +43,24 @@ namespace Saved_Game_Backup.ViewModel
             set { _autoBackupVisibility = value; }
         }
 
-        
-        public ObservableCollection<GameIconControl> _gameIcons;
-        public ObservableCollection<GameIconControl> GameIcons {
-            get { return _gameIcons; }
-            set {
-                if (_gameIcons == value) return;
-                _gameIcons = value;
-            }
-        }
+       
         public ObservableCollection<string> HardDrives { get; set; } 
         public ObservableCollection<Game> GamesList { get; set; } 
         public ObservableCollection<Game> GamesToBackup { get; set; }
         public ObservableCollection<string> GameNames { get; set; }
 
 
-        private GameIconControl _selectedGameIcon;
-        public GameIconControl SelectedGameIcon
-        {
-            get { return _selectedGameIcon; }
-            set
-            {
-                if (_selectedGameIcon == value) return;
-                _selectedGameIcon = value;
-            }
-        }
+        //private GameIconControl _selectedGameIcon;
+        //public GameIconControl SelectedGameIcon
+        //{
+        //    get { return _selectedGameIcon; }
+        //    set
+        //    {
+        //        if (_selectedGameIcon == value) return;
+        //        _selectedGameIcon = value;
+        //    }
+        //}
+
         private BitmapImage _thumbnail;
         public BitmapImage Thumbnail {
             get { return _thumbnail; }
@@ -166,7 +159,6 @@ namespace Saved_Game_Backup.ViewModel
         //}
 
         public MainViewModel() {
-            GameIcons = new ObservableCollection<GameIconControl>();
             HardDrives = new ObservableCollection<string>();
             GamesList = DirectoryFinder.ReturnGamesList();
             GamesToBackup = new ObservableCollection<Game>();
@@ -297,14 +289,14 @@ namespace Saved_Game_Backup.ViewModel
                 GamesList.Add(game);
                 RaisePropertyChanged(() => GamesList);
 
-                var iconToRemove = new GameIconControl();
+                var iconToRemove = new Game();
 
-                foreach (var g in GameIcons) {
-                    if (g.GameName == game.Name)
+                foreach (var g in GamesToBackup) {
+                    if (g.Name == game.Name)
                         iconToRemove = g;
                 }
                 
-                GameIcons.Remove(iconToRemove);
+                GamesToBackup.Remove(iconToRemove);
             }
 
         }
@@ -335,9 +327,7 @@ namespace Saved_Game_Backup.ViewModel
             _selectedHardDrive = null;
             _selectedGame = null;
             _selectedBackupGame = null;
-            _gameIcons.Clear();
 
-            RaisePropertyChanged(() => GameIcons);
             RaisePropertyChanged(() => GamesList);
             RaisePropertyChanged(() => GamesToBackup);
             RaisePropertyChanged(() => SelectedHardDrive);
@@ -399,8 +389,8 @@ namespace Saved_Game_Backup.ViewModel
 
             await gb.CreateThumbnail();
             Thumbnail = gb.ThumbNail;
-            var newControl = new GameIconControl(game.Name, Thumbnail) {DataContext = this };
-            GameIcons.Add(newControl);
+            //var newGame = new Game(game.Name, Thumbnail);
+            //GamesToBackup.Add(newGame);
 
 
 

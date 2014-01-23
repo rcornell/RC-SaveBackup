@@ -4,6 +4,8 @@
         xmlns:cc="clr-namespace:Saved_Game_Backup.Assets"
         xmlns:command="http://www.galasoft.ch/mvvmlight"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:savedGameBackup="clr-namespace:Saved_Game_Backup"
+        xmlns:viewModel="clr-namespace:Saved_Game_Backup.ViewModel"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="Save Game Backup Tool"
         Width="855"
@@ -57,19 +59,50 @@
             <StackPanel Grid.Row="3"
                         Grid.Column="3"
                         Orientation="Horizontal">
-                <ListBox ItemsSource="{Binding GameIcons}">
-                    <ListBox.ItemsPanel>
+                <ListBox>
+                    <ItemsControl ItemsSource="{Binding GamesToBackup}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type savedGameBackup:Game}">
+                                <Border>
+                                    <StackPanel>
+                                        <Image Source="{TemplateBinding Icon}" />
+                                        <TextBlock Text="{TemplateBinding Name}" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Style.Triggers>
+                                    <EventTrigger RoutedEvent="MouseDoubleClick" />
+                                </Style.Triggers>
+                                <Setter Property="ContextMenu">
+                                    <Setter.Value>
+                                        <ContextMenu>
+                                            <MenuItem Command="{Binding MoveGameIconToGamesList}"
+                                                      CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}}"
+                                                      Header="Remove game" />
+                                        </ContextMenu>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+                    </ItemsControl>
+                    <!--
+                        <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapPanel Width="430" />
+                        <WrapPanel Width="430" >
+                        </WrapPanel>
                         </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                    <ListBox.ItemTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <cc:GameIconControl GameName="{Binding GameName}" Icon="{Binding Icon}" />
-                            </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                        <cc:GameIconControl GameName="{Binding GameName}" Icon="{Binding Icon}" />
+                        </StackPanel>
                         </DataTemplate>
-                    </ListBox.ItemTemplate>
+                        </ListBox.ItemTemplate>
+                    -->
                 </ListBox>
                 <!--
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">

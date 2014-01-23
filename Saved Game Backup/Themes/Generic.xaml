@@ -22,11 +22,11 @@
                                               HorizontalAlignment="Center"
                                               ContentSource="GameName" />
                         </StackPanel>
-                        <i:Interaction.Triggers>
+                        <!--<i:Interaction.Triggers>
                             <i:EventTrigger EventName="MouseDoubleClick">
-                                <command:EventToCommand Command="{Binding MoveGameIconToGamesList, Mode=OneWay}" />
+                                <command:EventToCommand Command="{Binding MoveGameIconToGamesList, Mode=OneWay, Source={StaticResource viewModel}}" />
                             </i:EventTrigger>
-                        </i:Interaction.Triggers>
+                        </i:Interaction.Triggers>-->
                     </Border>
 
                 </ControlTemplate>
