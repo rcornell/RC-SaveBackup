@@ -63,7 +63,7 @@
                             <DataTemplate DataType="{x:Type savedGameBackup:Game}">
                                 <Border>
                                     <StackPanel>
-                                        <Image Source="{Binding Icon}"/>
+                                        <Image Source="{Binding Path=Icon, UpdateSourceTrigger=PropertyChanged}"/>
                                         <TextBlock Text="{Binding Path=Name}" HorizontalAlignment="Center" />
                                     </StackPanel>
                                 </Border>

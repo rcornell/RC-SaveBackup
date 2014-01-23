@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Security.RightsManagement;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -80,8 +81,8 @@ namespace Saved_Game_Backup.ViewModel
             get { return _selectedHardDrive; }
             set { _selectedHardDrive = value; }
         }
-        private string _selectedGame;
-        public string SelectedGame
+        private Game _selectedGame;
+        public Game SelectedGame
         {
             get { return _selectedGame; }
             set { _selectedGame = value; }
@@ -148,9 +149,6 @@ namespace Saved_Game_Backup.ViewModel
         }
         public RelayCommand Close {
             get { return new RelayCommand(() => CloseApplication()); }
-        }
-        public RelayCommand MoveGameIconToGamesList {
-            get {return  new RelayCommand(() => ExecuteMoveIconToGamesList());}
         }
 
         //public RelayCommand TestThumbDownload {
@@ -252,10 +250,10 @@ namespace Saved_Game_Backup.ViewModel
             
         }
 
-        private void ToBackupList() {
+        private async void ToBackupList() {
             Game game = null;
             for (int i = 0; i < GamesList.Count(); i++) {
-                if (_selectedGame == GamesList[i].Name) {
+                if (_selectedGame.Name == GamesList[i].Name) {
                     game = GamesList[i];
                     break;
                 }
@@ -267,7 +265,9 @@ namespace Saved_Game_Backup.ViewModel
                 GamesToBackup.Add(game);
                 RaisePropertyChanged(() => GamesToBackup);
                 //Add code to pull down GiantBombAPI data here:
-                ThumbDownload(game, game.ID);
+                await ThumbDownload(game, game.ID);
+                game.Icon = Thumbnail;
+                RaisePropertyChanged(() => GamesToBackup);
 
             }
         }
@@ -375,7 +375,7 @@ namespace Saved_Game_Backup.ViewModel
         }
          
         //Not MVVM?
-        private async void ThumbDownload(Game game, int id) {
+        private async Task ThumbDownload(Game game, int id) {
             GiantBombAPI gb;
             if (id == 999999) {
                 gb = new GiantBombAPI(game);
@@ -388,12 +388,16 @@ namespace Saved_Game_Backup.ViewModel
 
             await gb.CreateThumbnail();
             Thumbnail = gb.ThumbNail;
+            game.Icon = gb.ThumbNail;
+
+
             //var newGame = new Game(game.Name, Thumbnail);
             //GamesToBackup.Add(newGame);
 
 
 
             #region Old Test Code
+
             //var gb = new GiantBombAPI(33394, "Skyrim");
             //var gb = new GiantBombAPI("Skyrim");
             //await gb.GetGameID();
@@ -401,13 +405,10 @@ namespace Saved_Game_Backup.ViewModel
             //GameIcons.Add(new GameIconControl("Test 3", Thumbnail));
             //GameIcons.Add(new GameIconControl("Test 4", Thumbnail));
             //GameIcons.Add(new GameIconControl("Test 5", Thumbnail)); 
+
             #endregion
 
 
-        }
-
-        public void ExecuteMoveIconToGamesList() {
-            
         }
     }
 }
