@@ -265,8 +265,8 @@ namespace Saved_Game_Backup.ViewModel
                 GamesToBackup.Add(game);
                 RaisePropertyChanged(() => GamesToBackup);
                 //Add code to pull down GiantBombAPI data here:
-                await ThumbDownload(game, game.ID);
-                game.Icon = Thumbnail;
+                //await ThumbDownload(game, game.ID);
+                //game.Icon = Thumbnail;
                 RaisePropertyChanged(() => GamesToBackup);
 
             }

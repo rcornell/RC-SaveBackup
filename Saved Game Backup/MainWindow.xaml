@@ -58,33 +58,62 @@
             <StackPanel Grid.Row="3"
                         Grid.Column="3"
                         Orientation="Horizontal">
-                <ListBox ItemsSource="{Binding GamesToBackup}">
+
+                <ListBox Width="440" ItemsSource="{Binding GamesToBackup}">
+
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type savedGameBackup:Game}">
+                            <Border>
+                                <StackPanel>
+                                    <Image Source="C:\Terraria.png" />
+                                    <TextBlock HorizontalAlignment="Center" Text="{Binding Path=Name}" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+
+                    <!-- THIS CODE IS SOMEWHAT BROKEN, BUT CLOSE TO DISPLAYING A WRAPPANEL-->
+                    <!-- 
+                        <ItemsControl ItemsSource="{Binding GamesToBackup}"/>
                         <ListBox.ItemTemplate>
-                            <DataTemplate DataType="{x:Type savedGameBackup:Game}">
-                                <Border>
-                                    <StackPanel>
-                                        <Image Source="{Binding Path=Icon, UpdateSourceTrigger=PropertyChanged}"/>
-                                        <TextBlock Text="{Binding Path=Name}" HorizontalAlignment="Center" />
-                                    </StackPanel>
-                                </Border>
-                            </DataTemplate>
+                        <DataTemplate DataType="{x:Type savedGameBackup:Game}">
+                        <Border >
+                        <StackPanel>
+                        <Image Source="C:\Terraria.png"/>
+                        <TextBlock Text="{Binding Path=Name}" HorizontalAlignment="Center" />
+                        </StackPanel>
+                        </Border>
+                        </DataTemplate>
                         </ListBox.ItemTemplate>
-                        <ItemsControl.ItemContainerStyle>
-                            <Style TargetType="ListBoxItem">
-                                <Style.Triggers>
-                                    <EventTrigger RoutedEvent="MouseDoubleClick" />
-                                </Style.Triggers>
-                                <Setter Property="ContextMenu">
-                                    <Setter.Value>
-                                        <ContextMenu>
-                                            <MenuItem Command="{Binding MoveGameIconToGamesList}"
-                                                      CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}}"
-                                                      Header="Remove game" />
-                                        </ContextMenu>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </ItemsControl.ItemContainerStyle>       
+                        <Style TargetType="{x:Type ListBox}">
+                        <Setter Property="ItemsPanel">
+                        <Setter.Value>
+                        <ItemsPanelTemplate>
+                        <WrapPanel/>
+                        </ItemsPanelTemplate>
+                        </Setter.Value>
+                        </Setter>
+                        </Style>
+                    -->
+
+
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Style.Triggers>
+                                <EventTrigger RoutedEvent="MouseDoubleClick" />
+                            </Style.Triggers>
+                            <Setter Property="ContextMenu">
+                                <Setter.Value>
+                                    <ContextMenu>
+                                        <MenuItem Command="{Binding MoveToGamesList}"
+                                                  CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}}"
+                                                  Header="Remove game" />
+                                    </ContextMenu>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
                 </ListBox>
                 <!--
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
