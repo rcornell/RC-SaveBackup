@@ -26,16 +26,27 @@ namespace Saved_Game_Backup
             }
         }
 
-        private const string _gameListPath = @"C:\Users\Rob\Documents\Save Backup Tool\Games.json";
-        private const string _apiKey = "ab63aeba2395b10932897115dc4bf3fa048e1734";
-        private const string _stringBase = "http://www.giantbomb.com/api";
-        private const string _format = "json";
-        private const string _fieldsRequested = "name,image";
-        private const string _resource_Type = "game";
+        private Image _thumbImage;
+        public Image ThumbImage {
+            get { return _thumbImage; }
+            set { _thumbImage = value; }
+        }
+
+        private string _thumbnailPath;
+        public string ThumbnailPath {
+            get { return _thumbnailPath; }
+            set { _thumbnailPath = value; }
+        }
+
+        private const string GameListPath = @"C:\Users\Rob\Documents\Save Backup Tool\Games.json";
+        private const string ApiKey = "ab63aeba2395b10932897115dc4bf3fa048e1734";
+        private const string StringBase = "http://www.giantbomb.com/api";
+        private const string Format = "json";
+        private const string FieldsRequested = "name,image";
+        private const string ResourceType = "game";
         private Game _game;
         private string _responseString;
-        //private string _gameName;
-        private int _newGameID;
+        private int _newGameId;
 
         public GiantBombAPI() {
 
@@ -43,7 +54,7 @@ namespace Saved_Game_Backup
 
         public GiantBombAPI(int game_ID, Game game) {
             _game = game;
-            _newGameID = game_ID;
+            _newGameId = game_ID;
             //CreateThumbnail(_game_ID);
         }
 
@@ -57,30 +68,27 @@ namespace Saved_Game_Backup
            await DownloadData(searchString, false);
         }
 
-        private string BuildThumbQueryString(int game_ID) {
-            var queryString = String.Format("{0}/{1}/{2}/?api_key={3}&format={4}&field_list={5}", _stringBase,
-                _resource_Type, game_ID, _apiKey, _format, _fieldsRequested);
+        private string BuildThumbQueryString(int gameId) {
+            var queryString = String.Format("{0}/{1}/{2}/?api_key={3}&format={4}&field_list={5}", StringBase,
+                ResourceType, gameId, ApiKey, Format, FieldsRequested);
             return queryString;
         }
 
         private string BuildSearchString(string name) {
             //http://www.giantbomb.com/api/search/?api_key=ab63aeba2395b10932897115dc4bf3fa048e1734&format=json&query=%22skyrim%22&resources=game
-            var searchString = String.Format("{0}/search/?api_key={1}&format={2}&query={3}&resources=game", _stringBase,
-                _apiKey, _format, name);
+            var searchString = String.Format("{0}/search/?api_key={1}&format={2}&query={3}&resources=game", StringBase,
+                ApiKey, Format, name);
             return searchString;
         }
 
         public async Task CreateThumbnail() {
-            var queryURL = BuildThumbQueryString(_newGameID);
+            var queryURL = BuildThumbQueryString(_newGameId);
             await DownloadData(queryURL, true);
         }
 
         private async Task DownloadData(string queryURL, bool thumbRequest) {
             using (var client = new HttpClient())
                 _responseString = await client.GetStringAsync(queryURL);
-
-            //string b = _responseString;
-            //var resultObject = await JsonConvert.DeserializeObjectAsync<ImageResponse>(_responseString);
 
             var blob = await JsonConvert.DeserializeObjectAsync<dynamic>(_responseString);
 
@@ -90,43 +98,48 @@ namespace Saved_Game_Backup
                     BuildThumbnail(thumbURL);
             }
             else {
-                _newGameID = blob.results[0].id;
+                _newGameId = blob.results[0].id;
                 //await CreateThumbnail(gameID);
             }
         }
 
         private void BuildThumbnail(string url) {
 
-            //Check for correct thumbnail file extension
+            //Check for correct thumbnail file extension SHOULD YOU USE A SWITCH?
             var extension = "";
             if (url.Contains(".jpg"))
                 extension = ".jpg";
             else if (url.Contains(".png"))
                 extension = ".png";
-
             else if (url.Contains(".bmp"))
                 extension = ".bmp";
+            else if (url.Contains(".gif"))
+                extension = ".gif";
+            else 
+                extension = ".jpg";
+            
 
             //Create path for thumbnail on HDD
-            var documentPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
+            _thumbnailPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
                                "\\Save Backup Tool\\Thumbnails\\" + _game.Name + extension;
 
             //If file exists, don't download.
-            if (File.Exists(documentPath)) {
-                var im = Image.FromFile(documentPath);
-                
+            if (File.Exists(_thumbnailPath)) {
+                _thumbImage = Image.FromFile(_thumbnailPath);
+            } else {
+                //File doesn't exist on HDD, download file to HDD
+                var webClient = new WebClient();
+                webClient.DownloadFileAsync(new Uri(url), _thumbnailPath);
             }
 
-            //File doesn't exist on HDD, download file to HDD
-            var webClient = new WebClient();
-            webClient.DownloadFileAsync(new Uri(url), documentPath);
+            _thumbImage = Image.FromFile(_thumbnailPath);
 
             //Create thumbnail BitmapImage
-            var bitmap = new BitmapImage();
-            bitmap.BeginInit();
-            bitmap.UriSource = new Uri(url, UriKind.Absolute);
-            bitmap.EndInit();
-            ThumbNail = bitmap;
+            //var bitmap = new BitmapImage();
+            //bitmap.BeginInit();
+            //bitmap.UriSource = new Uri(url, UriKind.Absolute);
+            //bitmap.EndInit();
+            //ThumbNail = bitmap;
         }
 
 
@@ -137,17 +150,17 @@ namespace Saved_Game_Backup
         public void UpdateGameID()
         {
             if (_game.ID == 999999) {
-                _game.ID = _newGameID;
+                _game.ID = _newGameId;
             }
 
             var listToReturn = new List<Game>();
 
-            var gameJsonList = JsonConvert.DeserializeObject<List<Game>>(File.ReadAllText(_gameListPath));
+            var gameJsonList = JsonConvert.DeserializeObject<List<Game>>(File.ReadAllText(GameListPath));
             foreach (var g in gameJsonList) {
                 listToReturn.Add(g.Name == _game.Name ? _game : g);
             }
             var fileToWrite = JsonConvert.SerializeObject(listToReturn);
-            File.WriteAllText(_gameListPath, fileToWrite);
+            File.WriteAllText(GameListPath, fileToWrite);
 
             #region Code that Eric made me give up
 

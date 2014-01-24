@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,6 +33,12 @@ namespace Saved_Game_Backup {
         public BitmapImage Thumbnail {
             get { return _thumbnail; }
             set { _thumbnail = value; }
+        }
+
+        private string _thumbnailPath;
+        public string ThumbnailPath {
+            get { return _thumbnailPath; }
+            set { _thumbnailPath = value; }
         }
 
 
