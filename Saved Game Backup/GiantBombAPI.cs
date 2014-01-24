@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Text;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -94,14 +96,37 @@ namespace Saved_Game_Backup
         }
 
         private void BuildThumbnail(string url) {
-            
+
+            //Check for correct thumbnail file extension
+            var extension = "";
+            if (url.Contains(".jpg"))
+                extension = ".jpg";
+            else if (url.Contains(".png"))
+                extension = ".png";
+
+            else if (url.Contains(".bmp"))
+                extension = ".bmp";
+
+            //Create path for thumbnail on HDD
+            var documentPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
+                               "\\Save Backup Tool\\Thumbnails\\" + _game.Name + extension;
+
+            //If file exists, don't download.
+            if (File.Exists(documentPath)) {
+                var im = Image.FromFile(documentPath);
+                
+            }
+
+            //File doesn't exist on HDD, download file to HDD
+            var webClient = new WebClient();
+            webClient.DownloadFileAsync(new Uri(url), documentPath);
+
+            //Create thumbnail BitmapImage
             var bitmap = new BitmapImage();
             bitmap.BeginInit();
             bitmap.UriSource = new Uri(url, UriKind.Absolute);
             bitmap.EndInit();
             ThumbNail = bitmap;
-
-            //Save thumb to HDD
         }
 
 

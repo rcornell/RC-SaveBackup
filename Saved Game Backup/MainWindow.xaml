@@ -7,8 +7,8 @@
         xmlns:viewModel="clr-namespace:Saved_Game_Backup.ViewModel"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="Save Game Backup Tool"
-        Width="855"
-        Height="Auto"
+        Width="850"
+        Height="700"
         Background="DeepSkyBlue"
         DataContext="{Binding Path=Main,
                               Source={StaticResource Locator}}"
@@ -39,10 +39,10 @@
         </StackPanel>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="0*" />
-                <RowDefinition Height="43*" />
-                <RowDefinition Height="62" />
-                <RowDefinition Height="195" />
+                <RowDefinition />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="400" />
                 <RowDefinition Height="28*" />
                 <RowDefinition Height="28*" />
                 <RowDefinition />
@@ -50,112 +50,115 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
+                <ColumnDefinition Width="1" />
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="450" />
             </Grid.ColumnDefinitions>
-            <ListBox Grid.Row="3"
-                     Grid.Column="3"
-                     SelectedItem="{Binding SelectedBackupGame}"
-                     ItemsSource="{Binding GamesToBackup}">
+            <StackPanel Grid.Row="3" Grid.Column="3" Height="400">
+                <TextBlock HorizontalAlignment="Center"
+                           FontSize="14"
+                           Text="Games to Back Up" />
+                <ListBox ItemsSource="{Binding GamesToBackup}" SelectedItem="{Binding SelectedBackupGame}" Height="400">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDoubleClick">
+                            <i:InvokeCommandAction Command="{Binding MoveToGamesList}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
                     <ItemsControl.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
                             <Setter Property="ContextMenu">
                                 <Setter.Value>
                                     <ContextMenu>
-                                        <MenuItem Header="Remove game" Command="{Binding MoveToGamesList}" />
-                                </ContextMenu>
+                                        <MenuItem Command="{Binding Path=MoveToGamesList}"
+                                                  CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
+                                                  Header="Remove game" />
+                                    </ContextMenu>
                                 </Setter.Value>
                             </Setter>
                         </Style>
                     </ItemsControl.ItemContainerStyle>
-                <ListBox.ItemTemplate>
-                    <DataTemplate DataType="{x:Type savedGameBackup:Game}">
-                        <Border>
-                            <StackPanel>
-                                <Image Source="{Binding Thumbnail}" />
-                                <TextBlock Text="{Binding Name}" HorizontalAlignment="Center"/>
-                            </StackPanel>
-                        </Border>
-                        
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel />
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-            </ListBox>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type savedGameBackup:Game}">
+                            <Border>
+                                <StackPanel>
+                                    <Image Source="{Binding Thumbnail}" Height="180" Width="160"/>
+                                    <TextBlock HorizontalAlignment="Center" Text="{Binding Name}" />
+                                </StackPanel>
+                            </Border>
 
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                </ListBox>
+            </StackPanel>
 
-
-
-
-            <!--
-                <ListBox Grid.Row="3" Grid.Column="3">
-                <ItemsControl ItemsSource="{Binding GamesToBackup}">
-                
-                <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                <WrapPanel />
-                </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                </ItemsControl>
-                <ListBox Grid.Row="3" Grid.Column="3">
-            -->
-
-            <TextBlock Grid.Row="1"
-                       Grid.Column="0"
-                       Height="43"
-                       Margin="3"
-                       HorizontalAlignment="Left"
-                       FontSize="14"
-                       Text="Drive where saves are stored:"
-                       TextWrapping="Wrap" />
-
-            <ComboBox Grid.Row="1"
-                      Grid.Column="1"
-                      Margin="3"
-                      VerticalAlignment="Center"
-                      ItemsSource="{Binding HardDrives}"
-                      SelectedItem="{Binding SelectedHardDrive}" />
-            <Button Grid.Row="1"
-                    Grid.Column="2"
+            <StackPanel Grid.Row="1"
+                        Grid.Column="1" 
+                        VerticalAlignment="Top" 
+                        HorizontalAlignment="Center">
+                <TextBlock Margin="3"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="14"
+                           Text="Main Disk Drive:" />
+                <ComboBox Margin="3"
+                          VerticalAlignment="Center"
+                          ItemsSource="{Binding HardDrives}"
+                          SelectedItem="{Binding SelectedHardDrive}" />
+            </StackPanel>
+            
+            
+            <StackPanel Grid.Row="3"
+                    Grid.Column="2" VerticalAlignment="Center">
+                <Button Margin="3"
+                        VerticalAlignment="Center"
+                        Command="{Binding DetectGames}"
+                        Content="Find Games" />
+                <Button 
                     Margin="3"
+                    HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Command="{Binding DetectGames}"
-                    Content="Detect Games" />
-            <TextBlock Grid.Row="2"
-                       Grid.Column="0"
-                       Margin="3"
-                       VerticalAlignment="Center"
-                       FontSize="14"
-                       Text="Specify custom save folder, if any."
-                       TextWrapping="Wrap" />
-            <Button Grid.Row="2"
-                    Grid.Column="1"
-                    Height="22"
-                    Margin="3"
-                    Command="{Binding SpecifyFolder}"
-                    Content="Choose Folder" />
+                    Command="{Binding ResetList}"
+                    Content="Reset Games" />
+            </StackPanel>
 
-            <TextBlock Grid.Row="3"
+            <StackPanel Grid.Row="2"
+                        Grid.Column="1">
+                <TextBlock Margin="3"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"
+                           FontSize="14"
+                           Text="Custom Save Folder?"
+                           TextWrapping="Wrap" />
+                <Button Height="22"
+                        Margin="3"
+                        Command="{Binding SpecifyFolder}"
+                        Content="Choose Folder"
+                        HorizontalAlignment="Center"/>
+            </StackPanel>
+
+            <!--<TextBlock Grid.Row="3"
                        Grid.Column="0"
                        Margin="3"
                        HorizontalAlignment="Left"
                        VerticalAlignment="Center"
                        FontSize="14"
                        Text="Double click the games you want to back up."
-                       TextWrapping="Wrap" />
+                       TextWrapping="Wrap" />-->
             <StackPanel Grid.Row="3" Grid.Column="1">
                 <TextBlock HorizontalAlignment="Center"
                            FontSize="14"
                            Text="Games List" />
-                <ListBox MinHeight="150"
+                <ListBox Height="400"
                          Margin="3"
                          ItemsSource="{Binding GamesList}"
-                         SelectedItem="{Binding SelectedGame}">
+                         SelectedItem="{Binding SelectedGame}"
+                         ToolTip="Double click a game to add it to the backup list.">
 
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDoubleClick">
@@ -166,54 +169,45 @@
                 </ListBox>
             </StackPanel>
 
-            <StackPanel Grid.Row="3" Grid.Column="2">
+            <!--
+                <StackPanel Grid.Row="3" Grid.Column="2">
                 <TextBlock HorizontalAlignment="Center"
-                           FontSize="14"
-                           Text="Games to Backup" />
+                FontSize="14"
+                Text="Games to Backup" />
                 <ListBox MinHeight="150"
-                         Margin="3"
-                         ItemsSource="{Binding GamesToBackup}"
-                         SelectedItem="{Binding SelectedBackupGame}">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="MouseDoubleClick">
-                            <command:EventToCommand Command="{Binding MoveToGamesList, Mode=OneWay}" />
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
+                Margin="3"
+                ItemsSource="{Binding GamesToBackup}"
+                SelectedItem="{Binding SelectedBackupGame}">
+                <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseDoubleClick">
+                <command:EventToCommand Command="{Binding MoveToGamesList, Mode=OneWay}" />
+                </i:EventTrigger>
+                </i:Interaction.Triggers>
                 </ListBox>
-            </StackPanel>
+                </StackPanel>
+            -->
 
 
-            <Button Grid.Row="4"
-                    Grid.Column="1"
-                    Grid.ColumnSpan="2"
+            <StackPanel Grid.Row="1"
+                    Grid.Column="3">
+
+            <Button 
                     Margin="3"
                     HorizontalAlignment="Center"
-                    Command="{Binding ResetList}"
-                    Content="Reset Lists" />
-
-            <Button Grid.Row="6"
-                    Grid.Column="1"
-                    Margin="3"
                     Command="{Binding BackupSaves}"
                     Content="Backup To Folder" />
-            <Button Grid.Row="6"
-                    Grid.Column="2"
+            
+            <Button Grid.Row="1"
+                    Grid.Column="3"
                     Margin="3"
                     Command="{Binding BackupAndZip}"
-                    Content="Backup And Zip" />
+                    Content="Backup And Zip"
+                    HorizontalAlignment="Center"/>
 
-
-            <TextBlock Grid.Row="6"
-                       Grid.RowSpan="2"
-                       Grid.Column="0"
-                       Margin="3"
-                       VerticalAlignment="Center"
-                       FontSize="14"
-                       Text="Choose a backup method."
-                       TextWrapping="Wrap" />
-            <Button Grid.Row="7"
-                    Grid.Column="1"
-                    Grid.ColumnSpan="2"
+            <Button Grid.Row="1"
+                    Grid.Column="3"
+                    Grid.ColumnSpan="1"
+                    HorizontalAlignment="Center"
                     Margin="3"
                     Command="{Binding AutoBackup}"
                     Content="Toggle Autobackup"
@@ -221,7 +215,7 @@
             <Border Grid.Row="7"
                     Grid.Column="3"
                     Margin="3"
-                    HorizontalAlignment="Left"
+                    HorizontalAlignment="Center"
                     Background="Lime"
                     CornerRadius="10"
                     Visibility="{Binding AutoBackupVisibility,
@@ -232,31 +226,34 @@
                            Visibility="{Binding AutoBackupVisibility,
                                                 UpdateSourceTrigger=PropertyChanged}" />
             </Border>
-            <TextBlock Grid.Row="8"
-                       Grid.Column="0"
-                       FontSize="14"
-                       Text="Maximum # of AutoBackups"
-                       TextWrapping="Wrap" />
+            </StackPanel>
 
-            <xctk:IntegerUpDown Grid.Row="8"
-                                Grid.Column="1"
-                                Width="40"
-                                Height="23"
-                                Margin="3"
-                                HorizontalAlignment="Left"
-                                Text="{Binding MaxBackups,
-                                               UpdateSourceTrigger=PropertyChanged,
-                                               Delay=100}" />
-            <Button Grid.Row="1"
-                    Grid.Column="3"
-                    HorizontalAlignment="Left"
-                    Content="TEST DOWNLOAD" />
-            <!--
-                <Image Grid.Row="3"
-                Grid.Column="3"
-                Source="{Binding Thumbnail}"
-                Stretch="None" />
-            -->
+
+            <!--<TextBlock Grid.Row="6"
+                       Grid.RowSpan="2"
+                       Grid.Column="0"
+                       Margin="3"
+                       VerticalAlignment="Center"
+                       FontSize="14"
+                       Text="Choose a backup method."
+                       TextWrapping="Wrap" />-->
+         
+            <StackPanel Grid.Row="2"
+                        Grid.Column="3"
+                        Orientation="Horizontal" HorizontalAlignment="Center">
+                <TextBlock VerticalAlignment="Center"
+                           FontSize="14"
+                           Text="Autobackup Limit"
+                           TextWrapping="Wrap" />
+
+                <xctk:IntegerUpDown Width="40"
+                                    Height="23"
+                                    Margin="3"
+                                    HorizontalAlignment="Right"
+                                    Text="{Binding MaxBackups,
+                                                   UpdateSourceTrigger=PropertyChanged,
+                                                   Delay=100}" />
+            </StackPanel>
         </Grid>
 
     </StackPanel>

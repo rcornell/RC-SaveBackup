@@ -152,35 +152,36 @@ namespace Saved_Game_Backup.ViewModel
             CreateHardDriveCollection();
         }
 
+
+        //FIX THE SERIALIZING OF GAME.THUMBNAIL
         private void SetUpInterface() {
-            if (!PrefSaver.CheckForPrefs()) {
-                _maxBackups = 5;
-                _theme = 0;
-            }
-            else {
-                var p = new PrefSaver();
-                var prefs = p.LoadPrefs();
-                _maxBackups = prefs.MaxBackups;
-                _theme = prefs.Theme;
-                GamesToBackup = prefs.SelectedGames;
-                _selectedHardDrive = prefs.HardDrive;
+            //if (!PrefSaver.CheckForPrefs()) {
+            //    _maxBackups = 5;
+            //    _theme = 0;
+            //}
+            //else {
+            //    var p = new PrefSaver();
+            //    var prefs = p.LoadPrefs();
+            //    _maxBackups = prefs.MaxBackups;
+            //    _theme = prefs.Theme;
+            //    GamesToBackup = prefs.SelectedGames;
+            //    _selectedHardDrive = prefs.HardDrive;
 
-                //CAN THIS BE CLEANED UP?
-                var listToRemove = new ObservableCollection<Game>();
-                foreach (Game game in prefs.SelectedGames) {
-                    foreach (Game g in GamesList) {
-                        if (game.Name == g.Name)
-                            listToRemove.Add(g);
-                    }
-                    foreach (Game gameBeingRemoved in listToRemove)
-                        GamesList.Remove(gameBeingRemoved);
+            //    var listToRemove = new ObservableCollection<Game>();
+            //    foreach (Game game in prefs.SelectedGames) {
+            //        foreach (Game g in GamesList) {
+            //            if (game.Name == g.Name)
+            //                listToRemove.Add(g);
+            //        }
+            //        foreach (Game gameBeingRemoved in listToRemove)
+            //            GamesList.Remove(gameBeingRemoved);
 
-                }
-                RaisePropertyChanged(() => GamesList);
-                ToggleTheme();
-            }
-            AutoBackupVisibility = Visibility.Hidden;
-            RaisePropertyChanged(() => AutoBackupVisibility);
+            //    }
+            //    RaisePropertyChanged(() => GamesList);
+            //    ToggleTheme();
+            //}
+            //AutoBackupVisibility = Visibility.Hidden;
+            //RaisePropertyChanged(() => AutoBackupVisibility);
         }
 
         private void SaveUserPrefs() {
@@ -258,7 +259,7 @@ namespace Saved_Game_Backup.ViewModel
                 
                 
                 //Add code to pull down GiantBombAPI data here:
-                await ThumbDownload(game, game.ID);
+                ThumbDownload(game, game.ID);
                 game.Thumbnail = Thumbnail;
                 GamesToBackup.Add(game);
                 RaisePropertyChanged(() => GamesToBackup);
@@ -294,7 +295,7 @@ namespace Saved_Game_Backup.ViewModel
                 
                 GamesToBackup.Remove(iconToRemove);
             }
-
+            
         }
 
         private void ExecuteBackup() {
