@@ -28,10 +28,10 @@ namespace Saved_Game_Backup {
             set { _id = value; }
         }
 
-        private BitmapImage _icon;
-        public BitmapImage Icon {
-            get { return _icon; }
-            set { _icon = value; }
+        private BitmapImage _thumbnail;
+        public BitmapImage Thumbnail {
+            get { return _thumbnail; }
+            set { _thumbnail = value; }
         }
 
 
@@ -55,7 +55,7 @@ namespace Saved_Game_Backup {
             ID = id;
             Name = name;
             Path = path;
-            Icon = icon;
+            Thumbnail = icon;
         }
 
         public override string ToString() {

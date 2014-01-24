@@ -50,17 +50,6 @@ namespace Saved_Game_Backup.ViewModel
         public ObservableCollection<string> GameNames { get; set; }
 
 
-        //private GameIconControl _selectedGameIcon;
-        //public GameIconControl SelectedGameIcon
-        //{
-        //    get { return _selectedGameIcon; }
-        //    set
-        //    {
-        //        if (_selectedGameIcon == value) return;
-        //        _selectedGameIcon = value;
-        //    }
-        //}
-
         private BitmapImage _thumbnail;
         public BitmapImage Thumbnail {
             get { return _thumbnail; }
@@ -87,8 +76,8 @@ namespace Saved_Game_Backup.ViewModel
             get { return _selectedGame; }
             set { _selectedGame = value; }
         }
-        private string _selectedBackupGame;
-        public string SelectedBackupGame
+        private Game _selectedBackupGame;
+        public Game SelectedBackupGame
         {
             get { return _selectedBackupGame; }
             set { _selectedBackupGame = value; }
@@ -250,8 +239,12 @@ namespace Saved_Game_Backup.ViewModel
             
         }
 
+        //set to async 
         private async void ToBackupList() {
             Game game = null;
+            if (_selectedGame == null)
+                return;
+
             for (int i = 0; i < GamesList.Count(); i++) {
                 if (_selectedGame.Name == GamesList[i].Name) {
                     game = GamesList[i];
@@ -262,11 +255,12 @@ namespace Saved_Game_Backup.ViewModel
             if (game != null) {
                 GamesList.Remove(game);
                 RaisePropertyChanged(() => GamesList);
-                GamesToBackup.Add(game);
-                RaisePropertyChanged(() => GamesToBackup);
+                
+                
                 //Add code to pull down GiantBombAPI data here:
-                //await ThumbDownload(game, game.ID);
-                //game.Icon = Thumbnail;
+                await ThumbDownload(game, game.ID);
+                game.Thumbnail = Thumbnail;
+                GamesToBackup.Add(game);
                 RaisePropertyChanged(() => GamesToBackup);
 
             }
@@ -275,8 +269,11 @@ namespace Saved_Game_Backup.ViewModel
         private void ToGamesList()
         {
             Game game = null;
+            if (_selectedBackupGame == null)
+                return;
+
             for (int i = 0; i < GamesToBackup.Count(); i++) {
-                if (_selectedBackupGame == GamesToBackup[i].Name) {
+                if (_selectedBackupGame.Name == GamesToBackup[i].Name) {
                     game = GamesToBackup[i];
                     break;
                 }
@@ -388,7 +385,7 @@ namespace Saved_Game_Backup.ViewModel
 
             await gb.CreateThumbnail();
             Thumbnail = gb.ThumbNail;
-            game.Icon = gb.ThumbNail;
+            //game.Icon = gb.ThumbNail;
 
 
             //var newGame = new Game(game.Name, Thumbnail);
