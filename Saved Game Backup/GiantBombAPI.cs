@@ -81,6 +81,31 @@ namespace Saved_Game_Backup
             return searchString;
         }
 
+        //Check for thumb in HDD
+        public async void GetThumb(Game game) {
+            //Create path for thumbnails directory and get all files in directory
+            var queryPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
+                            "\\Save Backup Tool\\Thumbnails\\";
+            var files = Directory.GetFiles(queryPath);
+            queryPath += game.Name;
+
+            //search for thumbnail in directory
+            //if found, set _thumbnailPath to path on HDD
+            for (int i = 0; i < files.Count(); i++) {
+                if (files[i].Contains(queryPath))
+                    _thumbnailPath = files[i];
+                return;
+            }
+
+            //If thumbnail not found, retrieve gameID and thumbnail.
+            if (game.ID == 999999) {
+                await GetGameID();
+                await UpdateGameID();
+            }
+            if (_thumbnailPath == null && game.ID != 999999)
+                await CreateThumbnail();
+        }
+
         public async Task CreateThumbnail() {
             var queryURL = BuildThumbQueryString(_newGameId);
             await DownloadData(queryURL, true);
@@ -99,7 +124,7 @@ namespace Saved_Game_Backup
             }
             else {
                 _newGameId = blob.results[0].id;
-                //await CreateThumbnail(gameID);
+              
             }
         }
 
@@ -121,13 +146,14 @@ namespace Saved_Game_Backup
             
             //Create path for thumbnail on HDD
             _thumbnailPath = documentsPath + "\\Save Backup Tool\\Thumbnails\\" + _game.Name + extension;
+            var fi = new FileInfo(_thumbnailPath);            
 
             //If File doesn't exist, download it.
             try {
-                if (!File.Exists(_thumbnailPath)) {
-                    var webClient = new WebClient();
-                    webClient.DownloadFile(new Uri(url), _thumbnailPath);
-                }
+                if (File.Exists(fi.ToString())) 
+                    return;
+                var webClient = new WebClient();
+                webClient.DownloadFile(new Uri(url), fi.FullName);
             }
             catch (Exception ex) {
                 Directory.CreateDirectory(documentsPath + "\\Save Backup Tool\\Error\\");
@@ -158,14 +184,16 @@ namespace Saved_Game_Backup
         /// Edits json to update game id once it has been found by
         /// DownloadData()
         /// </summary>
-        public void UpdateGameID() {
-            if (_game.ID == 999999) {
-                _game.ID = _newGameId;
+        public async Task UpdateGameID() {
+            if (_game.ID != 999999) {
+                return;
             }
+            _game.ID = _newGameId;
 
             var listToReturn = new List<Game>();
 
-            var gameJsonList = JsonConvert.DeserializeObject<List<Game>>(File.ReadAllText(GameListPath));
+            var gameJsonList =
+                await JsonConvert.DeserializeObjectAsync<List<Game>>(File.ReadAllText(GameListPath));
             foreach (var g in gameJsonList) {
                 listToReturn.Add(g.Name == _game.Name ? _game : g);
             }

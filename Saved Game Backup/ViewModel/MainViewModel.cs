@@ -41,6 +41,8 @@ namespace Saved_Game_Backup.ViewModel
             set { _autoBackupVisibility = value; }
         }
 
+        private string _myDocumentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        private const string _sbtPath = "\\Save Backup Tool\\";
        
         public ObservableCollection<string> HardDrives { get; set; } 
         public ObservableCollection<Game> GamesList { get; set; } 
@@ -241,7 +243,8 @@ namespace Saved_Game_Backup.ViewModel
                 GamesList.Remove(game);
                 RaisePropertyChanged(() => GamesList);
                 //Pull in Thumb data with GiantBombAPI
-                await ThumbDownload(game, game.ID);
+                 GetThumb(game, game.ID);
+                //await ThumbDownload(game, game.ID);
                 GamesToBackup.Add(game);
                 RaisePropertyChanged(() => GamesToBackup);
             }
@@ -350,7 +353,11 @@ namespace Saved_Game_Backup.ViewModel
             SaveUserPrefs();
             Application.Current.MainWindow.Close();
         }
-         
+
+        private void GetThumb(Game game, int id) {
+            var gb = new GiantBombAPI(game);
+            gb.GetThumb(game);
+        }
         //Move this logic elsewhere once it is working.
         private async Task ThumbDownload(Game game, int id) {
             GiantBombAPI gb;
