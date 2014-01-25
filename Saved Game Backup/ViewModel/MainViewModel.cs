@@ -242,9 +242,9 @@ namespace Saved_Game_Backup.ViewModel
             if (game != null) {
                 GamesList.Remove(game);
                 RaisePropertyChanged(() => GamesList);
+                
                 //Pull in Thumb data with GiantBombAPI
-                 GetThumb(game, game.ID);
-                //await ThumbDownload(game, game.ID);
+                await GetThumb(game, game.ID);
                 GamesToBackup.Add(game);
                 RaisePropertyChanged(() => GamesToBackup);
             }
@@ -352,38 +352,6 @@ namespace Saved_Game_Backup.ViewModel
         private void CloseApplication() {
             SaveUserPrefs();
             Application.Current.MainWindow.Close();
-        }
-
-        private void GetThumb(Game game, int id) {
-            var gb = new GiantBombAPI(game);
-            gb.GetThumb(game);
-        }
-        //Move this logic elsewhere once it is working.
-        private async Task ThumbDownload(Game game, int id) {
-            GiantBombAPI gb;
-            if (id == 999999) {
-                gb = new GiantBombAPI(game);
-                await gb.GetGameID();
-                gb.UpdateGameID();
-            }
-            else {
-                gb = new GiantBombAPI(id, game);
-            }
-
-            await gb.CreateThumbnail();
-            game.ThumbnailPath = gb.ThumbnailPath;
-
-            #region Old Test Code
-
-            //var gb = new GiantBombAPI(33394, "Skyrim");
-            //var gb = new GiantBombAPI("Skyrim");
-            //await gb.GetGameID();
-            //GameIcons.Add(new GameIconControl("Test 2", Thumbnail));
-            //GameIcons.Add(new GameIconControl("Test 3", Thumbnail));
-            //GameIcons.Add(new GameIconControl("Test 4", Thumbnail));
-            //GameIcons.Add(new GameIconControl("Test 5", Thumbnail)); 
-
-            #endregion
         }
     }
 }

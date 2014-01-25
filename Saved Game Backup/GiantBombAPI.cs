@@ -82,7 +82,7 @@ namespace Saved_Game_Backup
         }
 
         //Check for thumb in HDD
-        public async void GetThumb(Game game) {
+        public async Task GetThumb(Game game) {
             //Create path for thumbnails directory and get all files in directory
             var queryPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
                             "\\Save Backup Tool\\Thumbnails\\";
@@ -92,9 +92,10 @@ namespace Saved_Game_Backup
             //search for thumbnail in directory
             //if found, set _thumbnailPath to path on HDD
             for (int i = 0; i < files.Count(); i++) {
-                if (files[i].Contains(queryPath))
+                if (files[i].Contains(queryPath)){
                     _thumbnailPath = files[i];
-                return;
+                    break;
+                }
             }
 
             //If thumbnail not found, retrieve gameID and thumbnail.
