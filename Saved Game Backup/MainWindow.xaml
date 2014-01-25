@@ -51,15 +51,19 @@
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1" />
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="450" />
             </Grid.ColumnDefinitions>
-            <StackPanel Grid.Row="3" Grid.Column="3" Height="400">
+            <StackPanel Grid.Row="3"
+                        Grid.Column="3"
+                        Height="400">
                 <TextBlock HorizontalAlignment="Center"
                            FontSize="14"
                            Text="Games to Back Up" />
-                <ListBox ItemsSource="{Binding GamesToBackup}" SelectedItem="{Binding SelectedBackupGame}" Height="400">
+                <ListBox Height="400"
+                         ItemsSource="{Binding GamesToBackup}"
+                         SelectedItem="{Binding SelectedBackupGame}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDoubleClick">
                             <i:InvokeCommandAction Command="{Binding MoveToGamesList}" />
@@ -82,7 +86,9 @@
                         <DataTemplate DataType="{x:Type savedGameBackup:Game}">
                             <Border>
                                 <StackPanel>
-                                    <Image Source="{Binding ThumbnailPath}" Height="180" Width="160"/>
+                                    <Image Width="160"
+                                           Height="180"
+                                           Source="{Binding ThumbnailPath}" />
                                     <TextBlock HorizontalAlignment="Center" Text="{Binding Name}" />
                                 </StackPanel>
                             </Border>
@@ -98,9 +104,9 @@
             </StackPanel>
 
             <StackPanel Grid.Row="1"
-                        Grid.Column="1" 
-                        VerticalAlignment="Top" 
-                        HorizontalAlignment="Center">
+                        Grid.Column="1"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Top">
                 <TextBlock Margin="3"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
@@ -111,50 +117,52 @@
                           ItemsSource="{Binding HardDrives}"
                           SelectedItem="{Binding SelectedHardDrive}" />
             </StackPanel>
-            
-            
+
+
             <StackPanel Grid.Row="3"
-                    Grid.Column="2" VerticalAlignment="Center">
+                        Grid.Column="2"
+                        VerticalAlignment="Center">
                 <Button Margin="3"
                         VerticalAlignment="Center"
                         Command="{Binding DetectGames}"
                         Content="Find Games" />
-                <Button 
-                    Margin="3"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Command="{Binding ResetList}"
-                    Content="Reset Games" />
+                <Button Margin="3"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Command="{Binding ResetList}"
+                        Content="Reset Games" />
             </StackPanel>
 
-            <StackPanel Grid.Row="2"
-                        Grid.Column="1">
+            <StackPanel Grid.Row="2" Grid.Column="1">
                 <TextBlock Margin="3"
-                           VerticalAlignment="Center"
                            HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
                            FontSize="14"
                            Text="Custom Save Folder?"
                            TextWrapping="Wrap" />
                 <Button Height="22"
                         Margin="3"
+                        HorizontalAlignment="Center"
                         Command="{Binding SpecifyFolder}"
-                        Content="Choose Folder"
-                        HorizontalAlignment="Center"/>
+                        Content="Choose Folder" />
             </StackPanel>
 
-            <!--<TextBlock Grid.Row="3"
-                       Grid.Column="0"
-                       Margin="3"
-                       HorizontalAlignment="Left"
-                       VerticalAlignment="Center"
-                       FontSize="14"
-                       Text="Double click the games you want to back up."
-                       TextWrapping="Wrap" />-->
+            <!--
+                <TextBlock Grid.Row="3"
+                Grid.Column="0"
+                Margin="3"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                FontSize="14"
+                Text="Double click the games you want to back up."
+                TextWrapping="Wrap" />
+            -->
             <StackPanel Grid.Row="3" Grid.Column="1">
                 <TextBlock HorizontalAlignment="Center"
                            FontSize="14"
                            Text="Games List" />
-                <ListBox Height="400"
+                <ListBox Width="200"
+                         Height="400"
                          Margin="3"
                          ItemsSource="{Binding GamesList}"
                          SelectedItem="{Binding SelectedGame}"
@@ -188,59 +196,60 @@
             -->
 
 
-            <StackPanel Grid.Row="1"
-                    Grid.Column="3">
+            <StackPanel Grid.Row="1" Grid.Column="3">
 
-            <Button 
-                    Margin="3"
-                    HorizontalAlignment="Center"
-                    Command="{Binding BackupSaves}"
-                    Content="Backup To Folder" />
-            
-            <Button Grid.Row="1"
-                    Grid.Column="3"
-                    Margin="3"
-                    Command="{Binding BackupAndZip}"
-                    Content="Backup And Zip"
-                    HorizontalAlignment="Center"/>
+                <Button Margin="3"
+                        HorizontalAlignment="Center"
+                        Command="{Binding BackupSaves}"
+                        Content="Backup To Folder" />
 
-            <Button Grid.Row="1"
-                    Grid.Column="3"
-                    Grid.ColumnSpan="1"
-                    HorizontalAlignment="Center"
-                    Margin="3"
-                    Command="{Binding AutoBackup}"
-                    Content="Toggle Autobackup"
-                    ToolTip="Autobackup will watch the save folders for the games you have selected. When new save files are added or modified, they will be backed up to a folder of your choosing." />
-            <Border Grid.Row="7"
-                    Grid.Column="3"
-                    Margin="3"
-                    HorizontalAlignment="Center"
-                    Background="Lime"
-                    CornerRadius="10"
-                    Visibility="{Binding AutoBackupVisibility,
-                                         UpdateSourceTrigger=PropertyChanged}">
-                <TextBlock HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           Text="Autobackup Enabled"
-                           Visibility="{Binding AutoBackupVisibility,
-                                                UpdateSourceTrigger=PropertyChanged}" />
-            </Border>
+                <Button Grid.Row="1"
+                        Grid.Column="3"
+                        Margin="3"
+                        HorizontalAlignment="Center"
+                        Command="{Binding BackupAndZip}"
+                        Content="Backup And Zip" />
+
+                <Button Grid.Row="1"
+                        Grid.Column="3"
+                        Grid.ColumnSpan="1"
+                        Margin="3"
+                        HorizontalAlignment="Center"
+                        Command="{Binding AutoBackup}"
+                        Content="Toggle Autobackup"
+                        ToolTip="Autobackup will watch the save folders for the games you have selected. When new save files are added or modified, they will be backed up to a folder of your choosing." />
+                <Border Grid.Row="7"
+                        Grid.Column="3"
+                        Margin="3"
+                        HorizontalAlignment="Center"
+                        Background="Lime"
+                        CornerRadius="10"
+                        Visibility="{Binding AutoBackupVisibility,
+                                             UpdateSourceTrigger=PropertyChanged}">
+                    <TextBlock HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="Autobackup Enabled"
+                               Visibility="{Binding AutoBackupVisibility,
+                                                    UpdateSourceTrigger=PropertyChanged}" />
+                </Border>
             </StackPanel>
 
 
-            <!--<TextBlock Grid.Row="6"
-                       Grid.RowSpan="2"
-                       Grid.Column="0"
-                       Margin="3"
-                       VerticalAlignment="Center"
-                       FontSize="14"
-                       Text="Choose a backup method."
-                       TextWrapping="Wrap" />-->
-         
+            <!--
+                <TextBlock Grid.Row="6"
+                Grid.RowSpan="2"
+                Grid.Column="0"
+                Margin="3"
+                VerticalAlignment="Center"
+                FontSize="14"
+                Text="Choose a backup method."
+                TextWrapping="Wrap" />
+            -->
+
             <StackPanel Grid.Row="2"
                         Grid.Column="3"
-                        Orientation="Horizontal" HorizontalAlignment="Center">
+                        HorizontalAlignment="Center"
+                        Orientation="Horizontal">
                 <TextBlock VerticalAlignment="Center"
                            FontSize="14"
                            Text="Autobackup Limit"
