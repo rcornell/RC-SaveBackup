@@ -52,28 +52,32 @@ namespace Saved_Game_Backup
 
         }
 
-        public GiantBombAPI(int game_ID, Game game) {
-            _game = game;
-            _newGameId = game_ID;
-            //CreateThumbnail(_game_ID);
-        }
+        //Not currently being used
+        //public GiantBombAPI(int game_ID, Game game) {
+        //    _game = game;
+        //    _newGameId = game_ID;
+        //    //CreateThumbnail(_game_ID);
+        //}
 
         public GiantBombAPI(Game game) {
             _game = game;
             //GetGameID(_gameName);
         }
 
+        //Retrieves GameID if it is the default value 999999 in json file.
         public async Task GetGameID() {
             var searchString = BuildSearchString(_game.Name);
            await DownloadData(searchString, false);
         }
 
+        //Builds string to pull thumbnail data from API
         private string BuildThumbQueryString(int gameId) {
             var queryString = String.Format("{0}/{1}/{2}/?api_key={3}&format={4}&field_list={5}", StringBase,
                 ResourceType, gameId, ApiKey, Format, FieldsRequested);
             return queryString;
         }
 
+        //Builds string to search API for gameid
         private string BuildSearchString(string name) {
             //http://www.giantbomb.com/api/search/?api_key=ab63aeba2395b10932897115dc4bf3fa048e1734&format=json&query=%22skyrim%22&resources=game
             var searchString = String.Format("{0}/search/?api_key={1}&format={2}&query={3}&resources=game", StringBase,
@@ -81,7 +85,12 @@ namespace Saved_Game_Backup
             return searchString;
         }
 
-        //Check for thumb in HDD
+        /// <summary>
+        /// This method starts the chain of checking for thumbnail on HDD
+        /// and retrieving it from API if it is not found.
+        /// </summary>
+        /// <param name="game"></param>
+        /// <returns></returns>
         public async Task GetThumb(Game game) {
             //Create path for thumbnails directory and get all files in directory
             var queryPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
@@ -107,11 +116,14 @@ namespace Saved_Game_Backup
                 await CreateThumbnail();
         }
 
-        public async Task CreateThumbnail() {
+        //Requests query string and calls DownloadData
+        private async Task CreateThumbnail() {
             var queryURL = BuildThumbQueryString(_newGameId);
             await DownloadData(queryURL, true);
         }
 
+        //Downloads json code from GiantBomb's API and pulls out the requested
+        //values, GameID or thumb url, depending on the bool value of thumbRequest
         private async Task DownloadData(string queryURL, bool thumbRequest) {
             using (var client = new HttpClient())
                 _responseString = await client.GetStringAsync(queryURL);
@@ -129,6 +141,7 @@ namespace Saved_Game_Backup
             }
         }
 
+        //Downloads thumbnail if it is not found in Thumbnails directory.
         private void BuildThumbnail(string url) {
             var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
@@ -180,12 +193,9 @@ namespace Saved_Game_Backup
             //_thumbImage = test;
         }
 
-
-        /// <summary>
-        /// Edits json to update game id once it has been found by
-        /// DownloadData()
-        /// </summary>
-        public async Task UpdateGameID() {
+        /// Edits json to update game id once it has been found by DownloadData()
+        /// Could be expanded to write Thumbnail path to json file
+        private async Task UpdateGameID() {
             if (_game.ID != 999999) {
                 return;
             }

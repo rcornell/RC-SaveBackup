@@ -268,15 +268,6 @@ namespace Saved_Game_Backup.ViewModel
                 RaisePropertyChanged(() => GamesToBackup);
                 GamesList.Add(game);
                 RaisePropertyChanged(() => GamesList);
-
-                var gameToRemove = new Game();
-
-                foreach (var g in GamesToBackup) {
-                    if (g.Name == game.Name)
-                        gameToRemove = g;
-                }
-                
-                GamesToBackup.Remove(gameToRemove);
             }
         }
 
