@@ -35,8 +35,6 @@ namespace Saved_Game_Backup.ViewModel
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
         
-        //GiantBomb API Key ab63aeba2395b10932897115dc4bf3fa048e1734
-        //generic game search string http://www.giantbomb.com/api/search/?api_key=ab63aeba2395b10932897115dc4bf3fa048e1734&format=json&query=%22Skyrim%22&resources=game
         private Visibility _autoBackupVisibility;
         public Visibility AutoBackupVisibility {
             get { return _autoBackupVisibility; }
@@ -49,17 +47,6 @@ namespace Saved_Game_Backup.ViewModel
         public ObservableCollection<Game> GamesToBackup { get; set; }
         public ObservableCollection<string> GameNames { get; set; }
 
-
-        private BitmapImage _thumbnail;
-        public BitmapImage Thumbnail {
-            get { return _thumbnail; }
-            set
-            {
-                if (_thumbnail == value) return;
-                _thumbnail = value;
-                RaisePropertyChanged(() => Thumbnail);
-            }
-        }
         private Brush _background;
         public Brush Background {
             get { return _background; }
@@ -140,10 +127,6 @@ namespace Saved_Game_Backup.ViewModel
             get { return new RelayCommand(() => CloseApplication()); }
         }
 
-        //public RelayCommand TestThumbDownload {
-        //    get { return new RelayCommand(() => ThumbDownload());}
-        //}
-
         public MainViewModel() {
             HardDrives = new ObservableCollection<string>();
             GamesList = DirectoryFinder.ReturnGamesList();
@@ -152,36 +135,38 @@ namespace Saved_Game_Backup.ViewModel
             CreateHardDriveCollection();
         }
 
-
-        //FIX THE SERIALIZING OF GAME.THUMBNAIL
         private void SetUpInterface() {
-            //if (!PrefSaver.CheckForPrefs()) {
-            //    _maxBackups = 5;
-            //    _theme = 0;
-            //}
-            //else {
-            //    var p = new PrefSaver();
-            //    var prefs = p.LoadPrefs();
-            //    _maxBackups = prefs.MaxBackups;
-            //    _theme = prefs.Theme;
-            //    GamesToBackup = prefs.SelectedGames;
-            //    _selectedHardDrive = prefs.HardDrive;
+            if (!PrefSaver.CheckForPrefs())
+            {
+                _maxBackups = 5;
+                _theme = 0;
+            }
+            else
+            {
+                var p = new PrefSaver();
+                var prefs = p.LoadPrefs();
+                _maxBackups = prefs.MaxBackups;
+                _theme = prefs.Theme;
+                GamesToBackup = prefs.SelectedGames;
+                _selectedHardDrive = prefs.HardDrive;
 
-            //    var listToRemove = new ObservableCollection<Game>();
-            //    foreach (Game game in prefs.SelectedGames) {
-            //        foreach (Game g in GamesList) {
-            //            if (game.Name == g.Name)
-            //                listToRemove.Add(g);
-            //        }
-            //        foreach (Game gameBeingRemoved in listToRemove)
-            //            GamesList.Remove(gameBeingRemoved);
+                var listToRemove = new ObservableCollection<Game>();
+                foreach (Game game in prefs.SelectedGames)
+                {
+                    foreach (Game g in GamesList)
+                    {
+                        if (game.Name == g.Name)
+                            listToRemove.Add(g);
+                    }
+                    foreach (Game gameBeingRemoved in listToRemove)
+                        GamesList.Remove(gameBeingRemoved);
 
-            //    }
-            //    RaisePropertyChanged(() => GamesList);
-            //    ToggleTheme();
-            //}
-            //AutoBackupVisibility = Visibility.Hidden;
-            //RaisePropertyChanged(() => AutoBackupVisibility);
+                }
+                RaisePropertyChanged(() => GamesList);
+                ToggleTheme();
+            }
+            AutoBackupVisibility = Visibility.Hidden;
+            RaisePropertyChanged(() => AutoBackupVisibility);
         }
 
         private void SaveUserPrefs() {
@@ -240,7 +225,6 @@ namespace Saved_Game_Backup.ViewModel
             
         }
 
-        //set to async 
         private async void ToBackupList() {
             Game game = null;
             if (_selectedGame == null)
@@ -256,14 +240,10 @@ namespace Saved_Game_Backup.ViewModel
             if (game != null) {
                 GamesList.Remove(game);
                 RaisePropertyChanged(() => GamesList);
-                
-                
-                //Add code to pull down GiantBombAPI data here:
-                ThumbDownload(game, game.ID);
-                game.Thumbnail = Thumbnail;
+                //Pull in Thumb data with GiantBombAPI
+                await ThumbDownload(game, game.ID);
                 GamesToBackup.Add(game);
                 RaisePropertyChanged(() => GamesToBackup);
-
             }
         }
 
@@ -286,16 +266,15 @@ namespace Saved_Game_Backup.ViewModel
                 GamesList.Add(game);
                 RaisePropertyChanged(() => GamesList);
 
-                var iconToRemove = new Game();
+                var gameToRemove = new Game();
 
                 foreach (var g in GamesToBackup) {
                     if (g.Name == game.Name)
-                        iconToRemove = g;
+                        gameToRemove = g;
                 }
                 
-                GamesToBackup.Remove(iconToRemove);
+                GamesToBackup.Remove(gameToRemove);
             }
-            
         }
 
         private void ExecuteBackup() {
@@ -372,7 +351,7 @@ namespace Saved_Game_Backup.ViewModel
             Application.Current.MainWindow.Close();
         }
          
-        //Not MVVM?
+        //Move this logic elsewhere once it is working.
         private async Task ThumbDownload(Game game, int id) {
             GiantBombAPI gb;
             if (id == 999999) {
@@ -385,14 +364,7 @@ namespace Saved_Game_Backup.ViewModel
             }
 
             await gb.CreateThumbnail();
-            Thumbnail = gb.ThumbNail;
-            //game.Icon = gb.ThumbNail;
-
-
-            //var newGame = new Game(game.Name, Thumbnail);
-            //GamesToBackup.Add(newGame);
-
-
+            game.ThumbnailPath = gb.ThumbnailPath;
 
             #region Old Test Code
 
@@ -405,8 +377,6 @@ namespace Saved_Game_Backup.ViewModel
             //GameIcons.Add(new GameIconControl("Test 5", Thumbnail)); 
 
             #endregion
-
-
         }
     }
 }

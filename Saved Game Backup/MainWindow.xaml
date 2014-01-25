@@ -82,7 +82,7 @@
                         <DataTemplate DataType="{x:Type savedGameBackup:Game}">
                             <Border>
                                 <StackPanel>
-                                    <Image Source="{Binding Thumbnail}" Height="180" Width="160"/>
+                                    <Image Source="{Binding ThumbnailPath}" Height="180" Width="160"/>
                                     <TextBlock HorizontalAlignment="Center" Text="{Binding Name}" />
                                 </StackPanel>
                             </Border>

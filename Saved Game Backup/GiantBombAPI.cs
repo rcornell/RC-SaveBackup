@@ -104,6 +104,7 @@ namespace Saved_Game_Backup
         }
 
         private void BuildThumbnail(string url) {
+            var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
             //Check for correct thumbnail file extension SHOULD YOU USE A SWITCH?
             var extension = "";
@@ -118,28 +119,38 @@ namespace Saved_Game_Backup
             else 
                 extension = ".jpg";
             
-
             //Create path for thumbnail on HDD
-            _thumbnailPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
-                               "\\Save Backup Tool\\Thumbnails\\" + _game.Name + extension;
+            _thumbnailPath = documentsPath + "\\Save Backup Tool\\Thumbnails\\" + _game.Name + extension;
 
-            //If file exists, don't download.
-            if (File.Exists(_thumbnailPath)) {
-                _thumbImage = Image.FromFile(_thumbnailPath);
-            } else {
-                //File doesn't exist on HDD, download file to HDD
-                var webClient = new WebClient();
-                webClient.DownloadFileAsync(new Uri(url), _thumbnailPath);
+            //If File doesn't exist, download it.
+            try {
+                if (!File.Exists(_thumbnailPath)) {
+                    var webClient = new WebClient();
+                    webClient.DownloadFile(new Uri(url), _thumbnailPath);
+                }
+            }
+            catch (Exception ex) {
+                Directory.CreateDirectory(documentsPath + "\\Save Backup Tool\\Error\\");
+                var sb = new StringBuilder();
+                sb.AppendLine(ex.Message);
+                sb.AppendLine(ex.InnerException.Message);
+                sb.AppendLine(ex.Source);
+                sb.AppendLine(ex.StackTrace);
+                using (var fs = File.OpenWrite(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)+"\\Save Backup Tool\\Error\\Log.txt")) {
+                    using (var sw = new StreamWriter(fs)) {
+                        sw.WriteLineAsync(sb.ToString());    
+                    }
+                    
+                }
             }
 
-            _thumbImage = Image.FromFile(_thumbnailPath);
-
-            //Create thumbnail BitmapImage
-            //var bitmap = new BitmapImage();
-            //bitmap.BeginInit();
-            //bitmap.UriSource = new Uri(url, UriKind.Absolute);
-            //bitmap.EndInit();
-            //ThumbNail = bitmap;
+            //Create thumbImage. Not necessary since Game.cs is updated with the path
+            //But testing for future features.
+            //Image test;
+            //using (var fs = File.OpenRead(_thumbnailPath)) {
+            //    test = Image.FromStream(fs);
+            //}
+            //_thumbImage = test;
         }
 
 
@@ -147,8 +158,7 @@ namespace Saved_Game_Backup
         /// Edits json to update game id once it has been found by
         /// DownloadData()
         /// </summary>
-        public void UpdateGameID()
-        {
+        public void UpdateGameID() {
             if (_game.ID == 999999) {
                 _game.ID = _newGameId;
             }
@@ -162,7 +172,7 @@ namespace Saved_Game_Backup
             var fileToWrite = JsonConvert.SerializeObject(listToReturn);
             File.WriteAllText(GameListPath, fileToWrite);
 
-            #region Code that Eric made me give up
+            #region Old CSV parsing code
 
             //    string lineToEdit = "";
             //    var row = 0;
@@ -225,8 +235,7 @@ namespace Saved_Game_Backup
             //    }
 
             #endregion
-        }
-            
+        }       
     }
 
     public class StandardResponse

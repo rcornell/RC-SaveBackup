@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media.Imaging;
 
 namespace Saved_Game_Backup {   
@@ -29,12 +30,6 @@ namespace Saved_Game_Backup {
             set { _id = value; }
         }
 
-        private BitmapImage _thumbnail;
-        public BitmapImage Thumbnail {
-            get { return _thumbnail; }
-            set { _thumbnail = value; }
-        }
-
         private string _thumbnailPath;
         public string ThumbnailPath {
             get { return _thumbnailPath; }
@@ -57,12 +52,11 @@ namespace Saved_Game_Backup {
             Path = path;
         }
 
-        public Game(string name, string path, int id, BitmapImage icon)
-        {
+        public Game(string name, string path, int id, string thumbnailpath) {
             ID = id;
             Name = name;
             Path = path;
-            Thumbnail = icon;
+            ThumbnailPath = thumbnailpath;
         }
 
         public override string ToString() {
