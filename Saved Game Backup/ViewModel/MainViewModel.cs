@@ -246,6 +246,7 @@ namespace Saved_Game_Backup.ViewModel
                 //Pull in Thumb data with GiantBombAPI
                 await GetThumb(game);
                 GamesToBackup.Add(game);
+                GamesToBackup = new ObservableCollection<Game>(GamesToBackup.OrderBy(x => x.Name));
                 RaisePropertyChanged(() => GamesToBackup);
             }
         }
@@ -267,8 +268,9 @@ namespace Saved_Game_Backup.ViewModel
                 GamesToBackup.Remove(game);
                 RaisePropertyChanged(() => GamesToBackup);
                 GamesList.Add(game);
-                RaisePropertyChanged(() => GamesList);
             }
+            GamesList = new ObservableCollection<Game>(GamesList.OrderBy(x => x.Name));
+            RaisePropertyChanged(() => GamesList);
         }
 
         private void ExecuteBackup() {
