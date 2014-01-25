@@ -244,7 +244,7 @@ namespace Saved_Game_Backup.ViewModel
                 RaisePropertyChanged(() => GamesList);
                 
                 //Pull in Thumb data with GiantBombAPI
-                await GetThumb(game, game.ID);
+                await GetThumb(game);
                 GamesToBackup.Add(game);
                 RaisePropertyChanged(() => GamesToBackup);
             }
@@ -352,6 +352,12 @@ namespace Saved_Game_Backup.ViewModel
         private void CloseApplication() {
             SaveUserPrefs();
             Application.Current.MainWindow.Close();
+        }
+
+        private async Task GetThumb(Game game) {
+            var gb = new GiantBombAPI(game);
+            await gb.GetThumb(game);
+            game.ThumbnailPath = gb.ThumbnailPath;
         }
     }
 }
