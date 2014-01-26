@@ -10,6 +10,8 @@ using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
+using Saved_Game_Backup.Helper;
 
 namespace Saved_Game_Backup.ViewModel {
     
@@ -26,19 +28,28 @@ namespace Saved_Game_Backup.ViewModel {
         private ObservableCollection<string> _hardDrives;
         public ObservableCollection<string> HardDrives {
             get { return _hardDrives; }
-            set { _hardDrives = value; }
+            set {
+                _hardDrives = value;
+                Messenger.Default.Send<OptionMessage>(new OptionMessage(this));
+            }
         }
 
         private ObservableCollection<BackupType> _backupTypes;
         public ObservableCollection<BackupType> BackupTypes {
             get { return _backupTypes; }
-            set { _backupTypes = value; }
+            set {
+                _backupTypes = value;
+                Messenger.Default.Send<OptionMessage>(new OptionMessage(this));
+            }
         }
 
         private string _selectedHardDrive;
         public string SelectedHardDrive {
             get { return _selectedHardDrive; }
-            set { _selectedHardDrive = value; }
+            set {
+                _selectedHardDrive = value;
+                Messenger.Default.Send<OptionMessage>(new OptionMessage(this));
+            }
         }
 
         private string _specifiedFolder;
@@ -67,14 +78,13 @@ namespace Saved_Game_Backup.ViewModel {
         public OptionsViewModel(MainViewModel main) {
             _background = main.Background;
             _hardDrives = main.HardDrives;
-           
         }
 
         private void ExecuteChooseFolder() {
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer);
             var dialog = new FolderBrowserDialog();
             if (dialog.ShowDialog() == DialogResult.OK)
-                _mainView.SpecifiedFolder = dialog.SelectedPath;
+                _specifiedFolder = dialog.SelectedPath;
+
         }
     }
 }

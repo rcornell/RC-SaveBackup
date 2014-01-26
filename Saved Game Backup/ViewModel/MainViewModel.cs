@@ -152,12 +152,17 @@ namespace Saved_Game_Backup.ViewModel
             SetUpInterface();
             CreateHardDriveCollection();
 
-            //Messenger.Default.Register<int>(this, b => BackupType = b);
-            //Messenger.Default.Register<string>(this, s => SelectedHardDrive = s);
-            //Messenger.Default.Register<string>(this, p => SpecifiedFolder = p);
-            Messenger.Default.Register<OptionMessage>(this, s => this.BackupType = s.BackupType );
-            Messenger.Default.Register<OptionMessage>(this, s => this.SelectedHardDrive = s.HardDrive);
-            Messenger.Default.Register<OptionMessage>(this, s => this.SpecifiedFolder = s.SpecifiedFolder);
+            //Messenger.Default.Register<OptionMessage>(this, s => this.BackupType = s.BackupType );
+            //Messenger.Default.Register<OptionMessage>(this, s => this.SelectedHardDrive = s.HardDrive);
+            //Messenger.Default.Register<OptionMessage>(this, s => this.SpecifiedFolder = s.SpecifiedFolder);
+
+            Messenger.Default.Register<OptionMessage>(this, s => {
+                    BackupType = s.BackupType;
+                if (s.HardDrive != null)
+                    SelectedHardDrive = s.HardDrive;
+                if (s.SpecifiedFolder != null)
+                    SpecifiedFolder = s.SpecifiedFolder;
+            });
         }
 
         private void SetUpInterface() {
@@ -377,16 +382,11 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ExecuteOpenOptionsWindow() {
-            var optionsWindowVM = SimpleIoc.Default.GetInstance<OptionsViewModel>();
+            //var optionsWindowVM = SimpleIoc.Default.GetInstance<OptionsViewModel>();
             var optionsWindow = new OptionsWindow();
             optionsWindow.Show();
-            optionsWindow.Closing += optionsWindow_Closing;
-
-
         }
 
-        void optionsWindow_Closing(object sender, CancelEventArgs e) {
-           
-        }
+
     }
 }

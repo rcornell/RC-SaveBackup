@@ -107,7 +107,7 @@
                 </ListBox>
             </StackPanel>
 
-            <StackPanel Grid.Row="1"
+            <!--<StackPanel Grid.Row="1"
                         Grid.Column="1"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Top">
@@ -120,24 +120,8 @@
                           VerticalAlignment="Center"
                           ItemsSource="{Binding HardDrives}"
                           SelectedItem="{Binding SelectedHardDrive}" />
-            </StackPanel>
-
-
-            <StackPanel Grid.Row="3"
-                        Grid.Column="2"
-                        VerticalAlignment="Center">
-                <Button Margin="3"
-                        VerticalAlignment="Center"
-                        Command="{Binding DetectGames}"
-                        Content="Find Games" />
-                <Button Margin="3"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Command="{Binding ResetList}"
-                        Content="Reset Games" />
-            </StackPanel>
-
-            <StackPanel Grid.Row="2" Grid.Column="1">
+            </StackPanel>-->
+            <!--<StackPanel Grid.Row="2" Grid.Column="1">
                 <TextBlock Margin="3"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
@@ -149,58 +133,8 @@
                         HorizontalAlignment="Center"
                         Command="{Binding SpecifyFolder}"
                         Content="Choose Folder" />
-            </StackPanel>
-
-            <!--
-                <TextBlock Grid.Row="3"
-                Grid.Column="0"
-                Margin="3"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                FontSize="14"
-                Text="Double click the games you want to back up."
-                TextWrapping="Wrap" />
-            -->
-            <StackPanel Grid.Row="3" Grid.Column="1">
-                <TextBlock HorizontalAlignment="Center"
-                           FontSize="14"
-                           Text="Games List" />
-                <ListBox Width="200"
-                         Height="400"
-                         Margin="3"
-                         ItemsSource="{Binding GamesList}"
-                         SelectedItem="{Binding SelectedGame}"
-                         ToolTip="Double click a game to add it to the backup list.">
-
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="MouseDoubleClick">
-                            <command:EventToCommand Command="{Binding MoveToBackupList, Mode=OneWay}" />
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-
-                </ListBox>
-            </StackPanel>
-
-            <!--
-                <StackPanel Grid.Row="3" Grid.Column="2">
-                <TextBlock HorizontalAlignment="Center"
-                FontSize="14"
-                Text="Games to Backup" />
-                <ListBox MinHeight="150"
-                Margin="3"
-                ItemsSource="{Binding GamesToBackup}"
-                SelectedItem="{Binding SelectedBackupGame}">
-                <i:Interaction.Triggers>
-                <i:EventTrigger EventName="MouseDoubleClick">
-                <command:EventToCommand Command="{Binding MoveToGamesList, Mode=OneWay}" />
-                </i:EventTrigger>
-                </i:Interaction.Triggers>
-                </ListBox>
-                </StackPanel>
-            -->
-
-
-            <StackPanel Grid.Row="1" Grid.Column="3">
+            </StackPanel>-->
+            <!--<StackPanel Grid.Row="1" Grid.Column="3">
 
                 <Button Margin="3"
                         HorizontalAlignment="Center"
@@ -222,7 +156,45 @@
                         Command="{Binding AutoBackup}"
                         Content="Toggle Autobackup"
                         ToolTip="Autobackup will watch the save folders for the games you have selected. When new save files are added or modified, they will be backed up to a folder of your choosing." />
-                <Border Grid.Row="7"
+                
+            </StackPanel>-->
+
+            <StackPanel Grid.Row="3"
+                        Grid.Column="2"
+                        VerticalAlignment="Center">
+                <Button Margin="3"
+                        VerticalAlignment="Center"
+                        Command="{Binding DetectGames}"
+                        Content="Find Games" />
+                <Button Margin="3"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Command="{Binding ResetList}"
+                        Content="Reset Games" />
+            </StackPanel>
+
+           
+
+            <StackPanel Grid.Row="3" Grid.Column="1">
+                <TextBlock HorizontalAlignment="Center"
+                           FontSize="14"
+                           Text="Games List" />
+                <ListBox Width="200"
+                         Height="400"
+                         Margin="3"
+                         ItemsSource="{Binding GamesList}"
+                         SelectedItem="{Binding SelectedGame}"
+                         ToolTip="Double click a game to add it to the backup list.">
+
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDoubleClick">
+                            <command:EventToCommand Command="{Binding MoveToBackupList, Mode=OneWay}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+
+                </ListBox>
+            </StackPanel>
+            <Border Grid.Row="7"
                         Grid.Column="3"
                         Margin="3"
                         HorizontalAlignment="Center"
@@ -230,26 +202,12 @@
                         CornerRadius="10"
                         Visibility="{Binding AutoBackupVisibility,
                                              UpdateSourceTrigger=PropertyChanged}">
-                    <TextBlock HorizontalAlignment="Center"
+                <TextBlock HorizontalAlignment="Center"
                                VerticalAlignment="Center"
                                Text="Autobackup Enabled"
                                Visibility="{Binding AutoBackupVisibility,
                                                     UpdateSourceTrigger=PropertyChanged}" />
-                </Border>
-            </StackPanel>
-
-
-            <!--
-                <TextBlock Grid.Row="6"
-                Grid.RowSpan="2"
-                Grid.Column="0"
-                Margin="3"
-                VerticalAlignment="Center"
-                FontSize="14"
-                Text="Choose a backup method."
-                TextWrapping="Wrap" />
-            -->
-
+            </Border>
             <StackPanel Grid.Row="2"
                         Grid.Column="3"
                         HorizontalAlignment="Center"
