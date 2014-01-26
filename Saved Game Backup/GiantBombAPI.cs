@@ -274,7 +274,11 @@ namespace Saved_Game_Backup
             //    }
 
             #endregion
-        }       
+        }
+
+        internal void AddToJSON(string _name, string _path) {
+           
+        }
     }
 
     public class StandardResponse

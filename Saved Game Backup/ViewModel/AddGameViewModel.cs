@@ -16,8 +16,52 @@ using Saved_Game_Backup.Helper;
 namespace Saved_Game_Backup.ViewModel {
 
     public class AddGameViewModel {
-        public AddGameViewModel() {
-            
-        }     
+        private Brush _background;
+        public Brush Background
+        {
+            get { return _background; }
+            set { _background = value; }
+        }
+
+        private string _path;
+        public string Path {
+            get { return _path; }
+            set {
+                _path = value; 
+            }
+        }
+
+        private string _name;
+        public string Name {
+            get { return _name; }
+            set { _name = value; }
+        }
+
+        public RelayCommand ChoosePath {
+            get { return new RelayCommand(() => ExecuteChoosePath());}
+        }
+
+        public RelayCommand Add
+        {
+            get { return new RelayCommand(() => ExecuteAdd()); }
+        }
+
+        [PreferredConstructor]
+        public AddGameViewModel(Brush background) {
+            Background = background;
+        }
+
+        private void ExecuteChoosePath() {
+            var fb = new FolderBrowserDialog();
+            if (fb.ShowDialog() == DialogResult.OK)
+                Path = fb.SelectedPath;
+        }
+
+        private void ExecuteAdd() {
+            if (!string.IsNullOrWhiteSpace(_name) && !string.IsNullOrWhiteSpace(_path)) {
+                var gb = new GiantBombAPI();
+                gb.AddToJSON(_name, _path);
+            }
+        }
     }
 }
