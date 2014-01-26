@@ -125,6 +125,9 @@ namespace Saved_Game_Backup.ViewModel
         {
             get { return new RelayCommand(() => ExecuteSetThemeDark()); }
         }
+        public RelayCommand OpenOptionsWindow {
+            get { return new RelayCommand(() => ExecuteOpenOptionsWindow());}
+        }
         public RelayCommand Close {
             get { return new RelayCommand(() => CloseApplication()); }
         }
@@ -351,6 +354,11 @@ namespace Saved_Game_Backup.ViewModel
             var gb = new GiantBombAPI(game);
             await gb.GetThumb(game);
             game.ThumbnailPath = gb.ThumbnailPath;
+        }
+
+        private void ExecuteOpenOptionsWindow(OptionsViewModel optionsView) {
+            
+            
         }
     }
 }

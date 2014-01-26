@@ -93,6 +93,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Backup.cs" />
+    <Compile Include="BackupType.cs" />
     <Compile Include="DirectoryFinder.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GiantBombAPI.cs" />

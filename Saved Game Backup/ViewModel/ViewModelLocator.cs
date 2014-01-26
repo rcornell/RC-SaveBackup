@@ -54,13 +54,13 @@ namespace Saved_Game_Backup.ViewModel
             }
         }
 
-        public OptionsViewModel Options
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<OptionsViewModel>();
-            }
-        }
+        //public OptionsViewModel Options
+        //{
+        //    get
+        //    {
+        //        return ServiceLocator.Current.GetInstance<OptionsViewModel>();
+        //    }
+        //}
         
         public static void Cleanup()
         {
