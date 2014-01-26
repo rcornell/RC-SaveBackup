@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -68,7 +69,8 @@ namespace Saved_Game_Backup.ViewModel {
                 var gb = new GiantBombAPI();
                 gb.AddToJSON(_name, _path);
             }
-  
+            //Code to close the window
+            
         }
 
         private void CloseWindow(Window window) {

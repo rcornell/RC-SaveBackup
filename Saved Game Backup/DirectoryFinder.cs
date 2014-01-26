@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
@@ -26,19 +27,24 @@ namespace Saved_Game_Backup
             }
         }
 
-        private const string dataPath = @"C:\Users\Rob\Documents\Save Backup Tool\Games.json";
-
-        //public string FindDirectory(string game)
-        //{
-
-        //    if (_gameSaveDirectories.ContainsKey(game))
-        //        return _gameSaveDirectories["game"];
-        //    return "Unknown Game";
-        //    //return _gameSaveDirectories.TryGetValue(game, out "Unknown Game");
-        //}
+        private string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        private static string _sbtPath;
 
         public DirectoryFinder() {
-            //GenerateDictionary();
+            _sbtPath = documentsPath + "\\Save Backup Tool\\";
+            if (!Directory.Exists(_sbtPath)){
+                Directory.CreateDirectory(_sbtPath);
+                Directory.CreateDirectory(_sbtPath+"Thumbnails\\");
+                Directory.CreateDirectory(_sbtPath + "Error\\");
+            }
+        }
+
+        public static ObservableCollection<Game> ReturnGamesList() {
+            var jsonFi = new FileInfo(@"Database\Games.json");
+            return jsonFi.Exists 
+                ? 
+                JsonConvert.DeserializeObject<ObservableCollection<Game>>(File.ReadAllText(jsonFi.FullName)) 
+                : null;
         }
 
         //private void GenerateDictionary()
@@ -52,11 +58,11 @@ namespace Saved_Game_Backup
         /// Reads the json file and returns the list of games.
         /// </summary>
         /// <returns></returns>
-        public static ObservableCollection<Game> ReturnGamesList() {
-            var gamesList = JsonConvert.DeserializeObject<ObservableCollection<Game>>(File.ReadAllText(dataPath));
+        //public static ObservableCollection<Game> ReturnGamesList() {
+        //    var gamesList = JsonConvert.DeserializeObject<ObservableCollection<Game>>(File.ReadAllText(_sbtPath)+"Games.json");
 
-            return gamesList;
-        }
+        //    return gamesList;
+        //}
 
         /// <summary>
         /// Opens a folder browser dialog and sets the specifiedFolder string to the chosen path.
@@ -67,21 +73,6 @@ namespace Saved_Game_Backup
             dialog.ShowDialog();
             return dialog.SelectedPath;
         }
-
-        //public static ObservableCollection<string> ReturnGameNames() {
-        //    var gamesNames = new ObservableCollection<string>();
-        //    var testGame = new Game();
-        //    JsonConvert.PopulateObject(@"C:\Users\Rob\Documents\Save Backup Tool\Games.json", testGame);
-
-        //    var lines = File.ReadAllLines(@"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\Games.csv");
-        //    foreach (string s in lines)
-        //    {
-        //        var data = s.Split(','); //Can't split on a space
-        //        gamesNames.Add(data[0]);
-        //    }
-
-        //    return gamesNames;
-        //}
 
         public static ObservableCollection<Game> PollDirectories(string hardDrive, ObservableCollection<Game> gamesList) {
             var detectedGamesList = new ObservableCollection<Game>();

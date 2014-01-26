@@ -19,7 +19,6 @@
     <Window.Style>
         <Style BasedOn="{StaticResource FontStyle}" TargetType="Control" />
     </Window.Style>
-
     <StackPanel Background="{Binding Background}">
         <Menu IsMainMenu="True">
             <MenuItem Header="_File">

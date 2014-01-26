@@ -407,7 +407,5 @@ namespace Saved_Game_Backup.ViewModel
             var addGameWindow = new AddGameWindow();
             addGameWindow.Show();
         }
-
-
     }
 }
