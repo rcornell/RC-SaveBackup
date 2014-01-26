@@ -31,7 +31,10 @@
                    VerticalAlignment="Center"
                    Text="What is the game's name?"
                    TextWrapping="Wrap" />
-        <TextBox Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Text="{Binding Name}"></TextBox>
+        <TextBox Grid.Row="1"
+                 Grid.Column="2"
+                 VerticalAlignment="Center"
+                 Text="{Binding Name}" />
 
         <TextBlock Grid.Row="3"
                    Grid.Column="0"
@@ -42,8 +45,14 @@
         <Button Grid.Row="3"
                 Grid.Column="2"
                 VerticalAlignment="Center"
-                Content="Choose Folder" 
-                Command="{Binding ChoosePath}"/>
+                Command="{Binding ChoosePath}"
+                Content="Choose Folder" />
+
+        <Button Grid.Row="4"
+                Grid.Column="2"
+                VerticalAlignment="Center"
+                Command="{Binding Add}"
+                Content="Add Game to Database" />
 
     </Grid>
 </Window>

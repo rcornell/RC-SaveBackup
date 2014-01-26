@@ -403,7 +403,7 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ExecuteAddGame() {
-            var optionsWindowVM = SimpleIoc.Default.GetInstance<AddGameViewModel>();
+            //var optionsWindowVM = SimpleIoc.Default.GetInstance<AddGameViewModel>();
             var addGameWindow = new AddGameWindow();
             addGameWindow.Show();
         }

@@ -17,6 +17,7 @@ using Saved_Game_Backup.Helper;
 namespace Saved_Game_Backup.ViewModel {
 
     public class AddGameViewModel {
+
         private Brush _background;
         public Brush Background
         {
@@ -49,9 +50,9 @@ namespace Saved_Game_Backup.ViewModel {
             get { return new RelayCommand(() => ExecuteAdd()); }
         }
 
-        [PreferredConstructor]
-        public AddGameViewModel(Brush background) {
-            Background = background;
+      
+        public AddGameViewModel(MainViewModel mainview) {
+            Background = mainview.Background;
 
             this.CloseWindowCommand = new RelayCommand<Window>(this.CloseWindow);
         }
