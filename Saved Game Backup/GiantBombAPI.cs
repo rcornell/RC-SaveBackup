@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Globalization;
@@ -195,6 +196,7 @@ namespace Saved_Game_Backup
 
         /// Edits json to update game id once it has been found by DownloadData()
         /// Could be expanded to write Thumbnail path to json file
+        /// ADD TRY/CATCH
         private async Task UpdateGameID() {
             if (_game.ID != 999999) {
                 return;
@@ -276,8 +278,31 @@ namespace Saved_Game_Backup
             #endregion
         }
 
-        internal void AddToJSON(string _name, string _path) {
-           
+        //Could be modified to download the thumbnail data now.
+        internal async void AddToJSON(string _name, string _path) {
+            var game = new Game(_name, _path, 999999);
+            try {
+                var gameJsonList = await JsonConvert.DeserializeObjectAsync<List<Game>>(File.ReadAllText(GameListPath));
+                gameJsonList.Add(game);
+                var listToReturn = new ObservableCollection<Game>(gameJsonList.OrderBy(x => x.Name));
+                var fileToWrite = JsonConvert.SerializeObject(listToReturn);
+                File.WriteAllText(GameListPath, fileToWrite);
+            }
+            catch (Exception ex)
+            {
+                var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                Directory.CreateDirectory(documentsPath + "\\Save Backup Tool\\Error\\");
+                var sb = new StringBuilder();
+                sb.AppendLine(ex.Message);
+                sb.AppendLine(ex.InnerException.Message);
+                sb.AppendLine(ex.Source);
+                sb.AppendLine(ex.StackTrace);
+                using (var fs = File.OpenWrite(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Save Backup Tool\\Error\\Log.txt")) {
+                    using (var sw = new StreamWriter(fs)) {
+                        sw.WriteLine(sb.ToString());
+                    }
+                }
+            }
         }
     }
 

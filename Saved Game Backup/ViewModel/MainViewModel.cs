@@ -117,7 +117,7 @@ namespace Saved_Game_Backup.ViewModel
         //public RelayCommand BackupAndZip {
         //    get { return new RelayCommand(() => ExecuteBackupAndZip()); }
         //}
-        public RelayCommand AddGame {
+        public RelayCommand OpenAddGameWindow {
             get { return new RelayCommand(() => ExecuteAddGame());}
         }
         public RelayCommand StartBackup {
@@ -403,7 +403,9 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ExecuteAddGame() {
-            
+            var optionsWindowVM = SimpleIoc.Default.GetInstance<AddGameViewModel>();
+            var addGameWindow = new AddGameWindow();
+            addGameWindow.Show();
         }
 
 

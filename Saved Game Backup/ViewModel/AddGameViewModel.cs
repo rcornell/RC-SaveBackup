@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -37,6 +38,8 @@ namespace Saved_Game_Backup.ViewModel {
             set { _name = value; }
         }
 
+        public RelayCommand<Window> CloseWindowCommand { get; private set; }
+
         public RelayCommand ChoosePath {
             get { return new RelayCommand(() => ExecuteChoosePath());}
         }
@@ -49,6 +52,8 @@ namespace Saved_Game_Backup.ViewModel {
         [PreferredConstructor]
         public AddGameViewModel(Brush background) {
             Background = background;
+
+            this.CloseWindowCommand = new RelayCommand<Window>(this.CloseWindow);
         }
 
         private void ExecuteChoosePath() {
@@ -62,6 +67,12 @@ namespace Saved_Game_Backup.ViewModel {
                 var gb = new GiantBombAPI();
                 gb.AddToJSON(_name, _path);
             }
+  
+        }
+
+        private void CloseWindow(Window window) {
+            if (window != null)
+                window.Close();
         }
     }
 }
