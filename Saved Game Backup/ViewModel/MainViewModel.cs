@@ -111,11 +111,17 @@ namespace Saved_Game_Backup.ViewModel
                 return new RelayCommand(() => ToGamesList());
             }
         }
-        public RelayCommand BackupSaves {
-            get { return new RelayCommand(() => ExecuteBackup());}
+        //public RelayCommand BackupSaves {
+        //    get { return new RelayCommand(() => ExecuteBackup());}
+        //}
+        //public RelayCommand BackupAndZip {
+        //    get { return new RelayCommand(() => ExecuteBackupAndZip()); }
+        //}
+        public RelayCommand AddGame {
+            get { return new RelayCommand(() => ExecuteAddGame());}
         }
-        public RelayCommand BackupAndZip {
-            get { return new RelayCommand(() => ExecuteBackupAndZip()); }
+        public RelayCommand StartBackup {
+            get { return new RelayCommand(() => ExecuteStartBackup());}
         }
         public RelayCommand ResetList
         {
@@ -385,6 +391,19 @@ namespace Saved_Game_Backup.ViewModel
             //var optionsWindowVM = SimpleIoc.Default.GetInstance<OptionsViewModel>();
             var optionsWindow = new OptionsWindow();
             optionsWindow.Show();
+        }
+
+        private void ExecuteStartBackup() {
+            if (BackupType == BackupType.ToFolder)
+                ExecuteBackup();
+            else if (BackupType == BackupType.ToZip)
+                ExecuteBackupAndZip();
+            else
+                ExecuteAutoBackupToggle();
+        }
+
+        private void ExecuteAddGame() {
+            
         }
 
 

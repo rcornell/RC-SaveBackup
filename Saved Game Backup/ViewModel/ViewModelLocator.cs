@@ -44,6 +44,7 @@ namespace Saved_Game_Backup.ViewModel
 
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<OptionsViewModel>();
+            SimpleIoc.Default.Register<AddGameViewModel>();
         }
 
         public MainViewModel Main
@@ -59,6 +60,14 @@ namespace Saved_Game_Backup.ViewModel
             get
             {
                 return ServiceLocator.Current.GetInstance<OptionsViewModel>();
+            }
+        }
+
+        public AddGameViewModel AddGame
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<AddGameViewModel>();
             }
         }
         
