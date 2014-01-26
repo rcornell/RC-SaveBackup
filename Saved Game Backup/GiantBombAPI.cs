@@ -39,7 +39,7 @@ namespace Saved_Game_Backup
             set { _thumbnailPath = value; }
         }
 
-        private const string GameListPath = @"C:\Users\Rob\Documents\Save Backup Tool\Games.json";
+        private const string GameListPath = @"Database\Games.json";
         private const string ApiKey = "ab63aeba2395b10932897115dc4bf3fa048e1734";
         private const string StringBase = "http://www.giantbomb.com/api";
         private const string Format = "json";
