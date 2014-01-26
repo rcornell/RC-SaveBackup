@@ -16,6 +16,8 @@ using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
+using Saved_Game_Backup.Helper;
 
 namespace Saved_Game_Backup.ViewModel
 {
@@ -73,6 +75,10 @@ namespace Saved_Game_Backup.ViewModel
             set { _selectedBackupGame = value; }
         }
         private string _specifiedFolder;
+        public string SpecifiedFolder {
+            get { return _specifiedFolder; }
+            set { _specifiedFolder = value; }
+        }
         private bool _backupEnabled;
         private int _maxBackups;
         public int MaxBackups {
@@ -83,6 +89,12 @@ namespace Saved_Game_Backup.ViewModel
         public int Theme {
             get { return _theme; }
             set { _theme = value; }
+        }
+
+        private BackupType _backupType;
+        public BackupType BackupType {
+            get { return _backupType; }
+            set { _backupType = value; }
         }
 
         public RelayCommand MoveToBackupList
@@ -139,6 +151,13 @@ namespace Saved_Game_Backup.ViewModel
             GamesToBackup = new ObservableCollection<Game>();
             SetUpInterface();
             CreateHardDriveCollection();
+
+            //Messenger.Default.Register<int>(this, b => BackupType = b);
+            //Messenger.Default.Register<string>(this, s => SelectedHardDrive = s);
+            //Messenger.Default.Register<string>(this, p => SpecifiedFolder = p);
+            Messenger.Default.Register<OptionMessage>(this, s => this.BackupType = s.BackupType );
+            Messenger.Default.Register<OptionMessage>(this, s => this.SelectedHardDrive = s.HardDrive);
+            Messenger.Default.Register<OptionMessage>(this, s => this.SpecifiedFolder = s.SpecifiedFolder);
         }
 
         private void SetUpInterface() {
@@ -361,8 +380,13 @@ namespace Saved_Game_Backup.ViewModel
             var optionsWindowVM = SimpleIoc.Default.GetInstance<OptionsViewModel>();
             var optionsWindow = new OptionsWindow();
             optionsWindow.Show();
+            optionsWindow.Closing += optionsWindow_Closing;
 
 
+        }
+
+        void optionsWindow_Closing(object sender, CancelEventArgs e) {
+           
         }
     }
 }

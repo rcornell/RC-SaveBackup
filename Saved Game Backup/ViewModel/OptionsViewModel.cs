@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Ioc;
 
 namespace Saved_Game_Backup.ViewModel {
     
@@ -52,22 +53,28 @@ namespace Saved_Game_Backup.ViewModel {
             set { _backupType = value; }
         }
 
+        private MainViewModel _mainView;
+        public MainViewModel MainView {
+            get { return _mainView; }
+            set { _mainView = value; }
+        }
+
         public RelayCommand ChooseFolder {
             get { return new RelayCommand(() => ExecuteChooseFolder());}
         }
 
-        private MainViewModel _mainView;
-
-        public OptionsViewModel(){}
-
+        [PreferredConstructor]
         public OptionsViewModel(MainViewModel main) {
             _background = main.Background;
+            _hardDrives = main.HardDrives;
+           
         }
 
         private void ExecuteChooseFolder() {
-            var path= Environment.GetFolderPath(Environment.SpecialFolder.MyComputer);
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer);
             var dialog = new FolderBrowserDialog();
-            dialog.RootFolder = path;
+            if (dialog.ShowDialog() == DialogResult.OK)
+                _mainView.SpecifiedFolder = dialog.SelectedPath;
         }
     }
 }
