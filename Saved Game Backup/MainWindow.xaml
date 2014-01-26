@@ -55,8 +55,9 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="450" />
             </Grid.ColumnDefinitions>
-            <Button Grid.Row="1" Grid.Column="2"
-                    Content="OPTIONS"></Button>
+            <Button Grid.Row="1"
+                    Grid.Column="2"
+                    Content="OPTIONS" />
             <StackPanel Grid.Row="3"
                         Grid.Column="3"
                         Height="400">

@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Ioc;
 
 namespace Saved_Game_Backup.ViewModel
 {
@@ -356,9 +357,12 @@ namespace Saved_Game_Backup.ViewModel
             game.ThumbnailPath = gb.ThumbnailPath;
         }
 
-        private void ExecuteOpenOptionsWindow(OptionsViewModel optionsView) {
-            
-            
+        private void ExecuteOpenOptionsWindow() {
+            var optionsWindowVM = SimpleIoc.Default.GetInstance<OptionsViewModel>();
+            var optionsWindow = new OptionsWindow();
+            optionsWindow.Show();
+
+
         }
     }
 }

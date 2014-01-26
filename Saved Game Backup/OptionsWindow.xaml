@@ -6,16 +6,61 @@
         xmlns:savedGameBackup="clr-namespace:Saved_Game_Backup"
         xmlns:viewModel="clr-namespace:Saved_Game_Backup.ViewModel"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        Title="OptionsWindow" Height="300" Width="300"
+        Title="OptionsWindow"
+        Width="300"
+        Height="300"
         DataContext="{Binding Path=Options,
                               Source={StaticResource Locator}}"
         Icon="Resources/SGBIcon.ico"
         Padding="3"
         WindowStartupLocation="CenterScreen"
         WindowStyle="SingleBorderWindow">
-    <StackPanel>
+    <StackPanel Background="{Binding Background}">
         <Grid>
-            <Image/>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Row="1"
+                       Grid.Column="0"
+                       Grid.ColumnSpan="2"
+                       Text="If your save files are in a custom location, select it here."
+                       TextWrapping="Wrap" />
+            <Button Grid.Row="1"
+                    Grid.Column="2"
+                    VerticalAlignment="Center"
+                    Content="Choose Folder" />
+            <TextBlock Grid.Row="2"
+                       Grid.Column="0"
+                       Grid.ColumnSpan="2"
+                       Text="Select your main HDD."
+                       TextWrapping="Wrap" />
+            <ComboBox Grid.Row="2"
+                      Grid.Column="2"
+                      VerticalAlignment="Center"
+                      ItemsSource="{Binding HardDrives}"
+                      SelectedItem="{Binding SelectedHardDrive}" />
+            <TextBlock Grid.Row="3"
+                       Grid.Column="0"
+                       Grid.ColumnSpan="2"
+                       Text="Choose a backup method."
+                       TextWrapping="Wrap" />
+            <ComboBox Grid.Row="3"
+                      Grid.Column="2"
+                      VerticalAlignment="Center"
+                      ItemsSource="{Binding BackupTypes}"
+                      SelectedItem="{Binding BackupType}" />
+
+
+
         </Grid>
     </StackPanel>
 </Window>
