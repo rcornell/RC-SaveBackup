@@ -162,6 +162,10 @@ namespace Saved_Game_Backup.ViewModel
             });
         }
 
+        ~MainViewModel() {
+          CloseApplication();
+        }
+
         private void SetUpInterface() {
             if (!PrefSaver.CheckForPrefs())
             {
@@ -369,7 +373,8 @@ namespace Saved_Game_Backup.ViewModel
 
         private void CloseApplication() {
             SaveUserPrefs();
-            Application.Current.MainWindow.Close();
+            if (Application.Current != null)
+              Application.Current.Shutdown();
         }
 
         private async Task GetThumb(Game game) {
