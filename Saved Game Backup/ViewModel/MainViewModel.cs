@@ -111,12 +111,6 @@ namespace Saved_Game_Backup.ViewModel
                 return new RelayCommand(() => ToGamesList());
             }
         }
-        //public RelayCommand BackupSaves {
-        //    get { return new RelayCommand(() => ExecuteBackup());}
-        //}
-        //public RelayCommand BackupAndZip {
-        //    get { return new RelayCommand(() => ExecuteBackupAndZip()); }
-        //}
         public RelayCommand OpenAddGameWindow {
             get { return new RelayCommand(() => ExecuteAddGame());}
         }

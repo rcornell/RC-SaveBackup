@@ -17,8 +17,6 @@ namespace Saved_Game_Backup.ViewModel {
     
     public class OptionsViewModel : ViewModelBase {
 
-
-
         private Brush _background;
         public Brush Background { 
             get { return _background; } 
@@ -30,7 +28,6 @@ namespace Saved_Game_Backup.ViewModel {
             get { return _hardDrives; }
             set {
                 _hardDrives = value;
-                Messenger.Default.Send<OptionMessage>(new OptionMessage(this));
             }
         }
 
@@ -54,7 +51,10 @@ namespace Saved_Game_Backup.ViewModel {
         private string _specifiedFolder;
         public string SpecifiedFolder {
             get { return _specifiedFolder; }
-            set { _specifiedFolder = value; }
+            set {
+                _specifiedFolder = value;
+                Messenger.Default.Send<OptionMessage>(new OptionMessage(this));
+            }
         }
 
         private BackupType _backupType;
@@ -93,5 +93,7 @@ namespace Saved_Game_Backup.ViewModel {
                 _specifiedFolder = dialog.SelectedPath;
 
         }
+        
+
     }
 }

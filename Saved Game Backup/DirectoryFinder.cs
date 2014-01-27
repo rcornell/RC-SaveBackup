@@ -50,23 +50,6 @@ namespace Saved_Game_Backup
                 : null;
         }
 
-        //private void GenerateDictionary()
-        //{
-        //    _gameSaveDirectories.Add("Terraria", @"C:\Users\Rob\Documents\My Games\Terraria");
-        //}
-
-        
-
-        /// <summary>
-        /// Reads the json file and returns the list of games.
-        /// </summary>
-        /// <returns></returns>
-        //public static ObservableCollection<Game> ReturnGamesList() {
-        //    var gamesList = JsonConvert.DeserializeObject<ObservableCollection<Game>>(File.ReadAllText(_sbtPath)+"Games.json");
-
-        //    return gamesList;
-        //}
-
         /// <summary>
         /// Opens a folder browser dialog and sets the specifiedFolder string to the chosen path.
         /// </summary>
@@ -79,9 +62,8 @@ namespace Saved_Game_Backup
 
         public static ObservableCollection<Game> PollDirectories(string hardDrive, ObservableCollection<Game> gamesList) {
             var detectedGamesList = new ObservableCollection<Game>();
-            foreach (Game game in gamesList) {
-                if(Directory.Exists(game.Path))
-                    detectedGamesList.Add(game);
+            foreach (Game game in gamesList.Where(game => Directory.Exists(game.Path))) {
+                detectedGamesList.Add(game);
             }
             return detectedGamesList;
         }
