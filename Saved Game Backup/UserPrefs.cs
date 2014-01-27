@@ -44,7 +44,5 @@ namespace Saved_Game_Backup {
             _selectedGames = games;
             _hardDrive = hardDrive;
         }
-
-        
     }
 }

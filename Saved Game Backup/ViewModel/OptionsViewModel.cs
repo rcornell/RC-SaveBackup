@@ -76,6 +76,11 @@ namespace Saved_Game_Backup.ViewModel {
 
         [PreferredConstructor]
         public OptionsViewModel(MainViewModel main) {
+            BackupTypes = new ObservableCollection<BackupType>() {
+                BackupType.Autobackup,
+                BackupType.ToFolder,
+                BackupType.ToZip
+            };
             _background = main.Background;
             _hardDrives = main.HardDrives;
         }

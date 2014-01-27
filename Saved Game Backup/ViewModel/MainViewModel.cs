@@ -155,12 +155,9 @@ namespace Saved_Game_Backup.ViewModel
             HardDrives = new ObservableCollection<string>();
             GamesList = DirectoryFinder.ReturnGamesList();
             GamesToBackup = new ObservableCollection<Game>();
+            DirectoryFinder.CheckDirectories();
             SetUpInterface();
             CreateHardDriveCollection();
-
-            //Messenger.Default.Register<OptionMessage>(this, s => this.BackupType = s.BackupType );
-            //Messenger.Default.Register<OptionMessage>(this, s => this.SelectedHardDrive = s.HardDrive);
-            //Messenger.Default.Register<OptionMessage>(this, s => this.SpecifiedFolder = s.SpecifiedFolder);
 
             Messenger.Default.Register<OptionMessage>(this, s => {
                     BackupType = s.BackupType;

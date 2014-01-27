@@ -27,16 +27,19 @@ namespace Saved_Game_Backup
             }
         }
 
-        private string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        private static string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         private static string _sbtPath;
 
-        public DirectoryFinder() {
+        static DirectoryFinder() {
+             
+        }
+
+        public static void CheckDirectories() {
             _sbtPath = documentsPath + "\\Save Backup Tool\\";
-            if (!Directory.Exists(_sbtPath)){
-                Directory.CreateDirectory(_sbtPath);
+            if (!Directory.Exists(_sbtPath + "Thumbnails\\"))
                 Directory.CreateDirectory(_sbtPath+"Thumbnails\\");
+            if (!Directory.Exists(_sbtPath + "Error\\"))
                 Directory.CreateDirectory(_sbtPath + "Error\\");
-            }
         }
 
         public static ObservableCollection<Game> ReturnGamesList() {
