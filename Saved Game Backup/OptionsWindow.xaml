@@ -61,7 +61,7 @@
                       Grid.Column="2"
                       VerticalAlignment="Center"
                       ItemsSource="{Binding BackupTypes}"
-                      SelectedItem="{Binding BackupType}" />
+                      SelectedItem="{Binding BackupType, Mode=TwoWay}" />
 
 
 

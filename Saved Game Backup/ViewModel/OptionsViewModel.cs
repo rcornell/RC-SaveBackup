@@ -39,7 +39,6 @@ namespace Saved_Game_Backup.ViewModel {
             get { return _backupTypes; }
             set {
                 _backupTypes = value;
-                Messenger.Default.Send<OptionMessage>(new OptionMessage(this));
             }
         }
 
@@ -61,7 +60,10 @@ namespace Saved_Game_Backup.ViewModel {
         private BackupType _backupType;
         public BackupType BackupType {
             get { return _backupType; }
-            set { _backupType = value; }
+            set {
+                _backupType = value;
+                Messenger.Default.Send<OptionMessage>(new OptionMessage(this));
+            }
         }
 
         private MainViewModel _mainView;
