@@ -46,16 +46,13 @@ namespace Saved_Game_Backup.ViewModel {
             get { return new RelayCommand(() => ExecuteChoosePath());}
         }
 
-        public RelayCommand Add
-        {
-            get { return new RelayCommand(() => ExecuteAdd()); }
+        public RelayCommand<Window> Add {
+            get { return new RelayCommand<Window>(ExecuteAdd); }
         }
 
       
         public AddGameViewModel(MainViewModel mainview) {
             Background = mainview.Background;
-
-            this.CloseWindowCommand = new RelayCommand<Window>(this.CloseWindow);
         }
 
         private void ExecuteChoosePath() {
@@ -64,18 +61,13 @@ namespace Saved_Game_Backup.ViewModel {
                 Path = fb.SelectedPath;
         }
 
-        private void ExecuteAdd() {
+        private void ExecuteAdd(Window window) {
             if (!string.IsNullOrWhiteSpace(_name) && !string.IsNullOrWhiteSpace(_path)) {
                 var gb = new GiantBombAPI();
                 gb.AddToJSON(_name, _path);
             }
-            //Code to close the window
-            
-        }
-
-        private void CloseWindow(Window window) {
-            if (window != null)
-                window.Close();
+            if(window!=null)
+                window.Close(); 
         }
     }
 }

@@ -5,6 +5,7 @@
         Width="300"
         Height="300"
         Background="DeepSkyBlue"
+        x:Name="AddWindow"
         DataContext="{Binding AddGame,
                               Source={StaticResource Locator}}">
     <Window.Resources>

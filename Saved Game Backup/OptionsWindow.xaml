@@ -25,6 +25,7 @@
                 <RowDefinition />
                 <RowDefinition />
                 <RowDefinition />
+                <RowDefinition />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -61,9 +62,12 @@
                       Grid.Column="2"
                       VerticalAlignment="Center"
                       ItemsSource="{Binding BackupTypes}"
-                      SelectedItem="{Binding BackupType, Mode=TwoWay}" />
-
-
+                      SelectedItem="{Binding BackupType,
+                                             Mode=TwoWay}" />
+            <Button Grid.Row="4"
+                    Grid.Column="2"
+                    Command="{Binding Close}"
+                    Content="Done!" />
 
         </Grid>
     </StackPanel>

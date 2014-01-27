@@ -347,8 +347,7 @@ namespace Saved_Game_Backup.ViewModel
                 MessageBox.Show("No games selected. \n\rPlease select at least one game.");
                 ExecuteReset();
                 return false;
-            }
-            
+            }   
             return true;
         }
 

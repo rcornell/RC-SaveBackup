@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -76,6 +77,10 @@ namespace Saved_Game_Backup.ViewModel {
             get { return new RelayCommand(() => ExecuteChooseFolder());}
         }
 
+        public RelayCommand<Window> Close {
+            get{ return new RelayCommand<Window>(CloseWindow);}
+        }
+
         [PreferredConstructor]
         public OptionsViewModel(MainViewModel main) {
             BackupTypes = new ObservableCollection<BackupType>() {
@@ -93,7 +98,11 @@ namespace Saved_Game_Backup.ViewModel {
                 _specifiedFolder = dialog.SelectedPath;
 
         }
-        
+
+        private void CloseWindow(Window window) {
+            if (window != null)
+                window.Close();
+        }
 
     }
 }
