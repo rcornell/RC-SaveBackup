@@ -60,15 +60,15 @@
                     HorizontalAlignment="Center"
                     Command="{Binding OpenOptionsWindow}"
                     Content="Backup Preferences" />
-            
-            <!--TEST BUTTON BELOW-->
-            <Button Grid.Row="1"
+
+            <!--  TEST BUTTON BELOW  -->
+            <!--<Button Grid.Row="1"
                     Grid.Column="2"
                     Height="60"
                     HorizontalAlignment="Center"
                     Command="{Binding OpenAddGameWindow}"
-                    Content="Open AddGame" />
-            
+                    Content="Open AddGame" />-->
+
             <Button Grid.Row="1"
                     Grid.Column="3"
                     Height="60"
@@ -231,7 +231,7 @@
             <Button Grid.Row="7"
                     Grid.Column="1"
                     HorizontalAlignment="Center"
-                    Command="{Binding AddGame}"
+                    Command="{Binding OpenAddGameWindow}"
                     Content="Add Game to List" />
             <Border Grid.Row="7"
                     Grid.Column="3"

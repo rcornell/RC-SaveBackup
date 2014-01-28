@@ -15,17 +15,18 @@ namespace Saved_Game_Backup
 {
     public class DirectoryFinder {
 
-        private Dictionary<string, string> _gameSaveDirectories;
-        public Dictionary<string, string> GameSaveDirectories {
-            get
-            {
-                return _gameSaveDirectories;
-            }
-            set
-            {
-                _gameSaveDirectories = value;
-            }
-        }
+        //private Dictionary<string, string> _gameSaveDirectories;
+        //public Dictionary<string, string> GameSaveDirectories {
+        //    get
+        //    {
+        //        return _gameSaveDirectories;
+        //    }
+        //    set
+        //    {
+        //        _gameSaveDirectories = value;
+        //    }
+        //}
+        public static ObservableCollection<string> HardDrives { get; set; } 
 
         private static string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         private static string _sbtPath;
@@ -40,6 +41,14 @@ namespace Saved_Game_Backup
                 Directory.CreateDirectory(_sbtPath+"Thumbnails\\");
             if (!Directory.Exists(_sbtPath + "Error\\"))
                 Directory.CreateDirectory(_sbtPath + "Error\\");
+        }
+
+        public static ObservableCollection<string> CreateHardDriveCollection() {
+            HardDrives = new ObservableCollection<string>();
+            var drives = DriveInfo.GetDrives();
+            foreach (var drive in drives) {
+                HardDrives.Add(drive.RootDirectory.ToString());
+            }
         }
 
         public static ObservableCollection<Game> ReturnGamesList() {

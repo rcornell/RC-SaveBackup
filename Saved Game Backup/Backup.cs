@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
+using MessageBox = System.Windows.MessageBox;
 using Timer = System.Timers.Timer;
 
 
@@ -104,27 +105,7 @@ namespace Saved_Game_Backup
             }
         }
 
-        private static void DeleteDirectory(string deleteDirName) {
-
-            var dir = new DirectoryInfo(deleteDirName);
-            var dirs = dir.GetDirectories();
-
-            // Get the files in the directory and copy them to the new location.
-            FileInfo[] files = dir.GetFiles();
-            foreach (FileInfo file in files)
-            {
-                File.Delete(file.FullName);
-            }
-
-            foreach (DirectoryInfo subdir in dirs)
-            {
-                var temppath = Path.Combine(deleteDirName, subdir.Name);
-                DeleteDirectory(temppath);
-                Directory.Delete(subdir.FullName);
-            }
-
-
-        }
+        
 
         public static bool BackupAndZip(ObservableCollection<Game> gamesList, string harddrive, bool zipping,string specifiedfolder = null) {
 
@@ -160,6 +141,25 @@ namespace Saved_Game_Backup
             DeleteDirectory(zipSource);
             Directory.Delete(zipSource);
 
+            return true;
+        }
+
+        /// <summary>
+        /// Returns false if turning off autobackup. Returns true if activating.
+        /// </summary>
+        /// <param name="gamesToBackup"></param>
+        /// <param name="harddrive"></param>
+        /// <param name="backupEnabled"></param>
+        /// <param name="specifiedFolder"></param>
+        /// <returns></returns>
+        public static bool ToggleAutoBackup(ObservableCollection<Game> gamesToBackup, string harddrive,
+            bool backupEnabled, string specifiedFolder = null) {
+            if (backupEnabled){
+                DeactivateAutoBackup();
+                return false;
+            }
+            
+            ActivateAutoBackup(gamesToBackup, harddrive, specifiedFolder);
             return true;
         }
 
@@ -199,6 +199,39 @@ namespace Saved_Game_Backup
             _fileWatcherList.Clear();
         }
 
+        private static void DeleteDirectory(string deleteDirName) {
+
+                    var dir = new DirectoryInfo(deleteDirName);
+                    var dirs = dir.GetDirectories();
+
+                    // Get the files in the directory and copy them to the new location.
+                    FileInfo[] files = dir.GetFiles();
+                    foreach (FileInfo file in files)
+                    {
+                        File.Delete(file.FullName);
+                    }
+
+                    foreach (DirectoryInfo subdir in dirs)
+                    {
+                        var temppath = Path.Combine(deleteDirName, subdir.Name);
+                        DeleteDirectory(temppath);
+                        Directory.Delete(subdir.FullName);
+                    }
+
+
+                }
+
+        public static bool CanBackup(ObservableCollection<Game> gamesToBackup,string selectedHardDrive) {
+            if (selectedHardDrive == null) {
+                MessageBox.Show("Storage disk not selected. \r\nPlease select the drive where your \r\nsaved games are stored.");
+                return false;
+            }
+
+            if (gamesToBackup.Any()) return true;
+            MessageBox.Show("No games selected. \n\rPlease select at least one game.");
+            return false;
+        }
+
         private static void _timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
             _autoBackupAllowed = true;
         }
@@ -219,23 +252,6 @@ namespace Saved_Game_Backup
             _autoBackupAllowed = false;
 
             //BackupFile(e);
-        }
-        
-        private static string CreateFolderPath() {
-            string path;
-            
-            try
-            {
-                //username = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
-                path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            }
-            catch (NullReferenceException ex)
-            {
-                System.Windows.MessageBox.Show("Cannot find the MyDocuments folder on your computer. \r\n" + ex);
-                return null;
-            }
-
-            return path;
         }
 
         private static void BackupFile(FileSystemEventArgs e) {

@@ -44,14 +44,13 @@ namespace Saved_Game_Backup.ViewModel
             set { _autoBackupVisibility = value; }
         }
 
-        private string _myDocumentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        private const string _sbtPath = "\\Save Backup Tool\\";
+        //private string _myDocumentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        //private const string _sbtPath = "\\Save Backup Tool\\";
        
         public ObservableCollection<string> HardDrives { get; set; } 
         public ObservableCollection<Game> GamesList { get; set; } 
         public ObservableCollection<Game> GamesToBackup { get; set; }
         public ObservableCollection<string> GameNames { get; set; }
-
         private Brush _background;
         public Brush Background {
             get { return _background; }
@@ -90,7 +89,6 @@ namespace Saved_Game_Backup.ViewModel
             get { return _theme; }
             set { _theme = value; }
         }
-
         private BackupType _backupType;
         public BackupType BackupType {
             get { return _backupType; }
@@ -110,10 +108,7 @@ namespace Saved_Game_Backup.ViewModel
             {
                 return new RelayCommand(() => ToGamesList());
             }
-        }
-        public RelayCommand OpenAddGameWindow {
-            get { return new RelayCommand(() => ExecuteAddGame());}
-        }
+        }    
         public RelayCommand StartBackup {
             get { return new RelayCommand(() => ExecuteStartBackup());}
         }
@@ -121,12 +116,12 @@ namespace Saved_Game_Backup.ViewModel
         {
             get { return new RelayCommand(() => ExecuteReset()); }
         }
-        public RelayCommand SpecifyFolder {
-            get {return new RelayCommand(() => ExecuteSpecifyFolder());}
-        }
-        public RelayCommand AutoBackup {
-            get { return new RelayCommand(() => ExecuteAutoBackupToggle()); }
-        }
+        //public RelayCommand SpecifyFolder {
+        //    get {return new RelayCommand(() => ExecuteSpecifyFolder());}
+        //}
+        //public RelayCommand AutoBackup {
+        //    get { return new RelayCommand(() => ExecuteAutoBackupToggle()); }
+        //}
         public RelayCommand DetectGames {
             get { return new RelayCommand(() => ExecuteDetectGames()); }
         }
@@ -141,17 +136,20 @@ namespace Saved_Game_Backup.ViewModel
         public RelayCommand OpenOptionsWindow {
             get { return new RelayCommand(() => ExecuteOpenOptionsWindow());}
         }
+        public RelayCommand OpenAddGameWindow
+        {
+            get { return new RelayCommand(() => ExecuteOpenAddGameWindow()); }
+        }
         public RelayCommand Close {
             get { return new RelayCommand(() => CloseApplication()); }
         }
 
         public MainViewModel() {
-            HardDrives = new ObservableCollection<string>();
+            HardDrives = DirectoryFinder.CreateHardDriveCollection();
             GamesList = DirectoryFinder.ReturnGamesList();
             GamesToBackup = new ObservableCollection<Game>();
             DirectoryFinder.CheckDirectories();
             SetUpInterface();
-            CreateHardDriveCollection();
 
             Messenger.Default.Register<OptionMessage>(this, s => {
                     BackupType = s.BackupType;
@@ -205,6 +203,9 @@ namespace Saved_Game_Backup.ViewModel
             p.SavePrefs(new UserPrefs(_theme, _maxBackups, _selectedHardDrive, GamesToBackup));
         }
 
+        /// <summary>
+        /// Removed custom HDD option?
+        /// </summary>
         private void ExecuteDetectGames() {
             if (_selectedHardDrive == null) {
                 MessageBox.Show("Storage disk not selected. \r\nPlease select the drive where your \r\nsaved games are stored.");
@@ -219,41 +220,6 @@ namespace Saved_Game_Backup.ViewModel
             RaisePropertyChanged(() => GamesToBackup);
             RaisePropertyChanged(() => GamesList);
         
-        }
-
-        private void ExecuteSpecifyFolder() {
-            _specifiedFolder = DirectoryFinder.SpecifyFolder();
-        }
-
-        private void CreateHardDriveCollection() {
-            DriveInfo[] drives = DriveInfo.GetDrives();
-            foreach (DriveInfo drive in drives) {
-                HardDrives.Add(drive.RootDirectory.ToString());
-            }
-        }
-
-        private void ExecuteAutoBackupToggle() {
-            
-
-            if (_backupEnabled) {
-                //This is for turning **OFF** AutoBackup
-                _backupEnabled = false;
-                _autoBackupVisibility = Visibility.Hidden;
-                Backup.DeactivateAutoBackup();
-            }
-            else {
-                //This is for turning **ON** AutoBackup
-                if (!CanBackup())
-                    return;
-
-                AutoBackupVisibility = Visibility.Visible;
-                _backupEnabled = true;
-                _specifiedFolder = DirectoryFinder.SpecifyFolder();
-                Backup.ActivateAutoBackup(GamesToBackup, _selectedHardDrive, _specifiedFolder);
-            }
-            RaisePropertyChanged(() => AutoBackupVisibility);    
-            SaveUserPrefs();
-            
         }
 
         private async void ToBackupList() {
@@ -280,8 +246,7 @@ namespace Saved_Game_Backup.ViewModel
             }
         }
 
-        private void ToGamesList()
-        {
+        private void ToGamesList() {
             Game game = null;
             if (_selectedBackupGame == null)
                 return;
@@ -302,25 +267,6 @@ namespace Saved_Game_Backup.ViewModel
             RaisePropertyChanged(() => GamesList);
         }
 
-        private void ExecuteBackup() {
-            if (!CanBackup())
-                return;
-
-            if(Backup.BackupSaves(GamesToBackup, SelectedHardDrive, false, _specifiedFolder))
-                MessageBox.Show("Saved games successfully backed up. \r\n");
-            SaveUserPrefs();
-            
-        }
-        
-        private void ExecuteBackupAndZip() {
-            if (!CanBackup())
-                return;
-
-            if(Backup.BackupAndZip(GamesToBackup, SelectedHardDrive, true, _specifiedFolder))
-                MessageBox.Show("Saved games successfully backed up. \r\n");
-            SaveUserPrefs();
-        }
-
         private void ExecuteReset() {
             GamesList = DirectoryFinder.ReturnGamesList();
             GamesToBackup.Clear();
@@ -334,21 +280,6 @@ namespace Saved_Game_Backup.ViewModel
             RaisePropertyChanged(() => SelectedHardDrive);
             RaisePropertyChanged(() => SelectedBackupGame);
             RaisePropertyChanged(() => SelectedGame);
-        }
-
-        private bool CanBackup() {
-            if (SelectedHardDrive == null) {
-                MessageBox.Show("Storage disk not selected. \r\nPlease select the drive where your \r\nsaved games are stored.");
-                ExecuteReset();
-                return false;
-            }
-
-            if (!GamesToBackup.Any()) {
-                MessageBox.Show("No games selected. \n\rPlease select at least one game.");
-                ExecuteReset();
-                return false;
-            }   
-            return true;
         }
 
         private void ExecuteSetThemeLight() {
@@ -382,25 +313,42 @@ namespace Saved_Game_Backup.ViewModel
             game.ThumbnailPath = gb.ThumbnailPath;
         }
 
-        private void ExecuteOpenOptionsWindow() {
-            //var optionsWindowVM = SimpleIoc.Default.GetInstance<OptionsViewModel>();
-            var optionsWindow = new OptionsWindow();
-            optionsWindow.Show();
-        }
-
         private void ExecuteStartBackup() {
-            if (BackupType == BackupType.ToFolder)
-                ExecuteBackup();
+            if (!Backup.CanBackup(GamesToBackup, _selectedHardDrive))
+                return;
+
+            bool success;
+            if (BackupType == BackupType.ToFolder) {
+                success = Backup.BackupSaves(GamesToBackup, SelectedHardDrive, false, _specifiedFolder);
+            }
             else if (BackupType == BackupType.ToZip)
-                ExecuteBackupAndZip();
+                success = Backup.BackupAndZip(GamesToBackup, SelectedHardDrive, true, _specifiedFolder);
             else
-                ExecuteAutoBackupToggle();
+                success = Backup.ToggleAutoBackup(GamesToBackup, SelectedHardDrive, _backupEnabled, _specifiedFolder);
+
+            if (this.BackupType != BackupType.Autobackup && success)
+                MessageBox.Show("Saves successfully backed up");
+            else if (this.BackupType == BackupType.Autobackup && success) {
+                MessageBox.Show("Autobackup enabled.");
+                AutoBackupVisibility = Visibility.Visible;
+                _backupEnabled = true;
+            }
+            else if (this.BackupType == BackupType.Autobackup && !success) {
+                MessageBox.Show("Autobackup disabled.");
+                _backupEnabled = false;
+                _autoBackupVisibility = Visibility.Hidden;
+            }
+            RaisePropertyChanged(() => AutoBackupVisibility);
         }
 
-        private void ExecuteAddGame() {
-            //var optionsWindowVM = SimpleIoc.Default.GetInstance<AddGameViewModel>();
+        private void ExecuteOpenAddGameWindow() {
             var addGameWindow = new AddGameWindow();
             addGameWindow.Show();
+        }
+
+        private void ExecuteOpenOptionsWindow() {
+            var optionsWindow = new OptionsWindow();
+            optionsWindow.Show();
         }
     }
 }
