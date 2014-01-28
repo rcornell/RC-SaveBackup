@@ -43,9 +43,6 @@ namespace Saved_Game_Backup.ViewModel
             get { return _autoBackupVisibility; }
             set { _autoBackupVisibility = value; }
         }
-
-        //private string _myDocumentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        //private const string _sbtPath = "\\Save Backup Tool\\";
        
         public ObservableCollection<string> HardDrives { get; set; } 
         public ObservableCollection<Game> GamesList { get; set; } 
@@ -116,12 +113,6 @@ namespace Saved_Game_Backup.ViewModel
         {
             get { return new RelayCommand(() => ExecuteReset()); }
         }
-        //public RelayCommand SpecifyFolder {
-        //    get {return new RelayCommand(() => ExecuteSpecifyFolder());}
-        //}
-        //public RelayCommand AutoBackup {
-        //    get { return new RelayCommand(() => ExecuteAutoBackupToggle()); }
-        //}
         public RelayCommand DetectGames {
             get { return new RelayCommand(() => ExecuteDetectGames()); }
         }

@@ -24,7 +24,6 @@ namespace Saved_Game_Backup
         private static ObservableCollection<Game> _gamesToAutoBackup = new ObservableCollection<Game>();
         private static List<FileSystemWatcher> _fileWatcherList;
         private static string _specifiedAutoBackupFolder;
-        private static string _hardDrive;
         private static bool _autoBackupAllowed;
         private static Timer _timer;
         
@@ -32,13 +31,8 @@ namespace Saved_Game_Backup
             
         }
 
-        
-
         //Doesn't know if you cancel out of a dialog.
         //Needs threading when it is processing lots of files. Progress bar? Progress animation?
-
-        
-
         public static bool BackupSaves(ObservableCollection<Game> gamesList, string harddrive, bool zipping, string specifiedfolder = null) {
             var destination = harddrive + "SaveBackups";
 
@@ -104,8 +98,6 @@ namespace Saved_Game_Backup
                 BackupGame(subdir.FullName, temppath);
             }
         }
-
-        
 
         public static bool BackupAndZip(ObservableCollection<Game> gamesList, string harddrive, bool zipping,string specifiedfolder = null) {
 

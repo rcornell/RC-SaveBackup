@@ -15,17 +15,6 @@ namespace Saved_Game_Backup
 {
     public class DirectoryFinder {
 
-        //private Dictionary<string, string> _gameSaveDirectories;
-        //public Dictionary<string, string> GameSaveDirectories {
-        //    get
-        //    {
-        //        return _gameSaveDirectories;
-        //    }
-        //    set
-        //    {
-        //        _gameSaveDirectories = value;
-        //    }
-        //}
         public static ObservableCollection<string> HardDrives { get; set; } 
 
         private static string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
