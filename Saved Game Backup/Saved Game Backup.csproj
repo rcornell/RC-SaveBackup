@@ -110,6 +110,7 @@
     <Compile Include="ViewModel\AddGameViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\OptionsViewModel.cs" />
+    <Compile Include="Theme.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="AddGameWindow.xaml">
       <SubType>Designer</SubType>

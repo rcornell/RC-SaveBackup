@@ -81,10 +81,10 @@ namespace Saved_Game_Backup.ViewModel
             get { return _maxBackups; }
             set { _maxBackups = value; }
         }
-        private int _theme;
-        public int Theme {
-            get { return _theme; }
-            set { _theme = value; }
+        private int _themeInt;
+        public int ThemeInt {
+            get { return _themeInt; }
+            set { _themeInt = value; }
         }
         private BackupType _backupType;
         public BackupType BackupType {
@@ -156,35 +156,31 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void SetUpInterface() {
-            if (!PrefSaver.CheckForPrefs())
-            {
+            if (!PrefSaver.CheckForPrefs()) {
                 _maxBackups = 5;
-                _theme = 0;
+                _themeInt = 0;
             }
-            else
-            {
+            else {
                 var p = new PrefSaver();
                 var prefs = p.LoadPrefs();
                 _maxBackups = prefs.MaxBackups;
-                _theme = prefs.Theme;
+                _themeInt = prefs.Theme;
                 GamesToBackup = prefs.SelectedGames;
                 _selectedHardDrive = prefs.HardDrive;
 
                 var listToRemove = new ObservableCollection<Game>();
-                foreach (Game game in prefs.SelectedGames)
-                {
-                    foreach (Game g in GamesList)
-                    {
+                foreach (Game game in prefs.SelectedGames) {
+                    foreach (Game g in GamesList) {
                         if (game.Name == g.Name)
                             listToRemove.Add(g);
                     }
                     foreach (Game gameBeingRemoved in listToRemove)
                         GamesList.Remove(gameBeingRemoved);
-
                 }
                 RaisePropertyChanged(() => GamesList);
-                ToggleTheme();
             }
+            Background = Theme.ToggleTheme(_themeInt);
+            RaisePropertyChanged(() => Background);
             AutoBackupVisibility = Visibility.Hidden;
             RaisePropertyChanged(() => AutoBackupVisibility);
         }
@@ -274,22 +270,15 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ExecuteSetThemeLight() {
-            _theme = 0;
-            ToggleTheme();
+            _themeInt = 0;
+            Background = Theme.ToggleTheme(_themeInt);
+            RaisePropertyChanged(() => Background);
         }
         
         private void ExecuteSetThemeDark() {
-            _theme = 1;
-            ToggleTheme();
-        }
-
-        private void ToggleTheme() {
-            var bc = new BrushConverter();  
-            var brush = (Brush)bc.ConvertFrom("#FF2D2D30"); 
-            brush.Freeze();
-            _background = (_theme == 0) ? Brushes.DeepSkyBlue : brush;
+            _themeInt = 1;
+            Background = Theme.ToggleTheme(_themeInt);
             RaisePropertyChanged(() => Background);
-            
         }
 
         private void CloseApplication() {
