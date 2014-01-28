@@ -23,6 +23,7 @@ namespace Saved_Game_Backup
 
         private static ObservableCollection<Game> _gamesToAutoBackup = new ObservableCollection<Game>();
         private static List<FileSystemWatcher> _fileWatcherList;
+        private static string _hardDrive; //Is this ever used??
         private static string _specifiedAutoBackupFolder;
         private static bool _autoBackupAllowed;
         private static Timer _timer;

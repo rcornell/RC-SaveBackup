@@ -187,7 +187,7 @@ namespace Saved_Game_Backup.ViewModel
 
         private void SaveUserPrefs() {
             var p = new PrefSaver();
-            p.SavePrefs(new UserPrefs(_theme, _maxBackups, _selectedHardDrive, GamesToBackup));
+            p.SavePrefs(new UserPrefs(_themeInt, _maxBackups, _selectedHardDrive, GamesToBackup));
         }
 
         /// <summary>

@@ -38,6 +38,7 @@ namespace Saved_Game_Backup
             foreach (var drive in drives) {
                 HardDrives.Add(drive.RootDirectory.ToString());
             }
+            return HardDrives;
         }
 
         public static ObservableCollection<Game> ReturnGamesList() {
