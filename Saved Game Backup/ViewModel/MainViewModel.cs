@@ -48,11 +48,20 @@ namespace Saved_Game_Backup.ViewModel
         public ObservableCollection<Game> GamesList { get; set; } 
         public ObservableCollection<Game> GamesToBackup { get; set; }
         public ObservableCollection<string> GameNames { get; set; }
+
         private Brush _background;
         public Brush Background {
             get { return _background; }
             set { _background = value; }
         }
+        private Brush _listBoxBackground;
+        public Brush ListBoxBackground {
+            get { return _listBoxBackground; }
+            set { _listBoxBackground = value; }
+        }
+
+        public ObservableCollection<Brush> Brushes { get; set; }
+
         private string _selectedHardDrive;
         public string SelectedHardDrive {
             get { return _selectedHardDrive; }
@@ -131,9 +140,9 @@ namespace Saved_Game_Backup.ViewModel
         {
             get { return new RelayCommand(() => ExecuteOpenAddGameWindow()); }
         }
-        public RelayCommand Close {
-            get { return new RelayCommand(() => CloseApplication()); }
-        }
+        //public RelayCommand Close {
+        //    get { return new RelayCommand(() => CloseApplication()); }
+        //}
 
         public MainViewModel() {
             HardDrives = DirectoryFinder.CreateHardDriveCollection();
@@ -151,9 +160,9 @@ namespace Saved_Game_Backup.ViewModel
             });
         }
 
-        ~MainViewModel() {
-          CloseApplication();
-        }
+        //~MainViewModel() {
+        //  CloseApplication();
+        //}
 
         private void SetUpInterface() {
             if (!PrefSaver.CheckForPrefs()) {
@@ -179,7 +188,7 @@ namespace Saved_Game_Backup.ViewModel
                 }
                 RaisePropertyChanged(() => GamesList);
             }
-            Background = Theme.ToggleTheme(_themeInt);
+            Brushes = Theme.ToggleTheme(_themeInt);
             RaisePropertyChanged(() => Background);
             AutoBackupVisibility = Visibility.Hidden;
             RaisePropertyChanged(() => AutoBackupVisibility);
@@ -271,21 +280,21 @@ namespace Saved_Game_Backup.ViewModel
 
         private void ExecuteSetThemeLight() {
             _themeInt = 0;
-            Background = Theme.ToggleTheme(_themeInt);
-            RaisePropertyChanged(() => Background);
+            Brushes = Theme.ToggleTheme(_themeInt);
+            RaisePropertyChanged(() => Brushes);
         }
         
         private void ExecuteSetThemeDark() {
             _themeInt = 1;
-            Background = Theme.ToggleTheme(_themeInt);
-            RaisePropertyChanged(() => Background);
+            Brushes = Theme.ToggleTheme(_themeInt);
+            RaisePropertyChanged(() => Brushes);
         }
 
-        private void CloseApplication() {
-            SaveUserPrefs();
-            if (Application.Current != null)
-              Application.Current.Shutdown();
-        }
+        //private void CloseApplication() {
+        //    SaveUserPrefs();
+        //    //if (Application.Current != null)
+        //    //  Application.Current.Shutdown();
+        //}
 
         private async Task GetThumb(Game game) {
             var gb = new GiantBombAPI(game);

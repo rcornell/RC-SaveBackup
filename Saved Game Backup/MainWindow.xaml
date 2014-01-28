@@ -18,14 +18,22 @@
         WindowStyle="SingleBorderWindow">
     <Window.Style>
         <Style BasedOn="{StaticResource FontStyle}" TargetType="Control" />
+        
     </Window.Style>
-    <StackPanel Background="{Binding Background}">
+    <Window.Resources>
+        <Style x:Name="ListBoxStyle" TargetType="ListBox">
+            <Setter Property="Background" Value="{Binding Brushes[1]}"/>
+            <Setter Property="Foreground" Value="White"></Setter>
+        </Style>
+    </Window.Resources>
+    <StackPanel Background="{Binding Brushes[0]}">
         <Menu IsMainMenu="True">
             <MenuItem Header="_File">
                 <MenuItem Header="_Theme">
                     <MenuItem Command="{Binding SetThemeLight}" Header="_Light" />
                     <MenuItem Command="{Binding SetThemeDark}" Header="_Dark" />
                 </MenuItem>
+                <!--  Close command breaking designer  -->
                 <MenuItem Command="{Binding Close}" Header="_Exit" />
             </MenuItem>
         </Menu>
@@ -62,12 +70,14 @@
                     Content="Backup Preferences" />
 
             <!--  TEST BUTTON BELOW  -->
-            <!--<Button Grid.Row="1"
-                    Grid.Column="2"
-                    Height="60"
-                    HorizontalAlignment="Center"
-                    Command="{Binding OpenAddGameWindow}"
-                    Content="Open AddGame" />-->
+            <!--
+                <Button Grid.Row="1"
+                Grid.Column="2"
+                Height="60"
+                HorizontalAlignment="Center"
+                Command="{Binding OpenAddGameWindow}"
+                Content="Open AddGame" />
+            -->
 
             <Button Grid.Row="1"
                     Grid.Column="3"
