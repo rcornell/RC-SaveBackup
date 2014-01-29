@@ -32,6 +32,11 @@ namespace Saved_Game_Backup
             
         }
 
+        public bool StartBackup(ObservableCollection<Game> gamesToBackup, BackupType backupType) {
+
+            return false;
+        }
+
         //Doesn't know if you cancel out of a dialog.
         //Needs threading when it is processing lots of files. Progress bar? Progress animation?
         public static bool BackupSaves(ObservableCollection<Game> gamesList, bool zipping, string specifiedfolder = null) {
@@ -51,13 +56,14 @@ namespace Saved_Game_Backup
 
             Directory.CreateDirectory(destination);
 
-            //If user chooses a specific place where they store their saves, this 
-            //changes each game's path to that folder followed by the game name.
-            if (specifiedfolder != null) {
-                for (int i = 0; i <= gamesList.Count; i++) {
-                    gamesList[i].Path = specifiedfolder + "\\" + gamesList[i].Name;
-                }
-            }
+            //Likely not necessary anymore
+            ////If user chooses a specific place where they store their saves, this 
+            ////changes each game's path to that folder followed by the game name.
+            //if (specifiedfolder != null) {
+            //    for (int i = 0; i <= gamesList.Count; i++) {
+            //        gamesList[i].Path = specifiedfolder + "\\" + gamesList[i].Name;
+            //    }
+            //}
 
             //This backs up each game using BackupGame()
             foreach (Game g in gamesList) {

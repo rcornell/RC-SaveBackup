@@ -150,8 +150,7 @@ namespace Saved_Game_Backup.ViewModel
         {
             get { return new RelayCommand(() => ExecuteOpenAddGameWindow()); }
         }
-        public RelayCommand Close
-        {
+        public RelayCommand Close {
             get { return new RelayCommand(() => CloseApplication()); }
         }
 
@@ -345,9 +344,10 @@ namespace Saved_Game_Backup.ViewModel
             addGameWindow.Show();
         }
 
-        private void ExecuteOpenOptionsWindow() {
-            var optionsWindow = new OptionsWindow();
-            optionsWindow.Show();
-        }
+        //Options window not used anymore.
+        //private void ExecuteOpenOptionsWindow() {
+        //    var optionsWindow = new OptionsWindow();
+        //    optionsWindow.Show();
+        //}
     }
 }
