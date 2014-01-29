@@ -204,7 +204,7 @@ namespace Saved_Game_Backup.ViewModel
                 RaisePropertyChanged(() => GamesList);
             }
             Brushes = Theme.ToggleTheme(_themeInt);
-            RaisePropertyChanged(() => Background);
+            RaisePropertyChanged(() => Brushes);
             AutoBackupVisibility = Visibility.Hidden;
             RaisePropertyChanged(() => AutoBackupVisibility);
         }

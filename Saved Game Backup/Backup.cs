@@ -23,7 +23,7 @@ namespace Saved_Game_Backup
 
         private static ObservableCollection<Game> _gamesToAutoBackup = new ObservableCollection<Game>();
         private static List<FileSystemWatcher> _fileWatcherList;
-        private static string _hardDrive; //Is this ever used??
+        private static string _hardDrive = Path.GetPathRoot(Environment.SystemDirectory);
         private static string _specifiedAutoBackupFolder;
         private static bool _autoBackupAllowed;
         private static Timer _timer;
@@ -34,8 +34,8 @@ namespace Saved_Game_Backup
 
         //Doesn't know if you cancel out of a dialog.
         //Needs threading when it is processing lots of files. Progress bar? Progress animation?
-        public static bool BackupSaves(ObservableCollection<Game> gamesList, string harddrive, bool zipping, string specifiedfolder = null) {
-            var destination = harddrive + "SaveBackups";
+        public static bool BackupSaves(ObservableCollection<Game> gamesList, bool zipping, string specifiedfolder = null) {
+            var destination = _hardDrive + "SaveBackups";
 
             if (!zipping) {
                 var fd = new FolderBrowserDialog() { RootFolder = Environment.SpecialFolder.MyComputer, 
@@ -100,7 +100,7 @@ namespace Saved_Game_Backup
             }
         }
 
-        public static bool BackupAndZip(ObservableCollection<Game> gamesList, string harddrive, bool zipping,string specifiedfolder = null) {
+        public static bool BackupAndZip(ObservableCollection<Game> gamesList, bool zipping,string specifiedfolder = null) {
 
             var fd = new SaveFileDialog()
             {
@@ -145,18 +145,18 @@ namespace Saved_Game_Backup
         /// <param name="backupEnabled"></param>
         /// <param name="specifiedFolder"></param>
         /// <returns></returns>
-        public static bool ToggleAutoBackup(ObservableCollection<Game> gamesToBackup, string harddrive,
-            bool backupEnabled, string specifiedFolder = null) {
+        public static bool ToggleAutoBackup(ObservableCollection<Game> gamesToBackup, bool backupEnabled, string specifiedFolder = null) {
             if (backupEnabled){
                 DeactivateAutoBackup();
                 return false;
             }
             
-            ActivateAutoBackup(gamesToBackup, harddrive, specifiedFolder);
+            ActivateAutoBackup(gamesToBackup, specifiedFolder);
             return true;
         }
 
-        public static void ActivateAutoBackup(ObservableCollection<Game> gamesToBackup, string harddrive, string specifiedFolder = null) {
+        
+        public static void ActivateAutoBackup(ObservableCollection<Game> gamesToBackup, string specifiedFolder = null) {
             _timer = new Timer { Interval = 10000 };
             _timer.Elapsed += _timer_Elapsed;
             _timer.Start();
@@ -164,14 +164,14 @@ namespace Saved_Game_Backup
             _fileWatcherList = new List<FileSystemWatcher>();
             _gamesToAutoBackup = gamesToBackup;
 
-            _specifiedAutoBackupFolder = specifiedFolder;
+            //_specifiedAutoBackupFolder = specifiedFolder;
 
-            if (specifiedFolder == null) {
-                specifiedFolder = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Save Backups\\";
-                _specifiedAutoBackupFolder = specifiedFolder;
+            if (_specifiedAutoBackupFolder == null) {
+                var fb = new FolderBrowserDialog() {SelectedPath = _hardDrive, ShowNewFolderButton = true};
+                if (fb.ShowDialog() == DialogResult.OK)
+                    _specifiedAutoBackupFolder = fb.SelectedPath;
+                //_specifiedAutoBackupFolder = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Save Backups\\";
             }
-
-            _hardDrive = harddrive;
             
 
             int watcherNumber = 0;
@@ -215,8 +215,8 @@ namespace Saved_Game_Backup
                 }
 
         public static bool CanBackup(ObservableCollection<Game> gamesToBackup,string selectedHardDrive) {
-            if (selectedHardDrive == null) {
-                MessageBox.Show("Storage disk not selected. \r\nPlease select the drive where your \r\nsaved games are stored.");
+            if (_hardDrive == null) {
+                MessageBox.Show("Cannot find OS drive. \r\nPlease add each game using \r\nthe 'Add Game to List' button.");
                 return false;
             }
 
