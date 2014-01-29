@@ -25,7 +25,7 @@
         <savedGameBackup:StringToBackupTypeConverter x:Key="StringConverter" />
         <Style x:Name="ListBoxStyle" TargetType="ListBox">
             <Setter Property="Background" Value="{Binding Brushes[1]}" />
-            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Foreground" Value="{Binding Brushes[2]}" />
         </Style>
     </Window.Resources>
     <StackPanel Background="{Binding Brushes[0]}">
@@ -35,7 +35,6 @@
                     <MenuItem Command="{Binding SetThemeLight}" Header="_Light" />
                     <MenuItem Command="{Binding SetThemeDark}" Header="_Dark" />
                 </MenuItem>
-                <!--  Close command breaking designer  -->
                 <MenuItem Command="{Binding Close}" Header="_Exit" />
             </MenuItem>
         </Menu>

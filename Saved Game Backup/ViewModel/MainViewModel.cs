@@ -150,9 +150,10 @@ namespace Saved_Game_Backup.ViewModel
         {
             get { return new RelayCommand(() => ExecuteOpenAddGameWindow()); }
         }
-        //public RelayCommand Close {
-        //    get { return new RelayCommand(() => CloseApplication()); }
-        //}
+        public RelayCommand Close
+        {
+            get { return new RelayCommand(() => CloseApplication()); }
+        }
 
         public MainViewModel() {
             HardDrives = DirectoryFinder.CreateHardDriveCollection();
@@ -299,11 +300,11 @@ namespace Saved_Game_Backup.ViewModel
             RaisePropertyChanged(() => Brushes);
         }
 
-        //private void CloseApplication() {
-        //    SaveUserPrefs();
-        //    //if (Application.Current != null)
-        //    //  Application.Current.Shutdown();
-        //}
+        private void CloseApplication() {
+            SaveUserPrefs();
+            if (Application.Current != null)
+                Application.Current.Shutdown();
+        }
 
         private async Task GetThumb(Game game) {
             var gb = new GiantBombAPI(game);

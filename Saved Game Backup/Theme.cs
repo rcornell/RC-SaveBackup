@@ -12,6 +12,7 @@ namespace Saved_Game_Backup
 
         private static Brush _background;
         private static Brush _listBoxBackground;
+        private static Brush _text;
         private static ObservableCollection<Brush> _brushes; 
 
         public Theme() {
@@ -25,8 +26,9 @@ namespace Saved_Game_Backup
                 darkBrush.Freeze();
             _background = (theme == 0) ? Brushes.DeepSkyBlue : darkBrush;
             _listBoxBackground = (theme == 0) ? Brushes.White : Brushes.DimGray;
+            _text = (theme == 0) ? Brushes.Black : Brushes.White;
             
-            _brushes = new ObservableCollection<Brush>(){_background, _listBoxBackground};
+            _brushes = new ObservableCollection<Brush>(){_background, _listBoxBackground, _text};
             return _brushes;
         }
 
