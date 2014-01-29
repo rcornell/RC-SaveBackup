@@ -29,7 +29,7 @@ namespace Saved_Game_Backup
             }
 
             MessageBox.Show("If you see this, something went wrong \r\nloading user preferences.");
-            return new UserPrefs(0,5, "", new ObservableCollection<Game>());
+            return new UserPrefs(0,5, new ObservableCollection<Game>());
         }
 
         public void SavePrefs(UserPrefs prefs) {

@@ -12,12 +12,6 @@ namespace Saved_Game_Backup {
     [Serializable]
     public class UserPrefs {
 
-        private string _hardDrive;
-        public string HardDrive {
-            get { return _hardDrive; }
-            set { _hardDrive = value; }
-        }
-
         private ObservableCollection<Game> _selectedGames;
         public ObservableCollection<Game> SelectedGames {
             get { return _selectedGames; }
@@ -38,11 +32,11 @@ namespace Saved_Game_Backup {
 
         public UserPrefs(){}
 
-        public UserPrefs(int theme, int maxBackups, string hardDrive, ObservableCollection<Game> games) {
+        public UserPrefs(int theme, int maxBackups,  ObservableCollection<Game> games) {
             _theme = theme;
             _maxBackups = maxBackups;
             _selectedGames = games;
-            _hardDrive = hardDrive;
+            
         }
     }
 }

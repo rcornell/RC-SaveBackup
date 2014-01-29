@@ -106,8 +106,8 @@ namespace Saved_Game_Backup
             {
                 InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer),
                 FileName = "SaveBackups.zip",
-                Filter = "Zip files (*.zip) | *.zip",
-                Title = "Select the root folder where this utility will create the SaveBackups folder.",
+                Filter = @"Zip files (*.zip) | *.zip",
+                Title = @"Select the root folder where this utility will create the SaveBackups folder.",
                 CheckFileExists = false,
                 OverwritePrompt = true
             };
@@ -122,9 +122,9 @@ namespace Saved_Game_Backup
             }
 
             //Run the main BackupSaves method.
-            BackupSaves(gamesList, harddrive, zipping, specifiedfolder);
+            BackupSaves(gamesList, zipping, specifiedfolder);
             
-            var zipSource = harddrive + "SaveBackups";
+            var zipSource = _hardDrive + "SaveBackups";
 
             if(File.Exists(zipResult))
                 File.Delete(zipResult);
@@ -214,7 +214,7 @@ namespace Saved_Game_Backup
 
                 }
 
-        public static bool CanBackup(ObservableCollection<Game> gamesToBackup,string selectedHardDrive) {
+        public static bool CanBackup(ObservableCollection<Game> gamesToBackup) {
             if (_hardDrive == null) {
                 MessageBox.Show("Cannot find OS drive. \r\nPlease add each game using \r\nthe 'Add Game to List' button.");
                 return false;

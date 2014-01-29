@@ -76,11 +76,11 @@ namespace Saved_Game_Backup.ViewModel
             set { _backupType = value; }
         }
 
-        private string _selectedHardDrive;
-        public string SelectedHardDrive {
-            get { return _selectedHardDrive; }
-            set { _selectedHardDrive = value; }
-        }
+        //private string _selectedHardDrive;
+        //public string SelectedHardDrive {
+        //    get { return _selectedHardDrive; }
+        //    set { _selectedHardDrive = value; }
+        //}
         private Game _selectedGame;
         public Game SelectedGame
         {
@@ -166,13 +166,13 @@ namespace Saved_Game_Backup.ViewModel
             DirectoryFinder.CheckDirectories();
             SetUpInterface();
 
-            Messenger.Default.Register<OptionMessage>(this, s => {
-                    BackupType = s.BackupType;
-                if (s.HardDrive != null)
-                    SelectedHardDrive = s.HardDrive;
-                if (s.SpecifiedFolder != null)
-                    SpecifiedFolder = s.SpecifiedFolder;
-            });
+            //Messenger.Default.Register<OptionMessage>(this, s => {
+            //        BackupType = s.BackupType;
+            //    if (s.HardDrive != null)
+            //        SelectedHardDrive = s.HardDrive;
+            //    if (s.SpecifiedFolder != null)
+            //        SpecifiedFolder = s.SpecifiedFolder;
+            //});
         }
 
         //~MainViewModel() {
@@ -190,7 +190,7 @@ namespace Saved_Game_Backup.ViewModel
                 _maxBackups = prefs.MaxBackups;
                 _themeInt = prefs.Theme;
                 GamesToBackup = prefs.SelectedGames;
-                _selectedHardDrive = prefs.HardDrive;
+               
 
                 var listToRemove = new ObservableCollection<Game>();
                 foreach (Game game in prefs.SelectedGames) {
@@ -211,20 +211,16 @@ namespace Saved_Game_Backup.ViewModel
 
         private void SaveUserPrefs() {
             var p = new PrefSaver();
-            p.SavePrefs(new UserPrefs(_themeInt, _maxBackups, _selectedHardDrive, GamesToBackup));
+            p.SavePrefs(new UserPrefs(_themeInt, _maxBackups, GamesToBackup));
         }
 
         /// <summary>
         /// Removed custom HDD option?
         /// </summary>
         private void ExecuteDetectGames() {
-            if (_selectedHardDrive == null) {
-                MessageBox.Show("Storage disk not selected. \r\nPlease select the drive where your \r\nsaved games are stored.");
-                ExecuteReset();
-                return;
-            }
             
-            GamesToBackup = DirectoryFinder.PollDirectories(_selectedHardDrive, GamesList);
+            
+            GamesToBackup = DirectoryFinder.PollDirectories(GamesList);
             foreach (Game game in GamesToBackup)
                 GamesList.Remove(game);
 
@@ -282,13 +278,11 @@ namespace Saved_Game_Backup.ViewModel
             GamesList = DirectoryFinder.ReturnGamesList();
             GamesToBackup.Clear();
             _specifiedFolder = null;
-            _selectedHardDrive = null;
             _selectedGame = null;
             _selectedBackupGame = null;
 
             RaisePropertyChanged(() => GamesList);
             RaisePropertyChanged(() => GamesToBackup);
-            RaisePropertyChanged(() => SelectedHardDrive);
             RaisePropertyChanged(() => SelectedBackupGame);
             RaisePropertyChanged(() => SelectedGame);
         }
@@ -318,17 +312,17 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ExecuteStartBackup() {
-            if (!Backup.CanBackup(GamesToBackup, _selectedHardDrive))
+            if (!Backup.CanBackup(GamesToBackup))
                 return;
 
             bool success;
             if (BackupType == BackupType.ToFolder) {
-                success = Backup.BackupSaves(GamesToBackup, SelectedHardDrive, false, _specifiedFolder);
+                success = Backup.BackupSaves(GamesToBackup, false, _specifiedFolder);
             }
             else if (BackupType == BackupType.ToZip)
-                success = Backup.BackupAndZip(GamesToBackup, SelectedHardDrive, true, _specifiedFolder);
+                success = Backup.BackupAndZip(GamesToBackup, true, _specifiedFolder);
             else
-                success = Backup.ToggleAutoBackup(GamesToBackup, SelectedHardDrive, _backupEnabled, _specifiedFolder);
+                success = Backup.ToggleAutoBackup(GamesToBackup, _backupEnabled, _specifiedFolder);
 
             if (this.BackupType != BackupType.Autobackup && success)
                 MessageBox.Show("Saves successfully backed up");

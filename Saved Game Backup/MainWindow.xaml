@@ -18,14 +18,14 @@
         WindowStyle="SingleBorderWindow">
     <Window.Style>
         <Style BasedOn="{StaticResource FontStyle}" TargetType="Control" />
-        
+
     </Window.Style>
     <Window.Resources>
-        <savedGameBackup:BackupTypeToStringConverter x:Key="BackupConverter"/>
-        <savedGameBackup:StringToBackupTypeConverter x:Key="StringConverter"/>
+        <savedGameBackup:BackupTypeToStringConverter x:Key="BackupConverter" />
+        <savedGameBackup:StringToBackupTypeConverter x:Key="StringConverter" />
         <Style x:Name="ListBoxStyle" TargetType="ListBox">
-            <Setter Property="Background" Value="{Binding Brushes[1]}"/>
-            <Setter Property="Foreground" Value="White"></Setter>
+            <Setter Property="Background" Value="{Binding Brushes[1]}" />
+            <Setter Property="Foreground" Value="White" />
         </Style>
     </Window.Resources>
     <StackPanel Background="{Binding Brushes[0]}">
@@ -67,16 +67,22 @@
             <ComboBox Grid.Row="1"
                       Grid.Column="1"
                       VerticalAlignment="Center"
-                      ItemsSource="{Binding BackupTypes, Converter={StaticResource BackupConverter}, Mode=TwoWay}"
-                      SelectedItem="{Binding BackupType, Converter={StaticResource StringConverter}, Mode=TwoWay}" />
-            
-            <!--Removed Open Options Window Button-->
-            <!--<Button Grid.Row="1"
-                    Grid.Column="1"
-                    Height="60"
-                    HorizontalAlignment="Center"
-                    Command="{Binding OpenOptionsWindow}"
-                    Content="Backup Preferences" />-->
+                      ItemsSource="{Binding BackupTypes,
+                                            Converter={StaticResource BackupConverter},
+                                            Mode=TwoWay}"
+                      SelectedItem="{Binding BackupType,
+                                             Converter={StaticResource StringConverter},
+                                             Mode=TwoWay}" />
+
+            <!--  Removed Open Options Window Button  -->
+            <!--
+                <Button Grid.Row="1"
+                Grid.Column="1"
+                Height="60"
+                HorizontalAlignment="Center"
+                Command="{Binding OpenOptionsWindow}"
+                Content="Backup Preferences" />
+            -->
 
             <Button Grid.Row="1"
                     Grid.Column="3"

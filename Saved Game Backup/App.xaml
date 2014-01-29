@@ -16,6 +16,6 @@
             <Setter Property="FontFamily" Value="Segoe UI" />
             <Setter Property="Foreground" Value="White" />
         </Style>
-        
+
     </Application.Resources>
 </Application>
