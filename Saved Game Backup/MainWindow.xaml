@@ -21,6 +21,8 @@
         
     </Window.Style>
     <Window.Resources>
+        <savedGameBackup:BackupTypeToStringConverter x:Key="BackupConverter"/>
+        <savedGameBackup:StringToBackupTypeConverter x:Key="StringConverter"/>
         <Style x:Name="ListBoxStyle" TargetType="ListBox">
             <Setter Property="Background" Value="{Binding Brushes[1]}"/>
             <Setter Property="Foreground" Value="White"></Setter>
@@ -62,22 +64,19 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="450" />
             </Grid.ColumnDefinitions>
-            <Button Grid.Row="1"
+            <ComboBox Grid.Row="1"
+                      Grid.Column="1"
+                      VerticalAlignment="Center"
+                      ItemsSource="{Binding BackupTypes, Converter={StaticResource BackupConverter}, Mode=TwoWay}"
+                      SelectedItem="{Binding BackupType, Converter={StaticResource StringConverter}, Mode=TwoWay}" />
+            
+            <!--Removed Open Options Window Button-->
+            <!--<Button Grid.Row="1"
                     Grid.Column="1"
                     Height="60"
                     HorizontalAlignment="Center"
                     Command="{Binding OpenOptionsWindow}"
-                    Content="Backup Preferences" />
-
-            <!--  TEST BUTTON BELOW  -->
-            <!--
-                <Button Grid.Row="1"
-                Grid.Column="2"
-                Height="60"
-                HorizontalAlignment="Center"
-                Command="{Binding OpenAddGameWindow}"
-                Content="Open AddGame" />
-            -->
+                    Content="Backup Preferences" />-->
 
             <Button Grid.Row="1"
                     Grid.Column="3"
@@ -149,65 +148,6 @@
                     </ListBox.ItemsPanel>
                 </ListBox>
             </StackPanel>
-
-            <!--
-                <StackPanel Grid.Row="1"
-                Grid.Column="1"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Top">
-                <TextBlock Margin="3"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                FontSize="14"
-                Text="Main Disk Drive:" />
-                <ComboBox Margin="3"
-                VerticalAlignment="Center"
-                ItemsSource="{Binding HardDrives}"
-                SelectedItem="{Binding SelectedHardDrive}" />
-                </StackPanel>
-            -->
-            <!--
-                <StackPanel Grid.Row="2" Grid.Column="1">
-                <TextBlock Margin="3"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                FontSize="14"
-                Text="Custom Save Folder?"
-                TextWrapping="Wrap" />
-                <Button Height="22"
-                Margin="3"
-                HorizontalAlignment="Center"
-                Command="{Binding SpecifyFolder}"
-                Content="Choose Folder" />
-                </StackPanel>
-            -->
-            <!--
-                <StackPanel Grid.Row="1" Grid.Column="3">
-                
-                <Button Margin="3"
-                HorizontalAlignment="Center"
-                Command="{Binding BackupSaves}"
-                Content="Backup To Folder" />
-                
-                <Button Grid.Row="1"
-                Grid.Column="3"
-                Margin="3"
-                HorizontalAlignment="Center"
-                Command="{Binding BackupAndZip}"
-                Content="Backup And Zip" />
-                
-                <Button Grid.Row="1"
-                Grid.Column="3"
-                Grid.ColumnSpan="1"
-                Margin="3"
-                HorizontalAlignment="Center"
-                Command="{Binding AutoBackup}"
-                Content="Toggle Autobackup"
-                ToolTip="Autobackup will watch the save folders for the games you have selected. When new save files are added or modified, they will be backed up to a folder of your choosing." />
-                
-                </StackPanel>
-            -->
-
             <StackPanel Grid.Row="3"
                         Grid.Column="2"
                         VerticalAlignment="Center">

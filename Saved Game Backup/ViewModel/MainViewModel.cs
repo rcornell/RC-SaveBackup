@@ -59,8 +59,22 @@ namespace Saved_Game_Backup.ViewModel
             get { return _listBoxBackground; }
             set { _listBoxBackground = value; }
         }
-
         public ObservableCollection<Brush> Brushes { get; set; }
+
+        private ObservableCollection<BackupType> _backupTypes;
+        public ObservableCollection<BackupType> BackupTypes
+        {
+            get { return _backupTypes; }
+            set
+            {
+                _backupTypes = value;
+            }
+        }
+        private BackupType _backupType;
+        public BackupType BackupType {
+            get { return _backupType; }
+            set { _backupType = value; }
+        }
 
         private string _selectedHardDrive;
         public string SelectedHardDrive {
@@ -95,11 +109,7 @@ namespace Saved_Game_Backup.ViewModel
             get { return _themeInt; }
             set { _themeInt = value; }
         }
-        private BackupType _backupType;
-        public BackupType BackupType {
-            get { return _backupType; }
-            set { _backupType = value; }
-        }
+        
 
         public RelayCommand MoveToBackupList
         {
@@ -148,6 +158,11 @@ namespace Saved_Game_Backup.ViewModel
             HardDrives = DirectoryFinder.CreateHardDriveCollection();
             GamesList = DirectoryFinder.ReturnGamesList();
             GamesToBackup = new ObservableCollection<Game>();
+            BackupTypes = new ObservableCollection<BackupType>() {
+                BackupType.Autobackup,
+                BackupType.ToFolder,
+                BackupType.ToZip
+            };
             DirectoryFinder.CheckDirectories();
             SetUpInterface();
 
