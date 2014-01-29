@@ -24,6 +24,7 @@ namespace Saved_Game_Backup
         private static ObservableCollection<Game> _gamesToAutoBackup = new ObservableCollection<Game>();
         private static List<FileSystemWatcher> _fileWatcherList;
         private static string _hardDrive = Path.GetPathRoot(Environment.SystemDirectory);
+        private static string _myDocuments = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         private static string _specifiedAutoBackupFolder;
         private static bool _autoBackupAllowed;
         private static Timer _timer;
@@ -32,31 +33,44 @@ namespace Saved_Game_Backup
             
         }
 
-        public bool StartBackup(ObservableCollection<Game> gamesToBackup, BackupType backupType) {
-
-            return false;
+        public static bool StartBackup(ObservableCollection<Game> gamesToBackup, BackupType backupType, bool backupEnabled) {
+            bool success;
+            switch (backupType) {
+                case BackupType.ToZip:
+                    success = BackupAndZip(gamesToBackup);
+                    break;
+                case BackupType.ToFolder:
+                    success = BackupSaves(gamesToBackup);
+                    break;
+                case BackupType.Autobackup:
+                    success = ToggleAutoBackup(gamesToBackup, backupEnabled);
+                    break;
+                default:
+                    success = false;
+                    break;
+            }
+            return success;
         }
 
         //Doesn't know if you cancel out of a dialog.
         //Needs threading when it is processing lots of files. Progress bar? Progress animation?
-        public static bool BackupSaves(ObservableCollection<Game> gamesList, bool zipping, string specifiedfolder = null) {
-            var destination = _hardDrive + "SaveBackups";
+        public static bool BackupSaves(ObservableCollection<Game> gamesList, string specifiedfolder = null) {
+            string destination;
 
-            if (!zipping) {
-                var fd = new FolderBrowserDialog() { RootFolder = Environment.SpecialFolder.MyComputer, 
-                        Description = "Select the root folder where this utility will create the SaveBackups folder.",
-                        ShowNewFolderButton = true };
+            var fd = new FolderBrowserDialog() { SelectedPath = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer), 
+                    Description = "Select the folder where this utility will create the SaveBackups folder.",
+                    ShowNewFolderButton = true };
 
-                if (fd.ShowDialog() == DialogResult.OK)
-                    destination = fd.SelectedPath + "\\SaveBackups";
-                else {
-                    return false;
-                }
+            if (fd.ShowDialog() == DialogResult.OK)
+                destination = fd.SelectedPath;
+            else {
+                return false;
             }
 
-            Directory.CreateDirectory(destination);
+            if (!Directory.Exists(destination) && !string.IsNullOrWhiteSpace(destination))
+                Directory.CreateDirectory(destination);
 
-            //Likely not necessary anymore
+            #region Likely not necessary anymore
             ////If user chooses a specific place where they store their saves, this 
             ////changes each game's path to that folder followed by the game name.
             //if (specifiedfolder != null) {
@@ -64,10 +78,12 @@ namespace Saved_Game_Backup
             //        gamesList[i].Path = specifiedfolder + "\\" + gamesList[i].Name;
             //    }
             //}
+            #endregion
 
             //This backs up each game using BackupGame()
-            foreach (Game g in gamesList) {
-                BackupGame(g.Path, destination + "\\" + g.Name);
+
+            foreach (var game in gamesList) {
+                BackupGame(game.Path, destination + "\\" + game.Name);
             }
 
             return true;
@@ -106,10 +122,11 @@ namespace Saved_Game_Backup
             }
         }
 
-        public static bool BackupAndZip(ObservableCollection<Game> gamesList, bool zipping,string specifiedfolder = null) {
+        public static bool BackupAndZip(ObservableCollection<Game> gamesList, string specifiedfolder = null) {
+            string zipSource;
+            FileInfo zipDestination;
 
-            var fd = new SaveFileDialog()
-            {
+            var fd = new SaveFileDialog() {
                 InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer),
                 FileName = "SaveBackups.zip",
                 Filter = @"Zip files (*.zip) | *.zip",
@@ -118,25 +135,29 @@ namespace Saved_Game_Backup
                 OverwritePrompt = true
             };
 
-            string zipResult;
             if (fd.ShowDialog() == DialogResult.OK) {
-
-                zipResult = fd.FileName;
+                zipDestination = new FileInfo(fd.FileName);
+                zipSource = zipDestination.DirectoryName + "\\Temp";
             }
             else {
                 return false;
             }
 
-            //Run the main BackupSaves method.
-            BackupSaves(gamesList, zipping, specifiedfolder);
-            
-            var zipSource = _hardDrive + "SaveBackups";
+            if (!Directory.Exists(zipSource))
+                Directory.CreateDirectory(zipSource);
 
-            if(File.Exists(zipResult))
-                File.Delete(zipResult);
-            
-            ZipFile.CreateFromDirectory(zipSource, zipResult);
 
+            foreach (var game in gamesList) {
+                BackupGame(game.Path, zipSource + "\\" + game.Name);
+            }
+
+            //Delete existing zip file if one exists.
+            if(zipDestination.Exists)
+                zipDestination.Delete();
+            
+            ZipFile.CreateFromDirectory(zipSource, zipDestination.FullName);
+
+            //Delete temporary folder that held save files.
             DeleteDirectory(zipSource);
             Directory.Delete(zipSource);
 
