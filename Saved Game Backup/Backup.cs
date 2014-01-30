@@ -191,7 +191,7 @@ namespace Saved_Game_Backup
         public static bool ToggleAutoBackup(ObservableCollection<Game> gamesToBackup, bool backupEnabled, string specifiedFolder = null) {
             if (backupEnabled){
                 DeactivateAutoBackup();
-                return false;
+                return true;
             }
             
             ActivateAutoBackup(gamesToBackup, specifiedFolder);
