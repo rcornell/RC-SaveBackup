@@ -312,34 +312,12 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ExecuteStartBackup() {
-            bool success = Backup.StartBackup(GamesToBackup, BackupType, _backupEnabled);
-
-
-            //if (!Backup.CanBackup(GamesToBackup))
-            //    return;
-
-            //bool success;
-            //if (BackupType == BackupType.ToFolder) {
-            //    success = Backup.BackupSaves(GamesToBackup, false, _specifiedFolder);
-            //}
-            //else if (BackupType == BackupType.ToZip)
-            //    success = Backup.BackupAndZip(GamesToBackup, true, _specifiedFolder);
-            //else
-            //    success = Backup.ToggleAutoBackup(GamesToBackup, _backupEnabled, _specifiedFolder);
-
-            //if (this.BackupType != BackupType.Autobackup && success)
-            //    MessageBox.Show("Saves successfully backed up");
-            //else if (this.BackupType == BackupType.Autobackup && success) {
-            //    MessageBox.Show("Autobackup enabled.");
-            //    AutoBackupVisibility = Visibility.Visible;
-            //    _backupEnabled = true;
-            //}
-            //else if (this.BackupType == BackupType.Autobackup && !success) {
-            //    MessageBox.Show("Autobackup disabled.");
-            //    _backupEnabled = false;
-            //    _autoBackupVisibility = Visibility.Hidden;
-            //}
+            var success = Backup.StartBackup(GamesToBackup, BackupType, _backupEnabled);
+            if (!success.Success) return;
+            _backupEnabled = success.AutobackupEnabled;
+            AutoBackupVisibility = _backupEnabled ? Visibility.Visible : Visibility.Hidden;
             RaisePropertyChanged(() => AutoBackupVisibility);
+            MessageBox.Show(success.Message);
         }
 
         private void ExecuteOpenAddGameWindow() {

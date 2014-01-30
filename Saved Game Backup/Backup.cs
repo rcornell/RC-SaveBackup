@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
+using Saved_Game_Backup.Helper;
 using MessageBox = System.Windows.MessageBox;
 using Timer = System.Timers.Timer;
 
@@ -34,8 +35,9 @@ namespace Saved_Game_Backup
             
         }
 
-        public static bool StartBackup(ObservableCollection<Game> games, BackupType backupType, bool backupEnabled) {
+        public static BackupResultHelper StartBackup(ObservableCollection<Game> games, BackupType backupType, bool backupEnabled) {
             bool success;
+            var message = "";
             var gamesToBackup = ModifyGamePaths(games);
             switch (backupType) {
                 case BackupType.ToZip:
@@ -51,7 +53,18 @@ namespace Saved_Game_Backup
                     success = false;
                     break;
             }
-            return success;
+
+            //Can this be simplified?
+            if (backupType == BackupType.Autobackup && success && !backupEnabled){
+                message = "Autobackup Enabled!";
+            } else if (backupType == BackupType.Autobackup && success && backupEnabled) {
+                message = "Autobackup Disabled!";
+            }
+            else
+                message = "Backup Complete!";
+
+            return new BackupResultHelper(success, !backupEnabled, message);
+
         }
 
         //Doesn't know if you cancel out of a dialog.

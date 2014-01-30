@@ -101,6 +101,7 @@
     <Compile Include="Game.cs" />
     <Compile Include="GiantBombAPI.cs" />
     <Compile Include="Helper\AddGameMessage.cs" />
+    <Compile Include="Helper\BackupResultHelper.cs" />
     <Compile Include="Helper\OptionMessage.cs" />
     <Compile Include="OptionsWindow.xaml.cs">
       <DependentUpon>OptionsWindow.xaml</DependentUpon>
