@@ -36,6 +36,11 @@ namespace Saved_Game_Backup {
             set { _thumbnailPath = value; }
         }
 
+        private bool _hasCustomPath;
+        public bool HasCustomPath {
+            get { return _hasCustomPath; } 
+            set { _hasCustomPath = value; }
+        }
 
         public Game() {
             

@@ -25,6 +25,7 @@ namespace Saved_Game_Backup
         private static List<FileSystemWatcher> _fileWatcherList;
         private static string _hardDrive = Path.GetPathRoot(Environment.SystemDirectory);
         private static string _myDocuments = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        private static string _userPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         private static string _specifiedAutoBackupFolder;
         private static bool _autoBackupAllowed;
         private static Timer _timer;
@@ -33,8 +34,9 @@ namespace Saved_Game_Backup
             
         }
 
-        public static bool StartBackup(ObservableCollection<Game> gamesToBackup, BackupType backupType, bool backupEnabled) {
+        public static bool StartBackup(ObservableCollection<Game> games, BackupType backupType, bool backupEnabled) {
             bool success;
+            var gamesToBackup = ModifyGamePaths(games);
             switch (backupType) {
                 case BackupType.ToZip:
                     success = BackupAndZip(gamesToBackup);
@@ -146,7 +148,8 @@ namespace Saved_Game_Backup
             if (!Directory.Exists(zipSource))
                 Directory.CreateDirectory(zipSource);
 
-
+            //Creates temporary directory at ZipSource + the game's name
+            //To act as the source folder for the ZipFile class.
             foreach (var game in gamesList) {
                 BackupGame(game.Path, zipSource + "\\" + game.Name);
             }
@@ -278,6 +281,20 @@ namespace Saved_Game_Backup
             
         }
 
+        /// <summary>
+        /// Edits the truncated paths in the Games.json file and inserts the 
+        /// user's path before the \\Documents\\ or \\AppData\\ folder path.
+        /// </summary>
+        /// <param name="gamesToBackup"></param>
+        private static ObservableCollection<Game> ModifyGamePaths(ICollection<Game> gamesToBackup) {
+            var editedList = new ObservableCollection<Game>();
+            foreach (var game in gamesToBackup) {
+                if (game.Path.Contains("Documents"))
+                    editedList.Add(new Game(game.Name, _userPath+game.Path));
+            }
+            gamesToBackup.Clear();
+            return editedList;
+        }
         
     }
 }

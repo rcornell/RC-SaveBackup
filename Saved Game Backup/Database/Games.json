@@ -2,466 +2,559 @@
   {
     "Name":"Terraria",
     "Path":"\\Documents\\My Games\\Terraria",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Skyrim",
     "Path":"\\Documents\\My Games\\Skyrim\\Saves",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Amnesia A Machine for Pigs",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Amnesia The Dark Descent",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Arma 2",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Arma 2 Operation Arrowhead",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Arma 3",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Assassin's Creed III",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Assassin's Creed Brotherhood",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Assassin's Creed IV Black Flag",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Assassin's Creed Revelations",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Audiosurf",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Batman Arkham Asylum",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Batman Arkham City",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Battlefield 2",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Battlefield Bad Company 2",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Beat Hazard",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"BioShock",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"BioShock Infinite",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Borderlands",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Borderlands 2",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Bulletstorm",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Call of Duty Modern Warfare 2",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Chivalry Medieval Warfare",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"The Chronicles of Riddick Assault on Dark Athena",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Crysis",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Crysis 2",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Crysis 3",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Crysis Wars",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Dark Souls",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Dead Island",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Dead Rising 2",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Dead Space",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Deadlight",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Deus Ex Human Revolution",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"DiRT 3",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Dishonored",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"DmC Devil May Cry",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Dragon Age",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Dragon Age II",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Dungeon Defenders",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Dungeons of Dredmor",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Dust An Elysian Tail",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Fable III",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Fallout 3",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Fallout New Vegas",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Far Cry 3",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"FEZ",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"From Dust",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"FTL Faster Than Light",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Grand Theft Auto IV",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Hitman Absolution",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Homefront",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Hotline Miami",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Kerbal Space Program",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Legend of Grimrock",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Mass Effect",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Mass Effect 2",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Mass Effect 3",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Metal Gear Rising Revengeance",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Metro 2033",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Metro Last Light",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Mirror's Edge",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Monaco",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Mount & Blade Warband",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Mount & Blade With Fire and Sword",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Project Zomboid",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"RAGE",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Red Faction Armageddon",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Red Faction Guerilla",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Rogue Legacy",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Saints Row The Third",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Saints Row IV",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Shadow Warrior",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Shoot Many Robots",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Civilization V",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Sleeping Dogs",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Space Engineers",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Space Pirates and Zombies",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Spelunky",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Spore",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Starbound",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"State of Decay",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Tomb Raider",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Total War SHOGUN 2",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"Trine",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"The Walking Dead",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"The Witcher",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"The Witcher 2 Assassins of Kings",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"X Rebirth",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"X3 Albion Prelude",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"X3 Terran Conflict",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   },
   {
     "Name":"XCOM Enemy Unknown",
     "Path":"\\Documents",
-    "ID":999999
+    "ID":999999,
+    "HasCustomPath":"FALSE"
   }
 ]
