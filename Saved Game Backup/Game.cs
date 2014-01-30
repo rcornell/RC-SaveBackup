@@ -64,6 +64,15 @@ namespace Saved_Game_Backup {
             ThumbnailPath = thumbnailpath;
         }
 
+        public Game(string name, string path, int id, string thumbnailPath, bool customPath)
+        {
+            ID = id;
+            Name = name;
+            Path = path;
+            ThumbnailPath = thumbnailPath;
+            HasCustomPath = customPath;
+        }
+
         public override string ToString() {
             return Name;
         }

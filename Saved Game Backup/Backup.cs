@@ -284,15 +284,19 @@ namespace Saved_Game_Backup
         /// <summary>
         /// Edits the truncated paths in the Games.json file and inserts the 
         /// user's path before the \\Documents\\ or \\AppData\\ folder path.
+        /// If the game has its own user path, indicated by HasCustomPath
+        /// being true, the game's path is not modified before being added to the
+        /// new list.
         /// </summary>
         /// <param name="gamesToBackup"></param>
-        private static ObservableCollection<Game> ModifyGamePaths(ICollection<Game> gamesToBackup) {
+        private static ObservableCollection<Game> ModifyGamePaths(IEnumerable<Game> gamesToBackup) {
             var editedList = new ObservableCollection<Game>();
             foreach (var game in gamesToBackup) {
-                if (game.Path.Contains("Documents"))
-                    editedList.Add(new Game(game.Name, _userPath+game.Path));
+                if (!game.HasCustomPath)
+                    editedList.Add(new Game(game.Name, _userPath+game.Path, game.ID, game.ThumbnailPath));
+                else
+                    editedList.Add(game);
             }
-            gamesToBackup.Clear();
             return editedList;
         }
         
