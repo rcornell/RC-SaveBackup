@@ -9,7 +9,6 @@
         Title="Save Game Backup Tool"
         Width="850"
         Height="700"
-        Background="DeepSkyBlue"
         DataContext="{Binding Path=Main,
                               Source={StaticResource Locator}}"
         Icon="Resources/SGBIcon.ico"
@@ -23,15 +22,29 @@
     <Window.Resources>
         <savedGameBackup:BackupTypeToStringConverter x:Key="BackupConverter" />
         <savedGameBackup:StringToBackupTypeConverter x:Key="StringConverter" />
+
         <Style x:Key="ListBoxStyle" TargetType="ListBox">
-            <!--<Setter Property="Background" Value="{Binding Brushes[1]}" />-->
+            <!--  <Setter Property="Background" Value="{Binding Brushes[1]}" />  -->
             <Setter Property="Background" Value="#4C575757" />
             <Setter Property="Foreground" Value="{Binding Brushes[2]}" />
         </Style>
-        <ImageBrush x:Key="metro"  ImageSource="Resources/metro.jpg"/>
+
+        <!--
+            <LinearGradientBrush x:Key="ButtonBackgroundBrush">
+            <GradientStop Color="#7F658989" Offset="0"/>
+            <GradientStop Color="#7F747474" Offset="1"/>
+            </LinearGradientBrush>
+            
+            
+            <Style x:Key="ButtonStyle"  TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            </Style>
+        -->
+        <ImageBrush x:Key="Metro" ImageSource="Resources/metro.jpg" />
     </Window.Resources>
-    <!--<StackPanel Background="{Binding Brushes[0]}">-->
-    <StackPanel Background="{StaticResource metro}">
+    <!--  <StackPanel Background="{Binding Brushes[0]}">  -->
+    <StackPanel Background="{StaticResource Metro}">
         <Menu IsMainMenu="True">
             <MenuItem Header="_File">
                 <MenuItem Header="_Theme">
@@ -58,7 +71,8 @@
                 <RowDefinition Height="28*" />
                 <RowDefinition />
                 <RowDefinition />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="70" />
+
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1" />
@@ -111,7 +125,6 @@
             </StackPanel>
             <StackPanel Grid.Row="3"
                         Grid.Column="3"
-                        
                         CanHorizontallyScroll="False">
                 <TextBlock HorizontalAlignment="Center"
                            FontSize="14"
@@ -183,10 +196,10 @@
                          Height="400"
                          Margin="3"
                          ItemsSource="{Binding GamesList}"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                          SelectedItem="{Binding SelectedGame}"
-                         ToolTip="Double click a game to add it to the backup list."
                          Style="{StaticResource ListBoxStyle}"
-                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                         ToolTip="Double click a game to add it to the backup list.">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDoubleClick">
                             <command:EventToCommand Command="{Binding MoveToBackupList, Mode=OneWay}" />
@@ -214,7 +227,14 @@
                            Visibility="{Binding AutoBackupVisibility,
                                                 UpdateSourceTrigger=PropertyChanged}" />
             </Border>
-
+            <StackPanel Grid.Row="8"
+                        Grid.Column="1"
+                        Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Bottom" Text="Last Backup On:" />
+                <TextBlock Margin="5,0,0,0"
+                           VerticalAlignment="Bottom"
+                           Text="Some Date" />
+            </StackPanel>
         </Grid>
 
     </StackPanel>

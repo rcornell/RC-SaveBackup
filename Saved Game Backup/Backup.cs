@@ -217,8 +217,9 @@ namespace Saved_Game_Backup
             }
             
 
-            int watcherNumber = 0;
-            foreach (Game game in gamesToBackup) {
+            var watcherNumber = 0;
+            foreach (var game in gamesToBackup) {
+                if (!Directory.Exists(game.Path)) continue;
                 _fileWatcherList.Add(new FileSystemWatcher(game.Path));
                 _fileWatcherList[watcherNumber].Changed += OnChanged;
                 _fileWatcherList[watcherNumber].EnableRaisingEvents = true;
