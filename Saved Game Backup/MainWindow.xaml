@@ -23,12 +23,15 @@
     <Window.Resources>
         <savedGameBackup:BackupTypeToStringConverter x:Key="BackupConverter" />
         <savedGameBackup:StringToBackupTypeConverter x:Key="StringConverter" />
-        <Style x:Name="ListBoxStyle" TargetType="ListBox">
-            <Setter Property="Background" Value="{Binding Brushes[1]}" />
+        <Style x:Key="ListBoxStyle" TargetType="ListBox">
+            <!--<Setter Property="Background" Value="{Binding Brushes[1]}" />-->
+            <Setter Property="Background" Value="#4C575757" />
             <Setter Property="Foreground" Value="{Binding Brushes[2]}" />
         </Style>
+        <ImageBrush x:Key="metro"  ImageSource="Resources/metro.jpg"/>
     </Window.Resources>
-    <StackPanel Background="{Binding Brushes[0]}">
+    <!--<StackPanel Background="{Binding Brushes[0]}">-->
+    <StackPanel Background="{StaticResource metro}">
         <Menu IsMainMenu="True">
             <MenuItem Header="_File">
                 <MenuItem Header="_Theme">
@@ -50,7 +53,7 @@
                 <RowDefinition />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="400" />
+                <RowDefinition Height="430" />
                 <RowDefinition Height="28*" />
                 <RowDefinition Height="28*" />
                 <RowDefinition />
@@ -108,14 +111,15 @@
             </StackPanel>
             <StackPanel Grid.Row="3"
                         Grid.Column="3"
-                        Height="400" CanHorizontallyScroll="False">
+                        
+                        CanHorizontallyScroll="False">
                 <TextBlock HorizontalAlignment="Center"
                            FontSize="14"
                            Text="Games to Back Up" />
-                <ListBox Height="400"
+                <ListBox Height="430"
                          ItemsSource="{Binding GamesToBackup}"
-                         SelectedItem="{Binding SelectedBackupGame}" 
-                        >
+                         SelectedItem="{Binding SelectedBackupGame}"
+                         Style="{StaticResource ListBoxStyle}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDoubleClick">
                             <i:InvokeCommandAction Command="{Binding MoveToGamesList}" />
@@ -132,7 +136,7 @@
                                     </ContextMenu>
                                 </Setter.Value>
                             </Setter>
-                            
+
                         </Style>
                     </ItemsControl.ItemContainerStyle>
                     <ListBox.ItemTemplate>
@@ -150,7 +154,10 @@
                     </ListBox.ItemTemplate>
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapPanel FlowDirection="LeftToRight" Orientation="Horizontal" MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}"/>
+                            <WrapPanel MaxWidth="{Binding ActualWidth,
+                                                          RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}"
+                                       FlowDirection="LeftToRight"
+                                       Orientation="Horizontal" />
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
                 </ListBox>
@@ -177,7 +184,9 @@
                          Margin="3"
                          ItemsSource="{Binding GamesList}"
                          SelectedItem="{Binding SelectedGame}"
-                         ToolTip="Double click a game to add it to the backup list.">
+                         ToolTip="Double click a game to add it to the backup list."
+                         Style="{StaticResource ListBoxStyle}"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDoubleClick">
                             <command:EventToCommand Command="{Binding MoveToBackupList, Mode=OneWay}" />
@@ -194,14 +203,14 @@
                     Grid.Column="3"
                     Margin="3"
                     HorizontalAlignment="Stretch"
-                    Background="Lime"
+                    Background="#CC00FF00"
                     CornerRadius="10"
                     Visibility="{Binding AutoBackupVisibility,
                                          UpdateSourceTrigger=PropertyChanged}">
                 <TextBlock HorizontalAlignment="Center"
                            VerticalAlignment="Center"
-                           Text="Autobackup Enabled"
                            FontSize="20"
+                           Text="Autobackup Enabled"
                            Visibility="{Binding AutoBackupVisibility,
                                                 UpdateSourceTrigger=PropertyChanged}" />
             </Border>
