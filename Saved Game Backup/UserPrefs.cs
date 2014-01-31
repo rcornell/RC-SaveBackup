@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
@@ -30,13 +31,16 @@ namespace Saved_Game_Backup {
             set { _maxBackups = value; }
         }
 
+        public DateTime LastBackupTime;
+
         public UserPrefs(){}
 
-        public UserPrefs(int theme, int maxBackups,  ObservableCollection<Game> games) {
+        public UserPrefs(int theme, int maxBackups,  ObservableCollection<Game> games, DateTime lastBackup) {
             _theme = theme;
             _maxBackups = maxBackups;
             _selectedGames = games;
-            
+            LastBackupTime = lastBackup;
+
         }
     }
 }

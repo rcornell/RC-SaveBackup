@@ -196,6 +196,7 @@ namespace Saved_Game_Backup.ViewModel
                 _maxBackups = prefs.MaxBackups;
                 _themeInt = prefs.Theme;
                 GamesToBackup = prefs.SelectedGames;
+                LastBackupTime = prefs.LastBackupTime;
                
 
                 var listToRemove = new ObservableCollection<Game>();
@@ -213,11 +214,12 @@ namespace Saved_Game_Backup.ViewModel
             RaisePropertyChanged(() => Brushes);
             AutoBackupVisibility = Visibility.Hidden;
             RaisePropertyChanged(() => AutoBackupVisibility);
+            RaisePropertyChanged(() => LastBackupTime);
         }
 
         private void SaveUserPrefs() {
             var p = new PrefSaver();
-            p.SavePrefs(new UserPrefs(_themeInt, _maxBackups, GamesToBackup));
+            p.SavePrefs(new UserPrefs(_themeInt, _maxBackups, GamesToBackup, LastBackupTime));
         }
 
         /// <summary>

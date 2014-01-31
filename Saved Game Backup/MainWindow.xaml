@@ -71,7 +71,7 @@
                 <RowDefinition Height="28*" />
                 <RowDefinition />
                 <RowDefinition />
-                <RowDefinition Height="50" />
+                <RowDefinition Height="40" />
 
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -110,8 +110,8 @@
                         Grid.Column="1"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Top"
-                        Orientation="Horizontal"
-                        IsEnabled="{Binding AutoBackupSelected}">
+                        IsEnabled="{Binding AutoBackupSelected}"
+                        Orientation="Horizontal">
                 <TextBlock VerticalAlignment="Center"
                            FontSize="14"
                            Text="Autobackup Limit"
@@ -235,7 +235,7 @@
                 <TextBlock VerticalAlignment="Bottom" Text="Last Backup On:" />
                 <TextBlock Margin="5,0,0,0"
                            VerticalAlignment="Bottom"
-                           Text="Some Date" />
+                           Text="{Binding LastBackupTime}" />
             </StackPanel>
         </Grid>
 

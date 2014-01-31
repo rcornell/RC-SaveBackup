@@ -29,11 +29,11 @@ namespace Saved_Game_Backup
             }
 
             MessageBox.Show("If you see this, something went wrong \r\nloading user preferences.");
-            return new UserPrefs(0,5, new ObservableCollection<Game>());
+            return new UserPrefs(0,5, new ObservableCollection<Game>(), DateTime.MinValue);
         }
 
         public void SavePrefs(UserPrefs prefs) {
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Save Backup Tool\\";
+            var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Save Backup Tool\\";
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
 
@@ -47,9 +47,7 @@ namespace Saved_Game_Backup
 
         public static bool CheckForPrefs() {
             string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Save Backup Tool\\UserPrefs.dat";
-            if (File.Exists(path))
-                return true;
-            return false;
+            return File.Exists(path);
         }
 
     }
