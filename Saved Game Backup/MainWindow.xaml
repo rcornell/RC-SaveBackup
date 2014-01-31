@@ -61,7 +61,7 @@
                 <ColumnDefinition Width="1" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="450" />
+                <ColumnDefinition Width="510" />
             </Grid.ColumnDefinitions>
             <ComboBox Grid.Row="1"
                       Grid.Column="1"
@@ -108,13 +108,14 @@
             </StackPanel>
             <StackPanel Grid.Row="3"
                         Grid.Column="3"
-                        Height="400">
+                        Height="400" CanHorizontallyScroll="False">
                 <TextBlock HorizontalAlignment="Center"
                            FontSize="14"
                            Text="Games to Back Up" />
                 <ListBox Height="400"
                          ItemsSource="{Binding GamesToBackup}"
-                         SelectedItem="{Binding SelectedBackupGame}">
+                         SelectedItem="{Binding SelectedBackupGame}" 
+                        >
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDoubleClick">
                             <i:InvokeCommandAction Command="{Binding MoveToGamesList}" />
@@ -131,12 +132,13 @@
                                     </ContextMenu>
                                 </Setter.Value>
                             </Setter>
+                            
                         </Style>
                     </ItemsControl.ItemContainerStyle>
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type savedGameBackup:Game}">
                             <Border>
-                                <StackPanel>
+                                <StackPanel Margin="0,3,0,3">
                                     <Image Width="160"
                                            Height="180"
                                            Source="{Binding ThumbnailPath}" />
@@ -148,7 +150,7 @@
                     </ListBox.ItemTemplate>
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapPanel />
+                            <WrapPanel FlowDirection="LeftToRight" Orientation="Horizontal" MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}"/>
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
                 </ListBox>
@@ -191,7 +193,7 @@
             <Border Grid.Row="7"
                     Grid.Column="3"
                     Margin="3"
-                    HorizontalAlignment="Center"
+                    HorizontalAlignment="Stretch"
                     Background="Lime"
                     CornerRadius="10"
                     Visibility="{Binding AutoBackupVisibility,
@@ -199,6 +201,7 @@
                 <TextBlock HorizontalAlignment="Center"
                            VerticalAlignment="Center"
                            Text="Autobackup Enabled"
+                           FontSize="20"
                            Visibility="{Binding AutoBackupVisibility,
                                                 UpdateSourceTrigger=PropertyChanged}" />
             </Border>
