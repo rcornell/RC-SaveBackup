@@ -11,7 +11,7 @@
         Height="700"
         DataContext="{Binding Path=Main,
                               Source={StaticResource Locator}}"
-        Icon="Resources/SGBIcon.ico"
+        Icon="Assets/SGBIcon.ico"
         Padding="3"
         WindowStartupLocation="CenterScreen"
         WindowStyle="SingleBorderWindow">
@@ -25,7 +25,7 @@
 
         <Style x:Key="ListBoxStyle" TargetType="ListBox">
             <!--  <Setter Property="Background" Value="{Binding Brushes[1]}" />  -->
-            <Setter Property="Background" Value="{Binding Brushes[2]}" />
+            <Setter Property="Background" Value="{Binding Brushes[1]}" />
             <Setter Property="Foreground" Value="{Binding Brushes[2]}" />
         </Style>
 
@@ -41,7 +41,7 @@
             <Setter Property="BorderThickness" Value="0"/>
             </Style>
         -->
-        <ImageBrush x:Key="Metro" ImageSource="Resources/metro.jpg" />
+        <ImageBrush x:Key="Metro" ImageSource="Assets/metro.jpg" />
     </Window.Resources>
     <!--  <StackPanel Background="{Binding Brushes[0]}">  -->
     <StackPanel Background="{StaticResource Metro}">
@@ -211,8 +211,8 @@
             </StackPanel>
             <Button Grid.Row="7"
                     Grid.Column="1"
-                    HorizontalAlignment="Center"
                     Width="Auto"
+                    HorizontalAlignment="Center"
                     Command="{Binding OpenAddGameWindow}"
                     Content="Add Game to List" />
             <Border Grid.Row="7"

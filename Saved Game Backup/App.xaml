@@ -15,8 +15,8 @@
         </Style>
 
         <LinearGradientBrush x:Key="MyButtonBrush" StartPoint="0.5,0" EndPoint="0.5,1">
-            <GradientStop Color="#32FFFFFF" Offset="0" />
-            <GradientStop Color="#3CFFFFFF" Offset="1" />
+            <GradientStop Offset="0" Color="#32FFFFFF" />
+            <GradientStop Offset="1" Color="#3CFFFFFF" />
         </LinearGradientBrush>
         <LinearGradientBrush x:Key="BorderBackgroundBrush" StartPoint="0,0" EndPoint="0,1">
             <GradientStop x:Name="Stop1" Offset="0" Color="#CC363636" />
@@ -25,19 +25,19 @@
 
         <Style TargetType="{x:Type Button}">
             <Setter Property="Background" Value="{StaticResource MyButtonBrush}" />
-            <Setter Property="BorderBrush" Value="{StaticResource BorderBackgroundBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBackgroundBrush}" />
             <Setter Property="Width" Value="Auto" />
             <Setter Property="FontFamily" Value="Segoe UI" />
-            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontSize" Value="16" />
             <Setter Property="SnapsToDevicePixels" Value="True" />
-            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="BorderThickness" Value="0" />
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}" x:Name="MyButtonTemplate">
-                        <Border Background="{TemplateBinding Background}" 
-                                BorderBrush="{TemplateBinding BorderBrush}" 
+                    <ControlTemplate x:Name="MyButtonTemplate" TargetType="{x:Type Button}">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="1"
-                                x:Name="ButtonBorder"
                                 RenderTransformOrigin="0.5, 1">
                             <Border.RenderTransform>
                                 <TransformGroup>
@@ -45,48 +45,47 @@
                                     <ScaleTransform />
                                 </TransformGroup>
                             </Border.RenderTransform>
-                            <ContentPresenter 
-                         						VerticalAlignment="Center" 
-                         						HorizontalAlignment="Center" 
-                         						Margin="5"></ContentPresenter>
+                            <ContentPresenter Margin="5"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
                             <EventTrigger RoutedEvent="Button.MouseEnter">
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation Storyboard.TargetProperty="Background.GradientStops[1].Color" 
-                                                        To="#5AFFFFFF" 
-                                                        Duration="0:0:0.25" />
+                                        <ColorAnimation Duration="0:0:0.25"
+                                                        Storyboard.TargetProperty="Background.GradientStops[1].Color"
+                                                        To="#5AFFFFFF" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </EventTrigger>
                             <EventTrigger RoutedEvent="Button.MouseLeave">
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation Storyboard.TargetProperty="Background.GradientStops[1].Color" 
-                                                        To="#3CFFFFFF" 
-                                                        Duration="0:0:0.25"/>
+                                        <ColorAnimation Duration="0:0:0.25"
+                                                        Storyboard.TargetProperty="Background.GradientStops[1].Color"
+                                                        To="#3CFFFFFF" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </EventTrigger>
                             <EventTrigger RoutedEvent="Button.GotFocus">
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation Storyboard.TargetProperty="Background.GradientStops[1].Color" 
-                                                        To="#5AFFFFFF" 
-                                                        Duration="0:0:0.25"/>
+                                        <ColorAnimation Duration="0:0:0.25"
+                                                        Storyboard.TargetProperty="Background.GradientStops[1].Color"
+                                                        To="#5AFFFFFF" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </EventTrigger>
                             <EventTrigger RoutedEvent="Button.LostFocus">
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation Storyboard.TargetProperty="Background.GradientStops[0].Color" 
-                                                        To="#3CFFFFFF" 
-                                                        Duration="0:0:0.25"/>
-                                        <ColorAnimation Storyboard.TargetProperty="Background.GradientStops[1].Color" 
-                                                        To="#3CFFFFFF" 
-                                                        Duration="0:0:0.25"/>
+                                        <ColorAnimation Duration="0:0:0.25"
+                                                        Storyboard.TargetProperty="Background.GradientStops[0].Color"
+                                                        To="#3CFFFFFF" />
+                                        <ColorAnimation Duration="0:0:0.25"
+                                                        Storyboard.TargetProperty="Background.GradientStops[1].Color"
+                                                        To="#3CFFFFFF" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </EventTrigger>
@@ -94,53 +93,67 @@
                             <EventTrigger RoutedEvent="Button.MouseDown">
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation Storyboard.TargetProperty="Background.GradientStops[0].Color" 
-                                                        To="#46FFFFFF" 
-                                                        Duration="0:0:0.0" />
-                                        <ColorAnimation Storyboard.TargetProperty="Background.GradientStops[1].Color" 
-                                                        To="#5AFFFFFF"  
-                                                        Duration="0:0:0.0" />
+                                        <ColorAnimation Duration="0:0:0.0"
+                                                        Storyboard.TargetProperty="Background.GradientStops[0].Color"
+                                                        To="#46FFFFFF" />
+                                        <ColorAnimation Duration="0:0:0.0"
+                                                        Storyboard.TargetProperty="Background.GradientStops[1].Color"
+                                                        To="#5AFFFFFF" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </EventTrigger>
                             <EventTrigger RoutedEvent="Button.PreviewMouseDown">
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation Storyboard.TargetProperty="Background.GradientStops[0].Color" 
-                                                        To="#46FFFFFF" 
-                                                        Duration="0:0:0.0" />
-                                        <ColorAnimation Storyboard.TargetProperty="Background.GradientStops[1].Color" 
-                                                        To="#5AFFFFFF"  
-                                                        Duration="0:0:0.0" />
-                                        <DoubleAnimation Storyboard.TargetProperty="(Border.RenderTransform).(TransformGroup.Children)[1].(ScaleTransform.ScaleX)" Storyboard.TargetName="ButtonBorder" To="0.90" Duration="0:0:0" />
-                                        <DoubleAnimation Storyboard.TargetProperty="(Border.RenderTransform).(TransformGroup.Children)[1].(ScaleTransform.ScaleY)" Storyboard.TargetName="ButtonBorder" To="0.90" Duration="0:0:0" />
+                                        <ColorAnimation Duration="0:0:0.0"
+                                                        Storyboard.TargetProperty="Background.GradientStops[0].Color"
+                                                        To="#46FFFFFF" />
+                                        <ColorAnimation Duration="0:0:0.0"
+                                                        Storyboard.TargetProperty="Background.GradientStops[1].Color"
+                                                        To="#5AFFFFFF" />
+                                        <DoubleAnimation Duration="0:0:0"
+                                                         Storyboard.TargetName="ButtonBorder"
+                                                         Storyboard.TargetProperty="(Border.RenderTransform).(TransformGroup.Children)[1].(ScaleTransform.ScaleX)"
+                                                         To="0.90" />
+                                        <DoubleAnimation Duration="0:0:0"
+                                                         Storyboard.TargetName="ButtonBorder"
+                                                         Storyboard.TargetProperty="(Border.RenderTransform).(TransformGroup.Children)[1].(ScaleTransform.ScaleY)"
+                                                         To="0.90" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </EventTrigger>
-                            <!--  <EventTrigger RoutedEvent="Button.MouseUp">
+                            <!--
+                                <EventTrigger RoutedEvent="Button.MouseUp">
                                 <BeginStoryboard>
-                                    <Storyboard>
-                                        <ColorAnimation Storyboard.TargetProperty="Background.GradientStops[0].Color" 
-                                                        To="GhostWhite" 
-                                                        Duration="0:0:0.25" />
-                                        <ColorAnimation Storyboard.TargetProperty="Background.GradientStops[1].Color" 
-                                                        To="LightCyan"  
-                                                        Duration="0:0:0.25" />
-                                    </Storyboard>
+                                <Storyboard>
+                                <ColorAnimation Storyboard.TargetProperty="Background.GradientStops[0].Color"
+                                To="GhostWhite"
+                                Duration="0:0:0.25" />
+                                <ColorAnimation Storyboard.TargetProperty="Background.GradientStops[1].Color"
+                                To="LightCyan"
+                                Duration="0:0:0.25" />
+                                </Storyboard>
                                 </BeginStoryboard>
-                            </EventTrigger> -->
+                                </EventTrigger>
+                            -->
                             <EventTrigger RoutedEvent="Button.Click">
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation Storyboard.TargetProperty="Background.GradientStops[0].Color" 
-                                                        To="#3CFFFFFF" 
-                                                        Duration="0:0:0.0" />
-                                        <ColorAnimation Storyboard.TargetProperty="Background.GradientStops[1].Color" 
-                                                        To="#3CFFFFFF"  
-                                                        Duration="0:0:0.0" />
+                                        <ColorAnimation Duration="0:0:0.0"
+                                                        Storyboard.TargetProperty="Background.GradientStops[0].Color"
+                                                        To="#3CFFFFFF" />
+                                        <ColorAnimation Duration="0:0:0.0"
+                                                        Storyboard.TargetProperty="Background.GradientStops[1].Color"
+                                                        To="#3CFFFFFF" />
 
-                                        <DoubleAnimation Storyboard.TargetProperty="(Border.RenderTransform).(TransformGroup.Children)[1].(ScaleTransform.ScaleX)" Storyboard.TargetName="ButtonBorder" To="1" Duration="0:0:0" />
-                                        <DoubleAnimation Storyboard.TargetProperty="(Border.RenderTransform).(TransformGroup.Children)[1].(ScaleTransform.ScaleY)" Storyboard.TargetName="ButtonBorder" To="1" Duration="0:0:0" />
+                                        <DoubleAnimation Duration="0:0:0"
+                                                         Storyboard.TargetName="ButtonBorder"
+                                                         Storyboard.TargetProperty="(Border.RenderTransform).(TransformGroup.Children)[1].(ScaleTransform.ScaleX)"
+                                                         To="1" />
+                                        <DoubleAnimation Duration="0:0:0"
+                                                         Storyboard.TargetName="ButtonBorder"
+                                                         Storyboard.TargetProperty="(Border.RenderTransform).(TransformGroup.Children)[1].(ScaleTransform.ScaleY)"
+                                                         To="1" />
                                     </Storyboard>
                                 </BeginStoryboard>
 
