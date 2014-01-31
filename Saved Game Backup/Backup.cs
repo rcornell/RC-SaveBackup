@@ -63,7 +63,7 @@ namespace Saved_Game_Backup
             else
                 message = "Backup Complete!";
 
-            return new BackupResultHelper(success, !backupEnabled, message);
+            return new BackupResultHelper(success, !backupEnabled, message, DateTime.Now);
 
         }
 

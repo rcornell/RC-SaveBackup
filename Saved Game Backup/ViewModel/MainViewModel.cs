@@ -80,6 +80,7 @@ namespace Saved_Game_Backup.ViewModel
             }
         }
         public bool AutoBackupSelected { get; set; }
+        public DateTime LastBackupTime { get; set; }
 
         //private string _selectedHardDrive;
         //public string SelectedHardDrive {
@@ -321,7 +322,9 @@ namespace Saved_Game_Backup.ViewModel
             if (!success.Success) return;
             _backupEnabled = success.AutobackupEnabled;
             AutoBackupVisibility = _backupEnabled ? Visibility.Visible : Visibility.Hidden;
+            LastBackupTime = success.BackupDateTime;
             RaisePropertyChanged(() => AutoBackupVisibility);
+            RaisePropertyChanged(() => LastBackupTime);
             MessageBox.Show(success.Message);
         }
 

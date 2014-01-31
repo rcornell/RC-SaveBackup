@@ -65,13 +65,13 @@
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="50" />
                 <RowDefinition Height="430" />
                 <RowDefinition Height="28*" />
                 <RowDefinition Height="28*" />
                 <RowDefinition />
                 <RowDefinition />
-                <RowDefinition Height="70" />
+                <RowDefinition Height="50" />
 
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -107,8 +107,9 @@
                     Command="{Binding StartBackup}"
                     Content="Backup My Saves!" />
             <StackPanel Grid.Row="2"
-                        Grid.Column="3"
+                        Grid.Column="1"
                         HorizontalAlignment="Center"
+                        VerticalAlignment="Top"
                         Orientation="Horizontal"
                         IsEnabled="{Binding AutoBackupSelected}">
                 <TextBlock VerticalAlignment="Center"
