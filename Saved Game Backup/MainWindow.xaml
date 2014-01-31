@@ -109,7 +109,8 @@
             <StackPanel Grid.Row="2"
                         Grid.Column="3"
                         HorizontalAlignment="Center"
-                        Orientation="Horizontal">
+                        Orientation="Horizontal"
+                        IsEnabled="{Binding AutoBackupSelected}">
                 <TextBlock VerticalAlignment="Center"
                            FontSize="14"
                            Text="Autobackup Limit"

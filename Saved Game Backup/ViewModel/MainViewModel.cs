@@ -73,8 +73,13 @@ namespace Saved_Game_Backup.ViewModel
         private BackupType _backupType;
         public BackupType BackupType {
             get { return _backupType; }
-            set { _backupType = value; }
+            set {
+                _backupType = value;
+                AutoBackupSelected = _backupType == BackupType.Autobackup;
+                RaisePropertyChanged(() => AutoBackupSelected);
+            }
         }
+        public bool AutoBackupSelected { get; set; }
 
         //private string _selectedHardDrive;
         //public string SelectedHardDrive {
