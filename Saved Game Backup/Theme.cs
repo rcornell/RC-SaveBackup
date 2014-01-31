@@ -21,11 +21,11 @@ namespace Saved_Game_Backup
 
         public static ObservableCollection<Brush> ToggleTheme(int theme) {
             var bc = new BrushConverter();
-            var darkBrush = (Brush)bc.ConvertFrom("#FF2D2D30");
-            if (darkBrush != null)
-                darkBrush.Freeze();
-            _background = (theme == 0) ? Brushes.DeepSkyBlue : darkBrush;
-            _listBoxBackground = (theme == 0) ? Brushes.White : Brushes.DimGray;
+            var darkBackgroundBrush = (Brush)bc.ConvertFrom("#4C575757");
+            if (darkBackgroundBrush != null)
+                darkBackgroundBrush.Freeze();
+            _background = (theme == 0) ? Brushes.DeepSkyBlue : darkBackgroundBrush;
+            _listBoxBackground = (theme == 0) ? Brushes.White : darkBackgroundBrush;
             _text = (theme == 0) ? Brushes.Black : Brushes.White;
             
             _brushes = new ObservableCollection<Brush>(){_background, _listBoxBackground, _text};

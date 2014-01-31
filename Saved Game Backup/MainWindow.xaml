@@ -25,7 +25,7 @@
 
         <Style x:Key="ListBoxStyle" TargetType="ListBox">
             <!--  <Setter Property="Background" Value="{Binding Brushes[1]}" />  -->
-            <Setter Property="Background" Value="#4C575757" />
+            <Setter Property="Background" Value="{Binding Brushes[2]}" />
             <Setter Property="Foreground" Value="{Binding Brushes[2]}" />
         </Style>
 
@@ -212,6 +212,7 @@
             <Button Grid.Row="7"
                     Grid.Column="1"
                     HorizontalAlignment="Center"
+                    Width="Auto"
                     Command="{Binding OpenAddGameWindow}"
                     Content="Add Game to List" />
             <Border Grid.Row="7"
