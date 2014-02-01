@@ -152,6 +152,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Resource Include="Assets\bluewhite.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Content Include="Assets\Games.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

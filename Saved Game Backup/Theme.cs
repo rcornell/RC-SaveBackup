@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace Saved_Game_Backup
 {
@@ -13,11 +15,16 @@ namespace Saved_Game_Backup
         private static Brush _background;
         private static Brush _listBoxBackground;
         private static Brush _text;
-        private static ObservableCollection<ImageBrush> _backgroundImage;
-        private static ObservableCollection<Brush> _brushes; 
+        private static ObservableCollection<ImageBrush> _backgroundImages;
+        private static ObservableCollection<Brush> _brushes;
+        private static Uri _bluePath = new Uri("@Assets\\bluewhite.jpg", UriKind.Relative);
+        private static Uri _darkPath = new Uri("@Assets\\metro.jpg", UriKind.Relative);
+        
 
         static Theme() {
-               
+            var blue = new ImageBrush() {ImageSource = new BitmapImage(_bluePath)};
+            var dark = new ImageBrush() {ImageSource = new BitmapImage(_darkPath)};
+            _backgroundImages= new ObservableCollection<ImageBrush>() {blue, dark};
         }
 
         public static ObservableCollection<Brush> ToggleTheme(int theme) {
