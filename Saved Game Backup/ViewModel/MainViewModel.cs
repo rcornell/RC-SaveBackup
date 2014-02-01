@@ -43,6 +43,7 @@ namespace Saved_Game_Backup.ViewModel
             get { return _autoBackupVisibility; }
             set { _autoBackupVisibility = value; }
         }
+        public Visibility BackupLimitVisibility { get; set; }
        
         public ObservableCollection<string> HardDrives { get; set; } 
         public ObservableCollection<Game> GamesList { get; set; } 
@@ -75,11 +76,10 @@ namespace Saved_Game_Backup.ViewModel
             get { return _backupType; }
             set {
                 _backupType = value;
-                AutoBackupSelected = _backupType == BackupType.Autobackup;
-                RaisePropertyChanged(() => AutoBackupSelected);
+                BackupLimitVisibility = _backupType == BackupType.Autobackup ? Visibility.Visible : Visibility.Hidden;
+                RaisePropertyChanged(() => BackupLimitVisibility);
             }
         }
-        public bool AutoBackupSelected { get; set; }
         public DateTime LastBackupTime { get; set; }
 
         //private string _selectedHardDrive;
@@ -169,6 +169,7 @@ namespace Saved_Game_Backup.ViewModel
                 BackupType.ToFolder,
                 BackupType.ToZip
             };
+            BackupLimitVisibility = Visibility.Hidden;
             DirectoryFinder.CheckDirectories();
             SetUpInterface();
 
@@ -342,6 +343,7 @@ namespace Saved_Game_Backup.ViewModel
             if (newGameForJson == null) return;
             var gb = new GiantBombAPI();
             await gb.AddToJSON(newGameForJson);
+            MessageBox.Show(newGameForJson.Name + " added to list.");
             UpdateGamesList();
         }
 

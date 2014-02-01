@@ -109,10 +109,10 @@
                     Command="{Binding StartBackup}"
                     Content="Backup Saves" />
             <StackPanel Grid.Row="2"
-                        Grid.Column="1"
+                        Grid.Column="3"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Top"
-                        IsEnabled="{Binding AutoBackupSelected}"
+                        Visibility="{Binding BackupLimitVisibility}"
                         Orientation="Horizontal">
                 <TextBlock VerticalAlignment="Center"
                            FontSize="14"
