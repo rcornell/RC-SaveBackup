@@ -59,7 +59,7 @@ namespace Saved_Game_Backup.ViewModel
             get { return _listBoxBackground; }
             set { _listBoxBackground = value; }
         }
-        public ObservableCollection<Brush> Brushes { get; set; }
+        public ObservableCollection<object> Brushes { get; set; }
 
         private ObservableCollection<BackupType> _backupTypes;
         public ObservableCollection<BackupType> BackupTypes

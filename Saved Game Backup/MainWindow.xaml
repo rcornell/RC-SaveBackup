@@ -11,6 +11,7 @@
         Height="700"
         DataContext="{Binding Path=Main,
                               Source={StaticResource Locator}}"
+        Background="{Binding Brushes[0]}"
         Icon="Assets/SGBIcon.ico"
         Padding="3"
         WindowStartupLocation="CenterScreen"
@@ -44,7 +45,7 @@
         <ImageBrush x:Key="Metro" ImageSource="Assets/metro.jpg" />
     </Window.Resources>
     <!--  <StackPanel Background="{Binding Brushes[0]}">  -->
-    <StackPanel Background="{StaticResource Metro}">
+    <StackPanel >
         <Menu IsMainMenu="True">
             <MenuItem Header="_File">
                 <MenuItem Header="_Theme">

@@ -12,13 +12,15 @@ namespace Saved_Game_Backup
 {
     public class Theme {
 
-        private static Brush _background;
+        private static ImageBrush _backgroundImage;
         private static Brush _listBoxBackground;
         private static Brush _text;
         private static ObservableCollection<ImageBrush> _backgroundImages;
-        private static ObservableCollection<Brush> _brushes;
-        private static Uri _bluePath = new Uri("@Assets\\bluewhite.jpg", UriKind.Relative);
-        private static Uri _darkPath = new Uri("@Assets\\metro.jpg", UriKind.Relative);
+        private static ObservableCollection<object> _brushes;
+        //private static Uri _bluePath = new Uri(@"pack://application:Saved_Game_Backup/YourAssembly;component/Assets/bluewhite.jpg", UriKind.Absolute);
+        //private static Uri _darkPath = new Uri(@"pack://application:Saved_Game_Backup/YourAssembly;component/Assets/metro.jpg", UriKind.Absolute);
+        private static Uri _bluePath = new Uri(@"C:\Users\Rob\Source\Repos\RC-SaveBackup2\Saved Game Backup\Assets\bluewhite.jpg", UriKind.Absolute);
+        private static Uri _darkPath = new Uri(@"C:\Users\Rob\Source\Repos\RC-SaveBackup2\Saved Game Backup\Assets\metro.jpg", UriKind.Absolute);
         
 
         static Theme() {
@@ -27,19 +29,19 @@ namespace Saved_Game_Backup
             _backgroundImages= new ObservableCollection<ImageBrush>() {blue, dark};
         }
 
-        public static ObservableCollection<Brush> ToggleTheme(int theme) {
+        public static ObservableCollection<object> ToggleTheme(int theme) {
             var bc = new BrushConverter();
             var darkBackgroundBrush = (Brush)bc.ConvertFrom("#4C575757");
             if (darkBackgroundBrush != null)
                 darkBackgroundBrush.Freeze();
-            
-            //_background currently doesn't matter
-            _background = (theme == 0) ? Brushes.DeepSkyBlue : darkBackgroundBrush;
+            _backgroundImage = theme == 0 ? _backgroundImages[0] : _backgroundImages[1];
             //_listBoxBackground = (theme == 0) ? Brushes.White : darkBackgroundBrush;
             _listBoxBackground = darkBackgroundBrush;
-            _text = (theme == 0) ? Brushes.Black : Brushes.White;
             
-            _brushes = new ObservableCollection<Brush>(){_background, _listBoxBackground, _text};
+            //Currently setting _text to white in both background cases
+            _text = (theme == 0) ? Brushes.White : Brushes.White;
+            
+            _brushes = new ObservableCollection<object>(){_backgroundImage, _listBoxBackground, _text};
             return _brushes;
         }
 
