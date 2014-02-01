@@ -1,59 +1,58 @@
 ﻿<Window x:Class="Saved_Game_Backup.AddGameWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Name="AddWindow"
         Title="AddGameWindow"
         Width="300"
-        Height="300"
-        Background="DeepSkyBlue"
-        x:Name="AddWindow"
+        Height="250"
+        Background="{StaticResource MetroSmall}"
         DataContext="{Binding AddGame,
                               Source={StaticResource Locator}}">
     <Window.Resources>
         <Style BasedOn="{StaticResource FontStyle}" TargetType="Control" />
+        <Style BasedOn="{StaticResource TextStyle}" TargetType="TextBlock"></Style>
+        
     </Window.Resources>
     <Grid Background="{Binding Background}">
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition />
             <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
             <ColumnDefinition />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-
-        <TextBlock Grid.Row="1"
-                   Grid.Column="0"
-                   Grid.ColumnSpan="2"
-                   VerticalAlignment="Center"
-                   Text="What is the game's name?"
-                   TextWrapping="Wrap" />
-        <TextBox Grid.Row="1"
-                 Grid.Column="2"
-                 VerticalAlignment="Center"
-                 Text="{Binding Name}" />
-
-        <TextBlock Grid.Row="3"
-                   Grid.Column="0"
-                   Grid.ColumnSpan="2"
-                   VerticalAlignment="Center"
-                   Text="Select the game's saveFolder"
-                   TextWrapping="Wrap" />
-        <Button Grid.Row="3"
-                Grid.Column="2"
-                VerticalAlignment="Center"
-                Command="{Binding ChoosePath}"
-                Content="Choose Folder" />
-
-        <Button Grid.Row="4"
-                Grid.Column="2"
-                VerticalAlignment="Center"
-                Command="{Binding Add}"
-                Content="Add Game to Database" />
+        <StackPanel Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">
+            <TextBlock HorizontalAlignment="Left"
+                       VerticalAlignment="Center"
+                       Text="1) Enter Game Name"
+                       TextWrapping="Wrap" />
+            <TextBox VerticalAlignment="Center" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        </StackPanel>
+        <StackPanel Grid.Row="1"
+                    Grid.Column="1" VerticalAlignment="Center">
+            <TextBlock VerticalAlignment="Center"
+                       HorizontalAlignment="Left"
+                       Text="2) Select Game's Save Folder"
+                       TextWrapping="Wrap" />
+            <Button VerticalAlignment="Center"
+                    Command="{Binding ChoosePath}"
+                    Content="Choose Folder" />
+        </StackPanel>
+        <StackPanel Grid.Row="2"
+                    Grid.Column="1"
+                    VerticalAlignment="Center">
+            <TextBlock VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           Text="3) Add Game to Database"
+                           TextWrapping="Wrap" />
+            <Button 
+                    VerticalAlignment="Center"
+                    Command="{Binding Add}"
+                    Content="Add Game" />
+        </StackPanel>
 
     </Grid>
 </Window>

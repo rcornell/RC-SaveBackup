@@ -155,6 +155,9 @@
     <Resource Include="Assets\bluewhite.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\bluewhiteSmall.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Content Include="Assets\Games.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -170,6 +173,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\metro.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\metroSmall.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Content Include="Assets\SGBIcon.ico">

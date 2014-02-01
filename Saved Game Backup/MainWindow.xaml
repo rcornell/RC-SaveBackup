@@ -107,7 +107,7 @@
                     Height="Auto"
                     HorizontalAlignment="Center"
                     Command="{Binding StartBackup}"
-                    Content="backup saves" />
+                    Content="Backup Saves" />
             <StackPanel Grid.Row="2"
                         Grid.Column="1"
                         HorizontalAlignment="Center"
