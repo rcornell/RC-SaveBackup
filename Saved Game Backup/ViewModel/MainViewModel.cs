@@ -179,6 +179,8 @@ namespace Saved_Game_Backup.ViewModel
             //    if (s.SpecifiedFolder != null)
             //        SpecifiedFolder = s.SpecifiedFolder;
             //});
+
+          
         }
 
         //~MainViewModel() {
@@ -243,10 +245,9 @@ namespace Saved_Game_Backup.ViewModel
                 return;
 
             for (int i = 0; i < GamesList.Count(); i++) {
-                if (_selectedGame.Name == GamesList[i].Name) {
-                    game = GamesList[i];
-                    break;
-                }
+                if (_selectedGame.Name != GamesList[i].Name) continue;
+                game = GamesList[i];
+                break;
             }
 
             if (game != null) {
@@ -330,9 +331,24 @@ namespace Saved_Game_Backup.ViewModel
             MessageBox.Show(success.Message);
         }
 
-        private void ExecuteOpenAddGameWindow() {
+        private async void ExecuteOpenAddGameWindow() {
+            Game newGameForJson;
+            Messenger.Default.Register<AddGameMessage>(this, g => {
+                newGameForJson = g.Game;
+            });
             var addGameWindow = new AddGameWindow();
-            addGameWindow.Show();
+            addGameWindow.ShowDialog();
+            var gb = new GiantBombAPI();
+            gb.AddToJSON(newGameForJson);
+        }
+
+        private void UpdateGamesList() {
+            GamesList = DirectoryFinder.ReturnGamesList();
+            var listToEdit = new ObservableCollection<Game>();
+            for (var i =0; i <= GamesList.Count(); i++){
+              
+            }
+            RaisePropertyChanged(() => GamesList);
         }
 
         //Options window not used anymore.

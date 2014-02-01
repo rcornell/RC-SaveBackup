@@ -16,9 +16,9 @@
         <Style x:Key="TextStyle" TargetType="TextBlock">
             <Setter Property="FontFamily" Value="Segoe UI" />
             <Setter Property="Foreground" Value="White" />
-            <Setter Property="FontSize" Value="16"></Setter>
+            <Setter Property="FontSize" Value="16" />
         </Style>
-        <ImageBrush ImageSource="Assets/metroSmall.jpg" x:Key="MetroSmall"/>
+        <ImageBrush x:Key="MetroSmall" ImageSource="Assets/metroSmall.jpg" />
         <ImageBrush x:Key="Metro" ImageSource="Assets/metro.jpg" />
 
         <LinearGradientBrush x:Key="MyButtonBrush" StartPoint="0.5,0" EndPoint="0.5,1">

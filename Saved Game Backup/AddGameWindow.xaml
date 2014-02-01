@@ -10,8 +10,8 @@
                               Source={StaticResource Locator}}">
     <Window.Resources>
         <Style BasedOn="{StaticResource FontStyle}" TargetType="Control" />
-        <Style BasedOn="{StaticResource TextStyle}" TargetType="TextBlock"></Style>
-        
+        <Style BasedOn="{StaticResource TextStyle}" TargetType="TextBlock" />
+
     </Window.Resources>
     <Grid Background="{Binding Background}">
         <Grid.RowDefinitions>
@@ -24,7 +24,9 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">
+        <StackPanel Grid.Row="0"
+                    Grid.Column="1"
+                    VerticalAlignment="Center">
             <TextBlock HorizontalAlignment="Left"
                        VerticalAlignment="Center"
                        Text="1) Enter Game Name"
@@ -32,9 +34,10 @@
             <TextBox VerticalAlignment="Center" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
         <StackPanel Grid.Row="1"
-                    Grid.Column="1" VerticalAlignment="Center">
-            <TextBlock VerticalAlignment="Center"
-                       HorizontalAlignment="Left"
+                    Grid.Column="1"
+                    VerticalAlignment="Center">
+            <TextBlock HorizontalAlignment="Left"
+                       VerticalAlignment="Center"
                        Text="2) Select Game's Save Folder"
                        TextWrapping="Wrap" />
             <Button VerticalAlignment="Center"
@@ -44,13 +47,13 @@
         <StackPanel Grid.Row="2"
                     Grid.Column="1"
                     VerticalAlignment="Center">
-            <TextBlock VerticalAlignment="Center"
-                           HorizontalAlignment="Left"
-                           Text="3) Add Game to Database"
-                           TextWrapping="Wrap" />
-            <Button 
-                    VerticalAlignment="Center"
+            <TextBlock HorizontalAlignment="Left"
+                       VerticalAlignment="Center"
+                       Text="3) Add Game to Database"
+                       TextWrapping="Wrap" />
+            <Button VerticalAlignment="Center"
                     Command="{Binding Add}"
+                    CommandParameter="{Binding ElementName=AddWindow}"
                     Content="Add Game" />
         </StackPanel>
 

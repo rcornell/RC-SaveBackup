@@ -279,11 +279,10 @@ namespace Saved_Game_Backup
         }
 
         //Could be modified to download the thumbnail data now.
-        internal async void AddToJSON(string name, string path) {
-            var game = new Game(name, path, 999999, null, true);
+        internal async Task AddToJSON(Game newGameForJson) {
             try {
                 var gameJsonList = await JsonConvert.DeserializeObjectAsync<List<Game>>(File.ReadAllText(GameListPath));
-                gameJsonList.Add(game);
+                gameJsonList.Add(newGameForJson);
                 var listToReturn = new ObservableCollection<Game>(gameJsonList.OrderBy(x => x.Name));
                 var fileToWrite = JsonConvert.SerializeObject(listToReturn);
                 File.WriteAllText(GameListPath, fileToWrite);
