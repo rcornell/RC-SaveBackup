@@ -243,36 +243,21 @@ namespace Saved_Game_Backup.ViewModel
         private async void ToBackupList() {
             if (_selectedGame == null)
                 return;
-
-            var newListOfLists = GameListHandler.AddToBackupList(GamesToBackup, GamesList, SelectedGame);
-            GamesToBackup = newListOfLists[0];
-            GamesList = newListOfLists[1];
-            RaisePropertyChanged(() => GamesToBackup);
+            var removedGame = GameListHandler.RemoveFromGamesList(GamesList, SelectedGame);
             RaisePropertyChanged(() => GamesList);
-            //Pull in Thumb data with GiantBombAPI
-            await GetThumb(_selectedGame);
+            var g = await GameListHandler.AddToBackupList(GamesToBackup, GamesList, removedGame);
+            RaisePropertyChanged(() => GamesToBackup);
+            await GetThumb(g);
             RaisePropertyChanged(() => GamesToBackup);
         }
 
         private void ToGamesList() {
-            Game game = null;
             if (_selectedBackupGame == null)
                 return;
-
-            for (int i = 0; i < GamesToBackup.Count(); i++) {
-                if (_selectedBackupGame.Name == GamesToBackup[i].Name) {
-                    game = GamesToBackup[i];
-                    break;
-                }
-            }
-
-            if (game != null) {
-                GamesToBackup.Remove(game);
-                RaisePropertyChanged(() => GamesToBackup);
-                GamesList.Add(game);
-            }
-            GamesList = new ObservableCollection<Game>(GamesList.OrderBy(x => x.Name));
+            var game = GameListHandler.RemoveFromBackupList(GamesToBackup, SelectedBackupGame);
+            GameListHandler.AddToGamesList(GamesToBackup, GamesList, game);
             RaisePropertyChanged(() => GamesList);
+            RaisePropertyChanged(() => GamesToBackup);
         }
 
         private void ExecuteReset() {
