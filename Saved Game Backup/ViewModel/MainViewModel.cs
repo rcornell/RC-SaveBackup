@@ -241,26 +241,17 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private async void ToBackupList() {
-            Game game = null;
             if (_selectedGame == null)
                 return;
 
-            for (int i = 0; i < GamesList.Count(); i++) {
-                if (_selectedGame.Name != GamesList[i].Name) continue;
-                game = GamesList[i];
-                break;
-            }
-
-            if (game != null) {
-                GamesList.Remove(game);
-                RaisePropertyChanged(() => GamesList);
-                
-                //Pull in Thumb data with GiantBombAPI
-                await GetThumb(game);
-                GamesToBackup.Add(game);
-                GamesToBackup = new ObservableCollection<Game>(GamesToBackup.OrderBy(x => x.Name));
-                RaisePropertyChanged(() => GamesToBackup);
-            }
+            var newListOfLists = GameListHandler.AddToBackupList(GamesToBackup, GamesList, SelectedGame);
+            GamesToBackup = newListOfLists[0];
+            GamesList = newListOfLists[1];
+            RaisePropertyChanged(() => GamesToBackup);
+            RaisePropertyChanged(() => GamesList);
+            //Pull in Thumb data with GiantBombAPI
+            await GetThumb(_selectedGame);
+            RaisePropertyChanged(() => GamesToBackup);
         }
 
         private void ToGamesList() {

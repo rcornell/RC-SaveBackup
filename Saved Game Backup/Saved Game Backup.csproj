@@ -99,6 +99,7 @@
     <Compile Include="BackupType.cs" />
     <Compile Include="DirectoryFinder.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="GameListHandler.cs" />
     <Compile Include="GiantBombAPI.cs" />
     <Compile Include="Helper\AddGameMessage.cs" />
     <Compile Include="Helper\BackupResultHelper.cs" />
@@ -159,7 +160,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Content Include="Assets\Games.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
