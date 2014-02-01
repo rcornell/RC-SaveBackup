@@ -332,21 +332,24 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private async void ExecuteOpenAddGameWindow() {
-            Game newGameForJson;
+            Game newGameForJson = null;
             Messenger.Default.Register<AddGameMessage>(this, g => {
                 newGameForJson = g.Game;
             });
             var addGameWindow = new AddGameWindow();
             addGameWindow.ShowDialog();
+
+            if (newGameForJson == null) return;
             var gb = new GiantBombAPI();
-            gb.AddToJSON(newGameForJson);
+            await gb.AddToJSON(newGameForJson);
+            UpdateGamesList();
         }
 
         private void UpdateGamesList() {
             GamesList = DirectoryFinder.ReturnGamesList();
-            var listToEdit = new ObservableCollection<Game>();
-            for (var i =0; i <= GamesList.Count(); i++){
-              
+            foreach (var game in GamesToBackup) {
+                SelectedGame = game;
+                ToGamesList();
             }
             RaisePropertyChanged(() => GamesList);
         }

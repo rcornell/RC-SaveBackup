@@ -137,7 +137,12 @@ namespace Saved_Game_Backup
                     BuildThumbnail(thumbURL);
             }
             else {
-                _newGameId = blob.results[0].id;
+                try {
+                    _newGameId = blob.results[0].id;
+                }
+                catch (ArgumentOutOfRangeException ex) {
+                    LogError(ex);
+                }
               
             }
         }
@@ -171,18 +176,7 @@ namespace Saved_Game_Backup
                 webClient.DownloadFile(new Uri(url), fi.FullName);
             }
             catch (Exception ex) {
-                Directory.CreateDirectory(documentsPath + "\\Save Backup Tool\\Error\\");
-                var sb = new StringBuilder();
-                sb.AppendLine(ex.Message);
-                sb.AppendLine(ex.InnerException.Message);
-                sb.AppendLine(ex.Source);
-                sb.AppendLine(ex.StackTrace);
-                using (var fs = File.OpenWrite(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)+"\\Save Backup Tool\\Error\\Log.txt")) {
-                    using (var sw = new StreamWriter(fs)) {
-                        sw.WriteLineAsync(sb.ToString());    
-                    }
-                    
-                }
+                LogError(ex);
             }
 
             //Create thumbImage. Not necessary since Game.cs is updated with the path
@@ -301,6 +295,24 @@ namespace Saved_Game_Backup
                         sw.WriteLine(sb.ToString());
                     }
                 }
+            }
+        }
+
+        private void LogError(Exception ex) {
+            var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            Directory.CreateDirectory(documentsPath + "\\Save Backup Tool\\Error\\");
+            var sb = new StringBuilder();
+            sb.AppendLine(ex.Message);
+            sb.AppendLine(ex.InnerException.Message);
+            sb.AppendLine(ex.Source);
+            sb.AppendLine(ex.StackTrace);
+            using (var fs = File.OpenWrite(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Save Backup Tool\\Error\\Log.txt"))
+            {
+                using (var sw = new StreamWriter(fs))
+                {
+                    sw.WriteLineAsync(sb.ToString());
+                }
+
             }
         }
     }
