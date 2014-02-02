@@ -11,7 +11,7 @@ namespace Saved_Game_Backup
 
         public GameListHandler(){}
 
-        public static async void AddToBackupList(ObservableCollection<Game> gamesToBackup, ObservableCollection<Game> gamesList, Game game) {
+        public static async Task AddToBackupList(ObservableCollection<Game> gamesToBackup, ObservableCollection<Game> gamesList, Game game) {
              await GetThumb(game);
             
             for (var i = 0; i < gamesList.Count(); i++) {
@@ -20,10 +20,9 @@ namespace Saved_Game_Backup
                 break;
             }
 
-            if (game == null) return null;
+            if (game == null) return;
             gamesList.Remove(game);
             gamesToBackup.Add(game);
-            return game;
         }
 
         public static void AddToGamesList(ObservableCollection<Game> gamesToBackup,
