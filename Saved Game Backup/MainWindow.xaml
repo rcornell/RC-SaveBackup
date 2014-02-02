@@ -112,8 +112,8 @@
                         Grid.Column="3"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Top"
-                        Visibility="{Binding BackupLimitVisibility}"
-                        Orientation="Horizontal">
+                        Orientation="Horizontal"
+                        Visibility="{Binding BackupLimitVisibility}">
                 <TextBlock VerticalAlignment="Center"
                            FontSize="14"
                            Text="Autobackup Limit"

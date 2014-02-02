@@ -225,12 +225,7 @@ namespace Saved_Game_Backup.ViewModel
             p.SavePrefs(new UserPrefs(_themeInt, _maxBackups, GamesToBackup, LastBackupTime));
         }
 
-        /// <summary>
-        /// Removed custom HDD option?
-        /// </summary>
-        private void ExecuteDetectGames() {
-            
-            
+        private void ExecuteDetectGames() {         
             GamesToBackup = DirectoryFinder.PollDirectories(GamesList);
             foreach (Game game in GamesToBackup)
                 GamesList.Remove(game);
@@ -243,18 +238,21 @@ namespace Saved_Game_Backup.ViewModel
         private async void ToBackupList() {
             if (_selectedGame == null)
                 return;
-            var removedGame = GameListHandler.RemoveFromGamesList(GamesList, SelectedGame);
+            var game = SelectedGame;
+            GameListHandler.RemoveFromGamesList(GamesList, game);
             RaisePropertyChanged(() => GamesList);
-            var g = await GameListHandler.AddToBackupList(GamesToBackup, GamesList, removedGame);
+            await GameListHandler.AddToBackupList(GamesToBackup, GamesList, game);
             RaisePropertyChanged(() => GamesToBackup);
-            await GetThumb(g);
+            await GetThumb(game);
             RaisePropertyChanged(() => GamesToBackup);
         }
 
         private void ToGamesList() {
             if (_selectedBackupGame == null)
                 return;
-            var game = GameListHandler.RemoveFromBackupList(GamesToBackup, SelectedBackupGame);
+
+            var game = SelectedBackupGame;
+            GameListHandler.RemoveFromBackupList(GamesToBackup, game);
             GameListHandler.AddToGamesList(GamesToBackup, GamesList, game);
             RaisePropertyChanged(() => GamesList);
             RaisePropertyChanged(() => GamesToBackup);

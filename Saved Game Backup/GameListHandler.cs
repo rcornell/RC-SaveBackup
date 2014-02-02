@@ -11,14 +11,10 @@ namespace Saved_Game_Backup
 
         public GameListHandler(){}
 
-        //public static Dictionary<string, ObservableCollection<Game>>AddToBackupList() {
-    
-        //}
-
-        public static async Task<Game> AddToBackupList(ObservableCollection<Game> gamesToBackup, ObservableCollection<Game> gamesList, Game game) {
+        public static async void AddToBackupList(ObservableCollection<Game> gamesToBackup, ObservableCollection<Game> gamesList, Game game) {
              await GetThumb(game);
             
-            for (int i = 0; i < gamesList.Count(); i++) {
+            for (var i = 0; i < gamesList.Count(); i++) {
                 if (game.Name != gamesList[i].Name) continue;
                 game = gamesList[i];
                 break;
@@ -30,28 +26,13 @@ namespace Saved_Game_Backup
             return game;
         }
 
-        private static async Task GetThumb(Game game)
-        {
-            var gb = new GiantBombAPI(game);
-            await gb.GetThumb(game);
-            game.ThumbnailPath = gb.ThumbnailPath;
-        }
-
-        public static Game RemoveFromGamesList(ObservableCollection<Game> gamesList, Game selectedGame) {
-            gamesList.Remove(selectedGame);
-            return selectedGame;
-        }
-
-        public static Game RemoveFromBackupList(ObservableCollection<Game> gamesToBackup, Game game) {
-            gamesToBackup.Remove(game);
-            return game;
-        }
-
         public static void AddToGamesList(ObservableCollection<Game> gamesToBackup,
-            ObservableCollection<Game> gamesList, Game game) {
+            ObservableCollection<Game> gamesList, Game game)
+        {
 
 
-            for (var i = 0; i < gamesToBackup.Count(); i++) {
+            for (var i = 0; i < gamesToBackup.Count(); i++)
+            {
                 if (game.Name != gamesToBackup[i].Name) continue;
                 game = gamesToBackup[i];
                 break;
@@ -61,6 +42,23 @@ namespace Saved_Game_Backup
             gamesToBackup.Remove(game);
             gamesList.Add(game);
             gamesList = new ObservableCollection<Game>(gamesList.OrderBy(x => x.Name));
+        }       
+
+        public static void RemoveFromBackupList(ObservableCollection<Game> gamesToBackup, Game game){
+            gamesToBackup.Remove(game);
+            gamesToBackup = new ObservableCollection<Game>(gamesToBackup.OrderBy(s => s.Name));
         }
+
+        public static void RemoveFromGamesList(ObservableCollection<Game> gamesList, Game selectedGame) {
+            gamesList.Remove(selectedGame);
+            gamesList = new ObservableCollection<Game>(gamesList.OrderBy(s => s.Name));
+        }
+
+        private static async Task GetThumb(Game game) {
+            var gb = new GiantBombAPI(game);
+            await gb.GetThumb(game);
+            game.ThumbnailPath = gb.ThumbnailPath;
+        }
+        
     }
 }
