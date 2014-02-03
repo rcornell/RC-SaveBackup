@@ -114,6 +114,7 @@
     <Compile Include="ViewModel\OptionsViewModel.cs" />
     <Compile Include="Theme.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Compile Include="WrapPanelGame.cs" />
     <Page Include="AddGameWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
