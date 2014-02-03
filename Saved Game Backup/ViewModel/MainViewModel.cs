@@ -254,6 +254,7 @@ namespace Saved_Game_Backup.ViewModel
             var game = SelectedBackupGame;
             GameListHandler.RemoveFromBackupList(GamesToBackup, game);
             GameListHandler.AddToGamesList(GamesToBackup, GamesList, game);
+            GamesList = new ObservableCollection<Game>(GamesList.OrderBy(s=> s.Name));
             RaisePropertyChanged(() => GamesList);
             RaisePropertyChanged(() => GamesToBackup);
         }

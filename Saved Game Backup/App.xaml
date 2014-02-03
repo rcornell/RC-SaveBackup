@@ -130,11 +130,11 @@
                                         <DoubleAnimation Duration="0:0:0"
                                                          Storyboard.TargetName="ButtonBorder"
                                                          Storyboard.TargetProperty="(Border.RenderTransform).(TransformGroup.Children)[1].(ScaleTransform.ScaleX)"
-                                                         To="0.90" />
+                                                         To="0.97" />
                                         <DoubleAnimation Duration="0:0:0"
                                                          Storyboard.TargetName="ButtonBorder"
                                                          Storyboard.TargetProperty="(Border.RenderTransform).(TransformGroup.Children)[1].(ScaleTransform.ScaleY)"
-                                                         To="0.90" />
+                                                         To="0.95" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </EventTrigger>
