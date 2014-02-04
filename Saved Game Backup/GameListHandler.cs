@@ -11,7 +11,7 @@ namespace Saved_Game_Backup
 
         public GameListHandler(){}
 
-        public static async Task AddToBackupList(ObservableCollection<Game> gamesToBackup, ObservableCollection<Game> gamesList, Game game) {
+        public static async Task AddToBackupList(ObservableCollection<WrapPanelGame> gamesToBackup, ObservableCollection<Game> gamesList, Game game) {
              await GetThumb(game);
             
             for (var i = 0; i < gamesList.Count(); i++) {
@@ -22,23 +22,25 @@ namespace Saved_Game_Backup
 
             if (game == null) return;
             gamesList.Remove(game);
-            gamesToBackup.Add(game);
+            gamesToBackup.Add(new WrapPanelGame() {Game = game});
         }
 
-        public static void AddToGamesList(ObservableCollection<Game> gamesToBackup,
+        public static void AddToGamesList(ObservableCollection<WrapPanelGame> gamesToBackup,
             ObservableCollection<Game> gamesList, Game game)
         {
-
-
             for (var i = 0; i < gamesToBackup.Count(); i++)
             {
                 if (game.Name != gamesToBackup[i].Name) continue;
-                game = gamesToBackup[i];
+                game = gamesToBackup[i].Game;
                 break;
             }
 
             if (game == null) return;
-            gamesToBackup.Remove(game);
+            for (var i = 0; i < gamesToBackup.Count; i++) {
+                if (gamesToBackup[i].Game != game) continue;
+                gamesToBackup.RemoveAt(i);
+                break;
+            }
             gamesList.Add(game);
             gamesList = new ObservableCollection<Game>(gamesList.OrderBy(x => x.Name));
         }       

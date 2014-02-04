@@ -44,8 +44,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="savedGameBackup:WrapPanelGame">
-                        <Border Width="{TemplateBinding BorderWidth}" 
-                                Height="{TemplateBinding BorderHeight}">
+                        <Border Width="{TemplateBinding BorderWidth}" Height="{TemplateBinding BorderHeight}">
                             <StackPanel>
                                 <Image x:Name="ImageControl"
                                        Width="{TemplateBinding ThumbnailWidth}"

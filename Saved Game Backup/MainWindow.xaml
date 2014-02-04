@@ -81,8 +81,10 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="510" />
             </Grid.ColumnDefinitions>
-            
-            <Button Grid.Row="2" Grid.Column="2" Command="{Binding AddPanelGame}"></Button>
+
+            <Button Grid.Row="2"
+                    Grid.Column="2"
+                    Command="{Binding AddPanelGame}" />
             <ComboBox Grid.Row="1"
                       Grid.Column="1"
                       VerticalAlignment="Center"
@@ -136,8 +138,8 @@
                            FontSize="14"
                            Text="Games to Back Up" />
                 <ListBox Height="400"
-                         ItemsSource="{Binding WrapPanelGamesList}"
-                         SelectedItem="{}"  
+                         ItemsSource="{Binding GamesToBackup}"
+                         SelectedItem="{}"
                          Style="{StaticResource ListBoxStyle}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDoubleClick">
@@ -161,16 +163,20 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type savedGameBackup:WrapPanelGame}">
                             <StackPanel>
-                                <savedGameBackup:WrapPanelGame IsMouseOver="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}, Path=IsMouseOver}"
-                                                               IsSelected="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}, Path=IsSelected}"
-                                                               ThumbnailHeight="180"
-                                                               ThumbnailWidth="160"
+                                <savedGameBackup:WrapPanelGame Title="TEST"
                                                                BorderHeight="200"
                                                                BorderWidth="180"
-                                                               Thumbnail="C:\Users\Rob\Documents\Save Backup Tool\Thumbnails\Terraria.png"
+                                                               IsMouseOver="{Binding RelativeSource={RelativeSource FindAncestor,
+                                                                                                                    AncestorType=ListBoxItem},
+                                                                                     Path=IsMouseOver}"
+                                                               IsSelected="{Binding RelativeSource={RelativeSource FindAncestor,
+                                                                                                                   AncestorType=ListBoxItem},
+                                                                                    Path=IsSelected}"
                                                                Stretch="Uniform"
                                                                StretchDirection="DownOnly"
-                                                               Title="TEST"/>
+                                                               Thumbnail="C:\Users\Rob\Documents\Save Backup Tool\Thumbnails\Terraria.png"
+                                                               ThumbnailHeight="180"
+                                                               ThumbnailWidth="160" />
                             </StackPanel>
 
                         </DataTemplate>
