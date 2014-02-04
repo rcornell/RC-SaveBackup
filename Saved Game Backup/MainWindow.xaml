@@ -159,10 +159,19 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type savedGameBackup:Game}">
                             <Border>
+                                <Border.Triggers>
+                                    <EventTrigger RoutedEvent="Border.MouseEnter">
+                                            <BeginStoryboard>
+                                                <Storyboard></Storyboard>
+                                            </BeginStoryboard>
+                                    </EventTrigger>
+                                </Border.Triggers>
+                                
                                 <StackPanel Margin="0,3,0,3">
                                     <Image Width="160"
                                            Height="180"
-                                           Source="{Binding ThumbnailPath}" />
+                                           Source="{Binding ThumbnailPath}" >
+                                    </Image>
                                     <TextBlock HorizontalAlignment="Center" Text="{Binding Name}" />
                                 </StackPanel>
                             </Border>

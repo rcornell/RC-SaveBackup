@@ -3,12 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:d1p1="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:savedGameBackup="clr-namespace:Saved_Game_Backup"
              StartupUri="MainWindow.xaml"
              d1p1:Ignorable="d">
     <Application.Resources>
         <vm:ViewModelLocator xmlns:vm="clr-namespace:Saved_Game_Backup.ViewModel"
                              x:Key="Locator"
                              d:IsDataSource="True" />
+        
+        <!--FONT STYLES GO HERE-->
         <Style x:Key="FontStyle" TargetType="Control">
             <Setter Property="FontFamily" Value="Segoe UI" />
             <Setter Property="Foreground" Value="White" />
@@ -18,9 +21,49 @@
             <Setter Property="Foreground" Value="White" />
             <Setter Property="FontSize" Value="16" />
         </Style>
+
+        <!--IMAGEBRUSHES GO HERE-->
         <ImageBrush x:Key="MetroSmall" ImageSource="Assets/metroSmall.jpg" />
         <ImageBrush x:Key="Metro" ImageSource="Assets/metro.jpg" />
 
+        <!--WrapPanelGame Style Goes Here-->
+        <Style TargetType="savedGameBackup:WrapPanelGame">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="RenderTransformOrigin" Value="0.5, 0.5"/>
+            <Setter Property="RenderTransform" >
+                <Setter.Value>
+                    <TransformGroup>
+                        <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1" ScaleY="1"/>
+                        <RotateTransform Angle="0" CenterX="0.5" CenterY="0.5"/>
+                    </TransformGroup></Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="savedGameBackup:WrapPanelGame">
+                        <Border >
+                            <StackPanel>
+                                <Image Width="{TemplateBinding ThumbnailWidth}"
+                                       Height="{TemplateBinding ThumbnailHeight}"
+                                       Source="{TemplateBinding ThumbnailPath}"
+                                       Stretch="{TemplateBinding Stretch}"
+                                       StretchDirection="{TemplateBinding StretchDirection}">
+                                    <Image.Effect><DropShadowEffect Color="DimGray"
+                                                                    BlurRadius="10"
+                                                                    RenderingBias="Performance"
+                                                                    ShadowDepth="10"
+                                                                    Opacity="50"/>
+                                    </Image.Effect>
+                                </Image>
+                                <TextBlock></TextBlock>
+                            </StackPanel>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        
+        <!--BUTTON STYLE GOES HERE-->
         <LinearGradientBrush x:Key="MyButtonBrush" StartPoint="0.5,0" EndPoint="0.5,1">
             <GradientStop Offset="0" Color="#32FFFFFF" />
             <GradientStop Offset="1" Color="#3CFFFFFF" />

@@ -11,13 +11,31 @@ namespace Saved_Game_Backup
 {
     public class WrapPanelGame : Control {
 
+        static WrapPanelGame() {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(WrapPanelGame), new FrameworkPropertyMetadata(typeof(WrapPanelGame)));
+
+        }
+
+        //***This is going to be a problem***
+        public string ThumbnailPath {
+            get { return (string)GetValue(ThumbnailPathProperty); }
+            set { SetValue(ThumbnailPathProperty, value); }
+        }
+
+        public static readonly DependencyProperty ThumbnailPathProperty =
+            DependencyProperty.Register("ThumbnailPath", typeof(string), typeof(WrapPanelGame), new PropertyMetadata(default(string)));
+
+
+
 
 
 
 
         public Game Game {
             get { return (Game)GetValue(GameProperty); }
-            set { SetValue(GameProperty, value); }
+            set {
+                SetValue(GameProperty, value);
+            }
         }
 
         public static readonly DependencyProperty GameProperty =
@@ -30,7 +48,7 @@ namespace Saved_Game_Backup
         }
 
         public static readonly DependencyProperty ThumbnailProperty =
-            DependencyProperty.Register("Thumbnail", typeof(ImageSource), typeof(WrapPanelGame), new PropertyMetadata(0));
+            DependencyProperty.Register("Thumbnail", typeof(ImageSource), typeof(WrapPanelGame), new PropertyMetadata(default(ImageSource)));
 
 
 
@@ -40,7 +58,7 @@ namespace Saved_Game_Backup
         }
 
         public static readonly DependencyProperty ThumbnailHeightProperty =
-            DependencyProperty.Register("ThumbnailHeight", typeof(double), typeof(WrapPanelGame), new PropertyMetadata(0));
+            DependencyProperty.Register("ThumbnailHeight", typeof(double), typeof(WrapPanelGame), new PropertyMetadata(default(double)));
 
 
 
@@ -50,7 +68,7 @@ namespace Saved_Game_Backup
         }
 
         public static readonly DependencyProperty ThumbnailWidthProperty =
-            DependencyProperty.Register("ThumbnailWidth", typeof(double), typeof(WrapPanelGame), new PropertyMetadata(0));
+            DependencyProperty.Register("ThumbnailWidth", typeof(double), typeof(WrapPanelGame), new PropertyMetadata(default(double)));
 
 
 
@@ -79,7 +97,7 @@ namespace Saved_Game_Backup
             set { SetValue(IsMouseOverProperty, value); }
         }
 
-        public static readonly DependencyProperty IsMouseOverProperty =
+        public new static readonly DependencyProperty IsMouseOverProperty =
             DependencyProperty.Register("IsMouseOver", typeof(bool), typeof(WrapPanelGame), new PropertyMetadata(default(bool)));
 
 
@@ -91,5 +109,11 @@ namespace Saved_Game_Backup
 
         public static readonly DependencyProperty IsSelectedProperty =
             DependencyProperty.Register("IsSelected", typeof(bool), typeof(WrapPanelGame), new PropertyMetadata(default(bool)));
+
+
+
+        
+
+        
     }
 }
