@@ -44,11 +44,13 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="savedGameBackup:WrapPanelGame">
-                        <Border>
+                        <Border Width="{TemplateBinding BorderWidth}" 
+                                Height="{TemplateBinding BorderHeight}">
                             <StackPanel>
-                                <Image Width="{TemplateBinding ThumbnailWidth}"
+                                <Image x:Name="ImageControl"
+                                       Width="{TemplateBinding ThumbnailWidth}"
                                        Height="{TemplateBinding ThumbnailHeight}"
-                                       Source="{TemplateBinding ThumbnailSource}"
+                                       Source="{TemplateBinding Thumbnail}"
                                        Stretch="{TemplateBinding Stretch}"
                                        StretchDirection="{TemplateBinding StretchDirection}">
                                     <Image.Effect>
@@ -59,7 +61,10 @@
                                                           Color="DimGray" />
                                     </Image.Effect>
                                 </Image>
-                                <TextBlock Text="{TemplateBinding Game}" />
+                                <TextBlock HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Text="{TemplateBinding Title}"
+                                           TextWrapping="NoWrap" />
                             </StackPanel>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -68,11 +73,11 @@
                                     <BeginStoryboard>
                                         <Storyboard>
                                             <DoubleAnimation Duration="0:0:0.2"
-                                                             From="0"
-                                                             Storyboard.TargetProperty="(savedGameBackup:WrapPanelGame.RenderTransform).(TransformGroup.Children)[1]"
-                                                             To="315">
+                                                             From="345"
+                                                             Storyboard.TargetProperty="(savedGameBackup:WrapPanelGame.RenderTransform).(TransformGroup.Children)[1].(RotateTransform.Angle)"
+                                                             To="360">
                                                 <DoubleAnimation.EasingFunction>
-                                                    <BounceEase Bounces="3" Bounciness="5" />
+                                                    <ElasticEase Oscillations="1" Springiness="0.25" />
                                                 </DoubleAnimation.EasingFunction>
                                             </DoubleAnimation>
                                         </Storyboard>

@@ -17,34 +17,26 @@ namespace Saved_Game_Backup
         }
 
         //***This is going to be a problem***
-        public string ThumbnailPath {
-            get { return (string)GetValue(ThumbnailPathProperty); }
-            set { SetValue(ThumbnailPathProperty, value); }
+        //public string ThumbnailPath {
+        //    get { return (string)GetValue(ThumbnailPathProperty); }
+        //    set { SetValue(ThumbnailPathProperty, value); }
+        //}
+
+        //public static readonly DependencyProperty ThumbnailPathProperty =
+        //    DependencyProperty.Register("ThumbnailPath", typeof(string), typeof(WrapPanelGame), new PropertyMetadata(default(string)));
+
+        public string Title {
+            get { return (string)GetValue(TitleProperty); }
+            set { SetValue(TitleProperty, value); }
         }
 
-        public static readonly DependencyProperty ThumbnailPathProperty =
-            DependencyProperty.Register("ThumbnailPath", typeof(string), typeof(WrapPanelGame), new PropertyMetadata(default(string)));
-
-
-
-
-
-        public ImageSource ThumbnailSource {
-            get { return (ImageSource)GetValue(ThumbnailSourceProperty); }
-            set { SetValue(ThumbnailSourceProperty, value); }
-        }
-
-        public static readonly DependencyProperty ThumbnailSourceProperty =
-            DependencyProperty.Register("ThumbnailSource", typeof(ImageSource), typeof(WrapPanelGame), new PropertyMetadata(default(ImageSource)));
-
-
-
+        public static readonly DependencyProperty TitleProperty =
+            DependencyProperty.Register("Title", typeof(string), typeof(WrapPanelGame), new PropertyMetadata(default(string)));
 
 
         public Game Game {
             get { return (Game)GetValue(GameProperty); }
-            set {
-                SetValue(GameProperty, value);
+            set { SetValue(GameProperty, value);
             }
         }
 
@@ -122,6 +114,29 @@ namespace Saved_Game_Backup
 
 
 
+
+        public double BorderHeight {
+            get { return (double)GetValue(BorderHeightProperty); }
+            set { SetValue(BorderHeightProperty, value); }
+        }
+
+        public static readonly DependencyProperty BorderHeightProperty =
+            DependencyProperty.Register("BorderHeight", typeof(double), typeof(WrapPanelGame), new PropertyMetadata(default(double)));
+
+
+
+        public double BorderWidth {
+            get { return (double)GetValue(BorderWidthProperty); }
+            set { SetValue(BorderWidthProperty, value); }
+        }
+
+        
+        public static readonly DependencyProperty BorderWidthProperty =
+            DependencyProperty.Register("BorderWidth", typeof(double), typeof(WrapPanelGame), new PropertyMetadata(default(double)));
+
+        
+
+        
         
 
         

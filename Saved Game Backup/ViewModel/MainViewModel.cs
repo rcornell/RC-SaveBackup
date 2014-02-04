@@ -37,7 +37,21 @@ namespace Saved_Game_Backup.ViewModel
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
-        
+
+
+        //TEST!!!
+        public ObservableCollection<WrapPanelGame> WrapPanelGamesList { get; set; }
+
+        public RelayCommand AddPanelGame {
+            get { return new RelayCommand(() => ExecuteAddPanelGame());}
+        }
+
+        public void ExecuteAddPanelGame() {
+            WrapPanelGamesList = new ObservableCollection<WrapPanelGame> { new WrapPanelGame() { Game = GamesList[0]} };
+            RaisePropertyChanged(() => WrapPanelGamesList);
+        }
+
+
         private Visibility _autoBackupVisibility;
         public Visibility AutoBackupVisibility {
             get { return _autoBackupVisibility; }

@@ -81,6 +81,8 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="510" />
             </Grid.ColumnDefinitions>
+            
+            <Button Grid.Row="2" Grid.Column="2" Command="{Binding AddPanelGame}"></Button>
             <ComboBox Grid.Row="1"
                       Grid.Column="1"
                       VerticalAlignment="Center"
@@ -133,9 +135,9 @@
                 <TextBlock HorizontalAlignment="Center"
                            FontSize="14"
                            Text="Games to Back Up" />
-                <ListBox Height="430"
-                         ItemsSource="{Binding GamesToBackup}"
-                         SelectedItem="{Binding SelectedBackupGame}"
+                <ListBox Height="400"
+                         ItemsSource="{Binding WrapPanelGamesList}"
+                         SelectedItem="{}"  
                          Style="{StaticResource ListBoxStyle}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDoubleClick">
@@ -157,23 +159,19 @@
                         </Style>
                     </ItemsControl.ItemContainerStyle>
                     <ListBox.ItemTemplate>
-                        <DataTemplate DataType="{x:Type savedGameBackup:Game}">
-                            <Border>
-                                <Border.Triggers>
-                                    <EventTrigger RoutedEvent="Border.MouseEnter">
-                                        <BeginStoryboard>
-                                            <Storyboard />
-                                        </BeginStoryboard>
-                                    </EventTrigger>
-                                </Border.Triggers>
-
-                                <StackPanel Margin="0,3,0,3">
-                                    <Image Width="160"
-                                           Height="180"
-                                           Source="{Binding ThumbnailPath}" />
-                                    <TextBlock HorizontalAlignment="Center" Text="{Binding Name}" />
-                                </StackPanel>
-                            </Border>
+                        <DataTemplate DataType="{x:Type savedGameBackup:WrapPanelGame}">
+                            <StackPanel>
+                                <savedGameBackup:WrapPanelGame IsMouseOver="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}, Path=IsMouseOver}"
+                                                               IsSelected="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}, Path=IsSelected}"
+                                                               ThumbnailHeight="180"
+                                                               ThumbnailWidth="160"
+                                                               BorderHeight="200"
+                                                               BorderWidth="180"
+                                                               Thumbnail="C:\Users\Rob\Documents\Save Backup Tool\Thumbnails\Terraria.png"
+                                                               Stretch="Uniform"
+                                                               StretchDirection="DownOnly"
+                                                               Title="TEST"/>
+                            </StackPanel>
 
                         </DataTemplate>
                     </ListBox.ItemTemplate>
