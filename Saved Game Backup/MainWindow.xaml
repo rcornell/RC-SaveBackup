@@ -161,17 +161,16 @@
                             <Border>
                                 <Border.Triggers>
                                     <EventTrigger RoutedEvent="Border.MouseEnter">
-                                            <BeginStoryboard>
-                                                <Storyboard></Storyboard>
-                                            </BeginStoryboard>
+                                        <BeginStoryboard>
+                                            <Storyboard />
+                                        </BeginStoryboard>
                                     </EventTrigger>
                                 </Border.Triggers>
-                                
+
                                 <StackPanel Margin="0,3,0,3">
                                     <Image Width="160"
                                            Height="180"
-                                           Source="{Binding ThumbnailPath}" >
-                                    </Image>
+                                           Source="{Binding ThumbnailPath}" />
                                     <TextBlock HorizontalAlignment="Center" Text="{Binding Name}" />
                                 </StackPanel>
                             </Border>

@@ -29,6 +29,16 @@ namespace Saved_Game_Backup
 
 
 
+        public ImageSource ThumbnailSource {
+            get { return (ImageSource)GetValue(ThumbnailSourceProperty); }
+            set { SetValue(ThumbnailSourceProperty, value); }
+        }
+
+        public static readonly DependencyProperty ThumbnailSourceProperty =
+            DependencyProperty.Register("ThumbnailSource", typeof(ImageSource), typeof(WrapPanelGame), new PropertyMetadata(default(ImageSource)));
+
+
+
 
 
         public Game Game {
