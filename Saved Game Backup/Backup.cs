@@ -39,7 +39,7 @@ namespace Saved_Game_Backup
             bool success;
             var message = "";
             if (!games.Any())
-                return new BackupResultHelper(false, false, "No games selected.");
+                return new BackupResultHelper(false, false, "No games selected.", DateTime.Now);
 
             var gamesToBackup = ModifyGamePaths(games);
             switch (backupType) {

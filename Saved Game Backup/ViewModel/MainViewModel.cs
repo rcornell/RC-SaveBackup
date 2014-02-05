@@ -227,12 +227,17 @@ namespace Saved_Game_Backup.ViewModel
                
 
                 var listToRemove = new ObservableCollection<Game>();
-                foreach (Game game in prefs.SelectedGames) {
-                    foreach (Game g in GamesList) {
-                        if (game.Name == g.Name)
-                            listToRemove.Add(g);
+                foreach (var game in prefs.SelectedGames) {
+                    WrapPanelGames.Add(new WrapPanelGame() {
+                        Game = game,
+                        ThumbnailPath = game.ThumbnailPath,
+                        ThumbnailSource = new BitmapImage(new Uri(game.ThumbnailPath))
+                    });
+
+                    foreach (var g in GamesList.Where(g => game.Name == g.Name)) {
+                        listToRemove.Add(g);
                     }
-                    foreach (Game gameBeingRemoved in listToRemove)
+                    foreach (var gameBeingRemoved in listToRemove)
                         GamesList.Remove(gameBeingRemoved);
                 }
                 RaisePropertyChanged(() => GamesList);
@@ -242,6 +247,7 @@ namespace Saved_Game_Backup.ViewModel
             AutoBackupVisibility = Visibility.Hidden;
             RaisePropertyChanged(() => AutoBackupVisibility);
             RaisePropertyChanged(() => LastBackupTime);
+            RaisePropertyChanged(() => WrapPanelGames);
         }
 
         private void SaveUserPrefs() {
