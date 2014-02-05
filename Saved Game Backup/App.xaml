@@ -33,8 +33,8 @@
             <Setter Property="RenderTransform">
                 <Setter.Value>
                     <TransformGroup>
-                        <ScaleTransform CenterX="10"
-                                        CenterY="10"
+                        <ScaleTransform CenterX="1"
+                                        CenterY="1"
                                         ScaleX="1"
                                         ScaleY="1" />
                         <RotateTransform Angle="0" CenterX="0.5" CenterY="0.5" />
@@ -53,12 +53,12 @@
                                        Stretch="{TemplateBinding Stretch}"
                                        StretchDirection="{TemplateBinding StretchDirection}">
                                     <Image.Effect>
-                                        <DropShadowEffect BlurRadius="10"
+                                        <DropShadowEffect x:Name="DropShadowEffect"
+                                                          BlurRadius="10"
                                                           Opacity="0.75"
                                                           RenderingBias="Performance"
                                                           ShadowDepth="10"
-                                                          Color="Black" 
-                                                          x:Name="DropShadowEffect"/>
+                                                          Color="Black" />
                                     </Image.Effect>
                                 </Image>
                                 <TextBlock HorizontalAlignment="Center"
@@ -72,11 +72,11 @@
                                 <Trigger.EnterActions>
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="DropShadowEffect" 
-                                                             Storyboard.TargetProperty="ShadowDepth"
+                                            <DoubleAnimation Duration="0:0:0.2"
                                                              From="10"
-                                                             To="15"
-                                                             Duration="0:0:0.2">
+                                                             Storyboard.TargetName="DropShadowEffect"
+                                                             Storyboard.TargetProperty="ShadowDepth"
+                                                             To="15">
                                                 <DoubleAnimation.EasingFunction>
                                                     <PowerEase EasingMode="EaseOut" Power="2" />
                                                 </DoubleAnimation.EasingFunction>
@@ -103,11 +103,11 @@
                                 <Trigger.ExitActions>
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="DropShadowEffect" 
-                                                             Storyboard.TargetProperty="ShadowDepth"
+                                            <DoubleAnimation Duration="0:0:0.2"
                                                              From="15"
-                                                             To="10"
-                                                             Duration="0:0:0.2">
+                                                             Storyboard.TargetName="DropShadowEffect"
+                                                             Storyboard.TargetProperty="ShadowDepth"
+                                                             To="10">
                                                 <DoubleAnimation.EasingFunction>
                                                     <PowerEase EasingMode="EaseOut" Power="2" />
                                                 </DoubleAnimation.EasingFunction>
@@ -369,7 +369,7 @@
         <Color x:Key="DisabledControlDarkColor">#FFC5CBF9</Color>
         <Color x:Key="DisabledForegroundColor">#FF888888</Color>
 
-        <Color x:Key="SelectedBackgroundColor">#FFC5CBF9</Color>
+        <Color x:Key="SelectedBackgroundColor">DimGray</Color>
         <Color x:Key="SelectedUnfocusedColor">#FFDDDDDD</Color>
 
         <Color x:Key="ControlLightColor">#4C575757</Color>
@@ -627,7 +627,8 @@
                         <Border x:Name="Border"
                                 Background="Transparent"
                                 Padding="2"
-                                SnapsToDevicePixels="true">
+                                SnapsToDevicePixels="true"
+                                CornerRadius="3">
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroup x:Name="SelectionStates">
                                     <VisualState x:Name="Unselected" />

@@ -65,56 +65,75 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="50" />
-                <RowDefinition Height="430" />
-                <RowDefinition Height="28*" />
-                <RowDefinition Height="28*" />
                 <RowDefinition />
                 <RowDefinition />
-                <RowDefinition Height="40" />
-
+                <RowDefinition Height="*" />
+                <RowDefinition />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="510" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
+            <StackPanel Grid.Row="3" 
+                        Grid.Column="0">
+                
+                
+                <StackPanel VerticalAlignment="Bottom">
+                    <Button Margin="3"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            Command="{Binding DetectGames}"
+                            Content="Find Games" />
+                    <Button Margin="3"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            Command="{Binding ResetList}"
+                            Content="Reset Games" />
+                    <Button Margin="3"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            Command="{Binding OpenAddGameWindow}"
+                            Content="Add Game to List" />
+                    
+                </StackPanel>
 
-            <!--
-                <Button Grid.Row="2"
-                Grid.Column="2"
-                Command="{Binding AddPanelGame}" />
-            -->
-            <ComboBox Grid.Row="1"
-                      Grid.Column="1"
-                      VerticalAlignment="Center"
-                      Foreground="White"
-                      ItemsSource="{Binding BackupTypes,
-                                            Converter={StaticResource BackupConverter},
-                                            Mode=TwoWay}"
-                      SelectedItem="{Binding BackupType,
-                                             Converter={StaticResource StringConverter},
-                                             Mode=TwoWay}" />
+                <StackPanel VerticalAlignment="Top">
+                    <Border Margin="3"
+                            HorizontalAlignment="Center"
+                            Background="#CC00FF00"
+                            CornerRadius="10"
+                            Visibility="{Binding AutoBackupVisibility,
+                                                 UpdateSourceTrigger=PropertyChanged}">
+                        <TextBlock HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontSize="16"
+                                   Text="Autobackup Enabled"
+                                   Visibility="{Binding AutoBackupVisibility,
+                                                        UpdateSourceTrigger=PropertyChanged}" />
+                    </Border>
+                    <Button Margin="3"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            Command="{Binding StartBackup}"
+                            Content="Backup Saves" />
+                    <ComboBox Margin="3"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Center"
+                              Foreground="White"
+                              ItemsSource="{Binding BackupTypes,
+                                                    Converter={StaticResource BackupConverter},
+                                                    Mode=TwoWay}"
+                              SelectedItem="{Binding BackupType,
+                                                     Converter={StaticResource StringConverter},
+                                                     Mode=TwoWay}" />
+                </StackPanel>
 
-            <!--  Removed Open Options Window Button  -->
-            <!--
-                <Button Grid.Row="1"
-                Grid.Column="1"
-                Height="60"
-                HorizontalAlignment="Center"
-                Command="{Binding OpenOptionsWindow}"
-                Content="Backup Preferences" />
-            -->
+            </StackPanel>
 
-            <Button Grid.Row="1"
-                    Grid.Column="3"
-                    Height="Auto"
-                    HorizontalAlignment="Center"
-                    Command="{Binding StartBackup}"
-                    Content="Backup Saves" />
-            <StackPanel Grid.Row="2"
+
+            <StackPanel Grid.Row="4"
                         Grid.Column="3"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Top"
@@ -133,83 +152,21 @@
                                                    UpdateSourceTrigger=PropertyChanged,
                                                    Delay=100}" />
             </StackPanel>
-
-            <!--  Old WrapPanel Code Here  -->
-            <!--
-                <StackPanel Grid.Row="3"
-                Grid.Column="3"
-                CanHorizontallyScroll="False">
-                <TextBlock HorizontalAlignment="Center"
-                FontSize="14"
-                Text="Games to Back Up" />
-                <ListBox Height="430"
-                ItemsSource="{Binding GamesToBackup}"
-                SelectedItem="{Binding SelectedBackupGame}"
-                Style="{StaticResource ListBoxStyle}">
-                <i:Interaction.Triggers>
-                <i:EventTrigger EventName="MouseDoubleClick">
-                <i:InvokeCommandAction Command="{Binding MoveToGamesList}" />
-                </i:EventTrigger>
-                </i:Interaction.Triggers>
-                <ItemsControl.ItemContainerStyle>
-                <Style TargetType="ListBoxItem">
-                <Setter Property="ContextMenu">
-                <Setter.Value>
-                <ContextMenu>
-                <MenuItem Command="{Binding Path=MoveToGamesList}"
-                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
-                Header="Remove game" />
-                </ContextMenu>
-                </Setter.Value>
-                </Setter>
-                
-                </Style>
-                </ItemsControl.ItemContainerStyle>
-                <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type savedGameBackup:Game}">
-                <Border>
-                <Border.Triggers>
-                <EventTrigger RoutedEvent="Border.MouseEnter">
-                <BeginStoryboard>
-                <Storyboard></Storyboard>
-                </BeginStoryboard>
-                </EventTrigger>
-                </Border.Triggers>
-                
-                <StackPanel Margin="0,3,0,3">
-                <Image Width="160"
-                Height="180"
-                Source="{Binding ThumbnailPath}" >
-                </Image>
-                <TextBlock HorizontalAlignment="Center" Text="{Binding Name}" />
-                </StackPanel>
-                </Border>
-                
-                </DataTemplate>
-                </ListBox.ItemTemplate>
-                <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                <WrapPanel MaxWidth="{Binding ActualWidth,
-                RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}"
-                FlowDirection="LeftToRight"
-                Orientation="Horizontal" />
-                </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-                </ListBox>
-                </StackPanel>
-            -->
-
-
-
-
+            <TextBlock Grid.Row="2" Grid.Column="3"
+                            HorizontalAlignment="Center"
+                       VerticalAlignment="Bottom"
+                           FontSize="14"
+                           Text="Games to Back Up - Autobackup games should highlight green" />
             <StackPanel Grid.Row="3"
                         Grid.Column="3"
                         CanHorizontallyScroll="False">
-                <TextBlock HorizontalAlignment="Center"
-                           FontSize="14"
-                           Text="Games to Back Up" />
-                <ListBox Height="400"
+                
+                <ListBox Height="430"
+                         Margin="3"
+                         HorizontalContentAlignment="Center"
                          ItemsSource="{Binding WrapPanelGames}"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
                          SelectedItem="{Binding SelectedWrapPanelGame}"
                          Style="{StaticResource ListBoxStyle}">
                     <i:Interaction.Triggers>
@@ -219,7 +176,9 @@
                     </i:Interaction.Triggers>
                     <ItemsControl.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
-
+                            <Style.Resources>
+                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
+                            </Style.Resources>
 
                             <!--  Not Working  -->
                             <Setter Property="ContextMenu">
@@ -266,26 +225,15 @@
                     </ListBox.ItemsPanel>
                 </ListBox>
             </StackPanel>
-
-            <StackPanel Grid.Row="3"
-                        Grid.Column="2"
-                        VerticalAlignment="Center">
-                <Button Margin="3"
-                        VerticalAlignment="Center"
-                        Command="{Binding DetectGames}"
-                        Content="Find Games" />
-                <Button Margin="3"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Command="{Binding ResetList}"
-                        Content="Reset Games" />
-            </StackPanel>
-            <StackPanel Grid.Row="3" Grid.Column="1">
-                <TextBlock HorizontalAlignment="Center"
+            <TextBlock Grid.Row="2" Grid.Column="1"
+                            HorizontalAlignment="Center"
+                       VerticalAlignment="Bottom"
                            FontSize="14"
                            Text="Games List" />
+            <StackPanel Grid.Row="3" Grid.Column="1">
+                
                 <ListBox Width="200"
-                         Height="400"
+                         Height="430"
                          Margin="3"
                          ItemsSource="{Binding GamesList}"
                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -304,37 +252,17 @@
                     </i:Interaction.Triggers>
                 </ListBox>
             </StackPanel>
-            <Button Grid.Row="7"
-                    Grid.Column="1"
-                    Width="Auto"
-                    HorizontalAlignment="Center"
-                    Command="{Binding OpenAddGameWindow}"
-                    Content="Add Game to List" />
-            <Border Grid.Row="7"
-                    Grid.Column="3"
-                    Margin="3"
-                    HorizontalAlignment="Stretch"
-                    Background="#CC00FF00"
-                    CornerRadius="10"
-                    Visibility="{Binding AutoBackupVisibility,
-                                         UpdateSourceTrigger=PropertyChanged}">
-                <TextBlock HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           FontSize="20"
-                           Text="Autobackup Enabled"
-                           Visibility="{Binding AutoBackupVisibility,
-                                                UpdateSourceTrigger=PropertyChanged}" />
-            </Border>
 
+            <StackPanel Grid.Row="4"
+                        Grid.Column="0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Bottom"
+                        Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Bottom" Text="Last Backup On:" />
+                <TextBlock Margin="5,0,0,0"
+                           VerticalAlignment="Bottom"
+                           Text="{Binding LastBackupTime}" />
+            </StackPanel>
         </Grid>
-        <StackPanel HorizontalAlignment="Left"
-                    VerticalAlignment="Bottom"
-                    Orientation="Horizontal">
-            <TextBlock VerticalAlignment="Bottom" Text="Last Backup On:" />
-            <TextBlock Margin="5,0,0,0"
-                       VerticalAlignment="Bottom"
-                       Text="{Binding LastBackupTime}" />
-        </StackPanel>
-
     </StackPanel>
 </Window>
