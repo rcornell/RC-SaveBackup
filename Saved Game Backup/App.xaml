@@ -54,10 +54,11 @@
                                        StretchDirection="{TemplateBinding StretchDirection}">
                                     <Image.Effect>
                                         <DropShadowEffect BlurRadius="10"
-                                                          Opacity="50"
+                                                          Opacity="0.75"
                                                           RenderingBias="Performance"
                                                           ShadowDepth="10"
-                                                          Color="DimGray" />
+                                                          Color="Black" 
+                                                          x:Name="DropShadowEffect"/>
                                     </Image.Effect>
                                 </Image>
                                 <TextBlock HorizontalAlignment="Center"
@@ -71,20 +72,29 @@
                                 <Trigger.EnterActions>
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <DoubleAnimation Duration="0:0:0.2"
-                                                             From="1"
-                                                             To="1.1"
-                                                             Storyboard.TargetProperty="(savedGameBackup:WrapPanelGame.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)">
+                                            <DoubleAnimation Storyboard.TargetName="DropShadowEffect" 
+                                                             Storyboard.TargetProperty="ShadowDepth"
+                                                             From="10"
+                                                             To="15"
+                                                             Duration="0:0:0.2">
                                                 <DoubleAnimation.EasingFunction>
-                                                    <PowerEase Power="2" EasingMode="EaseOut"/>
+                                                    <PowerEase EasingMode="EaseOut" Power="2" />
                                                 </DoubleAnimation.EasingFunction>
                                             </DoubleAnimation>
                                             <DoubleAnimation Duration="0:0:0.2"
                                                              From="1"
-                                                             To="1.1"
-                                                             Storyboard.TargetProperty="(savedGameBackup:WrapPanelGame.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)">
+                                                             Storyboard.TargetProperty="(savedGameBackup:WrapPanelGame.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)"
+                                                             To="1.1">
                                                 <DoubleAnimation.EasingFunction>
-                                                    <PowerEase Power="2" EasingMode="EaseOut"/>
+                                                    <PowerEase EasingMode="EaseOut" Power="2" />
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Duration="0:0:0.2"
+                                                             From="1"
+                                                             Storyboard.TargetProperty="(savedGameBackup:WrapPanelGame.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)"
+                                                             To="1.1">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <PowerEase EasingMode="EaseOut" Power="2" />
                                                 </DoubleAnimation.EasingFunction>
                                             </DoubleAnimation>
                                         </Storyboard>
@@ -93,20 +103,29 @@
                                 <Trigger.ExitActions>
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <DoubleAnimation Duration="0:0:0.2" 
-                                                             From="1.1"
-                                                             To="1"
-                                                             Storyboard.TargetProperty="(savedGameBackup:WrapPanelGame.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)">
+                                            <DoubleAnimation Storyboard.TargetName="DropShadowEffect" 
+                                                             Storyboard.TargetProperty="ShadowDepth"
+                                                             From="15"
+                                                             To="10"
+                                                             Duration="0:0:0.2">
                                                 <DoubleAnimation.EasingFunction>
-                                                    <PowerEase Power="2"></PowerEase>
+                                                    <PowerEase EasingMode="EaseOut" Power="2" />
                                                 </DoubleAnimation.EasingFunction>
                                             </DoubleAnimation>
-                                            <DoubleAnimation Duration="0:0:0.2" 
+                                            <DoubleAnimation Duration="0:0:0.2"
                                                              From="1.1"
-                                                             To="1"
-                                                             Storyboard.TargetProperty="(savedGameBackup:WrapPanelGame.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)">
+                                                             Storyboard.TargetProperty="(savedGameBackup:WrapPanelGame.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)"
+                                                             To="1">
                                                 <DoubleAnimation.EasingFunction>
-                                                    <PowerEase Power="2"></PowerEase>
+                                                    <PowerEase Power="2" />
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Duration="0:0:0.2"
+                                                             From="1.1"
+                                                             Storyboard.TargetProperty="(savedGameBackup:WrapPanelGame.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)"
+                                                             To="1">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <PowerEase Power="2" />
                                                 </DoubleAnimation.EasingFunction>
                                             </DoubleAnimation>
                                         </Storyboard>
@@ -114,19 +133,18 @@
                                 </Trigger.ExitActions>
                             </Trigger>
                             <Trigger Property="IsSelected" Value="True">
-                     
                                 <Trigger.EnterActions>
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetProperty="(savedGameBackup:WrapPanelGame.RenderTransform).(TransformGroup.Children)[1].(RotateTransform.Angle)"
-                                                             From="352"
-                                                             To="368"
+                                            <DoubleAnimation AutoReverse="True"
                                                              Duration="0:0:1"
-                                                             AutoReverse="True"
-                                                             RepeatBehavior="Forever">
-                                                <!--<DoubleAnimation.EasingFunction>
-                                                    
-                                                </DoubleAnimation.EasingFunction>-->
+                                                             From="-5"
+                                                             RepeatBehavior="Forever"
+                                                             Storyboard.TargetProperty="(savedGameBackup:WrapPanelGame.RenderTransform).(TransformGroup.Children)[1].(RotateTransform.Angle)"
+                                                             To="5">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <PowerEase EasingMode="EaseInOut" Power="2" />
+                                                </DoubleAnimation.EasingFunction>
                                             </DoubleAnimation>
                                         </Storyboard>
                                     </BeginStoryboard>
@@ -134,43 +152,45 @@
                                 <Trigger.ExitActions>
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetProperty="(savedGameBackup:WrapPanelGame.RenderTransform).(TransformGroup.Children)[1].(RotateTransform.Angle)"
-                                                             To="360"
-                                                             Duration="0">
+                                            <DoubleAnimation Duration="0:0:1"
+                                                             Storyboard.TargetProperty="(savedGameBackup:WrapPanelGame.RenderTransform).(TransformGroup.Children)[1].(RotateTransform.Angle)"
+                                                             To="0">
                                                 <DoubleAnimation.EasingFunction>
-                                                    <BounceEase Bounces="1" Bounciness="1"/>
+                                                    <PowerEase EasingMode="EaseOut" Power="2" />
                                                 </DoubleAnimation.EasingFunction>
                                             </DoubleAnimation>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </Trigger.ExitActions>
                             </Trigger>
-                            
-                            <!--<Trigger Property="IsMouseOver" Value="False">
+
+                            <!--
+                                <Trigger Property="IsMouseOver" Value="False">
                                 <Trigger.EnterActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Duration="0:0:0.2" 
-                                                             From="1.2"
-                                                             To="1"
-                                                             Storyboard.TargetProperty="(savedGameBackup:WrapPanelGame.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)">
-                                                <DoubleAnimation.EasingFunction>
-                                                    <PowerEase Power="5"></PowerEase>
-                                                </DoubleAnimation.EasingFunction>
-                                            </DoubleAnimation>
-                                            <DoubleAnimation Duration="0:0:0.2" 
-                                                             From="1.2"
-                                                             To="1"
-                                                             Storyboard.TargetProperty="(savedGameBackup:WrapPanelGame.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)">
-                                                <DoubleAnimation.EasingFunction>
-                                                    <PowerEase Power="5"></PowerEase>
-                                                </DoubleAnimation.EasingFunction>
-                                            </DoubleAnimation>
-                                        </Storyboard>
-                                    </BeginStoryboard>
+                                <BeginStoryboard>
+                                <Storyboard>
+                                <DoubleAnimation Duration="0:0:0.2"
+                                From="1.2"
+                                To="1"
+                                Storyboard.TargetProperty="(savedGameBackup:WrapPanelGame.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)">
+                                <DoubleAnimation.EasingFunction>
+                                <PowerEase Power="5"></PowerEase>
+                                </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                                <DoubleAnimation Duration="0:0:0.2"
+                                From="1.2"
+                                To="1"
+                                Storyboard.TargetProperty="(savedGameBackup:WrapPanelGame.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)">
+                                <DoubleAnimation.EasingFunction>
+                                <PowerEase Power="5"></PowerEase>
+                                </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                                </Storyboard>
+                                </BeginStoryboard>
                                 </Trigger.EnterActions>
-                            </Trigger>-->
-                            
+                                </Trigger>
+                            -->
+
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
