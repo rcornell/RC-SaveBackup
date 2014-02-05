@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -19,6 +20,8 @@ using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using Saved_Game_Backup.Helper;
+using Application = System.Windows.Application;
+using MessageBox = System.Windows.MessageBox;
 
 namespace Saved_Game_Backup.ViewModel
 {
@@ -330,7 +333,10 @@ namespace Saved_Game_Backup.ViewModel
 
         private void ExecuteStartBackup() {
             var success = Backup.StartBackup(GamesToBackup, BackupType, _backupEnabled);
-            if (!success.Success) return;
+            if (!success.Success) { 
+                MessageBox.Show(success.Message,"Backup Failed.", MessageBoxButton.OK, MessageBoxImage.Hand);
+                return;
+            }
             _backupEnabled = success.AutobackupEnabled;
             AutoBackupVisibility = _backupEnabled ? Visibility.Visible : Visibility.Hidden;
             LastBackupTime = success.BackupDateTime;

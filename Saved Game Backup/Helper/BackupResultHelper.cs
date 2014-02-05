@@ -19,5 +19,12 @@ namespace Saved_Game_Backup.Helper
             Message = message;
             BackupDateTime = dateTime;
         }
+
+        public BackupResultHelper(bool success, bool autobackupEnabled, string message)
+        {
+            Success = success;
+            AutobackupEnabled = autobackupEnabled;
+            Message = message;
+        }
     }
 }

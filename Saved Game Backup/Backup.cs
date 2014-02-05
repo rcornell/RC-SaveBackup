@@ -38,6 +38,9 @@ namespace Saved_Game_Backup
         public static BackupResultHelper StartBackup(ObservableCollection<Game> games, BackupType backupType, bool backupEnabled) {
             bool success;
             var message = "";
+            if (!games.Any())
+                return new BackupResultHelper(false, false, "No games selected.");
+
             var gamesToBackup = ModifyGamePaths(games);
             switch (backupType) {
                 case BackupType.ToZip:
@@ -57,8 +60,10 @@ namespace Saved_Game_Backup
             //Can this be simplified?
             if (backupType == BackupType.Autobackup && success && !backupEnabled){
                 message = "Autobackup Enabled!";
+                backupEnabled = true;
             } else if (backupType == BackupType.Autobackup && success && backupEnabled) {
                 message = "Autobackup Disabled!";
+                backupEnabled = false;
             }
             else
                 message = "Backup Complete!";

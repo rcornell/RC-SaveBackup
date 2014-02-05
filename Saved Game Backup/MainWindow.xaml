@@ -8,7 +8,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="SaveMonkey"
         Width="850"
-        Height="700"
+        Height="Auto"
         Background="{StaticResource Metro}"
         DataContext="{Binding Path=Main,
                               Source={StaticResource Locator}}"
@@ -76,11 +76,10 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <StackPanel Grid.Row="3" 
-                        Grid.Column="0">
-                
-                
-                <StackPanel VerticalAlignment="Bottom">
+            <StackPanel Grid.Row="3" Grid.Column="0">
+
+
+                <StackPanel VerticalAlignment="Top">
                     <Button Margin="3"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Center"
@@ -96,10 +95,10 @@
                             VerticalAlignment="Center"
                             Command="{Binding OpenAddGameWindow}"
                             Content="Add Game to List" />
-                    
+
                 </StackPanel>
 
-                <StackPanel VerticalAlignment="Top">
+                <StackPanel VerticalAlignment="Bottom">
                     <Border Margin="3"
                             HorizontalAlignment="Center"
                             Background="#CC00FF00"
@@ -152,15 +151,16 @@
                                                    UpdateSourceTrigger=PropertyChanged,
                                                    Delay=100}" />
             </StackPanel>
-            <TextBlock Grid.Row="2" Grid.Column="3"
-                            HorizontalAlignment="Center"
+            <TextBlock Grid.Row="2"
+                       Grid.Column="3"
+                       HorizontalAlignment="Center"
                        VerticalAlignment="Bottom"
-                           FontSize="14"
-                           Text="Games to Back Up - Autobackup games should highlight green" />
+                       FontSize="14"
+                       Text="Games to Back Up - Autobackup games should highlight green" />
             <StackPanel Grid.Row="3"
                         Grid.Column="3"
                         CanHorizontallyScroll="False">
-                
+
                 <ListBox Height="430"
                          Margin="3"
                          HorizontalContentAlignment="Center"
@@ -225,13 +225,14 @@
                     </ListBox.ItemsPanel>
                 </ListBox>
             </StackPanel>
-            <TextBlock Grid.Row="2" Grid.Column="1"
-                            HorizontalAlignment="Center"
+            <TextBlock Grid.Row="2"
+                       Grid.Column="1"
+                       HorizontalAlignment="Center"
                        VerticalAlignment="Bottom"
-                           FontSize="14"
-                           Text="Games List" />
+                       FontSize="14"
+                       Text="Games List" />
             <StackPanel Grid.Row="3" Grid.Column="1">
-                
+
                 <ListBox Width="200"
                          Height="430"
                          Margin="3"

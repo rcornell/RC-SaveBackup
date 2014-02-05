@@ -626,9 +626,9 @@
                     <ControlTemplate TargetType="{x:Type ComboBoxItem}">
                         <Border x:Name="Border"
                                 Background="Transparent"
+                                CornerRadius="3"
                                 Padding="2"
-                                SnapsToDevicePixels="true"
-                                CornerRadius="3">
+                                SnapsToDevicePixels="true">
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroup x:Name="SelectionStates">
                                     <VisualState x:Name="Unselected" />
