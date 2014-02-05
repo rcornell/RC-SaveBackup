@@ -12,12 +12,14 @@
                              d:IsDataSource="True" />
 
         <!--  FONT STYLES GO HERE  -->
+
+
         <Style x:Key="FontStyle" TargetType="Control">
-            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontFamily" Value="Segoe UI Light" />
             <Setter Property="Foreground" Value="White" />
         </Style>
         <Style x:Key="TextStyle" TargetType="TextBlock">
-            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontFamily" Value="Segoe UI Light" />
             <Setter Property="Foreground" Value="White" />
             <Setter Property="FontSize" Value="16" />
         </Style>
@@ -213,7 +215,7 @@
             <Setter Property="BorderBrush" Value="{StaticResource BorderBackgroundBrush}" />
             <Setter Property="Foreground" Value="White" />
             <Setter Property="Width" Value="Auto" />
-            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontFamily" Value="Segoe UI Light" />
             <Setter Property="FontSize" Value="16" />
             <Setter Property="SnapsToDevicePixels" Value="True" />
             <Setter Property="BorderThickness" Value="0" />
@@ -316,20 +318,6 @@
                                     </Storyboard>
                                 </BeginStoryboard>
                             </EventTrigger>
-                            <!--
-                                <EventTrigger RoutedEvent="Button.MouseUp">
-                                <BeginStoryboard>
-                                <Storyboard>
-                                <ColorAnimation Storyboard.TargetProperty="Background.GradientStops[0].Color"
-                                To="GhostWhite"
-                                Duration="0:0:0.25" />
-                                <ColorAnimation Storyboard.TargetProperty="Background.GradientStops[1].Color"
-                                To="LightCyan"
-                                Duration="0:0:0.25" />
-                                </Storyboard>
-                                </BeginStoryboard>
-                                </EventTrigger>
-                            -->
                             <EventTrigger RoutedEvent="Button.Click">
                                 <BeginStoryboard>
                                     <Storyboard>
