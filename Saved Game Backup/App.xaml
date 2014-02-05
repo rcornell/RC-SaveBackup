@@ -49,7 +49,7 @@
                                 <Image x:Name="ImageControl"
                                        Width="{TemplateBinding ThumbnailWidth}"
                                        Height="{TemplateBinding ThumbnailHeight}"
-                                       Source="{TemplateBinding Thumbnail}"
+                                       Source="{TemplateBinding ThumbnailSource}"
                                        Stretch="{TemplateBinding Stretch}"
                                        StretchDirection="{TemplateBinding StretchDirection}">
                                     <Image.Effect>

@@ -16,14 +16,7 @@ namespace Saved_Game_Backup
 
         }
 
-        //***This is going to be a problem***
-        //public string ThumbnailPath {
-        //    get { return (string)GetValue(ThumbnailPathProperty); }
-        //    set { SetValue(ThumbnailPathProperty, value); }
-        //}
-
-        //public static readonly DependencyProperty ThumbnailPathProperty =
-        //    DependencyProperty.Register("ThumbnailPath", typeof(string), typeof(WrapPanelGame), new PropertyMetadata(default(string)));
+      
 
         public string Title {
             get { return (string)GetValue(TitleProperty); }
@@ -44,14 +37,26 @@ namespace Saved_Game_Backup
             DependencyProperty.Register("Game", typeof(Game), typeof(WrapPanelGame), new PropertyMetadata(default(Game)));
 
 
-        public ImageSource Thumbnail {
-            get { return (ImageSource)GetValue(ThumbnailProperty); }
-            set { SetValue(ThumbnailProperty, value); }
+
+        public ImageSource ThumbnailSource
+        {
+            get { return (ImageSource)GetValue(ThumbnailSourceProperty); }
+            set { SetValue(ThumbnailSourceProperty, value); }
         }
 
-        public static readonly DependencyProperty ThumbnailProperty =
-            DependencyProperty.Register("Thumbnail", typeof(ImageSource), typeof(WrapPanelGame), new PropertyMetadata(default(ImageSource)));
+        // Using a DependencyProperty as the backing store for ThumbnailSource.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ThumbnailSourceProperty =
+            DependencyProperty.Register("ThumbnailSource", typeof(ImageSource), typeof(WrapPanelGame), new PropertyMetadata(default(ImageSource)));
 
+        
+
+        public string ThumbnailPath {
+            get { return (string)GetValue(ThumbnailPathProperty); }
+            set { SetValue(ThumbnailPathProperty, value); }
+        }
+
+        public static readonly DependencyProperty ThumbnailPathProperty =
+            DependencyProperty.Register("ThumbnailPath", typeof(string), typeof(WrapPanelGame), new PropertyMetadata(default(string)));
 
 
         public double ThumbnailHeight {
@@ -135,7 +140,7 @@ namespace Saved_Game_Backup
             DependencyProperty.Register("BorderWidth", typeof(double), typeof(WrapPanelGame), new PropertyMetadata(default(double)));
 
         
-
+        
         
         
 

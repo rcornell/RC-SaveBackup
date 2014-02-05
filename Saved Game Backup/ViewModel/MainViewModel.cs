@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Drawing.Text;
 using System.IO;
 using System.Linq;
 using System.Security.RightsManagement;
@@ -54,6 +55,7 @@ namespace Saved_Game_Backup.ViewModel
         //}
 
         public ObservableCollection<WrapPanelGame> WrapPanelGames { get; set; } 
+        public WrapPanelGame SelectedWrapPanelGame { get; set; }
 
 
         private Visibility _autoBackupVisibility;
@@ -182,6 +184,7 @@ namespace Saved_Game_Backup.ViewModel
             HardDrives = DirectoryFinder.CreateHardDriveCollection();
             GamesList = DirectoryFinder.ReturnGamesList();
             GamesToBackup = new ObservableCollection<Game>();
+            WrapPanelGames = new ObservableCollection<WrapPanelGame>();
             BackupTypes = new ObservableCollection<BackupType>() {
                 BackupType.Autobackup,
                 BackupType.ToFolder,
@@ -263,6 +266,14 @@ namespace Saved_Game_Backup.ViewModel
             RaisePropertyChanged(() => GamesToBackup);
             await GetThumb(game);
             RaisePropertyChanged(() => GamesToBackup);
+
+            //Refine this?
+            WrapPanelGames.Add(new WrapPanelGame() {
+                Game = game, 
+                ThumbnailPath = game.ThumbnailPath, 
+                ThumbnailSource = new BitmapImage(new Uri(game.ThumbnailPath))
+            });
+            RaisePropertyChanged(() => WrapPanelGames);
         }
 
         private void ToGamesList() {
@@ -280,6 +291,7 @@ namespace Saved_Game_Backup.ViewModel
         private void ExecuteReset() {
             GamesList = DirectoryFinder.ReturnGamesList();
             GamesToBackup.Clear();
+            WrapPanelGames.Clear();
             _specifiedFolder = null;
             _selectedGame = null;
             _selectedBackupGame = null;
@@ -288,6 +300,7 @@ namespace Saved_Game_Backup.ViewModel
             RaisePropertyChanged(() => GamesToBackup);
             RaisePropertyChanged(() => SelectedBackupGame);
             RaisePropertyChanged(() => SelectedGame);
+            RaisePropertyChanged(() => WrapPanelGames);
         }
 
         private void ExecuteSetThemeLight() {
