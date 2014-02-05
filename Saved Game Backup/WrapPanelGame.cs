@@ -8,7 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace Saved_Game_Backup
-{
+{   [Serializable]
     public class WrapPanelGame : Control {
 
         static WrapPanelGame() {

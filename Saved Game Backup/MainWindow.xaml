@@ -216,6 +216,11 @@
                          SelectedItem="{Binding SelectedGame}"
                          Style="{StaticResource ListBoxStyle}"
                          ToolTip="Double click a game to add it to the backup list.">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Margin" Value="3" />
+                        </Style>
+                    </ListBox.ItemContainerStyle>
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDoubleClick">
                             <command:EventToCommand Command="{Binding MoveToBackupList, Mode=OneWay}" />

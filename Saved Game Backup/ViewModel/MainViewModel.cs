@@ -40,18 +40,20 @@ namespace Saved_Game_Backup.ViewModel
 
 
         //TEST!!!
-        public ObservableCollection<WrapPanelGame> GamesToBackup { get; set; }
+        //public ObservableCollection<WrapPanelGame> GamesToBackup { get; set; }
 
-        public RelayCommand AddPanelGame {
-            get { return new RelayCommand(() => ExecuteAddPanelGame());}
-        }
+        //public RelayCommand AddPanelGame {
+        //    get { return new RelayCommand(() => ExecuteAddPanelGame());}
+        //}
 
-        public void ExecuteAddPanelGame() {
-            if(GamesToBackup==null)
-                GamesToBackup = new ObservableCollection<WrapPanelGame>();
-            GamesToBackup.Add(new WrapPanelGame() { Game = GamesList[0] });
-            RaisePropertyChanged(() => GamesToBackup);
-        }
+        //public void ExecuteAddPanelGame() {
+        //    if(GamesToBackup==null)
+        //        GamesToBackup = new ObservableCollection<WrapPanelGame>();
+        //    GamesToBackup.Add(new WrapPanelGame() { Game = GamesList[0] });
+        //    RaisePropertyChanged(() => GamesToBackup);
+        //}
+
+        public ObservableCollection<WrapPanelGame> WrapPanelGames { get; set; } 
 
 
         private Visibility _autoBackupVisibility;
@@ -63,7 +65,7 @@ namespace Saved_Game_Backup.ViewModel
        
         public ObservableCollection<string> HardDrives { get; set; } 
         public ObservableCollection<Game> GamesList { get; set; } 
-        //public ObservableCollection<Game> GamesToBackup { get; set; }
+        public ObservableCollection<Game> GamesToBackup { get; set; }
         public ObservableCollection<string> GameNames { get; set; }
 
         private Brush _background;
