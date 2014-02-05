@@ -219,9 +219,9 @@
                     </i:Interaction.Triggers>
                     <ItemsControl.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
-                            
-                            
-                            <!--  Not Working-->
+
+
+                            <!--  Not Working  -->
                             <Setter Property="ContextMenu">
                                 <Setter.Value>
                                     <ContextMenu>
@@ -231,8 +231,8 @@
                                     </ContextMenu>
                                 </Setter.Value>
                             </Setter>
-                            <!--  Not Working-->
-                            
+                            <!--  Not Working  -->
+
                         </Style>
                     </ItemsControl.ItemContainerStyle>
                     <ListBox.ItemTemplate>
@@ -249,9 +249,9 @@
                                                                                     Path=IsSelected}"
                                                                Stretch="Uniform"
                                                                StretchDirection="DownOnly"
-                                                               ThumbnailHeight="180"
+                                                               ThumbnailHeight="160"
                                                                ThumbnailSource="{Binding ThumbnailSource}"
-                                                               ThumbnailWidth="160" />
+                                                               ThumbnailWidth="113" />
                             </StackPanel>
 
                         </DataTemplate>
