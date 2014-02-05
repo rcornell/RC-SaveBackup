@@ -277,15 +277,16 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ToGamesList() {
-            if (_selectedBackupGame == null)
+            if (SelectedWrapPanelGame == null)
                 return;
-
-            var game = SelectedBackupGame;
-            GameListHandler.RemoveFromBackupList(GamesToBackup, game);
+            var wrapPanelGame = SelectedWrapPanelGame;
+            var game = SelectedWrapPanelGame.Game;
+            GameListHandler.RemoveFromBackupList(GamesToBackup, WrapPanelGames, game, wrapPanelGame);
             GameListHandler.AddToGamesList(GamesToBackup, GamesList, game);
             GamesList = new ObservableCollection<Game>(GamesList.OrderBy(s=> s.Name));
             RaisePropertyChanged(() => GamesList);
             RaisePropertyChanged(() => GamesToBackup);
+            RaisePropertyChanged(() => WrapPanelGames);
         }
 
         private void ExecuteReset() {

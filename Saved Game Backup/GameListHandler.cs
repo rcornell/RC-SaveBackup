@@ -41,13 +41,14 @@ namespace Saved_Game_Backup
             gamesList = new ObservableCollection<Game>(gamesList.OrderBy(x => x.Name));
         }       
 
-        public static void RemoveFromBackupList(ObservableCollection<Game> gamesToBackup, Game game){
-            //for (var i = 0; i <= gamesToBackup.Count(); i++) {
-            //    if (gamesToBackup[i].Game.Name != game.Name) continue;
-            //    gamesToBackup.RemoveAt(i);
+        public static void RemoveFromBackupList(ObservableCollection<Game> gamesToBackup, ObservableCollection<WrapPanelGame> wrapPanelGames, Game game, WrapPanelGame wrapPanelGame){
+            //for (var i = 0; i <= wrapPanelGames.Count(); i++) {
+            //    if (wrapPanelGames[i].Game.Name != game.Name) continue;
+            //    wrapPanelGames.RemoveAt(i);
             //}
+            wrapPanelGames.Remove(wrapPanelGame);
             gamesToBackup.Remove(game);
-            gamesToBackup = new ObservableCollection<Game>(gamesToBackup.OrderBy(s => s.Name));
+            //gamesToBackup = new ObservableCollection<Game>(gamesToBackup.OrderBy(s => s.Name));
         }
 
         public static void RemoveFromGamesList(ObservableCollection<Game> gamesList, Game selectedGame) {
@@ -57,7 +58,7 @@ namespace Saved_Game_Backup
             //}
 
             gamesList.Remove(selectedGame);
-            gamesList = new ObservableCollection<Game>(gamesList.OrderBy(s => s.Name));
+            //gamesList = new ObservableCollection<Game>(gamesList.OrderBy(s => s.Name));
         }
 
         private static async Task GetThumb(Game game) {

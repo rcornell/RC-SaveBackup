@@ -219,6 +219,9 @@
                     </i:Interaction.Triggers>
                     <ItemsControl.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
+                            
+                            
+                            <!--  Not Working-->
                             <Setter Property="ContextMenu">
                                 <Setter.Value>
                                     <ContextMenu>
@@ -228,6 +231,8 @@
                                     </ContextMenu>
                                 </Setter.Value>
                             </Setter>
+                            <!--  Not Working-->
+                            
                         </Style>
                     </ItemsControl.ItemContainerStyle>
                     <ListBox.ItemTemplate>
