@@ -48,11 +48,11 @@
                        Style="{StaticResource TextStyle}"
                        Text=" by Rob Cornell" />
         </StackPanel>
-        <Grid>
+        <Grid VerticalAlignment="Top">
             <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
@@ -212,17 +212,19 @@
                        FontSize="14"
                        Text="Games List" />
             <StackPanel Grid.Row="3" Grid.Column="1">
-                <ListBox Width="200"
-                         Height="430"
+                <ListBox Width="220"
                          Margin="3"
                          ItemsSource="{Binding GamesList}"
                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         ScrollViewer.VerticalScrollBarVisibility="Visible"
                          SelectedItem="{Binding SelectedGame}"
                          Style="{StaticResource ListBoxStyle}"
                          ToolTip="Double click a game to add it to the backup list.">
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
                             <Setter Property="Margin" Value="3" />
+                            <Setter Property="FontSize" Value="14" />
+                            <Setter Property="FontFamily" Value="Segoe UI Light" />
                         </Style>
                     </ListBox.ItemContainerStyle>
                     <i:Interaction.Triggers>
@@ -234,6 +236,7 @@
             </StackPanel>
             <StackPanel Grid.Row="4"
                         Grid.Column="0"
+                        Grid.ColumnSpan="2"
                         Orientation="Horizontal">
                 <TextBlock Margin="3"
                            Style="{StaticResource TextStyle}"

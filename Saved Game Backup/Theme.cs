@@ -31,7 +31,7 @@ namespace Saved_Game_Backup
 
         public static ObservableCollection<object> ToggleTheme(int theme) {
             var bc = new BrushConverter();
-            var darkBackgroundBrush = (Brush)bc.ConvertFrom("#4C575757");
+            var darkBackgroundBrush = (Brush)bc.ConvertFrom("#99575757");
             if (darkBackgroundBrush != null)
                 darkBackgroundBrush.Freeze();
             _backgroundImage = theme == 0 ? _backgroundImages[0] : _backgroundImages[1];
