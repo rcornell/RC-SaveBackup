@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
+using GalaSoft.MvvmLight.Messaging;
 using Saved_Game_Backup.Helper;
 using MessageBox = System.Windows.MessageBox;
 using Timer = System.Timers.Timer;
@@ -65,8 +66,10 @@ namespace Saved_Game_Backup
                 message = "Autobackup Disabled!";
                 backupEnabled = false;
             }
-            else
+            else {
                 message = "Backup Complete!";
+                Messenger.Default.Send<DateTime>(DateTime.Now);
+            }
 
             return new BackupResultHelper(success, backupEnabled, message, DateTime.Now);
 
@@ -212,13 +215,10 @@ namespace Saved_Game_Backup
             _fileWatcherList = new List<FileSystemWatcher>();
             _gamesToAutoBackup = gamesToBackup;
 
-            //_specifiedAutoBackupFolder = specifiedFolder;
-
             if (_specifiedAutoBackupFolder == null) {
                 var fb = new FolderBrowserDialog() {SelectedPath = _hardDrive, ShowNewFolderButton = true};
                 if (fb.ShowDialog() == DialogResult.OK)
                     _specifiedAutoBackupFolder = fb.SelectedPath;
-                //_specifiedAutoBackupFolder = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Save Backups\\";
             }
             
 
@@ -241,15 +241,14 @@ namespace Saved_Game_Backup
                 _fileWatcherList.RemoveAt(i);
                 break;
             }
-
             return _fileWatcherList.Any()
                 ? new BackupResultHelper(true, true, "Game removed from autobackup", DateTime.Now)
-                : new BackupResultHelper(true, false, "Last game removed from Autobackup.", DateTime.Now);
+                : new BackupResultHelper(true, false, "Last game removed from Autobackup.\r\nAutobackup disabled.", DateTime.Now);
 
         }
 
         public static void DeactivateAutoBackup() {
-            foreach (FileSystemWatcher f in _fileWatcherList) {
+            foreach (var f in _fileWatcherList) {
                 f.EnableRaisingEvents = false;
             }
             _fileWatcherList.Clear();
@@ -301,11 +300,12 @@ namespace Saved_Game_Backup
             Console.WriteLine(file.Name);
 
             if(_autoBackupAllowed)
-                foreach (Game game in _gamesToAutoBackup) {
-                    if (e.FullPath.Contains(game.Path))
-                        BackupGame(game.Path, _specifiedAutoBackupFolder + "\\" + game.Name + "\\");
+                foreach (var game in _gamesToAutoBackup.Where(game => e.FullPath.Contains(game.Path))) {
+                    BackupGame(game.Path, _specifiedAutoBackupFolder + "\\" + game.Name + "\\");
                 }
+
             _autoBackupAllowed = false;
+            Messenger.Default.Send<DateTime>(DateTime.Now);
 
             //BackupFile(e);
         }

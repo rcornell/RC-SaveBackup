@@ -198,7 +198,8 @@ namespace Saved_Game_Backup.ViewModel
             SetUpInterface();
 
             Messenger.Default.Register<DateTime>(this, s => {
-                LastBackupTime = s.Date;
+                LastBackupTime = s;
+                RaisePropertyChanged(() => LastBackupTime);
             });
 
           
@@ -318,15 +319,15 @@ namespace Saved_Game_Backup.ViewModel
 
         private void HandleBackupResult(BackupResultHelper result) {
             if (!result.Success) { 
-                MessageBox.Show(result.Message, "Backup Failed.", MessageBoxButton.OK, MessageBoxImage.Hand);
+                MessageBox.Show(result.Message, "Operation Failed.", MessageBoxButton.OK, MessageBoxImage.Hand);
                 return;
             }
             _backupEnabled = result.AutobackupEnabled;
             AutoBackupVisibility = _backupEnabled ? Visibility.Visible : Visibility.Hidden;
-            if (!result.AutobackupEnabled) LastBackupTime = result.BackupDateTime;
+            //if (!result.AutobackupEnabled) LastBackupTime = result.BackupDateTime;
             RaisePropertyChanged(() => AutoBackupVisibility);
             RaisePropertyChanged(() => LastBackupTime);
-            MessageBox.Show(result.Message, "Backup Successful", MessageBoxButton.OK);
+            MessageBox.Show(result.Message, "Operation Successful", MessageBoxButton.OK);
 
 
         }
