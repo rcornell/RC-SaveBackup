@@ -14,38 +14,20 @@
                               Source={StaticResource Locator}}"
         Icon="Assets/SGBIcon.ico"
         Padding="3"
+        SizeToContent="Height"
         WindowStartupLocation="CenterScreen"
         WindowStyle="SingleBorderWindow">
-    <Window.Style>
-        <Style BasedOn="{StaticResource FontStyle}" TargetType="Control" />
-
-    </Window.Style>
     <Window.Resources>
         <savedGameBackup:BackupTypeToStringConverter x:Key="BackupConverter" />
         <savedGameBackup:StringToBackupTypeConverter x:Key="StringConverter" />
-
         <Style x:Key="ListBoxStyle" TargetType="ListBox">
-            <!--  <Setter Property="Background" Value="{Binding Brushes[1]}" />  -->
             <Setter Property="Background" Value="{Binding Brushes[1]}" />
             <Setter Property="Foreground" Value="{Binding Brushes[2]}" />
         </Style>
 
-        <!--
-            <LinearGradientBrush x:Key="ButtonBackgroundBrush">
-            <GradientStop Color="#7F658989" Offset="0"/>
-            <GradientStop Color="#7F747474" Offset="1"/>
-            </LinearGradientBrush>
-            
-            
-            <Style x:Key="ButtonStyle"  TargetType="{x:Type Button}">
-            <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            </Style>
-        -->
-
     </Window.Resources>
-    <!--  <StackPanel Background="{Binding Brushes[0]}">  -->
     <StackPanel Background="{Binding Brushes[0]}">
+
         <Menu IsMainMenu="True">
             <MenuItem Header="_File">
                 <MenuItem Header="_Theme">
@@ -60,9 +42,10 @@
                     Orientation="Horizontal">
             <TextBlock VerticalAlignment="Bottom"
                        FontSize="20"
+                       Style="{StaticResource TextStyle}"
                        Text="SaveMonkey" />
             <TextBlock VerticalAlignment="Bottom"
-                       FontSize="14"
+                       Style="{StaticResource TextStyle}"
                        Text=" by Rob Cornell" />
         </StackPanel>
         <Grid>
@@ -71,7 +54,7 @@
                 <RowDefinition />
                 <RowDefinition />
                 <RowDefinition Height="*" />
-                <RowDefinition />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
@@ -86,7 +69,8 @@
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Center"
                             Command="{Binding StartBackup}"
-                            Content="Backup Saves" />
+                            Content="Backup Saves"
+                            Style="{StaticResource SbtButtonStyle}" />
                     <ComboBox Margin="3"
                               HorizontalAlignment="Stretch"
                               VerticalAlignment="Center"
@@ -103,15 +87,13 @@
                                 Visibility="{Binding BackupLimitVisibility}">
                         <TextBlock VerticalAlignment="Center"
                                    FontSize="14"
+                                   Style="{StaticResource TextStyle}"
                                    Text="Backup Limit"
                                    TextWrapping="Wrap" />
 
                         <xctk:IntegerUpDown Margin="3" Text="{Binding MaxBackups, UpdateSourceTrigger=PropertyChanged, Delay=100}" />
                     </StackPanel>
                 </StackPanel>
-
-
-
                 <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
                     <Border Margin="3"
                             HorizontalAlignment="Center"
@@ -121,7 +103,8 @@
                                                  UpdateSourceTrigger=PropertyChanged}">
                         <TextBlock HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
-                                   FontSize="16"
+                                   FontSize="14"
+                                   Style="{StaticResource TextStyle}"
                                    Text="Autobackup Enabled"
                                    Visibility="{Binding AutoBackupVisibility,
                                                         UpdateSourceTrigger=PropertyChanged}" />
@@ -130,32 +113,29 @@
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Center"
                             Command="{Binding DetectGames}"
-                            Content="Find Games" />
+                            Content="Find Games"
+                            Style="{StaticResource SbtButtonStyle}" />
                     <Button Margin="3"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Center"
                             Command="{Binding ResetList}"
-                            Content="Reset Games" />
+                            Content="Reset Games"
+                            Style="{StaticResource SbtButtonStyle}" />
                     <Button Margin="3"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Center"
                             Command="{Binding OpenAddGameWindow}"
-                            Content="Add Game to List" />
+                            Content="Add Game to List"
+                            Style="{StaticResource SbtButtonStyle}" />
 
                 </StackPanel>
-
-
-
             </DockPanel>
-
-
-
             <TextBlock Grid.Row="2"
                        Grid.Column="3"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Bottom"
                        FontSize="14"
-                       Text="Games to Back Up - Autobackup games should highlight green" />
+                       Text="Games to Back Up" />
             <StackPanel Grid.Row="3"
                         Grid.Column="3"
                         CanHorizontallyScroll="False">
@@ -232,7 +212,6 @@
                        FontSize="14"
                        Text="Games List" />
             <StackPanel Grid.Row="3" Grid.Column="1">
-
                 <ListBox Width="200"
                          Height="430"
                          Margin="3"
@@ -253,15 +232,14 @@
                     </i:Interaction.Triggers>
                 </ListBox>
             </StackPanel>
-
             <StackPanel Grid.Row="4"
                         Grid.Column="0"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Bottom"
                         Orientation="Horizontal">
-                <TextBlock VerticalAlignment="Bottom" Text="Last Backup On:" />
-                <TextBlock Margin="5,0,0,0"
-                           VerticalAlignment="Bottom"
+                <TextBlock Margin="3"
+                           Style="{StaticResource TextStyle}"
+                           Text="Last Backup On:" />
+                <TextBlock Margin="3"
+                           Style="{StaticResource TextStyle}"
                            Text="{Binding LastBackupTime}" />
             </StackPanel>
         </Grid>
