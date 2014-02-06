@@ -290,6 +290,7 @@ namespace Saved_Game_Backup.ViewModel
                 return;
             var wrapPanelGame = SelectedWrapPanelGame;
             var game = SelectedWrapPanelGame.Game;
+            if (_backupEnabled) Backup.RemoveFromAutobackup(game);
             GameListHandler.RemoveFromBackupList(GamesToBackup, WrapPanelGames, game, wrapPanelGame);
             GameListHandler.AddToGamesList(GamesToBackup, GamesList, game);
             GamesList = new ObservableCollection<Game>(GamesList.OrderBy(s=> s.Name));

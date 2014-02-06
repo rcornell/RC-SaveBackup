@@ -234,6 +234,10 @@ namespace Saved_Game_Backup
             
         }
 
+        public static void RemoveFromAutobackup(Game game) {
+
+        }
+
         public static void DeactivateAutoBackup() {
             foreach (FileSystemWatcher f in _fileWatcherList) {
                 f.EnableRaisingEvents = false;
@@ -318,6 +322,7 @@ namespace Saved_Game_Backup
             }
             return editedList;
         }
+
         
     }
 }

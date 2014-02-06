@@ -26,9 +26,24 @@
         </Style>
 
     </Window.Resources>
-    <StackPanel Background="{Binding Brushes[0]}">
-
-        <Menu IsMainMenu="True">
+    
+    <Grid Background="{Binding Brushes[0]}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Menu Grid.Row="0" 
+              Grid.ColumnSpan="6"
+              IsMainMenu="True">
             <MenuItem Header="_File">
                 <MenuItem Header="_Theme">
                     <MenuItem Command="{Binding SetThemeLight}" Header="_Blue" />
@@ -37,7 +52,9 @@
                 <MenuItem Command="{Binding Close}" Header="_Exit" />
             </MenuItem>
         </Menu>
-        <StackPanel Margin="3"
+        <StackPanel Grid.Row="1"
+                    Grid.Column="0"
+                    Margin="3"
                     HorizontalAlignment="Left"
                     Orientation="Horizontal">
             <TextBlock VerticalAlignment="Bottom"
@@ -48,203 +65,185 @@
                        Style="{StaticResource TextStyle}"
                        Text=" by Rob Cornell" />
         </StackPanel>
-        <Grid VerticalAlignment="Top">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <DockPanel Grid.Row="3" Grid.Column="0">
-                <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Top">
+        <DockPanel Grid.Row="2" Grid.Column="0">
+            <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Top">
 
-                    <Button Margin="3"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Center"
-                            Command="{Binding StartBackup}"
-                            Content="Backup Saves"
-                            Style="{StaticResource SbtButtonStyle}" />
-                    <ComboBox Margin="3"
-                              HorizontalAlignment="Stretch"
-                              VerticalAlignment="Center"
-                              Foreground="White"
-                              ItemsSource="{Binding BackupTypes,
-                                                    Converter={StaticResource BackupConverter},
-                                                    Mode=TwoWay}"
-                              SelectedItem="{Binding BackupType,
-                                                     Converter={StaticResource StringConverter},
-                                                     Mode=TwoWay}"
-                              Text="Backup Method" />
-                    <StackPanel Margin="3"
-                                Orientation="Horizontal"
-                                Visibility="{Binding BackupLimitVisibility}">
-                        <TextBlock VerticalAlignment="Center"
-                                   FontSize="14"
-                                   Style="{StaticResource TextStyle}"
-                                   Text="Backup Limit"
-                                   TextWrapping="Wrap" />
+                <Button Margin="3"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
+                        Command="{Binding StartBackup}"
+                        Content="Backup Saves"
+                        Style="{StaticResource SbtButtonStyle}" />
+                <ComboBox Margin="3"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Center"
+                          Foreground="White"
+                          ItemsSource="{Binding BackupTypes,
+                                                Converter={StaticResource BackupConverter},
+                                                Mode=TwoWay}"
+                          SelectedItem="{Binding BackupType,
+                                                 Converter={StaticResource StringConverter},
+                                                 Mode=TwoWay}"
+                          Text="Backup Method" />
+                <StackPanel Margin="3"
+                            Orientation="Horizontal"
+                            Visibility="{Binding BackupLimitVisibility}">
+                    <TextBlock VerticalAlignment="Center"
+                               FontSize="14"
+                               Style="{StaticResource TextStyle}"
+                               Text="Backup Limit"
+                               TextWrapping="Wrap" />
 
-                        <xctk:IntegerUpDown Margin="3" Text="{Binding MaxBackups, UpdateSourceTrigger=PropertyChanged, Delay=100}" />
+                    <xctk:IntegerUpDown Margin="3" Text="{Binding MaxBackups, UpdateSourceTrigger=PropertyChanged, Delay=100}" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
+                <Border Margin="3"
+                        HorizontalAlignment="Center"
+                        Background="#CC00FF00"
+                        CornerRadius="3"
+                        Visibility="{Binding AutoBackupVisibility,
+                                             UpdateSourceTrigger=PropertyChanged}">
+                    <TextBlock HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="14"
+                               Style="{StaticResource TextStyle}"
+                               Text="Autobackup Enabled"
+                               Visibility="{Binding AutoBackupVisibility,
+                                                    UpdateSourceTrigger=PropertyChanged}" />
+                </Border>
+                <Button Margin="3"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
+                        Command="{Binding DetectGames}"
+                        Content="Find Games"
+                        Style="{StaticResource SbtButtonStyle}" />
+                <Button Margin="3"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
+                        Command="{Binding ResetList}"
+                        Content="Reset Games"
+                        Style="{StaticResource SbtButtonStyle}" />
+                <Button Margin="3"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
+                        Command="{Binding OpenAddGameWindow}"
+                        Content="Add Game to List"
+                        Style="{StaticResource SbtButtonStyle}" />
+
+            </StackPanel>
+        </DockPanel>
+        <TextBlock Style="{StaticResource TextStyle}" 
+                   Grid.Row="1"
+                   Grid.Column="3"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Bottom"
+                   Text="Games to Back Up" />
+        <ListBox Grid.Row="2"
+                 Grid.Column="3"
+                 Height="430"
+                 Margin="3"
+                 HorizontalContentAlignment="Center"
+                 ItemsSource="{Binding WrapPanelGames}"
+                 Padding="3"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 SelectedItem="{Binding SelectedWrapPanelGame}"
+                 Style="{StaticResource ListBoxStyle}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseDoubleClick">
+                    <i:InvokeCommandAction Command="{Binding MoveToGamesList}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <ItemsControl.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Style.Resources>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
+                    </Style.Resources>
+
+                    <!--  Not Working  -->
+                    <Setter Property="ContextMenu">
+                        <Setter.Value>
+                            <ContextMenu>
+                                <MenuItem Command="{Binding Path=MoveToGamesList}"
+                                          CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
+                                          Header="Remove game" />
+                            </ContextMenu>
+                        </Setter.Value>
+                    </Setter>
+                    <!--  Not Working  -->
+
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type savedGameBackup:WrapPanelGame}">
+                    <StackPanel>
+                        <savedGameBackup:WrapPanelGame Title="{Binding Game.Name}"
+                                                       BorderHeight="200"
+                                                       BorderWidth="180"
+                                                       IsMouseOver="{Binding RelativeSource={RelativeSource FindAncestor,
+                                                                                                            AncestorType=ListBoxItem},
+                                                                             Path=IsMouseOver}"
+                                                       IsSelected="{Binding RelativeSource={RelativeSource FindAncestor,
+                                                                                                           AncestorType=ListBoxItem},
+                                                                            Path=IsSelected}"
+                                                       Stretch="Uniform"
+                                                       StretchDirection="DownOnly"
+                                                       ThumbnailHeight="160"
+                                                       ThumbnailSource="{Binding ThumbnailSource}"
+                                                       ThumbnailWidth="113" />
                     </StackPanel>
-                </StackPanel>
-                <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
-                    <Border Margin="3"
-                            HorizontalAlignment="Center"
-                            Background="#CC00FF00"
-                            CornerRadius="3"
-                            Visibility="{Binding AutoBackupVisibility,
-                                                 UpdateSourceTrigger=PropertyChanged}">
-                        <TextBlock HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   FontSize="14"
-                                   Style="{StaticResource TextStyle}"
-                                   Text="Autobackup Enabled"
-                                   Visibility="{Binding AutoBackupVisibility,
-                                                        UpdateSourceTrigger=PropertyChanged}" />
-                    </Border>
-                    <Button Margin="3"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Center"
-                            Command="{Binding DetectGames}"
-                            Content="Find Games"
-                            Style="{StaticResource SbtButtonStyle}" />
-                    <Button Margin="3"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Center"
-                            Command="{Binding ResetList}"
-                            Content="Reset Games"
-                            Style="{StaticResource SbtButtonStyle}" />
-                    <Button Margin="3"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Center"
-                            Command="{Binding OpenAddGameWindow}"
-                            Content="Add Game to List"
-                            Style="{StaticResource SbtButtonStyle}" />
 
-                </StackPanel>
-            </DockPanel>
-            <TextBlock Grid.Row="2"
-                       Grid.Column="3"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Bottom"
-                       FontSize="14"
-                       Text="Games to Back Up" />
-            <StackPanel Grid.Row="3"
-                        Grid.Column="3"
-                        CanHorizontallyScroll="False">
-
-                <ListBox Height="430"
-                         Margin="3"
-                         HorizontalContentAlignment="Center"
-                         ItemsSource="{Binding WrapPanelGames}"
-                         Padding="3"
-                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                         ScrollViewer.VerticalScrollBarVisibility="Auto"
-                         SelectedItem="{Binding SelectedWrapPanelGame}"
-                         Style="{StaticResource ListBoxStyle}">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="MouseDoubleClick">
-                            <i:InvokeCommandAction Command="{Binding MoveToGamesList}" />
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                    <ItemsControl.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem">
-                            <Style.Resources>
-                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
-                            </Style.Resources>
-
-                            <!--  Not Working  -->
-                            <Setter Property="ContextMenu">
-                                <Setter.Value>
-                                    <ContextMenu>
-                                        <MenuItem Command="{Binding Path=MoveToGamesList}"
-                                                  CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
-                                                  Header="Remove game" />
-                                    </ContextMenu>
-                                </Setter.Value>
-                            </Setter>
-                            <!--  Not Working  -->
-
-                        </Style>
-                    </ItemsControl.ItemContainerStyle>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate DataType="{x:Type savedGameBackup:WrapPanelGame}">
-                            <StackPanel>
-                                <savedGameBackup:WrapPanelGame Title="{Binding Game.Name}"
-                                                               BorderHeight="200"
-                                                               BorderWidth="180"
-                                                               IsMouseOver="{Binding RelativeSource={RelativeSource FindAncestor,
-                                                                                                                    AncestorType=ListBoxItem},
-                                                                                     Path=IsMouseOver}"
-                                                               IsSelected="{Binding RelativeSource={RelativeSource FindAncestor,
-                                                                                                                   AncestorType=ListBoxItem},
-                                                                                    Path=IsSelected}"
-                                                               Stretch="Uniform"
-                                                               StretchDirection="DownOnly"
-                                                               ThumbnailHeight="160"
-                                                               ThumbnailSource="{Binding ThumbnailSource}"
-                                                               ThumbnailWidth="113" />
-                            </StackPanel>
-
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel MaxWidth="{Binding ActualWidth,
-                                                          RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}"
-                                       FlowDirection="LeftToRight"
-                                       Orientation="Horizontal" />
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                </ListBox>
-            </StackPanel>
-            <TextBlock Grid.Row="2"
-                       Grid.Column="1"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Bottom"
-                       FontSize="14"
-                       Text="Games List" />
-            <StackPanel Grid.Row="3" Grid.Column="1">
-                <ListBox Width="220"
-                         Margin="3"
-                         ItemsSource="{Binding GamesList}"
-                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                         ScrollViewer.VerticalScrollBarVisibility="Visible"
-                         SelectedItem="{Binding SelectedGame}"
-                         Style="{StaticResource ListBoxStyle}"
-                         ToolTip="Double click a game to add it to the backup list.">
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="Margin" Value="3" />
-                            <Setter Property="FontSize" Value="14" />
-                            <Setter Property="FontFamily" Value="Segoe UI Light" />
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="MouseDoubleClick">
-                            <command:EventToCommand Command="{Binding MoveToBackupList, Mode=OneWay}" />
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </ListBox>
-            </StackPanel>
-            <StackPanel Grid.Row="4"
-                        Grid.Column="0"
-                        Grid.ColumnSpan="2"
-                        Orientation="Horizontal">
-                <TextBlock Margin="3"
-                           Style="{StaticResource TextStyle}"
-                           Text="Last Backup On:" />
-                <TextBlock Margin="3"
-                           Style="{StaticResource TextStyle}"
-                           Text="{Binding LastBackupTime}" />
-            </StackPanel>
-        </Grid>
-    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel MaxWidth="{Binding ActualWidth,
+                                                  RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}"
+                               FlowDirection="LeftToRight"
+                               Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+        </ListBox>
+        <TextBlock Style="{StaticResource TextStyle}"
+            Grid.Row="1"
+                   Grid.Column="1"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Bottom"
+                   Text="Games List" />
+        <ListBox Grid.Row="2"
+                 Grid.Column="1"
+                 Width="220"
+                 Height="430"
+                 Margin="3"
+                 ItemsSource="{Binding GamesList}"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 SelectedItem="{Binding SelectedGame}"
+                 Style="{StaticResource ListBoxStyle}"
+                 ToolTip="Double click a game to add it to the backup list.">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Margin" Value="3" />
+                    <Setter Property="FontSize" Value="14" />
+                    <Setter Property="FontFamily" Value="Segoe UI Light" />
+                </Style>
+            </ListBox.ItemContainerStyle>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseDoubleClick">
+                    <command:EventToCommand Command="{Binding MoveToBackupList, Mode=OneWay}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </ListBox>
+        <StackPanel Grid.Row="3"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Orientation="Horizontal">
+            <TextBlock Margin="3"
+                       Style="{StaticResource TextStyle}"
+                       Text="Last Backup On:" />
+            <TextBlock Margin="3"
+                       Style="{StaticResource TextStyle}"
+                       Text="{Binding LastBackupTime}" />
+        </StackPanel>
+    </Grid>
 </Window>
