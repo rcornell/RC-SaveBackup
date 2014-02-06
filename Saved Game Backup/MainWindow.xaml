@@ -144,11 +144,11 @@
                  Height="430"
                  Margin="3"
                  HorizontalContentAlignment="Center"
-                 ItemsSource="{Binding WrapPanelGames}"
+                 ItemsSource="{Binding GamesToBackup}"
                  Padding="3"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  ScrollViewer.VerticalScrollBarVisibility="Auto"
-                 SelectedItem="{Binding SelectedWrapPanelGame}"
+                 SelectedItem="{Binding SelectedBackupGame}"
                  Style="{StaticResource ListBoxStyle}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseDoubleClick">
@@ -176,9 +176,9 @@
                 </Style>
             </ItemsControl.ItemContainerStyle>
             <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type savedGameBackup:WrapPanelGame}">
+                <DataTemplate DataType="{x:Type savedGameBackup:Game}">
                     <StackPanel>
-                        <savedGameBackup:WrapPanelGame Title="{Binding Game.Name}"
+                        <savedGameBackup:WrapPanelGame Title="{Binding Name}"
                                                        BorderHeight="200"
                                                        BorderWidth="180"
                                                        IsMouseOver="{Binding RelativeSource={RelativeSource FindAncestor,
@@ -190,11 +190,32 @@
                                                        Stretch="Uniform"
                                                        StretchDirection="DownOnly"
                                                        ThumbnailHeight="160"
-                                                       ThumbnailSource="{Binding ThumbnailSource}"
+                                                       ThumbnailSource="{Binding ThumbnailPath}"
                                                        ThumbnailWidth="113" />
                     </StackPanel>
 
                 </DataTemplate>
+                <!--
+                    <DataTemplate DataType="{x:Type savedGameBackup:WrapPanelGame}">
+                    <StackPanel>
+                    <savedGameBackup:WrapPanelGame Title="{Binding Game.Name}"
+                    BorderHeight="200"
+                    BorderWidth="180"
+                    IsMouseOver="{Binding RelativeSource={RelativeSource FindAncestor,
+                    AncestorType=ListBoxItem},
+                    Path=IsMouseOver}"
+                    IsSelected="{Binding RelativeSource={RelativeSource FindAncestor,
+                    AncestorType=ListBoxItem},
+                    Path=IsSelected}"
+                    Stretch="Uniform"
+                    StretchDirection="DownOnly"
+                    ThumbnailHeight="160"
+                    ThumbnailSource="{Binding ThumbnailSource}"
+                    ThumbnailWidth="113" />
+                    </StackPanel>
+                    
+                    </DataTemplate>
+                -->
             </ListBox.ItemTemplate>
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>

@@ -57,8 +57,8 @@ namespace Saved_Game_Backup.ViewModel
         //    RaisePropertyChanged(() => GamesToBackup);
         //}
 
-        public ObservableCollection<WrapPanelGame> WrapPanelGames { get; set; } 
-        public WrapPanelGame SelectedWrapPanelGame { get; set; }
+        //public ObservableCollection<WrapPanelGame> WrapPanelGames { get; set; } 
+        //public WrapPanelGame SelectedWrapPanelGame { get; set; }
 
 
         private Visibility _autoBackupVisibility;
@@ -187,7 +187,6 @@ namespace Saved_Game_Backup.ViewModel
             HardDrives = DirectoryFinder.CreateHardDriveCollection();
             GamesList = DirectoryFinder.ReturnGamesList();
             GamesToBackup = new ObservableCollection<Game>();
-            WrapPanelGames = new ObservableCollection<WrapPanelGame>();
             BackupTypes = new ObservableCollection<BackupType>() {
                 BackupType.Autobackup,
                 BackupType.ToFolder,
@@ -224,13 +223,7 @@ namespace Saved_Game_Backup.ViewModel
                
 
                 var listToRemove = new ObservableCollection<Game>();
-                foreach (var game in prefs.SelectedGames) {
-                    WrapPanelGames.Add(new WrapPanelGame() {
-                        Game = game,
-                        ThumbnailPath = game.ThumbnailPath,
-                        ThumbnailSource = new BitmapImage(new Uri(game.ThumbnailPath))
-                    });
-
+                foreach (var game in prefs.SelectedGames) {                  
                     foreach (var g in GamesList.Where(g => game.Name == g.Name)) {
                         listToRemove.Add(g);
                     }
@@ -244,7 +237,6 @@ namespace Saved_Game_Backup.ViewModel
             AutoBackupVisibility = Visibility.Hidden;
             RaisePropertyChanged(() => AutoBackupVisibility);
             RaisePropertyChanged(() => LastBackupTime);
-            RaisePropertyChanged(() => WrapPanelGames);
         }
 
         private void SaveUserPrefs() {
@@ -273,33 +265,34 @@ namespace Saved_Game_Backup.ViewModel
             await GetThumb(game);
             RaisePropertyChanged(() => GamesToBackup);
 
-            //Refine this?
-            WrapPanelGames.Add(new WrapPanelGame() {
-                Game = game, 
-                ThumbnailPath = game.ThumbnailPath, 
-                ThumbnailSource = new BitmapImage(new Uri(game.ThumbnailPath))
-            });
-            RaisePropertyChanged(() => WrapPanelGames);
+            ////Refine this?
+            //WrapPanelGames.Add(new WrapPanelGame() {
+            //    Game = game, 
+            //    ThumbnailPath = game.ThumbnailPath, 
+            //    ThumbnailSource = new BitmapImage(new Uri(game.ThumbnailPath))
+            //});
+            //RaisePropertyChanged(() => WrapPanelGames);
         }
 
         private void ToGamesList() {
-            if (SelectedWrapPanelGame == null)
+            if (SelectedBackupGame == null)
                 return;
-            var wrapPanelGame = SelectedWrapPanelGame;
-            var game = SelectedWrapPanelGame.Game;
+            //var wrapPanelGame = SelectedWrapPanelGame;
+            var game = SelectedBackupGame;
     
              //Make this work
             if (_backupEnabled) {
                 var result = Backup.RemoveFromAutobackup(game);
+                RaisePropertyChanged(() => GamesList);
+                RaisePropertyChanged(() => GamesToBackup);
                 HandleBackupResult(result);
             }
 
-            GameListHandler.RemoveFromBackupList(GamesToBackup, WrapPanelGames, game, wrapPanelGame);
+            GameListHandler.RemoveFromBackupList(GamesToBackup, game);
             GameListHandler.AddToGamesList(GamesToBackup, GamesList, game);
             GamesList = new ObservableCollection<Game>(GamesList.OrderBy(s=> s.Name));
             RaisePropertyChanged(() => GamesList);
             RaisePropertyChanged(() => GamesToBackup);
-            RaisePropertyChanged(() => WrapPanelGames);
         }
 
         private void UpdateGamesList() {
@@ -341,7 +334,6 @@ namespace Saved_Game_Backup.ViewModel
         private void ExecuteReset() {
             GamesList = DirectoryFinder.ReturnGamesList();
             GamesToBackup.Clear();
-            WrapPanelGames.Clear();
             _specifiedFolder = null;
             _selectedGame = null;
             _selectedBackupGame = null;
@@ -350,7 +342,6 @@ namespace Saved_Game_Backup.ViewModel
             RaisePropertyChanged(() => GamesToBackup);
             RaisePropertyChanged(() => SelectedBackupGame);
             RaisePropertyChanged(() => SelectedGame);
-            RaisePropertyChanged(() => WrapPanelGames);
         }
 
         private void ExecuteSetThemeLight() {
