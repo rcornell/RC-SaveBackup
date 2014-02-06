@@ -197,13 +197,9 @@ namespace Saved_Game_Backup.ViewModel
             DirectoryFinder.CheckDirectories();
             SetUpInterface();
 
-            //Messenger.Default.Register<OptionMessage>(this, s => {
-            //        BackupType = s.BackupType;
-            //    if (s.HardDrive != null)
-            //        SelectedHardDrive = s.HardDrive;
-            //    if (s.SpecifiedFolder != null)
-            //        SpecifiedFolder = s.SpecifiedFolder;
-            //});
+            Messenger.Default.Register<DateTime>(this, s => {
+                LastBackupTime = s.Date;
+            });
 
           
         }
@@ -257,7 +253,7 @@ namespace Saved_Game_Backup.ViewModel
 
         private void ExecuteDetectGames() {         
             GamesToBackup = DirectoryFinder.PollDirectories(GamesList);
-            foreach (Game game in GamesToBackup)
+            foreach (var game in GamesToBackup)
                 GamesList.Remove(game);
 
             RaisePropertyChanged(() => GamesToBackup);
@@ -290,13 +286,55 @@ namespace Saved_Game_Backup.ViewModel
                 return;
             var wrapPanelGame = SelectedWrapPanelGame;
             var game = SelectedWrapPanelGame.Game;
-            if (_backupEnabled) Backup.RemoveFromAutobackup(game);
+    
+             //Make this work
+            if (_backupEnabled) {
+                var result = Backup.RemoveFromAutobackup(game);
+                HandleBackupResult(result);
+            }
+
             GameListHandler.RemoveFromBackupList(GamesToBackup, WrapPanelGames, game, wrapPanelGame);
             GameListHandler.AddToGamesList(GamesToBackup, GamesList, game);
             GamesList = new ObservableCollection<Game>(GamesList.OrderBy(s=> s.Name));
             RaisePropertyChanged(() => GamesList);
             RaisePropertyChanged(() => GamesToBackup);
             RaisePropertyChanged(() => WrapPanelGames);
+        }
+
+        private void UpdateGamesList() {
+            GamesList = DirectoryFinder.ReturnGamesList();
+            foreach (var game in GamesToBackup)
+            {
+                SelectedGame = game;
+                ToGamesList();
+            }
+            RaisePropertyChanged(() => GamesList);
+        }
+
+        private void ExecuteStartBackup() {
+            var success = Backup.StartBackup(GamesToBackup, BackupType, _backupEnabled);
+            HandleBackupResult(success);
+        }
+
+        private void HandleBackupResult(BackupResultHelper result) {
+            if (!result.Success) { 
+                MessageBox.Show(result.Message, "Backup Failed.", MessageBoxButton.OK, MessageBoxImage.Hand);
+                return;
+            }
+            _backupEnabled = result.AutobackupEnabled;
+            AutoBackupVisibility = _backupEnabled ? Visibility.Visible : Visibility.Hidden;
+            if (!result.AutobackupEnabled) LastBackupTime = result.BackupDateTime;
+            RaisePropertyChanged(() => AutoBackupVisibility);
+            RaisePropertyChanged(() => LastBackupTime);
+            MessageBox.Show(result.Message, "Backup Successful", MessageBoxButton.OK);
+
+
+        }
+
+        private async Task GetThumb(Game game) {
+            var gb = new GiantBombAPI(game);
+            await gb.GetThumb(game);
+            game.ThumbnailPath = gb.ThumbnailPath;
         }
 
         private void ExecuteReset() {
@@ -330,27 +368,7 @@ namespace Saved_Game_Backup.ViewModel
             SaveUserPrefs();
             if (Application.Current != null)
                 Application.Current.Shutdown();
-        }
-
-        private async Task GetThumb(Game game) {
-            var gb = new GiantBombAPI(game);
-            await gb.GetThumb(game);
-            game.ThumbnailPath = gb.ThumbnailPath;
-        }
-
-        private void ExecuteStartBackup() {
-            var success = Backup.StartBackup(GamesToBackup, BackupType, _backupEnabled);
-            if (!success.Success) { 
-                MessageBox.Show(success.Message,"Backup Failed.", MessageBoxButton.OK, MessageBoxImage.Hand);
-                return;
-            }
-            _backupEnabled = success.AutobackupEnabled;
-            AutoBackupVisibility = _backupEnabled ? Visibility.Visible : Visibility.Hidden;
-            LastBackupTime = success.BackupDateTime;
-            RaisePropertyChanged(() => AutoBackupVisibility);
-            RaisePropertyChanged(() => LastBackupTime);
-            MessageBox.Show(success.Message);
-        }
+        }      
 
         private async void ExecuteOpenAddGameWindow() {
             Game newGameForJson = null;
@@ -367,14 +385,7 @@ namespace Saved_Game_Backup.ViewModel
             UpdateGamesList();
         }
 
-        private void UpdateGamesList() {
-            GamesList = DirectoryFinder.ReturnGamesList();
-            foreach (var game in GamesToBackup) {
-                SelectedGame = game;
-                ToGamesList();
-            }
-            RaisePropertyChanged(() => GamesList);
-        }
+        
 
         //Options window not used anymore.
         //private void ExecuteOpenOptionsWindow() {

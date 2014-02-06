@@ -234,7 +234,17 @@ namespace Saved_Game_Backup
             
         }
 
-        public static void RemoveFromAutobackup(Game game) {
+        public static BackupResultHelper RemoveFromAutobackup(Game game) {
+            if (!_fileWatcherList.Any()) return new BackupResultHelper(false, false, "No games on autobackup.", DateTime.Now);
+            for (var i = 0; i <= _fileWatcherList.Count(); i++) {
+                if (!_fileWatcherList[i].Path.Contains(game.Path)) continue;
+                _fileWatcherList.RemoveAt(i);
+                break;
+            }
+
+            return _fileWatcherList.Any()
+                ? new BackupResultHelper(true, true, "Game removed from autobackup", DateTime.Now)
+                : new BackupResultHelper(true, false, "Last game removed from Autobackup.", DateTime.Now);
 
         }
 
