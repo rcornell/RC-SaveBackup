@@ -325,7 +325,7 @@
   },
   {
     "Name":"Kerbal Space Program",
-    "Path":"\\Documents",
+    "Path":"\\Program Files (x86)\\Steam\\SteamApps\\common\\Kerbal Space Program\\saves",
     "ID":999999,
     "HasCustomPath":"FALSE"
   },

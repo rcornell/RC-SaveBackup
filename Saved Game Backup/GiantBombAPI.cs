@@ -96,6 +96,7 @@ namespace Saved_Game_Backup
             //Create path for thumbnails directory and get all files in directory
             var queryPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
                             "\\Save Backup Tool\\Thumbnails\\";
+            if (!Directory.Exists(queryPath)) Directory.CreateDirectory(queryPath);
             var files = Directory.GetFiles(queryPath);
             queryPath += game.Name;
 
@@ -113,7 +114,8 @@ namespace Saved_Game_Backup
                 await GetGameID();
                 await UpdateGameID();
             }
-            if (_thumbnailPath == null && game.ID != 999999)
+            //if (_thumbnailPath == null && game.ID != 999999)
+            if (_thumbnailPath == null)
                 await CreateThumbnail();
         }
 

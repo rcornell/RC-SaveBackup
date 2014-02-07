@@ -65,7 +65,6 @@
         </StackPanel>
         <DockPanel Grid.Row="2" Grid.Column="0">
             <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Top">
-
                 <Button Margin="3"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Center"
