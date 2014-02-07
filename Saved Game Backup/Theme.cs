@@ -19,8 +19,8 @@ namespace Saved_Game_Backup
         private static ObservableCollection<object> _brushes;
         //private static Uri _bluePath = new Uri(@"pack://application:Saved_Game_Backup/YourAssembly;component/Assets/bluewhite.jpg", UriKind.Absolute);
         //private static Uri _darkPath = new Uri(@"pack://application:Saved_Game_Backup/YourAssembly;component/Assets/metro.jpg", UriKind.Absolute);
-        private static Uri _bluePath = new Uri(@"C:\Users\Rob\Source\Repos\RC-SaveBackup2\Saved Game Backup\Assets\bluewhite.jpg", UriKind.Absolute);
-        private static Uri _darkPath = new Uri(@"C:\Users\Rob\Source\Repos\RC-SaveBackup2\Saved Game Backup\Assets\metro.jpg", UriKind.Absolute);
+        private static Uri _bluePath = new Uri(@"pack://application:,,,/Assets/bluewhite.jpg", UriKind.Absolute);
+        private static Uri _darkPath = new Uri(@"pack://application:,,,/Assets/metro.jpg", UriKind.Absolute);
         
 
         static Theme() {

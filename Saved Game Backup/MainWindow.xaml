@@ -7,14 +7,14 @@
         xmlns:viewModel="clr-namespace:Saved_Game_Backup.ViewModel"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="SaveMonkey"
-        Width="850"
+        Width="Auto"
         Height="Auto"
         Background="{StaticResource Metro}"
         DataContext="{Binding Path=Main,
                               Source={StaticResource Locator}}"
         Icon="Assets/SGBIcon.ico"
         Padding="3"
-        SizeToContent="Height"
+        SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterScreen"
         WindowStyle="SingleBorderWindow">
     <Window.Resources>
@@ -24,9 +24,7 @@
             <Setter Property="Background" Value="{Binding Brushes[1]}" />
             <Setter Property="Foreground" Value="{Binding Brushes[2]}" />
         </Style>
-
     </Window.Resources>
-
     <Grid Background="{Binding Brushes[0]}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -139,9 +137,10 @@
                    VerticalAlignment="Bottom"
                    Style="{StaticResource TextStyle}"
                    Text="Games to Back Up" />
-        <ListBox Grid.Row="2"
+        <ListBox x:Name="WrapPaneListBox"
+                 Grid.Row="2"
                  Grid.Column="3"
-                 Height="430"
+                 MinWidth="420"
                  Margin="3"
                  HorizontalContentAlignment="Center"
                  ItemsSource="{Binding GamesToBackup}"
@@ -235,8 +234,12 @@
         <ListBox Grid.Row="2"
                  Grid.Column="1"
                  Width="220"
-                 Height="430"
+                 Height="{Binding ElementName=WrapPaneListBox,
+                                  Path=ActualHeight}"
+                 MinHeight="410"
                  Margin="3"
+                 HorizontalAlignment="Stretch"
+                 VerticalAlignment="Stretch"
                  ItemsSource="{Binding GamesList}"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  SelectedItem="{Binding SelectedGame}"
