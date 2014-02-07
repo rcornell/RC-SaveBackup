@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using Microsoft.CSharp.RuntimeBinder;
 using Newtonsoft.Json;
 
 namespace Saved_Game_Backup
@@ -128,14 +129,21 @@ namespace Saved_Game_Backup
         //Downloads json code from GiantBomb's API and pulls out the requested
         //values, GameID or thumb url, depending on the bool value of thumbRequest
         private async Task DownloadData(string queryURL, bool thumbRequest) {
+            var thumbURL = "";
             using (var client = new HttpClient())
                 _responseString = await client.GetStringAsync(queryURL);
 
             var blob = await JsonConvert.DeserializeObjectAsync<dynamic>(_responseString);
 
             if (thumbRequest) {
-                string thumbURL = blob.results.image.thumb_url;
-                if (!string.IsNullOrWhiteSpace(thumbURL))
+                try {
+                    thumbURL = blob.results.image.thumb_url;
+                }
+                catch (RuntimeBinderException ex) {
+                    LogError(ex);
+                    thumbURL = @"pack://application:,,,/Assets/NoThumb.jpg";
+                }
+                if (!string.IsNullOrWhiteSpace(thumbURL) && !thumbURL.Contains("NoThumb.jpg"))
                     BuildThumbnail(thumbURL);
             }
             else {
@@ -305,9 +313,9 @@ namespace Saved_Game_Backup
             Directory.CreateDirectory(documentsPath + "\\Save Backup Tool\\Error\\");
             var sb = new StringBuilder();
             sb.AppendLine(ex.Message);
-            sb.AppendLine(ex.InnerException.Message);
-            sb.AppendLine(ex.Source);
-            sb.AppendLine(ex.StackTrace);
+            //if (!string.IsNullOrWhiteSpace(ex.InnerException.Message)) sb.AppendLine(ex.InnerException.Message);
+            //if (!string.IsNullOrWhiteSpace(ex.Source)) sb.AppendLine(ex.Source);
+           // if (!string.IsNullOrWhiteSpace(ex.StackTrace)) sb.AppendLine(ex.StackTrace);
             using (var fs = File.OpenWrite(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Save Backup Tool\\Error\\Log.txt"))
             {
                 using (var sw = new StreamWriter(fs))

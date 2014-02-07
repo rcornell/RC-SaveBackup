@@ -180,6 +180,7 @@
     <Resource Include="Assets\metroSmall.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\NoThumb.jpg" />
     <Content Include="Assets\SGBIcon.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

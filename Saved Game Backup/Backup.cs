@@ -324,13 +324,20 @@ namespace Saved_Game_Backup
         /// <param name="gamesToBackup"></param>
         private static ObservableCollection<Game> ModifyGamePaths(IEnumerable<Game> gamesToBackup) {
             var editedList = new ObservableCollection<Game>();
-            foreach (var game in gamesToBackup) {
-                if (!game.HasCustomPath && game.Path.Contains("Documents"))
-                    editedList.Add(new Game(game.Name, _userPath+game.Path, game.ID, game.ThumbnailPath));
-                else if (!game.HasCustomPath && game.Path.Contains("Program Files"))
-                    editedList.Add(new Game(game.Name, _hardDrive + game.Path, game.ID, game.ThumbnailPath));
-                else
-                    editedList.Add(game);
+            try {
+                foreach (var game in gamesToBackup) {
+                    if (!game.HasCustomPath && game.Path.Contains("Documents"))
+                        editedList.Add(new Game(game.Name, _userPath + game.Path, game.ID, game.ThumbnailPath));
+                    //else if (!game.HasCustomPath && game.Path.Contains("Program Files"))
+                    //    editedList.Add(new Game(game.Name, _hardDrive + game.Path, game.ID, game.ThumbnailPath));
+                    //else if (!game.HasCustomPath && game.Path.Contains("AppData"))
+                    //    editedList.Add(new Game(game.Name, _userPath + game.Path, game.ID, game.ThumbnailPath));
+                    else
+                        editedList.Add(game);
+                }
+            }
+            catch (Exception ex) {
+                
             }
             return editedList;
         }
