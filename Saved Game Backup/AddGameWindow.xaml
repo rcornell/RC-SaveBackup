@@ -5,10 +5,10 @@
         Title="Add a Game"
         Width="300"
         Height="250"
-        WindowStartupLocation="CenterScreen"
         Background="{StaticResource MetroSmall}"
         DataContext="{Binding AddGame,
-                              Source={StaticResource Locator}}">
+                              Source={StaticResource Locator}}"
+        WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <Style BasedOn="{StaticResource FontStyle}" TargetType="Control" />
         <Style BasedOn="{StaticResource TextStyle}" TargetType="TextBlock" />
@@ -42,7 +42,8 @@
                        TextWrapping="Wrap" />
             <Button VerticalAlignment="Center"
                     Command="{Binding ChoosePath}"
-                    Content="Choose Folder" />
+                    Content="Choose Folder"
+                    Style="{StaticResource SbtButtonStyle}" />
         </StackPanel>
         <StackPanel Grid.Row="2"
                     Grid.Column="1"
@@ -54,8 +55,36 @@
             <Button VerticalAlignment="Center"
                     Command="{Binding Add}"
                     CommandParameter="{Binding ElementName=AddWindow}"
-                    Content="Add Game" />
+                    Content="Add Game"
+                    Style="{StaticResource SbtButtonStyle}" />
         </StackPanel>
+
+        <Viewbox Grid.Row="1"
+                 Grid.Column="2"
+                 Margin="5,5,5,15"
+                 VerticalAlignment="Bottom"
+                 RenderTransformOrigin="0.5,0.5"
+                 Visibility="{Binding PathCheckVisibility}">
+            <Path Width="7"
+                  Height="4"
+                  Data="F1 M 0,110L 47.6667,62L 102,117.333L 218.667,0L 266,48L 102,212.333L 0,110 Z "
+                  Fill="{StaticResource CheckBoxBrush}"
+                  Stretch="Uniform"
+                  UseLayoutRounding="False" />
+        </Viewbox>
+        <Viewbox Grid.Row="0"
+                 Grid.Column="2"
+                 Margin="5,5,5,15"
+                 VerticalAlignment="Bottom"
+                 RenderTransformOrigin="0.5,0.5"
+                 Visibility="{Binding NameCheckVisibility}">
+            <Path Width="7"
+                  Height="4"
+                  Data="F1 M 0,110L 47.6667,62L 102,117.333L 218.667,0L 266,48L 102,212.333L 0,110 Z "
+                  Fill="{StaticResource CheckBoxBrush}"
+                  Stretch="Uniform"
+                  UseLayoutRounding="False" />
+        </Viewbox>
 
     </Grid>
 </Window>

@@ -17,7 +17,10 @@ using Saved_Game_Backup.Helper;
 
 namespace Saved_Game_Backup.ViewModel {
 
-    public class AddGameViewModel {
+    public class AddGameViewModel : ViewModelBase {
+
+        public Visibility PathCheckVisibility { get; set; }
+        public Visibility NameCheckVisibility { get; set; }
 
         private Brush _background;
         public Brush Background
@@ -30,14 +33,20 @@ namespace Saved_Game_Backup.ViewModel {
         public string Path {
             get { return _path; }
             set {
-                _path = value; 
+                _path = value;
+                PathCheckVisibility = !string.IsNullOrWhiteSpace(_path) ? Visibility.Visible : Visibility.Hidden;
+                RaisePropertyChanged(() => PathCheckVisibility);
             }
         }
 
         private string _name;
         public string Name {
             get { return _name; }
-            set { _name = value; }
+            set {
+                _name = value;
+                NameCheckVisibility = !string.IsNullOrWhiteSpace(_name) ? Visibility.Visible : Visibility.Hidden;
+                RaisePropertyChanged(() => NameCheckVisibility);
+            }
         }
 
         public RelayCommand<Window> CloseWindowCommand { get; private set; }
@@ -53,6 +62,8 @@ namespace Saved_Game_Backup.ViewModel {
       
         public AddGameViewModel(MainViewModel mainview) {
             Background = mainview.Background;
+            NameCheckVisibility = Visibility.Hidden;
+            PathCheckVisibility = Visibility.Hidden;
         }
 
         private void ExecuteChoosePath() {
@@ -67,6 +78,7 @@ namespace Saved_Game_Backup.ViewModel {
                 Messenger.Default.Send<AddGameMessage>(new AddGameMessage(newGame));
                 //var gb = new GiantBombAPI();
                 //await gb.AddToJSON(_name, _path);
+                
             }
             if(window!=null)
                 window.Close(); 
