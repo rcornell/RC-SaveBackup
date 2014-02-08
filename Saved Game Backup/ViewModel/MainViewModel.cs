@@ -258,12 +258,11 @@ namespace Saved_Game_Backup.ViewModel
             if (_selectedGame == null)
                 return;
             var game = SelectedGame;
-            GameListHandler.RemoveFromGamesList(GamesList, game);
-            RaisePropertyChanged(() => GamesList);
-            await GameListHandler.AddToBackupList(GamesToBackup, GamesList, game);
+            if (GamesToBackup.Contains(game)) return;
+            GamesToBackup.Add(game);
             RaisePropertyChanged(() => GamesToBackup);
-            await GetThumb(game);
-            RaisePropertyChanged(() => GamesToBackup);
+            //await GetThumb(game);
+            //RaisePropertyChanged(() => GamesToBackup);
 
             ////Refine this?
             //WrapPanelGames.Add(new WrapPanelGame() {
