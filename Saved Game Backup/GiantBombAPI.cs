@@ -40,15 +40,13 @@ namespace Saved_Game_Backup
             set { _thumbnailPath = value; }
         }
 
+        private static bool gameDataChanged;
         private const string GameListPath = @"Assets\Games.json";
         private const string ApiKey = "ab63aeba2395b10932897115dc4bf3fa048e1734";
         private const string StringBase = "http://www.giantbomb.com/api";
         private const string Format = "json";
         private const string FieldsRequested = "name,image";
         private const string ResourceType = "game";
-        private Game _game;
-        private string _responseString;
-        private int _newGameId;
 
         public GiantBombAPI() {
 
@@ -61,234 +59,153 @@ namespace Saved_Game_Backup
         //    //CreateThumbnail(_game_ID);
         //}
 
-        public GiantBombAPI(Game game) {
-            _game = game;
-            //GetGameID(_gameName);
+        //public GiantBombAPI(Game game) {
+        //    _game = game;
+        //}
+
+        public static async Task GetThumb(Game game)
+        {
+            //Create path for thumbnails directory and get all files in directory
+            var thumbnailDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
+                            "\\Save Backup Tool\\Thumbnails\\";
+            if (!Directory.Exists(thumbnailDirectory)) Directory.CreateDirectory(thumbnailDirectory);
+            var files = Directory.GetFiles(thumbnailDirectory);
+            thumbnailDirectory += game.Name;
+
+            //search for thumbnail in directory
+            //if found, set _thumbnailPath to path on HDD
+            for (var i = 0; i < files.Count(); i++) {
+                if (files[i].Contains(thumbnailDirectory)){ //could also check for game.Name
+                    game.ThumbnailPath = files[i];
+                    gameDataChanged = true;
+                    break;
+                }
+            }
+
+            //If thumbnailPath is found, leave method.
+            if (!string.IsNullOrWhiteSpace(game.ThumbnailPath) && !game.ThumbnailPath.Contains("Loading"))
+                return;
+
+            //If thumbnail not found, retrieve gameID and thumbnail.
+            if (game.ID == 999999) {
+                await GetGameID(game);
+            }
+            //if (_thumbnailPath == null && game.ID != 999999)
+            if (game.ThumbnailPath == null)
+                await GetThumbUrl(game);
+
+            if (!string.IsNullOrWhiteSpace(game.ThumbnailPath) && !game.ThumbnailPath.Contains("NoThumb.jpg"))
+                await DownloadThumbnail(game);
+
+            if (gameDataChanged)
+                await UpdateGameInJson(game);
         }
 
         //Retrieves GameID if it is the default value 999999 in json file.
-        public async Task GetGameID() {
-            var searchString = BuildSearchString(_game.Name);
-           await DownloadData(searchString, false);
+        public static async Task GetGameID(Game game) {
+            var searchString = BuildIdQueryString(game.Name);
+            var responseString = "";
+            
+            using (var client = new HttpClient())
+                responseString = await client.GetStringAsync(searchString);
+
+            var blob = await JsonConvert.DeserializeObjectAsync<dynamic>(responseString);
+
+            try {
+                game.ID = blob.results[0].id;
+                gameDataChanged = true;
+            }
+            catch (ArgumentOutOfRangeException ex) {
+                SBTErrorLogger.Log(ex);
+            }
         }
 
-        //Builds string to pull thumbnail data from API
-        private string BuildThumbQueryString(int gameId) {
+        //Gets the Giant Bomb thumbnail's web URL
+        private static async Task GetThumbUrl(Game game)
+        {
+            var thumbQueryUrl = BuildThumbQueryString(game.ID);
+            var responseString = "";
+            
+            using (var client = new HttpClient())
+                responseString = await client.GetStringAsync(thumbQueryUrl);
+
+            var blob = await JsonConvert.DeserializeObjectAsync<dynamic>(responseString);
+
+            try {
+                game.ThumbnailPath = blob.results.image.thumb_url;
+            }
+            catch (RuntimeBinderException ex) {
+                SBTErrorLogger.Log(ex);
+                game.ThumbnailPath = @"pack://application:,,,/Assets/NoThumb.jpg";
+            }
+        }
+
+        //Downloads thumbnail using URL
+        //And sets game.ThumbnailPath to local thumb cache
+        private static Task DownloadThumbnail(Game game)
+        {
+            var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            var extension = new FileInfo(game.ThumbnailPath).Extension;
+
+            //Create path for thumbnail on HDD
+            var thumbLocalPath = documentsPath + "\\Save Backup Tool\\Thumbnails\\" + game.Name + extension;
+
+            var fi = new FileInfo(thumbLocalPath);
+
+            //If File doesn't exist, download it.
+            try {
+                if (File.Exists(fi.ToString()))
+                    return null;
+                var webClient = new WebClient();
+                webClient.DownloadFileAsync(new Uri(game.ThumbnailPath), fi.FullName);
+                game.ThumbnailPath = thumbLocalPath;
+                gameDataChanged = true;
+            }
+            catch (Exception ex) {
+                SBTErrorLogger.Log(ex);
+            }
+
+            return null;
+        }
+
+        //If something has been changed in the game parameter,
+        //Update the json
+        private static async Task UpdateGameInJson(Game game)
+        {
+
+            var listToReturn = new List<Game>();
+
+            var gameJsonList =
+                await JsonConvert.DeserializeObjectAsync<List<Game>>(File.ReadAllText(GameListPath));
+            listToReturn.AddRange(gameJsonList.Select(g => g.Name == game.Name ? game : g));
+            var fileToWrite = JsonConvert.SerializeObject(listToReturn);
+            File.WriteAllText(GameListPath, fileToWrite);
+        }
+
+        //Builds string to pull thumbnail URL from Giant Bomb
+        private static string BuildThumbQueryString(int gameId) {
             var queryString = String.Format("{0}/{1}/{2}/?api_key={3}&format={4}&field_list={5}", StringBase,
                 ResourceType, gameId, ApiKey, Format, FieldsRequested);
             return queryString;
         }
 
-        //Builds string to search API for gameid
-        private string BuildSearchString(string name) {
+        //Builds string to search Giant Bomb for Game ID
+        private static string BuildIdQueryString(string name) {
             //http://www.giantbomb.com/api/search/?api_key=ab63aeba2395b10932897115dc4bf3fa048e1734&format=json&query=%22skyrim%22&resources=game
             var searchString = String.Format("{0}/search/?api_key={1}&format={2}&query={3}&resources=game", StringBase,
                 ApiKey, Format, name);
             return searchString;
         }
 
-        /// <summary>
-        /// This method starts the chain of checking for thumbnail on HDD
-        /// and retrieving it from API if it is not found.
-        /// </summary>
-        /// <param name="game"></param>
-        /// <returns></returns>
-        public async Task GetThumb(Game game) {
-            //Create path for thumbnails directory and get all files in directory
-            var queryPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
-                            "\\Save Backup Tool\\Thumbnails\\";
-            if (!Directory.Exists(queryPath)) Directory.CreateDirectory(queryPath);
-            var files = Directory.GetFiles(queryPath);
-            queryPath += game.Name;
-
-            //search for thumbnail in directory
-            //if found, set _thumbnailPath to path on HDD
-            for (int i = 0; i < files.Count(); i++) {
-                if (files[i].Contains(queryPath)){
-                    _thumbnailPath = files[i];
-                    break;
-                }
-            }
-
-            //If thumbnail not found, retrieve gameID and thumbnail.
-            if (game.ID == 999999) {
-                await GetGameID();
-                await UpdateGameID();
-            }
-            //if (_thumbnailPath == null && game.ID != 999999)
-            if (_thumbnailPath == null)
-                await CreateThumbnail();
-        }
-
-        //Requests query string and calls DownloadData
-        private async Task CreateThumbnail() {
-            var queryURL = BuildThumbQueryString(_newGameId);
-            await DownloadData(queryURL, true);
-        }
-
-        //Downloads json code from GiantBomb's API and pulls out the requested
-        //values, GameID or thumb url, depending on the bool value of thumbRequest
-        private async Task DownloadData(string queryURL, bool thumbRequest) {
-            var thumbURL = "";
-            using (var client = new HttpClient())
-                _responseString = await client.GetStringAsync(queryURL);
-
-            var blob = await JsonConvert.DeserializeObjectAsync<dynamic>(_responseString);
-
-            if (thumbRequest) {
-                try {
-                    thumbURL = blob.results.image.thumb_url;
-                }
-                catch (RuntimeBinderException ex) {
-                    SBTErrorLogger.Log(ex);
-                    thumbURL = @"pack://application:,,,/Assets/NoThumb.jpg";
-                }
-                if (!string.IsNullOrWhiteSpace(thumbURL) && !thumbURL.Contains("NoThumb.jpg"))
-                    BuildThumbnail(thumbURL);
-            }
-            else {
-                try {
-                    _newGameId = blob.results[0].id;
-                }
-                catch (ArgumentOutOfRangeException ex) {
-                    SBTErrorLogger.Log(ex);
-                }
-              
-            }
-        }
-
-        //Downloads thumbnail if it is not found in Thumbnails directory.
-        private void BuildThumbnail(string url) {
-            var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-
-            //Check for correct thumbnail file extension SHOULD YOU USE A SWITCH?
-            var extension = "";
-            if (url.Contains(".jpg"))
-                extension = ".jpg";
-            else if (url.Contains(".png"))
-                extension = ".png";
-            else if (url.Contains(".bmp"))
-                extension = ".bmp";
-            else if (url.Contains(".gif"))
-                extension = ".gif";
-            else 
-                extension = ".jpg";
-            
-            //Create path for thumbnail on HDD
-            _thumbnailPath = documentsPath + "\\Save Backup Tool\\Thumbnails\\" + _game.Name + extension;
-            var fi = new FileInfo(_thumbnailPath);            
-
-            //If File doesn't exist, download it.
-            try {
-                if (File.Exists(fi.ToString())) 
-                    return;
-                var webClient = new WebClient();
-                webClient.DownloadFile(new Uri(url), fi.FullName);
-            }
-            catch (Exception ex) {
-                SBTErrorLogger.Log(ex);
-            }
-
-            //Create thumbImage. Not necessary since Game.cs is updated with the path
-            //But testing for future features.
-            //Image test;
-            //using (var fs = File.OpenRead(_thumbnailPath)) {
-            //    test = Image.FromStream(fs);
-            //}
-            //_thumbImage = test;
-        }
-
-        /// Edits json to update game id once it has been found by DownloadData()
-        /// Could be expanded to write Thumbnail path to json file
-        /// ADD TRY/CATCH
-        private async Task UpdateGameID() {
-            if (_game.ID != 999999) {
-                return;
-            }
-            _game.ID = _newGameId;
-
-            var listToReturn = new List<Game>();
-
-            var gameJsonList =
-                await JsonConvert.DeserializeObjectAsync<List<Game>>(File.ReadAllText(GameListPath));
-            foreach (var g in gameJsonList) {
-                listToReturn.Add(g.Name == _game.Name ? _game : g);
-            }
-            var fileToWrite = JsonConvert.SerializeObject(listToReturn);
-            File.WriteAllText(GameListPath, fileToWrite);
-
-            #region Old CSV parsing code
-
-            //    string lineToEdit = "";
-            //    var row = 0;
-            //    StreamReader sr;
-            //    string[] allRows;
-            //    try {
-            //        sr =
-            //            new StreamReader(
-            //                @"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\Games.csv");
-            //        allRows =
-            //            File.ReadAllLines(
-            //                @"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\Games.csv");
-            //    }
-            //    catch (FileNotFoundException ex) {
-            //        MessageBox.Show("Not able to find the Games.csv file this\r\nprogram uses for game data.\r\n\r\n"+ex.Message);
-            //        return;
-            //    }
-
-            //    try {
-            //        while (!sr.EndOfStream) {
-            //            var line = sr.ReadLine();
-            //            if (line.StartsWith(_gameName)) {
-            //                var lineCells = line.Split(',');
-            //                lineCells[2] = _game_ID.ToString(CultureInfo.InvariantCulture);
-            //                for (var i = 0; i <= 2; i++) {
-            //                    lineToEdit += lineCells[i];
-            //                    if (i < 2)
-            //                        lineToEdit += ",";
-            //                }
-            //                allRows[row] = lineToEdit;
-            //                File.WriteAllLines(
-            //                    @"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\Games - New.csv",
-            //                    allRows);
-            //            }
-            //            else {
-            //                row++;
-            //            }
-            //        }
-            //        sr.Close();
-            //        File.Replace(
-            //            @"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\Games - New.csv",
-            //            @"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\Games.csv",
-            //            @"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\GamesBackup.csv");
-            //        //File.Delete(@"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\GamesBackup.csv");
-            //    }
-            //    catch (Exception ex) {
-            //        using (
-            //            var sw =
-            //                new StreamWriter(
-            //                    string.Format(
-            //                        @"C:\Users\Rob\Documents\Visual Studio 2012\Projects\Saved Game Backup\Saved Game Backup\Error Logs\Log {0}.txt",
-            //                        DateTime.Now))) {
-            //         sw.WriteLine(ex.Message);
-            //         sw.WriteLine(ex.InnerException);
-            //         sw.WriteLine(ex.Source);
-            //         sw.WriteLine(ex.StackTrace);
-            //         sw.WriteLine(ex.TargetSite);
-            //        }
-            //        MessageBox.Show("Unexpected error writing to Games.csv.\r\n\r\nLog file written.");
-            //    }
-
-            #endregion
-        }
 
         //Could be modified to download the thumbnail data now.
-        internal async Task AddToJSON(Game newGameForJson) {
+        internal async Task AddToJson(Game newGameForJson) {
             try {
                 var gameJsonList = await JsonConvert.DeserializeObjectAsync<List<Game>>(File.ReadAllText(GameListPath));
                 gameJsonList.Add(newGameForJson);
                 var listToReturn = new ObservableCollection<Game>(gameJsonList.OrderBy(x => x.Name));
-                var fileToWrite = JsonConvert.SerializeObject(listToReturn);
+                var fileToWrite = await JsonConvert.SerializeObjectAsync(listToReturn);
                 File.WriteAllText(GameListPath, fileToWrite);
             }
             catch (Exception ex) {

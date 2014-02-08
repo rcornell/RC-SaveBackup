@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Saved_Game_Backup
 {
+// ReSharper disable once InconsistentNaming
     public class SBTErrorLogger
     {
         public static void Log(Exception ex) {

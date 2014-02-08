@@ -12,7 +12,7 @@ namespace Saved_Game_Backup
         public GameListHandler(){}
 
         public static async Task AddToBackupList(ObservableCollection<Game> gamesToBackup, ObservableCollection<Game> gamesList, Game game) {
-             await GetThumb(game);
+             //await GetThumb(game);
             
             for (var i = 0; i < gamesList.Count(); i++) {
                 if (game.Name != gamesList[i].Name) continue;
@@ -61,11 +61,11 @@ namespace Saved_Game_Backup
             //gamesList = new ObservableCollection<Game>(gamesList.OrderBy(s => s.Name));
         }
 
-        private static async Task GetThumb(Game game) {
-            var gb = new GiantBombAPI(game);
-            await gb.GetThumb(game);
-            game.ThumbnailPath = gb.ThumbnailPath;
-        }
+        //private static async Task GetThumb(Game game) {
+        //    var gb = new GiantBombAPI(game);
+        //    await gb.GetThumb(game);
+        //    game.ThumbnailPath = gb.ThumbnailPath;
+        //}
         
     }
 }

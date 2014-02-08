@@ -337,7 +337,7 @@ namespace Saved_Game_Backup
                 }
             }
             catch (Exception ex) {
-                
+                SBTErrorLogger.Log(ex);
             }
             return editedList;
         }

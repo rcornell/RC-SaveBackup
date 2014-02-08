@@ -261,7 +261,11 @@ namespace Saved_Game_Backup.ViewModel
             if (GamesToBackup.Contains(game)) return;
             GamesToBackup.Add(game);
             RaisePropertyChanged(() => GamesToBackup);
-            //await GetThumb(game);
+
+            if (!game.ThumbnailPath.Contains("Loading")) return;
+            //var gb = new GiantBombAPI(game);
+            await GiantBombAPI.GetThumb(game);
+            RaisePropertyChanged(() => GamesToBackup);
         }
 
         private void ToGamesList() {
@@ -315,11 +319,11 @@ namespace Saved_Game_Backup.ViewModel
 
         }
 
-        private async Task GetThumb(Game game) {
-            var gb = new GiantBombAPI(game);
-            await gb.GetThumb(game);
-            game.ThumbnailPath = gb.ThumbnailPath;
-        }
+        //private async Task GetThumb(Game game) {
+        //    var gb = new GiantBombAPI(game);
+        //    await gb.GetThumb(game);
+        //    game.ThumbnailPath = gb.ThumbnailPath;
+        //}
 
         private void ExecuteReset() {
             GamesList = DirectoryFinder.ReturnGamesList();
@@ -362,7 +366,7 @@ namespace Saved_Game_Backup.ViewModel
 
             if (newGameForJson == null) return;
             var gb = new GiantBombAPI();
-            await gb.AddToJSON(newGameForJson);
+            await gb.AddToJson(newGameForJson);
             MessageBox.Show(newGameForJson.Name + " added to list.");
             UpdateGamesList();
         }
