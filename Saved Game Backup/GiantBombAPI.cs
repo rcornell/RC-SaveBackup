@@ -91,7 +91,7 @@ namespace Saved_Game_Backup
                 await GetGameID(game);
             }
             //if (_thumbnailPath == null && game.ID != 999999)
-            if (game.ThumbnailPath == null)
+            if (game.ThumbnailPath.Contains("Loading") || game.ThumbnailPath.Contains("NoThumb"))
                 await GetThumbUrl(game);
 
             if (!string.IsNullOrWhiteSpace(game.ThumbnailPath) && !game.ThumbnailPath.Contains("NoThumb.jpg"))
@@ -200,7 +200,7 @@ namespace Saved_Game_Backup
 
 
         //Could be modified to download the thumbnail data now.
-        internal async Task AddToJson(Game newGameForJson) {
+        public static async Task AddToJson(Game newGameForJson) {
             try {
                 var gameJsonList = await JsonConvert.DeserializeObjectAsync<List<Game>>(File.ReadAllText(GameListPath));
                 gameJsonList.Add(newGameForJson);

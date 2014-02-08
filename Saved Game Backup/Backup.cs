@@ -230,8 +230,6 @@ namespace Saved_Game_Backup
                 _fileWatcherList[watcherNumber].EnableRaisingEvents = true;
                 watcherNumber++;
             }
-
-            
         }
 
         public static BackupResultHelper RemoveFromAutobackup(Game game) {

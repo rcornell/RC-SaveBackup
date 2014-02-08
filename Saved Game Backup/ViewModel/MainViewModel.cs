@@ -263,29 +263,23 @@ namespace Saved_Game_Backup.ViewModel
             RaisePropertyChanged(() => GamesToBackup);
 
             if (!game.ThumbnailPath.Contains("Loading")) return;
-            //var gb = new GiantBombAPI(game);
             await GiantBombAPI.GetThumb(game);
             RaisePropertyChanged(() => GamesToBackup);
         }
 
         private void ToGamesList() {
-            if (SelectedBackupGame == null)
+            if (SelectedBackupGame == null || !GamesToBackup.Contains(SelectedGame))
                 return;
-            //var wrapPanelGame = SelectedWrapPanelGame;
             var game = SelectedBackupGame;
     
              //Make this work
             if (_backupEnabled) {
                 var result = Backup.RemoveFromAutobackup(game);
-                RaisePropertyChanged(() => GamesList);
                 RaisePropertyChanged(() => GamesToBackup);
                 HandleBackupResult(result);
             }
 
-            GameListHandler.RemoveFromBackupList(GamesToBackup, game);
-            GameListHandler.AddToGamesList(GamesToBackup, GamesList, game);
-            GamesList = new ObservableCollection<Game>(GamesList.OrderBy(s=> s.Name));
-            RaisePropertyChanged(() => GamesList);
+            GamesToBackup.Remove(game);
             RaisePropertyChanged(() => GamesToBackup);
         }
 
@@ -318,12 +312,6 @@ namespace Saved_Game_Backup.ViewModel
 
 
         }
-
-        //private async Task GetThumb(Game game) {
-        //    var gb = new GiantBombAPI(game);
-        //    await gb.GetThumb(game);
-        //    game.ThumbnailPath = gb.ThumbnailPath;
-        //}
 
         private void ExecuteReset() {
             GamesList = DirectoryFinder.ReturnGamesList();
@@ -365,8 +353,7 @@ namespace Saved_Game_Backup.ViewModel
             addGameWindow.ShowDialog();
 
             if (newGameForJson == null) return;
-            var gb = new GiantBombAPI();
-            await gb.AddToJson(newGameForJson);
+            await GiantBombAPI.AddToJson(newGameForJson);
             MessageBox.Show(newGameForJson.Name + " added to list.");
             UpdateGamesList();
         }
