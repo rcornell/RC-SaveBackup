@@ -181,6 +181,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\NoThumb.jpg" />
+    <Resource Include="Assets\Loading.jpg" />
     <Content Include="Assets\SGBIcon.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

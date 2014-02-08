@@ -74,7 +74,7 @@ namespace Saved_Game_Backup.ViewModel {
 
         private void ExecuteAdd(Window window) {
             if (!string.IsNullOrWhiteSpace(_name) && !string.IsNullOrWhiteSpace(_path)) {
-                var newGame = new Game(_name, _path, 999999, null, true);
+                var newGame = new Game(_name, _path, 999999, null, true, false);
                 Messenger.Default.Send<AddGameMessage>(new AddGameMessage(newGame));
                 //var gb = new GiantBombAPI();
                 //await gb.AddToJSON(_name, _path);

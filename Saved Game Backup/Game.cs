@@ -42,6 +42,8 @@ namespace Saved_Game_Backup {
             set { _hasCustomPath = value; }
         }
 
+        public bool HasThumb { get; set; }
+
         public Game() {
             
         }
@@ -64,13 +66,14 @@ namespace Saved_Game_Backup {
             ThumbnailPath = thumbnailpath;
         }
 
-        public Game(string name, string path, int id, string thumbnailPath, bool customPath)
+        public Game(string name, string path, int id, string thumbnailPath, bool customPath, bool hasThumb)
         {
             ID = id;
             Name = name;
             Path = path;
             ThumbnailPath = thumbnailPath;
             HasCustomPath = customPath;
+            HasThumb = hasThumb;
         }
 
         public override string ToString() {
