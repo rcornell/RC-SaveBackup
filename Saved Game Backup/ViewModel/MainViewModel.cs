@@ -260,16 +260,13 @@ namespace Saved_Game_Backup.ViewModel
             var game = SelectedGame;
             if (GamesToBackup.Contains(game)) return;
             GamesToBackup.Add(game);
-            RaisePropertyChanged(() => GamesToBackup);
 
             if (!game.ThumbnailPath.Contains("Loading")) return;
             await GiantBombAPI.GetThumb(game);
-            //RaisePropertyChanged(() => SelectedGame);
-            RaisePropertyChanged(() => GamesToBackup);
         }
 
         private void ToGamesList() {
-            if (SelectedBackupGame == null || !GamesToBackup.Contains(SelectedGame))
+            if (SelectedBackupGame == null || !GamesToBackup.Contains(SelectedBackupGame))
                 return;
             var game = SelectedBackupGame;
     
@@ -312,15 +309,19 @@ namespace Saved_Game_Backup.ViewModel
 
 
         }
+        
+        //CAN"T REMOVE A SECOND GAME 
+        //CAN"T REMOVE A SECOND GAME 
+        //CAN"T REMOVE A SECOND GAME 
+
 
         private void ExecuteReset() {
-            GamesList = DirectoryFinder.ReturnGamesList();
+            //GamesList = DirectoryFinder.ReturnGamesList();
             GamesToBackup.Clear();
             _specifiedFolder = null;
             _selectedGame = null;
             _selectedBackupGame = null;
 
-            RaisePropertyChanged(() => GamesList);
             RaisePropertyChanged(() => GamesToBackup);
             RaisePropertyChanged(() => SelectedBackupGame);
             RaisePropertyChanged(() => SelectedGame);
