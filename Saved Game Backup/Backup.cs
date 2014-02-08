@@ -40,7 +40,7 @@ namespace Saved_Game_Backup
             bool success;
             var message = "";
             if (!games.Any())
-                return new BackupResultHelper(false, false, "No games selected.", DateTime.Now);
+                return new BackupResultHelper(false, false, "No games selected.", DateTime.Now.ToString());
 
             var gamesToBackup = ModifyGamePaths(games);
             switch (backupType) {
@@ -71,7 +71,7 @@ namespace Saved_Game_Backup
                 Messenger.Default.Send<DateTime>(DateTime.Now);
             }
 
-            return new BackupResultHelper(success, backupEnabled, message, DateTime.Now);
+            return new BackupResultHelper(success, backupEnabled, message, DateTime.Now.ToString());
 
         }
 
@@ -233,15 +233,15 @@ namespace Saved_Game_Backup
         }
 
         public static BackupResultHelper RemoveFromAutobackup(Game game) {
-            if (!_fileWatcherList.Any()) return new BackupResultHelper(false, false, "No games on autobackup.", DateTime.Now);
+            if (!_fileWatcherList.Any()) return new BackupResultHelper(false, false, "No games on autobackup.", DateTime.Now.ToString());
             for (var i = 0; i <= _fileWatcherList.Count(); i++) {
                 if (!_fileWatcherList[i].Path.Contains(game.Path)) continue;
                 _fileWatcherList.RemoveAt(i);
                 break;
             }
             return _fileWatcherList.Any()
-                ? new BackupResultHelper(true, true, "Game removed from autobackup", DateTime.Now)
-                : new BackupResultHelper(true, false, "Last game removed from Autobackup.\r\nAutobackup disabled.", DateTime.Now);
+                ? new BackupResultHelper(true, true, "Game removed from autobackup", DateTime.Now.ToString())
+                : new BackupResultHelper(true, false, "Last game removed from Autobackup.\r\nAutobackup disabled.", DateTime.Now.ToString());
 
         }
 

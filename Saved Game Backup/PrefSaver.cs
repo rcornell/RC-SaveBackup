@@ -32,11 +32,11 @@ namespace Saved_Game_Backup
                 catch (SerializationException ex) {
                     SBTErrorLogger.Log(ex);
                 }
-                return new UserPrefs(0,5,null, DateTime.MinValue);
+                return new UserPrefs(0,5,null, "");
             }
 
             MessageBox.Show("If you see this, something went wrong \r\nloading user preferences.");
-            return new UserPrefs(0,5, new ObservableCollection<Game>(), DateTime.MinValue);
+            return new UserPrefs(0,5, new ObservableCollection<Game>(), "");
         }
 
         public void SavePrefs(UserPrefs prefs) {

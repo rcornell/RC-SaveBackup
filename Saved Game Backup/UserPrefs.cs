@@ -31,11 +31,11 @@ namespace Saved_Game_Backup {
             set { _maxBackups = value; }
         }
 
-        public DateTime LastBackupTime;
+        public string LastBackupTime;
 
         public UserPrefs(){}
 
-        public UserPrefs(int theme, int maxBackups,  ObservableCollection<Game> games, DateTime lastBackup) {
+        public UserPrefs(int theme, int maxBackups,  ObservableCollection<Game> games, string lastBackup) {
             _theme = theme;
             _maxBackups = maxBackups;
             _selectedGames = games;

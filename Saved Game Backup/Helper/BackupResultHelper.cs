@@ -11,9 +11,9 @@ namespace Saved_Game_Backup.Helper
         public bool Success { get; set; }
         public bool AutobackupEnabled { get; set; }
         public string Message { get; set; }
-        public DateTime BackupDateTime { get; set; }
+        public string BackupDateTime { get; set; }
 
-        public BackupResultHelper(bool success, bool autobackupEnabled, string message, DateTime dateTime) {
+        public BackupResultHelper(bool success, bool autobackupEnabled, string message, string dateTime) {
             Success = success;
             AutobackupEnabled = autobackupEnabled;
             Message = message;

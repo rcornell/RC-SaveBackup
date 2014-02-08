@@ -103,7 +103,7 @@ namespace Saved_Game_Backup.ViewModel
                 RaisePropertyChanged(() => BackupLimitVisibility);
             }
         }
-        public DateTime LastBackupTime { get; set; }
+        public string LastBackupTime { get; set; }
 
         //private string _selectedHardDrive;
         //public string SelectedHardDrive {
@@ -197,7 +197,7 @@ namespace Saved_Game_Backup.ViewModel
             SetUpInterface();
 
             Messenger.Default.Register<DateTime>(this, s => {
-                LastBackupTime = s;
+                LastBackupTime = s.ToLongDateString() + s.ToLongTimeString();
                 RaisePropertyChanged(() => LastBackupTime);
             });
 
@@ -218,7 +218,7 @@ namespace Saved_Game_Backup.ViewModel
                 var prefs = p.LoadPrefs();
                 _maxBackups = prefs.MaxBackups;
                 _themeInt = prefs.Theme;
-                LastBackupTime = prefs.LastBackupTime == DateTime.MinValue ? DateTime.MinValue : prefs.LastBackupTime;
+                LastBackupTime = prefs.LastBackupTime;
                 if (prefs.SelectedGames != null) GamesToBackup = prefs.SelectedGames;
                 RaisePropertyChanged(() => GamesToBackup);
             }
