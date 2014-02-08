@@ -97,6 +97,7 @@ namespace Saved_Game_Backup
             if (!string.IsNullOrWhiteSpace(game.ThumbnailPath) && !game.ThumbnailPath.Contains("NoThumb.jpg"))
                 await DownloadThumbnail(game);
 
+
             if (gameDataChanged)
                 await UpdateGameInJson(game);
         }
@@ -142,11 +143,13 @@ namespace Saved_Game_Backup
 
         //Downloads thumbnail using URL
         //And sets game.ThumbnailPath to local thumb cache
-        private static Task DownloadThumbnail(Game game)
+        private static async Task DownloadThumbnail(Game game)
         {
             var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-            var extension = new FileInfo(game.ThumbnailPath).Extension;
+            var extension = Path.GetExtension(game.ThumbnailPath);
+                
+                //new FileInfo(game.ThumbnailPath);
 
             //Create path for thumbnail on HDD
             var thumbLocalPath = documentsPath + "\\Save Backup Tool\\Thumbnails\\" + game.Name + extension;
@@ -155,24 +158,20 @@ namespace Saved_Game_Backup
 
             //If File doesn't exist, download it.
             try {
-                if (File.Exists(fi.ToString()))
-                    return null;
+                if (File.Exists(fi.ToString())) return;
                 var webClient = new WebClient();
-                webClient.DownloadFileAsync(new Uri(game.ThumbnailPath), fi.FullName);
+                await webClient.DownloadFileTaskAsync(new Uri(game.ThumbnailPath), fi.FullName);
                 game.ThumbnailPath = thumbLocalPath;
                 gameDataChanged = true;
             }
             catch (Exception ex) {
                 SBTErrorLogger.Log(ex);
             }
-
-            return null;
         }
 
         //If something has been changed in the game parameter,
         //Update the json
-        private static async Task UpdateGameInJson(Game game)
-        {
+        private static async Task UpdateGameInJson(Game game) {
 
             var listToReturn = new List<Game>();
 
@@ -183,14 +182,13 @@ namespace Saved_Game_Backup
             File.WriteAllText(GameListPath, fileToWrite);
         }
 
-        //Builds string to pull thumbnail URL from Giant Bomb
+
         private static string BuildThumbQueryString(int gameId) {
             var queryString = String.Format("{0}/{1}/{2}/?api_key={3}&format={4}&field_list={5}", StringBase,
                 ResourceType, gameId, ApiKey, Format, FieldsRequested);
             return queryString;
         }
 
-        //Builds string to search Giant Bomb for Game ID
         private static string BuildIdQueryString(string name) {
             //http://www.giantbomb.com/api/search/?api_key=ab63aeba2395b10932897115dc4bf3fa048e1734&format=json&query=%22skyrim%22&resources=game
             var searchString = String.Format("{0}/search/?api_key={1}&format={2}&query={3}&resources=game", StringBase,
@@ -198,8 +196,6 @@ namespace Saved_Game_Backup
             return searchString;
         }
 
-
-        //Could be modified to download the thumbnail data now.
         public static async Task AddToJson(Game newGameForJson) {
             try {
                 var gameJsonList = await JsonConvert.DeserializeObjectAsync<List<Game>>(File.ReadAllText(GameListPath));

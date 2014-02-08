@@ -264,6 +264,7 @@ namespace Saved_Game_Backup.ViewModel
 
             if (!game.ThumbnailPath.Contains("Loading")) return;
             await GiantBombAPI.GetThumb(game);
+            //RaisePropertyChanged(() => SelectedGame);
             RaisePropertyChanged(() => GamesToBackup);
         }
 
@@ -278,7 +279,6 @@ namespace Saved_Game_Backup.ViewModel
                 RaisePropertyChanged(() => GamesToBackup);
                 HandleBackupResult(result);
             }
-
             GamesToBackup.Remove(game);
             RaisePropertyChanged(() => GamesToBackup);
         }
@@ -305,7 +305,7 @@ namespace Saved_Game_Backup.ViewModel
             }
             _backupEnabled = result.AutobackupEnabled;
             AutoBackupVisibility = _backupEnabled ? Visibility.Visible : Visibility.Hidden;
-            //if (!result.AutobackupEnabled) LastBackupTime = result.BackupDateTime;
+            if (!result.AutobackupEnabled) LastBackupTime = result.BackupDateTime;
             RaisePropertyChanged(() => AutoBackupVisibility);
             RaisePropertyChanged(() => LastBackupTime);
             MessageBox.Show(result.Message, "Operation Successful", MessageBoxButton.OK);

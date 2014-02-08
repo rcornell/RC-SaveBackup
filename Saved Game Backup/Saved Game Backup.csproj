@@ -108,6 +108,7 @@
       <DependentUpon>OptionsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="PrefSaver.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="SBTErrorLogger.cs" />
     <Compile Include="UserPrefs.cs" />
     <Compile Include="ViewModel\AddGameViewModel.cs" />
@@ -162,7 +163,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Content Include="Assets\Games.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

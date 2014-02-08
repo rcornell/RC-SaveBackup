@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media.Imaging;
+using Saved_Game_Backup.Annotations;
 
 namespace Saved_Game_Backup {   
     
     [Serializable]    
-    public class Game {
+    public class Game : INotifyPropertyChanged{
         
         private string _name;
         public string Name {
@@ -33,7 +36,10 @@ namespace Saved_Game_Backup {
         private string _thumbnailPath;
         public string ThumbnailPath {
             get { return _thumbnailPath; }
-            set { _thumbnailPath = value; }
+            set {
+                _thumbnailPath = value;
+                OnPropertyChanged("ThumbnailPath");
+            }
         }
 
         private bool _hasCustomPath;
@@ -45,7 +51,13 @@ namespace Saved_Game_Backup {
         public bool HasThumb { get; set; }
 
         public Game() {
-            
+        }
+
+        void OnPropertyChanged(string prop) {
+            var handler = PropertyChanged;
+            if (handler != null) {
+                handler(this, new PropertyChangedEventArgs(prop));
+            }
         }
 
         public Game(string name, string path) {
@@ -79,5 +91,8 @@ namespace Saved_Game_Backup {
         public override string ToString() {
             return Name;
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
     }
 }

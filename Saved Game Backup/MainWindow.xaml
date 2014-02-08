@@ -188,7 +188,7 @@
                                                        Stretch="Uniform"
                                                        StretchDirection="DownOnly"
                                                        ThumbnailHeight="160"
-                                                       ThumbnailSource="{Binding ThumbnailPath}"
+                                                       ThumbnailSource="{Binding ThumbnailPath, Mode=OneWay}"
                                                        ThumbnailWidth="113" />
                     </StackPanel>
 
