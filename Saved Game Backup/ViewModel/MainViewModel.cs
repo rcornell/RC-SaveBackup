@@ -262,15 +262,6 @@ namespace Saved_Game_Backup.ViewModel
             GamesToBackup.Add(game);
             RaisePropertyChanged(() => GamesToBackup);
             //await GetThumb(game);
-            //RaisePropertyChanged(() => GamesToBackup);
-
-            ////Refine this?
-            //WrapPanelGames.Add(new WrapPanelGame() {
-            //    Game = game, 
-            //    ThumbnailPath = game.ThumbnailPath, 
-            //    ThumbnailSource = new BitmapImage(new Uri(game.ThumbnailPath))
-            //});
-            //RaisePropertyChanged(() => WrapPanelGames);
         }
 
         private void ToGamesList() {
