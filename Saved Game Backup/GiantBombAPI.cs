@@ -140,7 +140,7 @@ namespace Saved_Game_Backup
                     thumbURL = blob.results.image.thumb_url;
                 }
                 catch (RuntimeBinderException ex) {
-                    LogError(ex);
+                    SBTErrorLogger.Log(ex);
                     thumbURL = @"pack://application:,,,/Assets/NoThumb.jpg";
                 }
                 if (!string.IsNullOrWhiteSpace(thumbURL) && !thumbURL.Contains("NoThumb.jpg"))
@@ -151,7 +151,7 @@ namespace Saved_Game_Backup
                     _newGameId = blob.results[0].id;
                 }
                 catch (ArgumentOutOfRangeException ex) {
-                    LogError(ex);
+                    SBTErrorLogger.Log(ex);
                 }
               
             }
@@ -186,7 +186,7 @@ namespace Saved_Game_Backup
                 webClient.DownloadFile(new Uri(url), fi.FullName);
             }
             catch (Exception ex) {
-                LogError(ex);
+                SBTErrorLogger.Log(ex);
             }
 
             //Create thumbImage. Not necessary since Game.cs is updated with the path
@@ -291,38 +291,8 @@ namespace Saved_Game_Backup
                 var fileToWrite = JsonConvert.SerializeObject(listToReturn);
                 File.WriteAllText(GameListPath, fileToWrite);
             }
-            catch (Exception ex)
-            {
-                var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                Directory.CreateDirectory(documentsPath + "\\Save Backup Tool\\Error\\");
-                var sb = new StringBuilder();
-                sb.AppendLine(ex.Message);
-                sb.AppendLine(ex.InnerException.Message);
-                sb.AppendLine(ex.Source);
-                sb.AppendLine(ex.StackTrace);
-                using (var fs = File.OpenWrite(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Save Backup Tool\\Error\\Log.txt")) {
-                    using (var sw = new StreamWriter(fs)) {
-                        sw.WriteLine(sb.ToString());
-                    }
-                }
-            }
-        }
-
-        private void LogError(Exception ex) {
-            var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            Directory.CreateDirectory(documentsPath + "\\Save Backup Tool\\Error\\");
-            var sb = new StringBuilder();
-            sb.AppendLine(ex.Message);
-            //if (!string.IsNullOrWhiteSpace(ex.InnerException.Message)) sb.AppendLine(ex.InnerException.Message);
-            //if (!string.IsNullOrWhiteSpace(ex.Source)) sb.AppendLine(ex.Source);
-           // if (!string.IsNullOrWhiteSpace(ex.StackTrace)) sb.AppendLine(ex.StackTrace);
-            using (var fs = File.OpenWrite(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Save Backup Tool\\Error\\Log.txt"))
-            {
-                using (var sw = new StreamWriter(fs))
-                {
-                    sw.WriteLineAsync(sb.ToString());
-                }
-
+            catch (Exception ex) {
+                SBTErrorLogger.Log(ex);
             }
         }
     }

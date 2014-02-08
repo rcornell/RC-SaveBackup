@@ -108,6 +108,7 @@
       <DependentUpon>OptionsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="PrefSaver.cs" />
+    <Compile Include="SBTErrorLogger.cs" />
     <Compile Include="UserPrefs.cs" />
     <Compile Include="ViewModel\AddGameViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
