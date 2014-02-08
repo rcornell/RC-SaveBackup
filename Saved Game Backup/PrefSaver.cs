@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,12 +21,18 @@ namespace Saved_Game_Backup
             string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Save Backup Tool\\";
             if (Directory.Exists(path))
             {
-                using (Stream input = File.OpenRead(path + "UserPrefs.dat")) {
-                    var bf = new BinaryFormatter();
-                    prefs = (UserPrefs)bf.Deserialize(input);
-                }
+                try {
+                    using (Stream input = File.OpenRead(path + "UserPrefs.dat")) {
+                        var bf = new BinaryFormatter();
+                        prefs = (UserPrefs) bf.Deserialize(input);
+                    }
 
-                return prefs;
+                    return prefs;
+                }
+                catch (SerializationException ex) {
+                    SBTErrorLogger.Log(ex);
+                }
+                return new UserPrefs(0,5,null, DateTime.MinValue);
             }
 
             MessageBox.Show("If you see this, something went wrong \r\nloading user preferences.");
@@ -40,13 +47,11 @@ namespace Saved_Game_Backup
             using (Stream output = File.Create(path + "UserPrefs.dat")) {
                 var bf = new BinaryFormatter();
                 bf.Serialize(output, prefs);
-
             }
-
         }
 
         public static bool CheckForPrefs() {
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Save Backup Tool\\UserPrefs.dat";
+            var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Save Backup Tool\\UserPrefs.dat";
             return File.Exists(path);
         }
 

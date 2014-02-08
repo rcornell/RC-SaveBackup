@@ -218,19 +218,9 @@ namespace Saved_Game_Backup.ViewModel
                 var prefs = p.LoadPrefs();
                 _maxBackups = prefs.MaxBackups;
                 _themeInt = prefs.Theme;
-                GamesToBackup = prefs.SelectedGames;
-                LastBackupTime = prefs.LastBackupTime;
-               
-
-                var listToRemove = new ObservableCollection<Game>();
-                foreach (var game in prefs.SelectedGames) {                  
-                    foreach (var g in GamesList.Where(g => game.Name == g.Name)) {
-                        listToRemove.Add(g);
-                    }
-                    foreach (var gameBeingRemoved in listToRemove)
-                        GamesList.Remove(gameBeingRemoved);
-                }
-                RaisePropertyChanged(() => GamesList);
+                LastBackupTime = prefs.LastBackupTime == DateTime.MinValue ? DateTime.MinValue : prefs.LastBackupTime;
+                if (prefs.SelectedGames != null) GamesToBackup = prefs.SelectedGames;
+                RaisePropertyChanged(() => GamesToBackup);
             }
             Brushes = Theme.ToggleTheme(_themeInt);
             RaisePropertyChanged(() => Brushes);
@@ -309,11 +299,6 @@ namespace Saved_Game_Backup.ViewModel
 
 
         }
-        
-        //CAN"T REMOVE A SECOND GAME 
-        //CAN"T REMOVE A SECOND GAME 
-        //CAN"T REMOVE A SECOND GAME 
-
 
         private void ExecuteReset() {
             //GamesList = DirectoryFinder.ReturnGamesList();
@@ -357,14 +342,6 @@ namespace Saved_Game_Backup.ViewModel
             await GiantBombAPI.AddToJson(newGameForJson);
             MessageBox.Show(newGameForJson.Name + " added to list.");
             UpdateGamesList();
-        }
-
-        
-
-        //Options window not used anymore.
-        //private void ExecuteOpenOptionsWindow() {
-        //    var optionsWindow = new OptionsWindow();
-        //    optionsWindow.Show();
-        //}
+        }    
     }
 }

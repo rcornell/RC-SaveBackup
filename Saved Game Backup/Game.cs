@@ -92,6 +92,7 @@ namespace Saved_Game_Backup {
             return Name;
         }
 
+        [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
 
     }
