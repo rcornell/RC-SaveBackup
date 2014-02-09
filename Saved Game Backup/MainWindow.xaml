@@ -26,18 +26,18 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" MinHeight="410" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" MinWidth="420" />
+            <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <Menu Grid.Row="0"
-              Grid.ColumnSpan="6"
+              Grid.ColumnSpan="4"
               IsMainMenu="True">
             <MenuItem Header="_File">
                 <MenuItem Header="_Theme">
@@ -63,7 +63,6 @@
         <DockPanel Grid.Row="2" Grid.Column="0">
             <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Top">
                 <Button Margin="3"
-                        HorizontalAlignment="Stretch"
                         VerticalAlignment="Center"
                         Command="{Binding StartBackup}"
                         Content="Backup Saves"
