@@ -320,11 +320,10 @@ namespace Saved_Game_Backup
                // var files = Directory.GetFiles(autoBackupGame.Path);
             }
             else { //Do stuff for backing up a file here.
-                var a = Path.GetFullPath(e.FullPath);
-                var b = Path.GetFileName(e.FullPath);
-                var c = Path.GetPathRoot(e.FullPath);
-                var d = Path.GetDirectoryName(e.FullPath);
-                //File.Copy(e.FullPath, _specifiedAutoBackupFolder + fileName, true);
+                var copyDestinationFullPath = new FileInfo(_specifiedAutoBackupFolder + newPath);
+                if (!Directory.Exists(copyDestinationFullPath.DirectoryName))
+                    Directory.CreateDirectory(copyDestinationFullPath.DirectoryName);
+                File.Copy(e.FullPath, copyDestinationFullPath.ToString(), true);
             }
 
             Console.WriteLine(e.FullPath);
