@@ -60,9 +60,9 @@ namespace Saved_Game_Backup
         }
 
         public static ObservableCollection<Game> PollDirectories(ObservableCollection<Game> gamesList) {
-
+            var listWithModifiedPaths = Backup.ModifyGamePaths(gamesList);
             var detectedGamesList = new ObservableCollection<Game>();
-            foreach (Game game in gamesList.Where(game => Directory.Exists(game.Path))) {
+            foreach (var game in listWithModifiedPaths.Where(game => Directory.Exists(game.Path))) {
                 detectedGamesList.Add(game);
             }
             return detectedGamesList;

@@ -7,14 +7,11 @@
         xmlns:viewModel="clr-namespace:Saved_Game_Backup.ViewModel"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="SaveMonkey"
-        Width="Auto"
-        Height="Auto"
         Background="{StaticResource Metro}"
         DataContext="{Binding Path=Main,
                               Source={StaticResource Locator}}"
         Icon="Assets/SGBIcon.ico"
         Padding="3"
-        SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterScreen"
         WindowStyle="SingleBorderWindow">
     <Window.Resources>
@@ -29,15 +26,15 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="*" MinHeight="410" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" MinWidth="420" />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <Menu Grid.Row="0"
               Grid.ColumnSpan="6"
@@ -86,7 +83,6 @@
                             Orientation="Horizontal"
                             Visibility="{Binding BackupLimitVisibility}">
                     <TextBlock VerticalAlignment="Center"
-                               FontSize="14"
                                Style="{StaticResource TextStyle}"
                                Text="Backup Limit"
                                TextWrapping="Wrap" />
@@ -103,7 +99,6 @@
                                              UpdateSourceTrigger=PropertyChanged}">
                     <TextBlock HorizontalAlignment="Center"
                                VerticalAlignment="Center"
-                               FontSize="14"
                                Style="{StaticResource TextStyle}"
                                Text="Autobackup Enabled"
                                Visibility="{Binding AutoBackupVisibility,
@@ -139,13 +134,10 @@
         <ListBox x:Name="WrapPaneListBox"
                  Grid.Row="2"
                  Grid.Column="3"
-                 MinWidth="420"
                  Margin="3"
-                 HorizontalContentAlignment="Center"
                  ItemsSource="{Binding GamesToBackup}"
                  Padding="3"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                  SelectedItem="{Binding SelectedBackupGame}"
                  Style="{StaticResource ListBoxStyle}">
             <i:Interaction.Triggers>
@@ -188,37 +180,15 @@
                                                        Stretch="Uniform"
                                                        StretchDirection="DownOnly"
                                                        ThumbnailHeight="160"
-                                                       ThumbnailSource="{Binding ThumbnailPath, Mode=OneWay}"
+                                                       ThumbnailSource="{Binding ThumbnailPath,
+                                                                                 Mode=OneWay}"
                                                        ThumbnailWidth="113" />
                     </StackPanel>
-
                 </DataTemplate>
-                <!--
-                    <DataTemplate DataType="{x:Type savedGameBackup:WrapPanelGame}">
-                    <StackPanel>
-                    <savedGameBackup:WrapPanelGame Title="{Binding Game.Name}"
-                    BorderHeight="200"
-                    BorderWidth="180"
-                    IsMouseOver="{Binding RelativeSource={RelativeSource FindAncestor,
-                    AncestorType=ListBoxItem},
-                    Path=IsMouseOver}"
-                    IsSelected="{Binding RelativeSource={RelativeSource FindAncestor,
-                    AncestorType=ListBoxItem},
-                    Path=IsSelected}"
-                    Stretch="Uniform"
-                    StretchDirection="DownOnly"
-                    ThumbnailHeight="160"
-                    ThumbnailSource="{Binding ThumbnailSource}"
-                    ThumbnailWidth="113" />
-                    </StackPanel>
-                    
-                    </DataTemplate>
-                -->
             </ListBox.ItemTemplate>
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <WrapPanel MaxWidth="{Binding ActualWidth,
-                                                  RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}"
+                    <WrapPanel HorizontalAlignment="Stretch"
                                FlowDirection="LeftToRight"
                                Orientation="Horizontal" />
                 </ItemsPanelTemplate>
@@ -233,9 +203,6 @@
         <ListBox Grid.Row="2"
                  Grid.Column="1"
                  Width="220"
-                 Height="{Binding ElementName=WrapPaneListBox,
-                                  Path=ActualHeight}"
-                 MinHeight="410"
                  Margin="3"
                  HorizontalAlignment="Stretch"
                  VerticalAlignment="Stretch"

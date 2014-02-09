@@ -320,7 +320,7 @@ namespace Saved_Game_Backup
         /// new list.
         /// </summary>
         /// <param name="gamesToBackup"></param>
-        private static ObservableCollection<Game> ModifyGamePaths(IEnumerable<Game> gamesToBackup) {
+        internal static ObservableCollection<Game> ModifyGamePaths(IEnumerable<Game> gamesToBackup) {
             var editedList = new ObservableCollection<Game>();
             try {
                 foreach (var game in gamesToBackup) {
