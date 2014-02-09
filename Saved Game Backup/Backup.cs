@@ -28,6 +28,7 @@ namespace Saved_Game_Backup
         private static string _hardDrive = Path.GetPathRoot(Environment.SystemDirectory);
         private static string _myDocuments = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         private static string _userPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        private static string _userName = Environment.UserName;
         private static string _specifiedAutoBackupFolder;
         private static bool _autoBackupAllowed;
         private static Timer _timer;
@@ -227,6 +228,13 @@ namespace Saved_Game_Backup
                 if (!Directory.Exists(game.Path)) continue;
                 _fileWatcherList.Add(new FileSystemWatcher(game.Path));
                 _fileWatcherList[watcherNumber].Changed += OnChanged;
+                _fileWatcherList[watcherNumber].Created += new FileSystemEventHandler(OnChanged);
+                _fileWatcherList[watcherNumber].Deleted += new FileSystemEventHandler(OnChanged);
+                _fileWatcherList[watcherNumber].Renamed += new RenamedEventHandler(OnChanged);
+                _fileWatcherList[watcherNumber].NotifyFilter =    NotifyFilters.LastAccess | NotifyFilters.LastWrite
+                                                                | NotifyFilters.FileName | NotifyFilters.DirectoryName;
+                _fileWatcherList[watcherNumber].IncludeSubdirectories = true;
+                _fileWatcherList[watcherNumber].Filter = "";
                 _fileWatcherList[watcherNumber].EnableRaisingEvents = true;
                 watcherNumber++;
             }
@@ -290,17 +298,45 @@ namespace Saved_Game_Backup
         }
 
         private static void OnChanged(object source, FileSystemEventArgs e) {
-            
+            if (!_autoBackupAllowed) return;
+            Game autoBackupGame = null;
+            foreach (var a in _gamesToAutoBackup) { //This might not catch directories that do not contain the game name..
+                if (e.FullPath.Contains(a.Name))
+                    autoBackupGame = a;
+            }
+
+            var newPath = "";
+            var pathParts = e.FullPath.Split(Path.DirectorySeparatorChar);
+
+            foreach (var part in pathParts){
+                if (part == "C:" || part.Contains("Program") || part.Contains("Documents") || part.Contains("AppData") || part.Contains(_userName) || part.Contains("Desktop") || part.Contains("Users"))
+                    continue;
+                newPath += "\\" + part;
+            }
+
+
+            if (Directory.Exists(e.FullPath) && autoBackupGame != null) {  //True if directory, else it's a file.
+                //Do stuff for backing up a directory here.
+               // var files = Directory.GetFiles(autoBackupGame.Path);
+            }
+            else { //Do stuff for backing up a file here.
+                var a = Path.GetFullPath(e.FullPath);
+                var b = Path.GetFileName(e.FullPath);
+                var c = Path.GetPathRoot(e.FullPath);
+                var d = Path.GetDirectoryName(e.FullPath);
+                //File.Copy(e.FullPath, _specifiedAutoBackupFolder + fileName, true);
+            }
+
             Console.WriteLine(e.FullPath);
             Console.WriteLine(e.Name);
-            Console.WriteLine(e.ChangeType);
+             Console.WriteLine(e.ChangeType);
             var file = new FileInfo(e.FullPath);
             Console.WriteLine(file.Name);
 
-            if(_autoBackupAllowed)
-                foreach (var game in _gamesToAutoBackup.Where(game => e.FullPath.Contains(game.Path))) {
-                    BackupGame(game.Path, _specifiedAutoBackupFolder + "\\" + game.Name + "\\");
-                }
+            //if(_autoBackupAllowed)
+            //    foreach (var g in _gamesToAutoBackup.Where(g => e.FullPath.Contains(g.Path))) {
+            //        BackupGame(g.Path, _specifiedAutoBackupFolder + "\\" + g.Name + "\\");
+            //    }
 
             _autoBackupAllowed = false;
             Messenger.Default.Send<DateTime>(DateTime.Now);
@@ -329,6 +365,8 @@ namespace Saved_Game_Backup
                     else if (!game.HasCustomPath && game.Path.Contains("Program Files"))
                         editedList.Add(new Game(game.Name, _hardDrive + game.Path, game.ID, game.ThumbnailPath));
                     else if (!game.HasCustomPath && game.Path.Contains("AppData"))
+                        editedList.Add(new Game(game.Name, _userPath + game.Path, game.ID, game.ThumbnailPath));
+                    else if (!game.HasCustomPath && game.Path.Contains("Desktop"))
                         editedList.Add(new Game(game.Name, _userPath + game.Path, game.ID, game.ThumbnailPath));
                     else
                         editedList.Add(game);

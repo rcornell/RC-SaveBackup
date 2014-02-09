@@ -43,7 +43,13 @@ namespace Saved_Game_Backup
 
         public static ObservableCollection<Game> ReturnGamesList() {
             var jsonFi = new FileInfo(@"Assets\Games.json");
-            return jsonFi.Exists 
+            //var uneditedJsonList = jsonFi.Exists 
+            //    ? 
+            //    JsonConvert.DeserializeObject<ObservableCollection<Game>>(File.ReadAllText(jsonFi.FullName)) 
+            //    : null;
+            //return Backup.ModifyGamePaths(uneditedJsonList);
+
+            return jsonFi.Exists
                 ? 
                 JsonConvert.DeserializeObject<ObservableCollection<Game>>(File.ReadAllText(jsonFi.FullName)) 
                 : null;

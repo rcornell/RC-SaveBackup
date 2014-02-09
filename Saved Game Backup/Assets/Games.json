@@ -1,5 +1,13 @@
 [
   {
+    "Name":"1Tester",
+    "Path":"\\Desktop\\SBTTest\\1Tester",
+    "ID":000000,
+    "HasCustomPath":"FALSE",
+    "ThumbnailPath":"pack://application:,,,/Assets/NoThumb.jpg",
+    "HasThumb":"TRUE"
+  },
+  {
     "Name":"Terraria",
     "Path":"\\Documents\\My Games\\Terraria",
     "ID":999999,
@@ -73,7 +81,7 @@
   },
   {
     "Name":"Assassin's Creed IV Black Flag",
-    "Path":"\\Documents\\Assassin's Creed IV Black Flag",
+    "Path":"\\Program Files (x86)\\Ubisoft\\Ubisoft Game Launcher\\savegames",
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
