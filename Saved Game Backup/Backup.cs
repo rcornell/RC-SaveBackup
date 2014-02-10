@@ -300,11 +300,18 @@ namespace Saved_Game_Backup
         private static void OnChanged(object source, FileSystemEventArgs e) {
             if (!_autoBackupAllowed) return;
             Game autoBackupGame = null;
-            foreach (var a in _gamesToAutoBackup) { //This might not catch directories that do not contain the game name..
-                if (e.FullPath.Contains(a.Name))
+
+            if (autoBackupGame.RootFolder == null) {
+                var dir = new DirectoryInfo(autoBackupGame.Path);
+                autoBackupGame.RootFolder = dir.Name;
+            }
+            
+            foreach (var a in _gamesToAutoBackup) { 
+                if (e.FullPath.Contains(a.Name) || e.FullPath.Contains(a.RootFolder))
                     autoBackupGame = a;
             }
 
+            
             var indexOfGamePart = e.FullPath.IndexOf(autoBackupGame.RootFolder);
             var friendlyPath = e.FullPath.Substring(0, indexOfGamePart);
             var newPath = e.FullPath.Replace(friendlyPath, "\\");
