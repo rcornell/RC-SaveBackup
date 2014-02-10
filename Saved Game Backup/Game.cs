@@ -90,6 +90,16 @@ namespace Saved_Game_Backup {
             HasThumb = hasThumb;
         }
 
+        public Game(string name, string path, int id, string thumbnailPath, bool customPath, bool hasThumb, string rootFolder)
+        {
+            ID = id;
+            Name = name;
+            Path = path;
+            ThumbnailPath = thumbnailPath;
+            HasCustomPath = customPath;
+            RootFolder = rootFolder;
+        }
+
         public override string ToString() {
             return Name;
         }

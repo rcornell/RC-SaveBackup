@@ -1,4 +1,12 @@
-[
+[ {
+    "Name":"1Tester",
+    "Path":"\\Desktop\\SBTTest\\1Tester",
+    "ID":999999,
+    "HasCustomPath":"FALSE",
+    "ThumbnailPath":"pack://application:,,,/Assets/NoThumb.jpg",
+    "HasThumb":"FALSE",
+    "RootFolder":"1Tester"
+  },
   {
     "Name":"Terraria",
     "Path":"\\Documents\\My Games\\Terraria",

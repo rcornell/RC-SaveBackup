@@ -305,19 +305,7 @@ namespace Saved_Game_Backup
                     autoBackupGame = a;
             }
 
-            var pathParts = e.FullPath.Split(Path.DirectorySeparatorChar);
-
-            //foreach (var part in pathParts){
-            //    if (part == "C:" || part.Contains("Program") || part.Contains("Documents") 
-            //        || part.Contains("AppData") || part.Contains(_userName) 
-            //        || part.Contains("Desktop") || part.Contains("Users") 
-            //        || part.Contains("Steam") || part.Contains("SteamApps") 
-            //        || part.Contains("Local") || part.Contains("Roaming")) continue;
-            //    newPath += "\\" + part;
-            //}
-            //var abc = new Uri(e.FullPath);
-
-            var indexOfGamePart = e.FullPath.IndexOf(autoBackupGame.Name);
+            var indexOfGamePart = e.FullPath.IndexOf(autoBackupGame.RootFolder);
             var friendlyPath = e.FullPath.Substring(0, indexOfGamePart);
             var newPath = e.FullPath.Replace(friendlyPath, "\\");
             
@@ -367,13 +355,13 @@ namespace Saved_Game_Backup
             try {
                 foreach (var game in gamesToBackup) {
                     if (!game.HasCustomPath && game.Path.Contains("Documents"))
-                        editedList.Add(new Game(game.Name, _userPath + game.Path, game.ID, game.ThumbnailPath));
+                        editedList.Add(new Game(game.Name, _userPath + game.Path, game.ID, game.ThumbnailPath, game.HasCustomPath, game.HasThumb, game.RootFolder));
                     else if (!game.HasCustomPath && game.Path.Contains("Program Files"))
-                        editedList.Add(new Game(game.Name, _hardDrive + game.Path, game.ID, game.ThumbnailPath));
+                        editedList.Add(new Game(game.Name, _hardDrive + game.Path, game.ID, game.ThumbnailPath, game.HasCustomPath, game.HasThumb, game.RootFolder));
                     else if (!game.HasCustomPath && game.Path.Contains("AppData"))
-                        editedList.Add(new Game(game.Name, _userPath + game.Path, game.ID, game.ThumbnailPath));
+                        editedList.Add(new Game(game.Name, _userPath + game.Path, game.ID, game.ThumbnailPath, game.HasCustomPath, game.HasThumb, game.RootFolder));
                     else if (!game.HasCustomPath && game.Path.Contains("Desktop"))
-                        editedList.Add(new Game(game.Name, _userPath + game.Path, game.ID, game.ThumbnailPath));
+                        editedList.Add(new Game(game.Name, _userPath + game.Path, game.ID, game.ThumbnailPath, game.HasCustomPath, game.HasThumb, game.RootFolder));
                     else
                         editedList.Add(game);
                 }

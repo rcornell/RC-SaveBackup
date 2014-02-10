@@ -85,7 +85,7 @@
                 <StackPanel Margin="3"
                             Orientation="Horizontal"
                             Visibility="Hidden">
-                    <!--Visibility="{Binding BackupLimitVisibility}"-->
+                    <!--  Visibility="{Binding BackupLimitVisibility}"  -->
                     <TextBlock VerticalAlignment="Center"
                                Style="{StaticResource TextStyle}"
                                Text="Backup Limit"
