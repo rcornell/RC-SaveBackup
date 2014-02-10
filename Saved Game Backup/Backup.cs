@@ -305,19 +305,26 @@ namespace Saved_Game_Backup
                     autoBackupGame = a;
             }
 
-            var newPath = "";
             var pathParts = e.FullPath.Split(Path.DirectorySeparatorChar);
 
-            foreach (var part in pathParts){
-                if (part == "C:" || part.Contains("Program") || part.Contains("Documents") || part.Contains("AppData") || part.Contains(_userName) || part.Contains("Desktop") || part.Contains("Users"))
-                    continue;
-                newPath += "\\" + part;
-            }
+            //foreach (var part in pathParts){
+            //    if (part == "C:" || part.Contains("Program") || part.Contains("Documents") 
+            //        || part.Contains("AppData") || part.Contains(_userName) 
+            //        || part.Contains("Desktop") || part.Contains("Users") 
+            //        || part.Contains("Steam") || part.Contains("SteamApps") 
+            //        || part.Contains("Local") || part.Contains("Roaming")) continue;
+            //    newPath += "\\" + part;
+            //}
+            //var abc = new Uri(e.FullPath);
 
+            var indexOfGamePart = e.FullPath.IndexOf(autoBackupGame.Name);
+            var friendlyPath = e.FullPath.Substring(0, indexOfGamePart);
+            var newPath = e.FullPath.Replace(friendlyPath, "\\");
+            
 
             if (Directory.Exists(e.FullPath) && autoBackupGame != null) {  //True if directory, else it's a file.
                 //Do stuff for backing up a directory here.
-               // var files = Directory.GetFiles(autoBackupGame.Path);
+                
             }
             else { //Do stuff for backing up a file here.
                 var copyDestinationFullPath = new FileInfo(_specifiedAutoBackupFolder + newPath);

@@ -7,6 +7,10 @@
         xmlns:viewModel="clr-namespace:Saved_Game_Backup.ViewModel"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="SaveMonkey"
+        Width="900"
+        Height="640"
+        MinWidth="800"
+        MinHeight="640"
         Background="{StaticResource Metro}"
         DataContext="{Binding Path=Main,
                               Source={StaticResource Locator}}"
@@ -80,7 +84,8 @@
                           Text="Backup Method" />
                 <StackPanel Margin="3"
                             Orientation="Horizontal"
-                            Visibility="{Binding BackupLimitVisibility}">
+                            Visibility="Hidden">
+                    <!--Visibility="{Binding BackupLimitVisibility}"-->
                     <TextBlock VerticalAlignment="Center"
                                Style="{StaticResource TextStyle}"
                                Text="Backup Limit"
