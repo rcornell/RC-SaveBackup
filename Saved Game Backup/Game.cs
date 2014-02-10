@@ -50,6 +50,8 @@ namespace Saved_Game_Backup {
 
         public bool HasThumb { get; set; }
 
+        public string RootFolder { get; set; }
+
         public Game() {
         }
 
