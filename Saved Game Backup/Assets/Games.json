@@ -1,27 +1,21 @@
 [
   {
-    "Name":"1Tester",
-    "Path":"\\Desktop\\SBTTest\\1Tester",
-    "ID":000000,
-    "HasCustomPath":"FALSE",
-    "ThumbnailPath":"pack://application:,,,/Assets/NoThumb.jpg",
-    "HasThumb":"TRUE"
-  },
-  {
     "Name":"Terraria",
     "Path":"\\Documents\\My Games\\Terraria",
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":"Terraria"
   },
   {
     "Name":"Skyrim",
-    "Path":"\\Documents\\My Games\\Skyrim\\Saves",
+    "Path":"\\Documents\\My Games\\Skyrim",
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":"Skyrim"
   },
   {
     "Name":"Amnesia A Machine for Pigs",
@@ -29,7 +23,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Amnesia The Dark Descent",
@@ -37,7 +32,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Arma 2",
@@ -45,7 +41,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Arma 2 Operation Arrowhead",
@@ -53,7 +50,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Arma 3",
@@ -61,7 +59,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Assassin's Creed III",
@@ -69,7 +68,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Assassin's Creed Brotherhood",
@@ -77,15 +77,17 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Assassin's Creed IV Black Flag",
-    "Path":"\\Program Files (x86)\\Ubisoft\\Ubisoft Game Launcher\\savegames",
+    "Path":"\\Documents",
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Assassin's Creed Revelations",
@@ -93,7 +95,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Audiosurf",
@@ -101,7 +104,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Batman Arkham Asylum",
@@ -109,7 +113,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Batman Arkham City",
@@ -117,7 +122,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Battlefield 2",
@@ -125,7 +131,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Battlefield Bad Company 2",
@@ -133,7 +140,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Beat Hazard",
@@ -141,7 +149,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"BioShock",
@@ -149,7 +158,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"BioShock Infinite",
@@ -157,7 +167,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Borderlands",
@@ -165,7 +176,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Borderlands 2",
@@ -173,7 +185,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Bulletstorm",
@@ -181,7 +194,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Call of Duty Modern Warfare 2",
@@ -189,7 +203,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Chivalry Medieval Warfare",
@@ -197,7 +212,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"The Chronicles of Riddick Assault on Dark Athena",
@@ -205,7 +221,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Crysis",
@@ -213,7 +230,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Crysis 2",
@@ -221,7 +239,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Crysis 3",
@@ -229,7 +248,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Crysis Wars",
@@ -237,7 +257,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Dark Souls",
@@ -245,7 +266,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Dead Island",
@@ -253,7 +275,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Dead Rising 2",
@@ -261,7 +284,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Dead Space",
@@ -269,7 +293,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Deadlight",
@@ -277,7 +302,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Deus Ex Human Revolution",
@@ -285,7 +311,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"DiRT 3",
@@ -293,7 +320,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Dishonored",
@@ -301,7 +329,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"DmC Devil May Cry",
@@ -309,7 +338,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Dragon Age",
@@ -317,7 +347,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Dragon Age II",
@@ -325,7 +356,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Dungeon Defenders",
@@ -333,7 +365,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Dungeons of Dredmor",
@@ -341,7 +374,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Dust An Elysian Tail",
@@ -349,7 +383,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Fable III",
@@ -357,7 +392,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Fallout 3",
@@ -365,7 +401,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Fallout New Vegas",
@@ -373,7 +410,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Far Cry 3",
@@ -381,7 +419,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"FEZ",
@@ -389,7 +428,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"From Dust",
@@ -397,7 +437,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"FTL Faster Than Light",
@@ -405,7 +446,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Grand Theft Auto IV",
@@ -413,7 +455,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Hitman Absolution",
@@ -421,7 +464,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Homefront",
@@ -429,7 +473,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Hotline Miami",
@@ -437,7 +482,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":"HotlineMiami"
   },
   {
     "Name":"Kerbal Space Program",
@@ -445,7 +491,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":"Kerbal Space Program"
   },
   {
     "Name":"Legend of Grimrock",
@@ -453,7 +500,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Mass Effect",
@@ -461,7 +509,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Mass Effect 2",
@@ -469,7 +518,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Mass Effect 3",
@@ -477,7 +527,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Metal Gear Rising Revengeance",
@@ -485,7 +536,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Metro 2033",
@@ -493,7 +545,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Metro Last Light",
@@ -501,7 +554,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Mirror's Edge",
@@ -509,7 +563,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Monaco",
@@ -517,7 +572,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Mount & Blade Warband",
@@ -525,7 +581,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Mount & Blade With Fire and Sword",
@@ -533,7 +590,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Project Zomboid",
@@ -541,7 +599,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"RAGE",
@@ -549,7 +608,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Red Faction Armageddon",
@@ -557,7 +617,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Red Faction Guerilla",
@@ -565,7 +626,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Rogue Legacy",
@@ -573,7 +635,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Saints Row The Third",
@@ -581,7 +644,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Saints Row IV",
@@ -589,7 +653,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Shadow Warrior",
@@ -597,7 +662,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Shoot Many Robots",
@@ -605,7 +671,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Civilization V",
@@ -613,7 +680,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Sleeping Dogs",
@@ -621,7 +689,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Space Engineers",
@@ -629,7 +698,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Space Pirates and Zombies",
@@ -637,7 +707,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Spelunky",
@@ -645,7 +716,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Spore",
@@ -653,7 +725,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Starbound",
@@ -661,7 +734,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"State of Decay",
@@ -669,7 +743,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Tomb Raider",
@@ -677,7 +752,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Total War SHOGUN 2",
@@ -685,7 +761,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"Trine",
@@ -693,7 +770,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"The Walking Dead",
@@ -701,7 +779,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"The Witcher",
@@ -709,7 +788,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"The Witcher 2 Assassins of Kings",
@@ -717,7 +797,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"X Rebirth",
@@ -725,7 +806,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"X3 Albion Prelude",
@@ -733,7 +815,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"X3 Terran Conflict",
@@ -741,7 +824,8 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   },
   {
     "Name":"XCOM Enemy Unknown",
@@ -749,6 +833,7 @@
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
-    "HasThumb":"FALSE"
+    "HasThumb":"FALSE",
+    "RootFolder":""
   }
 ]
