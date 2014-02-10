@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -21,6 +22,7 @@ namespace Saved_Game_Backup.ViewModel {
 
         public Visibility PathCheckVisibility { get; set; }
         public Visibility NameCheckVisibility { get; set; }
+        private const string defaultThumbnailPath = "pack://application:,,,/Assets/Loading.jpg";
 
         private Brush _background;
         public Brush Background
@@ -74,7 +76,8 @@ namespace Saved_Game_Backup.ViewModel {
 
         private void ExecuteAdd(Window window) {
             if (!string.IsNullOrWhiteSpace(_name) && !string.IsNullOrWhiteSpace(_path)) {
-                var newGame = new Game(_name, _path, 999999, null, true, false);
+                var fi = new DirectoryInfo(_path);
+                var newGame = new Game(_name, _path, 999999, defaultThumbnailPath, true, false, fi.Name);
                 Messenger.Default.Send<AddGameMessage>(new AddGameMessage(newGame));
                 //var gb = new GiantBombAPI();
                 //await gb.AddToJSON(_name, _path);
