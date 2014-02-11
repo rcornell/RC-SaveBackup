@@ -25,9 +25,9 @@ namespace Saved_Game_Backup
 
         private static ObservableCollection<Game> _gamesToAutoBackup = new ObservableCollection<Game>();
         private static List<FileSystemWatcher> _fileWatcherList;
-        private static string _hardDrive = Path.GetPathRoot(Environment.SystemDirectory);
+        private static readonly string _hardDrive = Path.GetPathRoot(Environment.SystemDirectory);
         private static string _myDocuments = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        private static string _userPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        private static readonly string _userPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         private static string _userName = Environment.UserName;
         private static string _specifiedAutoBackupFolder;
         private static bool _autoBackupAllowed;
@@ -76,13 +76,11 @@ namespace Saved_Game_Backup
 
         }
 
-        //Doesn't know if you cancel out of a dialog.
-        //Needs threading when it is processing lots of files. Progress bar? Progress animation?
         public static bool BackupSaves(ObservableCollection<Game> gamesList, string specifiedfolder = null) {
             string destination;
 
             var fd = new FolderBrowserDialog() { SelectedPath = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer), 
-                    Description = "Select the folder where this utility will create the SaveBackups folder.",
+                    Description = @"Select the folder where this utility will create the SaveBackups folder.",
                     ShowNewFolderButton = true };
 
             if (fd.ShowDialog() == DialogResult.OK)
@@ -94,18 +92,7 @@ namespace Saved_Game_Backup
             if (!Directory.Exists(destination) && !string.IsNullOrWhiteSpace(destination))
                 Directory.CreateDirectory(destination);
 
-            #region Likely not necessary anymore
-            ////If user chooses a specific place where they store their saves, this 
-            ////changes each game's path to that folder followed by the game name.
-            //if (specifiedfolder != null) {
-            //    for (int i = 0; i <= gamesList.Count; i++) {
-            //        gamesList[i].Path = specifiedfolder + "\\" + gamesList[i].Name;
-            //    }
-            //}
-            #endregion
-
             //This backs up each game using BackupGame()
-
             foreach (var game in gamesList) {
                 BackupGame(game.Path, destination + "\\" + game.Name);
             }
@@ -125,24 +112,24 @@ namespace Saved_Game_Backup
                     + sourceDirName);
             }
 
-            // If the destination directory doesn't exist, create it. 
+            // If the destination directory exists, delete it and its contents. 
             if (Directory.Exists(destDirName)) {
-                DeleteDirectory(destDirName);
+                Directory.Delete(destDirName, true);
             } 
                 
             Directory.CreateDirectory(destDirName);
   
 
             // Get the files in the directory and copy them to the new location.
-            FileInfo[] files = dir.GetFiles();
-            foreach (FileInfo file in files) {
+            var files = dir.GetFiles();
+            foreach (var file in files) {
                 var temppath = Path.Combine(destDirName, file.Name);
-                file.CopyTo(temppath, false);
+                file.CopyTo(temppath, true);
             } 
             
-            foreach (DirectoryInfo subdir in dirs) {
+            foreach (var subdir in dirs) {
                 var temppath = Path.Combine(destDirName, subdir.Name);
-                BackupGame(subdir.FullName, temppath);
+                BackupGame(subdir.FullName, temppath); //Recursively call this each method for each subdirectory
             }
         }
 
