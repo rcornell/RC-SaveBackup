@@ -100,7 +100,12 @@ namespace Saved_Game_Backup.ViewModel
             set {
                 _backupType = value;
                 BackupLimitVisibility = _backupType == BackupType.Autobackup ? Visibility.Visible : Visibility.Hidden;
+                if (_backupType == BackupType.Autobackup && _backupEnabled) BackupButtonText = "Disable Autobackup";
+                if (_backupType == BackupType.Autobackup && !_backupEnabled) BackupButtonText = "Enable Autobackup";
+                if (_backupType != BackupType.Autobackup) BackupButtonText = "Backup Saves";
                 RaisePropertyChanged(() => BackupLimitVisibility);
+                RaisePropertyChanged(() => BackupButtonText);
+                
             }
         }
         public string LastBackupTime { get; set; }
@@ -127,6 +132,7 @@ namespace Saved_Game_Backup.ViewModel
             get { return _specifiedFolder; }
             set { _specifiedFolder = value; }
         }
+        public string BackupButtonText { get; set; }
         private bool _backupEnabled;
         private int _maxBackups;
         public int MaxBackups {
@@ -192,6 +198,8 @@ namespace Saved_Game_Backup.ViewModel
                 BackupType.ToFolder,
                 BackupType.ToZip
             };
+            BackupType = BackupType.ToFolder;
+            
             BackupLimitVisibility = Visibility.Hidden;
             DirectoryFinder.CheckDirectories();
             SetUpInterface();
@@ -250,6 +258,7 @@ namespace Saved_Game_Backup.ViewModel
             var game = SelectedGame;
             if (GamesToBackup.Contains(game)) return;
             GamesToBackup.Add(game);
+            GamesToBackup = new ObservableCollection<Game>(GamesToBackup.OrderBy(s => s.Name));
 
             if (!game.ThumbnailPath.Contains("Loading")) return;
             await GiantBombAPI.GetThumb(game);
@@ -272,8 +281,7 @@ namespace Saved_Game_Backup.ViewModel
 
         private void UpdateGamesList() {
             GamesList = DirectoryFinder.ReturnGamesList();
-            foreach (var game in GamesToBackup)
-            {
+            foreach (var game in GamesToBackup) {
                 SelectedGame = game;
                 ToGamesList();
             }
@@ -291,17 +299,20 @@ namespace Saved_Game_Backup.ViewModel
                 return;
             }
             _backupEnabled = result.AutobackupEnabled;
+            if (_backupEnabled && BackupType == BackupType.Autobackup) BackupButtonText = "Disable Autobackup";
+            if (!_backupEnabled && BackupType == BackupType.Autobackup) BackupButtonText = "Enable Autobackup";
+            RaisePropertyChanged(() => BackupButtonText);         
+
             AutoBackupVisibility = _backupEnabled ? Visibility.Visible : Visibility.Hidden;
-            if (!result.AutobackupEnabled) LastBackupTime = result.BackupDateTime;
             RaisePropertyChanged(() => AutoBackupVisibility);
+
+            if (!result.AutobackupEnabled) LastBackupTime = result.BackupDateTime;
             RaisePropertyChanged(() => LastBackupTime);
+            
             MessageBox.Show(result.Message, "Operation Successful", MessageBoxButton.OK);
-
-
         }
 
         private void ExecuteReset() {
-            //GamesList = DirectoryFinder.ReturnGamesList();
             GamesToBackup.Clear();
             _specifiedFolder = null;
             _selectedGame = null;

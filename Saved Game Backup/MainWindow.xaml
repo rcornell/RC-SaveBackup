@@ -69,7 +69,7 @@
                 <Button Margin="3"
                         VerticalAlignment="Center"
                         Command="{Binding StartBackup}"
-                        Content="Backup Saves"
+                        Content="{Binding BackupButtonText}"
                         Style="{StaticResource SbtButtonStyle}" />
                 <ComboBox Margin="3"
                           HorizontalAlignment="Stretch"
