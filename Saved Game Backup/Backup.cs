@@ -15,6 +15,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using GalaSoft.MvvmLight.Messaging;
 using Saved_Game_Backup.Helper;
+using Xceed.Wpf.DataGrid;
 using MessageBox = System.Windows.MessageBox;
 using Timer = System.Timers.Timer;
 
@@ -31,7 +32,9 @@ namespace Saved_Game_Backup
         private static string _userName = Environment.UserName;
         private static string _specifiedAutoBackupFolder;
         private static bool _autoBackupAllowed;
-        private static Timer _timer;
+        private static Timer _delayTimer;
+        private static Timer _canBackupTimer;
+        private static DateTime _lastAutoBackupTime;
         
         public Backup() {
             
@@ -196,10 +199,16 @@ namespace Saved_Game_Backup
 
         
         public static void ActivateAutoBackup(ObservableCollection<Game> gamesToBackup, string specifiedFolder = null) {
-            _timer = new Timer { Interval = 10000 };
-            _timer.Elapsed += _timer_Elapsed;
-            _timer.Start();
+            _delayTimer = new Timer { Interval = 5100 };
+            _delayTimer.Elapsed += _delayTimer_Elapsed;
+            _delayTimer.AutoReset = true;
             
+            _canBackupTimer = new Timer { Interval = 5000, AutoReset = true};
+            _canBackupTimer.Elapsed += _canBackupTimer_Elapsed;
+
+            _lastAutoBackupTime = new DateTime();
+            _lastAutoBackupTime = DateTime.Now;
+
             _fileWatcherList = new List<FileSystemWatcher>();
             _gamesToAutoBackup = gamesToBackup;
 
@@ -226,6 +235,8 @@ namespace Saved_Game_Backup
                 watcherNumber++;
             }
         }
+
+        
 
         public static BackupResultHelper RemoveFromAutobackup(Game game) {
             if (!_fileWatcherList.Any()) return new BackupResultHelper(false, false, "No games on autobackup.", DateTime.Now.ToString());
@@ -280,25 +291,57 @@ namespace Saved_Game_Backup
             return false;
         }
 
-        private static void _timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
+
+
+
+
+
+        private static void _delayTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
             _autoBackupAllowed = true;
+            _canBackupTimer.Enabled = true;
+            _canBackupTimer.Start();
+            _delayTimer.Enabled = false;
         }
 
-        private static void OnChanged(object source, FileSystemEventArgs e) {
-            if (!_autoBackupAllowed) return;
-            Game autoBackupGame = null;
+        static void _canBackupTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
+            _lastAutoBackupTime = DateTime.Now;
+            _autoBackupAllowed = false;
+            _canBackupTimer.Enabled = false;
+        }
 
-            if (autoBackupGame.RootFolder == null) {
-                var dir = new DirectoryInfo(autoBackupGame.Path);
-                autoBackupGame.RootFolder = dir.Name;
-            }
+
+
+
+
+
+        private static void OnChanged(object source, FileSystemEventArgs e) {
+            //Need to make a gate with a timer that starts a countdown when OnChanged is first called 
+            //And then allows autobackup after 10 seconds.
+            
+            var span = DateTime.Now - _lastAutoBackupTime;
+            var seconds = span.Duration().Seconds;
+
+            if (!_canBackupTimer.Enabled && !_delayTimer.Enabled && seconds > 10) { //If neither timer is running and 10 seconds have elapsed since canBackupTimer stopped
+                _delayTimer.Enabled = true;
+                _delayTimer.Start();
+                OnChanged(source, e);
+            } else if (!_canBackupTimer.Enabled && _delayTimer.Enabled) { //If the delay timer is running to delay the autobackup
+                OnChanged(source, e);
+            } else if (_canBackupTimer.Enabled) { //if canBackupTimer is running, do autobackup
+
+
+            Game autoBackupGame = null;
             
             foreach (var a in _gamesToAutoBackup) { 
                 if (e.FullPath.Contains(a.Name) || e.FullPath.Contains(a.RootFolder))
                     autoBackupGame = a;
             }
 
-            
+            if (autoBackupGame.RootFolder == null) {
+                var dir = new DirectoryInfo(autoBackupGame.Path);
+                autoBackupGame.RootFolder = dir.Name;
+            }
+
             var indexOfGamePart = e.FullPath.IndexOf(autoBackupGame.RootFolder);
             var friendlyPath = e.FullPath.Substring(0, indexOfGamePart);
             var newPath = e.FullPath.Replace(friendlyPath, "\\");
@@ -309,27 +352,26 @@ namespace Saved_Game_Backup
                 
             }
             else { //Do stuff for backing up a file here.
-                var copyDestinationFullPath = new FileInfo(_specifiedAutoBackupFolder + newPath);
-                if (!Directory.Exists(copyDestinationFullPath.DirectoryName))
-                    Directory.CreateDirectory(copyDestinationFullPath.DirectoryName);
-                File.Copy(e.FullPath, copyDestinationFullPath.ToString(), true);
+                try {
+                    var copyDestinationFullPath = new FileInfo(_specifiedAutoBackupFolder + newPath);
+                    if (!Directory.Exists(copyDestinationFullPath.DirectoryName))
+                        Directory.CreateDirectory(copyDestinationFullPath.DirectoryName);
+                    File.Copy(e.FullPath, copyDestinationFullPath.ToString(), true);
+                } catch (FileNotFoundException ex){
+                    Console.WriteLine(ex.Message); //Will occur if a file is temporarily written during the saving process, then deleted.
+                }
             }
 
             Console.WriteLine(e.FullPath);
             Console.WriteLine(e.Name);
-             Console.WriteLine(e.ChangeType);
+            Console.WriteLine(e.ChangeType);
             var file = new FileInfo(e.FullPath);
             Console.WriteLine(file.Name);
 
-            //if(_autoBackupAllowed)
-            //    foreach (var g in _gamesToAutoBackup.Where(g => e.FullPath.Contains(g.Path))) {
-            //        BackupGame(g.Path, _specifiedAutoBackupFolder + "\\" + g.Name + "\\");
-            //    }
-
-            _autoBackupAllowed = false;
             Messenger.Default.Send<DateTime>(DateTime.Now);
 
-            //BackupFile(e);
+            }
+            
         }
 
         private static void BackupFile(FileSystemEventArgs e) {
