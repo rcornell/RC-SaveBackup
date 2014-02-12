@@ -50,6 +50,7 @@
                 </MenuItem>
                 <MenuItem Command="{Binding Close}" Header="_Exit" />
             </MenuItem>
+            <MenuItem Header="_About" Command="{Binding ShowAbout}"/>
         </Menu>
         <StackPanel Grid.Row="1"
                     Grid.Column="0"

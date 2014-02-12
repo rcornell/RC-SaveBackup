@@ -162,6 +162,7 @@
     <Resource Include="Assets\bluewhiteSmall.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\Autobackup.GIF" />
     <Content Include="Assets\Games.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

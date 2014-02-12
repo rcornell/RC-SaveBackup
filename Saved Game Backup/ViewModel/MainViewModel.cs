@@ -60,6 +60,9 @@ namespace Saved_Game_Backup.ViewModel
         //public ObservableCollection<WrapPanelGame> WrapPanelGames { get; set; } 
         //public WrapPanelGame SelectedWrapPanelGame { get; set; }
 
+        private const string _about =
+            "I made this program in an attempt to help people keep track of their saved games in case of catastrophe. It should work, but Autobackup can be touchy sometimes. If you have any issues please email me at rob.cornell@gmail.com.";
+        public string About { get { return _about; }}
 
         private Visibility _autoBackupVisibility;
         public Visibility AutoBackupVisibility {
@@ -144,8 +147,10 @@ namespace Saved_Game_Backup.ViewModel
             get { return _themeInt; }
             set { _themeInt = value; }
         }
-        
 
+        public RelayCommand ShowAbout {
+            get { return new RelayCommand(() => ExecuteShowAbout());}
+        }
         public RelayCommand MoveToBackupList
         {
             get
@@ -353,6 +358,10 @@ namespace Saved_Game_Backup.ViewModel
             await GiantBombAPI.AddToJson(newGameForJson);
             MessageBox.Show(newGameForJson.Name + " added to list.");
             UpdateGamesList();
-        }    
+        }
+
+        private void ExecuteShowAbout() {
+            MessageBox.Show(About, "About SaveMonkey", MessageBoxButton.OK);
+        }
     }
 }
