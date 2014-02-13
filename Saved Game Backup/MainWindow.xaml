@@ -145,28 +145,30 @@
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  SelectedItem="{Binding SelectedBackupGame}"
                  Style="{StaticResource ListBoxStyle}">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="MouseDoubleClick">
-                    <i:InvokeCommandAction Command="{Binding MoveToGamesList}" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
+           
             <ItemsControl.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
                     <Style.Resources>
                         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
                     </Style.Resources>
 
+                    <Setter Property="savedGameBackup:MouseDoubleClick.Command" Value="{Binding RelativeSource={RelativeSource AncestorType=ListBox}, Path=DataContext.MoveToGamesList}"/>
+                    <Setter Property="savedGameBackup:MouseDoubleClick.CommandParameter" Value="{Binding}"/>
+
+
                     <!--  Not Working  -->
                     <Setter Property="ContextMenu">
                         <Setter.Value>
                             <ContextMenu>
-                                <MenuItem Command="{Binding Path=MoveToGamesList}"
-                                          CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
+                                <MenuItem Command="{Binding Path=Main.MoveToGamesList, Source={StaticResource Locator}}"
+                                          CommandParameter="{Binding}"
                                           Header="Remove game" />
                             </ContextMenu>
                         </Setter.Value>
                     </Setter>
                     <!--  Not Working  -->
+
+                    
 
                 </Style>
             </ItemsControl.ItemContainerStyle>

@@ -158,11 +158,9 @@ namespace Saved_Game_Backup.ViewModel
                 return new RelayCommand(() => ToBackupList());
             }
         }
-        public RelayCommand MoveToGamesList
-        {
-            get
-            {
-                return new RelayCommand(() => ToGamesList());
+        public RelayCommand<Game> MoveToGamesList {
+            get {
+                return new RelayCommand<Game>(ToGamesList);
             }
         }    
         public RelayCommand StartBackup {
@@ -269,18 +267,18 @@ namespace Saved_Game_Backup.ViewModel
             await GiantBombAPI.GetThumb(game);
         }
 
-        private void ToGamesList() {
-            if (SelectedBackupGame == null || !GamesToBackup.Contains(SelectedBackupGame))
+        private void ToGamesList(Game game) {
+            if (game == null || !GamesToBackup.Contains(game))
                 return;
-            var game = SelectedBackupGame;
+            var gameToMove = game;
     
              //Make this work
             if (_backupEnabled) {
-                var result = Backup.RemoveFromAutobackup(game);
+                var result = Backup.RemoveFromAutobackup(gameToMove);
                 RaisePropertyChanged(() => GamesToBackup);
                 HandleBackupResult(result);
             }
-            GamesToBackup.Remove(game);
+            GamesToBackup.Remove(gameToMove);
             RaisePropertyChanged(() => GamesToBackup);
         }
 
@@ -288,7 +286,7 @@ namespace Saved_Game_Backup.ViewModel
             GamesList = DirectoryFinder.ReturnGamesList();
             foreach (var game in GamesToBackup) {
                 SelectedGame = game;
-                ToGamesList();
+                ToGamesList(SelectedGame);
             }
             RaisePropertyChanged(() => GamesList);
         }
