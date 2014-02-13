@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
@@ -199,10 +200,10 @@ namespace Saved_Game_Backup
 
         
         public static void ActivateAutoBackup(ObservableCollection<Game> gamesToBackup, string specifiedFolder = null) {
-            _delayTimer = new Timer { Interval = 5100, AutoReset = true};
+            _delayTimer = new Timer { Interval = 10000, AutoReset = true};
             _delayTimer.Elapsed += _delayTimer_Elapsed;
             
-            _canBackupTimer = new Timer { Interval = 5000, AutoReset = true};
+            _canBackupTimer = new Timer { Interval =10000, AutoReset = true};
             _canBackupTimer.Elapsed += _canBackupTimer_Elapsed;
            
 
@@ -310,31 +311,22 @@ namespace Saved_Game_Backup
 
 
         private static void OnChanged(object source, FileSystemEventArgs e) {
-            while (true) {
-                //Need to make a gate with a timer that starts a countdown when OnChanged is first called 
-                //And then allows autobackup after 10 seconds.
 
-                if (!_canBackupTimer.Enabled && !_delayTimer.Enabled && (DateTime.Now - _lastAutoBackupTime).Seconds > 10) {
-                    //If neither timer is running and 10 seconds have elapsed since canBackupTimer stopped
+            while (true) {
+                if (!_delayTimer.Enabled && !_canBackupTimer.Enabled && (DateTime.Now - _lastAutoBackupTime).Seconds > 10) {
                     _delayTimer.Enabled = true;
                     _delayTimer.Start();
                     continue;
                 }
                 if (!_canBackupTimer.Enabled && _delayTimer.Enabled) {
-                    //If the delay timer is running to delay the autobackup, wait for
-                    //it to elapse and start canBackupTimer
-                    //This IF() isn't necessary anymore.
                     continue;
                 }
-                if (_canBackupTimer.Enabled) {
-                    //if canBackupTimer is running, do autobackup
-
-
+                if (_canBackupTimer.Enabled){
                     Game autoBackupGame = null;
+                    Console.WriteLine(@"autoBackupGame set");
 
-                    foreach (var a in _gamesToAutoBackup) {
-                        if (e.FullPath.Contains(a.Name) || e.FullPath.Contains(a.RootFolder))
-                            autoBackupGame = a;
+                    foreach (var a in _gamesToAutoBackup.Where(a => e.FullPath.Contains(a.Name) || e.FullPath.Contains(a.RootFolder))) {
+                        autoBackupGame = a;
                     }
 
                     if (autoBackupGame.RootFolder == null) {
@@ -345,36 +337,39 @@ namespace Saved_Game_Backup
                     var indexOfGamePart = e.FullPath.IndexOf(autoBackupGame.RootFolder);
                     var friendlyPath = e.FullPath.Substring(0, indexOfGamePart);
                     var newPath = e.FullPath.Replace(friendlyPath, "\\");
-
+                    Console.WriteLine(@"newPath set");
 
                     if (Directory.Exists(e.FullPath) && autoBackupGame != null) {
-                        //True if directory, else it's a file.
-                        //Do stuff for backing up a directory here.
-                    }
-                    else {
+                                //True if directory, else it's a file.
+                                //Do stuff for backing up a directory here.
+                    } else {
                         //Do stuff for backing up a file here.
                         try {
-                            var copyDestinationFullPath = new FileInfo(_specifiedAutoBackupFolder + newPath);
-                            if (!Directory.Exists(copyDestinationFullPath.DirectoryName))
-                                Directory.CreateDirectory(copyDestinationFullPath.DirectoryName);
-                            File.Copy(e.FullPath, copyDestinationFullPath.ToString(), true);
+                            var copyDestinationPath = new FileInfo(_specifiedAutoBackupFolder + newPath);
+                            Console.WriteLine(@"copyDestinationPath set");
+                            if (!Directory.Exists(copyDestinationPath.DirectoryName))
+                                Directory.CreateDirectory(copyDestinationPath.DirectoryName);
+                            using (var inStream = new FileStream(e.FullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
+                                using (var outStream = new FileStream(copyDestinationPath.ToString(), FileMode.Create,
+                                        FileAccess.ReadWrite, FileShare.Read)) {
+                                    inStream.CopyTo(outStream);
+                                    Console.WriteLine(@"Backup occurred");
+                                }
+                            }
                         }
                         catch (FileNotFoundException ex) {
-                            Console.WriteLine(ex.Message); //Will occur if a file is temporarily written during the saving process, then deleted.
+                            SBTErrorLogger.Log(ex);
+                                //Will occur if a file is temporarily written during the saving process, then deleted.
+                        }
+                        catch (IOException ex) {
+                            SBTErrorLogger.Log(ex); //Occurs if a game has locked access to a file.
                         }
                     }
-
-                    Console.WriteLine(e.FullPath);
-                    Console.WriteLine(e.Name);
-                    Console.WriteLine(e.ChangeType);
-                    var file = new FileInfo(e.FullPath);
-                    Console.WriteLine(file.Name);
-
                     Messenger.Default.Send<DateTime>(DateTime.Now);
                 }
-
                 break;
             }
+            
         }
 
         private static void BackupFile(FileSystemEventArgs e) {
