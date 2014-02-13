@@ -200,10 +200,10 @@ namespace Saved_Game_Backup
 
         
         public static void ActivateAutoBackup(ObservableCollection<Game> gamesToBackup, string specifiedFolder = null) {
-            _delayTimer = new Timer { Interval = 10000, AutoReset = true};
+            _delayTimer = new Timer { Interval = 5000, AutoReset = true};
             _delayTimer.Elapsed += _delayTimer_Elapsed;
             
-            _canBackupTimer = new Timer { Interval =10000, AutoReset = true};
+            _canBackupTimer = new Timer { Interval = 5000, AutoReset = true};
             _canBackupTimer.Elapsed += _canBackupTimer_Elapsed;
            
 
@@ -369,7 +369,6 @@ namespace Saved_Game_Backup
                 }
                 break;
             }
-            
         }
 
         private static void BackupFile(FileSystemEventArgs e) {
