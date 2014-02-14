@@ -86,7 +86,6 @@
                 <StackPanel Margin="3"
                             Orientation="Horizontal"
                             Visibility="Hidden">
-                    <!--  Visibility="{Binding BackupLimitVisibility}"  -->
                     <TextBlock VerticalAlignment="Center"
                                Style="{StaticResource TextStyle}"
                                Text="Backup Limit"
@@ -144,19 +143,14 @@
                  Padding="3"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  SelectedItem="{Binding SelectedBackupGame}"
-                 Style="{StaticResource ListBoxStyle}">
-           
+                 Style="{StaticResource ListBoxStyle}">          
             <ItemsControl.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
                     <Style.Resources>
                         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
                     </Style.Resources>
-
                     <Setter Property="savedGameBackup:MouseDoubleClick.Command" Value="{Binding RelativeSource={RelativeSource AncestorType=ListBox}, Path=DataContext.MoveToGamesList}"/>
                     <Setter Property="savedGameBackup:MouseDoubleClick.CommandParameter" Value="{Binding}"/>
-
-
-                    <!--  Not Working  -->
                     <Setter Property="ContextMenu">
                         <Setter.Value>
                             <ContextMenu>
@@ -165,11 +159,7 @@
                                           Header="Remove game" />
                             </ContextMenu>
                         </Setter.Value>
-                    </Setter>
-                    <!--  Not Working  -->
-
-                    
-
+                    </Setter>              
                 </Style>
             </ItemsControl.ItemContainerStyle>
             <ListBox.ItemTemplate>
