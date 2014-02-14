@@ -10,6 +10,7 @@ using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
@@ -98,42 +99,31 @@ namespace Saved_Game_Backup
 
             //This backs up each game using BackupGame()
             foreach (var game in gamesList) {
-                BackupGame(game.Path, destination + "\\" + game.Name);
+                BackupGame(game, game.Path, destination);
             }
 
             return true;
         }
 
-        private static void BackupGame(string sourceDirName, string destDirName) {
+        private static void BackupGame(Game game, string sourceDirName, string destDirName) {
+            var allFiles = Directory.GetFiles(sourceDirName, "*.*", SearchOption.AllDirectories);
 
-            // Get the subdirectories for the specified directory.
-            var dir = new DirectoryInfo(sourceDirName);
-            var dirs = dir.GetDirectories();
-
-            if (!dir.Exists) {
-                throw new DirectoryNotFoundException(
-                    "Source directory does not exist or could not be found: "
-                    + sourceDirName);
-            }
-
-            // If the destination directory exists, delete it and its contents. 
-            if (Directory.Exists(destDirName)) {
-                Directory.Delete(destDirName, true);
-            } 
-                
-            Directory.CreateDirectory(destDirName);
-  
-
-            // Get the files in the directory and copy them to the new location.
-            var files = dir.GetFiles();
-            foreach (var file in files) {
-                var temppath = Path.Combine(destDirName, file.Name);
-                file.CopyTo(temppath, true);
-            } 
-            
-            foreach (var subdir in dirs) {
-                var temppath = Path.Combine(destDirName, subdir.Name);
-                BackupGame(subdir.FullName, temppath); //Recursively call this each method for each subdirectory
+            foreach (var sourcePath in allFiles) {
+                try {
+                    var positionOfRootFolder = sourcePath.IndexOf(game.RootFolder, StringComparison.CurrentCulture);
+                    var pathEnd = sourcePath.Substring(positionOfRootFolder);
+                    var destinationPath = new FileInfo(destDirName + "\\" + pathEnd);
+                    var destinationDir = destinationPath.DirectoryName;
+                    if (!Directory.Exists(destinationDir)) Directory.CreateDirectory(destinationDir);
+                    var file = new FileInfo(sourcePath);
+                    file.CopyTo(destinationPath.ToString(), true);
+                }
+                catch (IOException ex) {
+                    SBTErrorLogger.Log(ex);
+                }
+                catch (NullReferenceException ex) {
+                    SBTErrorLogger.Log(ex); 
+                }
             }
         }
 
@@ -164,7 +154,7 @@ namespace Saved_Game_Backup
             //Creates temporary directory at ZipSource + the game's name
             //To act as the source folder for the ZipFile class.
             foreach (var game in gamesList) {
-                BackupGame(game.Path, zipSource + "\\" + game.Name);
+                BackupGame(game, game.Path, zipSource + "\\" + game.Name);
             }
 
             //Delete existing zip file if one exists.
@@ -220,15 +210,14 @@ namespace Saved_Game_Backup
             }
 
             var watcherNumber = 0;
-            foreach (var game in gamesToBackup) {
-                if (!Directory.Exists(game.Path)) continue;
+            foreach (var game in gamesToBackup.Where(game => Directory.Exists(game.Path))) {
                 _fileWatcherList.Add(new FileSystemWatcher(game.Path));
                 _fileWatcherList[watcherNumber].Changed += OnChanged;
                 _fileWatcherList[watcherNumber].Created += new FileSystemEventHandler(OnChanged);
                 _fileWatcherList[watcherNumber].Deleted += new FileSystemEventHandler(OnChanged);
                 _fileWatcherList[watcherNumber].Renamed += new RenamedEventHandler(OnChanged);
                 _fileWatcherList[watcherNumber].NotifyFilter = NotifyFilters.CreationTime |  NotifyFilters.LastWrite
-                                                                | NotifyFilters.FileName | NotifyFilters.DirectoryName;
+                                                               | NotifyFilters.FileName | NotifyFilters.DirectoryName;
                 _fileWatcherList[watcherNumber].IncludeSubdirectories = true;
                 _fileWatcherList[watcherNumber].Filter = "";
                 _fileWatcherList[watcherNumber].EnableRaisingEvents = true;
@@ -260,25 +249,25 @@ namespace Saved_Game_Backup
 
         private static void DeleteDirectory(string deleteDirName) {
 
-                    var dir = new DirectoryInfo(deleteDirName);
-                    var dirs = dir.GetDirectories();
+            var dir = new DirectoryInfo(deleteDirName);
+            var dirs = dir.GetDirectories();
 
-                    // Get the files in the directory and copy them to the new location.
-                    FileInfo[] files = dir.GetFiles();
-                    foreach (FileInfo file in files)
-                    {
-                        File.Delete(file.FullName);
-                    }
+            // Get the files in the directory and copy them to the new location.
+            FileInfo[] files = dir.GetFiles();
+            foreach (FileInfo file in files)
+            {
+                File.Delete(file.FullName);
+            }
 
-                    foreach (DirectoryInfo subdir in dirs)
-                    {
-                        var temppath = Path.Combine(deleteDirName, subdir.Name);
-                        DeleteDirectory(temppath);
-                        Directory.Delete(subdir.FullName);
-                    }
+            foreach (DirectoryInfo subdir in dirs)
+            {
+                var temppath = Path.Combine(deleteDirName, subdir.Name);
+                DeleteDirectory(temppath);
+                Directory.Delete(subdir.FullName);
+            }
 
 
-                }
+        }
 
         public static bool CanBackup(ObservableCollection<Game> gamesToBackup) {
             if (_hardDrive == null) {
@@ -290,11 +279,6 @@ namespace Saved_Game_Backup
             MessageBox.Show("No games selected. \n\rPlease select at least one game.");
             return false;
         }
-
-
-
-
-
 
         private static void _delayTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
             _autoBackupAllowed = true;
@@ -349,11 +333,13 @@ namespace Saved_Game_Backup
                             Console.WriteLine(@"copyDestinationPath set");
                             if (!Directory.Exists(copyDestinationPath.DirectoryName))
                                 Directory.CreateDirectory(copyDestinationPath.DirectoryName);
-                            using (var inStream = new FileStream(e.FullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
-                                using (var outStream = new FileStream(copyDestinationPath.ToString(), FileMode.Create,
-                                        FileAccess.ReadWrite, FileShare.Read)) {
-                                    inStream.CopyTo(outStream);
-                                    Console.WriteLine(@"Backup occurred");
+                                if (File.Exists(e.FullPath)){
+                                using (var inStream = new FileStream(e.FullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
+                                    using (var outStream = new FileStream(copyDestinationPath.ToString(), FileMode.Create,
+                                            FileAccess.ReadWrite, FileShare.Read)) {
+                                        inStream.CopyTo(outStream);
+                                        Console.WriteLine(@"Backup occurred");
+                                    }
                                 }
                             }
                         }
