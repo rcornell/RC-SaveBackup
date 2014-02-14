@@ -163,8 +163,7 @@ namespace Saved_Game_Backup
             ZipFile.CreateFromDirectory(zipSource, zipDestination.FullName);
 
             //Delete temporary folder that held save files.
-            DeleteDirectory(zipSource);
-            Directory.Delete(zipSource);
+            Directory.Delete(zipSource, true);
 
             return true;
         }
@@ -242,28 +241,6 @@ namespace Saved_Game_Backup
                 f.EnableRaisingEvents = false;
             }
             _fileWatcherList.Clear();
-        }
-
-        private static void DeleteDirectory(string deleteDirName) {
-
-            var dir = new DirectoryInfo(deleteDirName);
-            var dirs = dir.GetDirectories();
-
-            // Get the files in the directory and copy them to the new location.
-            FileInfo[] files = dir.GetFiles();
-            foreach (FileInfo file in files)
-            {
-                File.Delete(file.FullName);
-            }
-
-            foreach (DirectoryInfo subdir in dirs)
-            {
-                var temppath = Path.Combine(deleteDirName, subdir.Name);
-                DeleteDirectory(temppath);
-                Directory.Delete(subdir.FullName);
-            }
-
-
         }
 
         public static bool CanBackup(ObservableCollection<Game> gamesToBackup) {
