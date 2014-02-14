@@ -261,7 +261,8 @@ namespace Saved_Game_Backup.ViewModel
             var game = SelectedGame;
             if (GamesToBackup.Contains(game)) return;
             GamesToBackup.Add(game);
-            GamesToBackup = new ObservableCollection<Game>(GamesToBackup.OrderBy(s => s.Name));
+            //GamesToBackup = new ObservableCollection<Game>(GamesToBackup.OrderBy(s => s.Name));
+            RaisePropertyChanged(() => GamesToBackup);
 
             if (!game.ThumbnailPath.Contains("Loading")) return;
             await GiantBombAPI.GetThumb(game);

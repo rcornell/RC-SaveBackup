@@ -33,7 +33,6 @@ namespace Saved_Game_Backup
         private static readonly string _userPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         private static string _userName = Environment.UserName;
         private static string _specifiedAutoBackupFolder;
-        private static bool _autoBackupAllowed;
         private static Timer _delayTimer;
         private static Timer _canBackupTimer;
         private static DateTime _lastAutoBackupTime;
@@ -194,10 +193,8 @@ namespace Saved_Game_Backup
             _delayTimer.Elapsed += _delayTimer_Elapsed;
             
             _canBackupTimer = new Timer { Interval = 5000, AutoReset = true};
-            _canBackupTimer.Elapsed += _canBackupTimer_Elapsed;
-           
+            _canBackupTimer.Elapsed += _canBackupTimer_Elapsed;          
 
-            _lastAutoBackupTime = new DateTime();
             _lastAutoBackupTime = DateTime.Now;
 
             _fileWatcherList = new List<FileSystemWatcher>();
@@ -281,7 +278,6 @@ namespace Saved_Game_Backup
         }
 
         private static void _delayTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
-            _autoBackupAllowed = true;
             _canBackupTimer.Enabled = true;
             _canBackupTimer.Start();
             _delayTimer.Enabled = false;
@@ -289,7 +285,6 @@ namespace Saved_Game_Backup
 
         static void _canBackupTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
             _lastAutoBackupTime = DateTime.Now;
-            _autoBackupAllowed = false;
             _canBackupTimer.Enabled = false;
         }
 
