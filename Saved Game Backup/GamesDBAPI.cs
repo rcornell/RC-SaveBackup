@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Xml;
@@ -106,13 +107,16 @@ namespace Saved_Game_Backup {
                 var withouAtSignXml = serializedXml.Replace("@", "");
                 var withoutPoundSignXml = withouAtSignXml.Replace("#", "");
                 var withoutQuestionMarkXml = withoutPoundSignXml.Replace("?", "");
-                var gamesDBString = JsonConvert.DeserializeObject<string>(withoutQuestionMarkXml);
+                var dynamicResult = JsonConvert.DeserializeObject<dynamic>(withoutQuestionMarkXml);
 
-                var boxartIndex = gamesDBString.IndexOf("boxart");
-                var newString = gamesDBString.Substring(boxartIndex + 6);
+                string gamesDBString = dynamicResult.ToString();
+                var count = Regex.Matches(gamesDBString, "boxart").Count;
+                
+                //var boxartIndex = gamesDBString.IndexOf("boxart");
+                //var newString = gamesDBString.Substring(boxartIndex + 6);
                 
                 var endOfUrl = "";
-                if (newString.Contains("boxart")) { //If true, the boxart is a List<Boxart>
+                if (count > 3) { //If true, the boxart is a List<Boxart>
                     withoutQuestionMarkXml.Replace("Images", "ImagesWithList");
                     withoutQuestionMarkXml.Replace("Data", "DataWithList");
                     var gamesDBResult = JsonConvert.DeserializeObject<GamesDBThumbResultList>(withoutQuestionMarkXml);
