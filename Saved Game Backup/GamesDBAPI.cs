@@ -106,15 +106,27 @@ namespace Saved_Game_Backup {
                 var withouAtSignXml = serializedXml.Replace("@", "");
                 var withoutPoundSignXml = withouAtSignXml.Replace("#", "");
                 var withoutQuestionMarkXml = withoutPoundSignXml.Replace("?", "");
-                var convertedJson = JsonConvert.DeserializeObject<GamesDBThumbResult>(withoutQuestionMarkXml);
+                var gamesDBString = JsonConvert.DeserializeObject<string>(withoutQuestionMarkXml);
 
+                var boxartIndex = gamesDBString.IndexOf("boxart");
+                var newString = gamesDBString.Substring(boxartIndex + 6);
+                
+                var endOfUrl = "";
+                if (newString.Contains("boxart")) { //If true, the boxart is a List<Boxart>
+                    withoutQuestionMarkXml.Replace("Images", "ImagesWithList");
+                    withoutQuestionMarkXml.Replace("Data", "DataWithList");
+                    var gamesDBResult = JsonConvert.DeserializeObject<GamesDBThumbResultList>(withoutQuestionMarkXml);
+                    endOfUrl = gamesDBResult.Data.Images.boxart[0].thumb;
+                } else { //else, there is only one boxart in the result
+                    var gamesDBResult = JsonConvert.DeserializeObject<GamesDBThumbResult>(withoutQuestionMarkXml);
+                    endOfUrl = gamesDBResult.Data.Images.boxart.thumb;
+                }
+              
+                
+                //if (gamesDBResult.Data.Images.boxart.thumb.Contains("front"))
+                //    endOfUrl = gamesDBResult.Data.Images.boxart.thumb;
 
-
-                //var endOfUrl = convertedJson.Data.Images.boxart.thumb; //May not work in all cases. May want to check for an array of boxart 
-                var something = convertedJson.Data.Images.boxart.thumb; //, then search for "front" 
-                //JUST MAKE THE CLASS THAT JSON2CSHARP GIVES YOU AND HAVE JSONCONVERT COVNERT INTO THAT CLASS
-
-                //game.ThumbnailPath = BannerBase + endOfUrl.ToString();
+                game.ThumbnailPath = BannerBase + endOfUrl;
 
             }
             catch (RuntimeBinderException ex) {
