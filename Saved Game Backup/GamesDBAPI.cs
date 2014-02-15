@@ -2,25 +2,21 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
-using System.Drawing.Text;
-using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.Net;
-using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Xml;
-using System.Xml.Serialization;
 using Microsoft.CSharp.RuntimeBinder;
 using Newtonsoft.Json;
 
-namespace Saved_Game_Backup
-{
-    public class GiantBombAPI {
+namespace Saved_Game_Backup {
+
+    public class GamesDBAPI {
+        
         private BitmapImage _thumbNail;
         public BitmapImage ThumbNail {
             get { return _thumbNail; }
@@ -44,32 +40,18 @@ namespace Saved_Game_Backup
 
         private static bool gameDataChanged;
         private const string GameListPath = @"Assets\Games.json";
-        private const string ApiKey = "ab63aeba2395b10932897115dc4bf3fa048e1734";
-        private const string StringBase = "http://www.giantbomb.com/api";
-        private const string Format = "json";
-        private const string FieldsRequested = "name,image";
-        private const string ResourceType = "game";
+        private static readonly Uri SearchBase = new Uri(@"http://thegamesdb.net/api/GetGamesList.php?name=");
+        private static readonly Uri SearchThumbUrlBase = new Uri(@"http://thegamesdb.net/api/GetArt.php?id=");
+        private static readonly Uri BannerBase = new Uri(@"http://thegamesdb.net/banners/");
 
-        public GiantBombAPI() {
+        public GamesDBAPI() {}
 
-        }
 
-        //Not currently being used
-        //public GiantBombAPI(int game_ID, Game game) {
-        //    _game = game;
-        //    _newGameId = game_ID;
-        //    //CreateThumbnail(_game_ID);
-        //}
 
-        //public GiantBombAPI(Game game) {
-        //    _game = game;
-        //}
-
-        public static async Task GetThumb(Game game)
-        {
+        public static async Task GetThumb(Game game) {
             //Create path for thumbnails directory and get all files in directory
             var thumbnailDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
-                            "\\Save Backup Tool\\Thumbnails\\";
+                                     "\\Save Backup Tool\\Thumbnails\\";
             if (!Directory.Exists(thumbnailDirectory)) Directory.CreateDirectory(thumbnailDirectory);
             var files = Directory.GetFiles(thumbnailDirectory);
             thumbnailDirectory += game.Name;
@@ -77,11 +59,10 @@ namespace Saved_Game_Backup
             //search for thumbnail in directory
             //if found, set _thumbnailPath to path on HDD
             for (var i = 0; i < files.Count(); i++) {
-                if (files[i].Contains(thumbnailDirectory)){ //could also check for game.Name
-                    game.ThumbnailPath = files[i];
-                    gameDataChanged = true;
-                    break;
-                }
+                if (!files[i].Contains(thumbnailDirectory)) continue; //could also check for game.Name
+                game.ThumbnailPath = files[i];
+                gameDataChanged = true;
+                break;
             }
 
             //If thumbnailPath is found, leave method.
@@ -106,63 +87,76 @@ namespace Saved_Game_Backup
 
         //Retrieves GameID if it is the default value 999999 in json file.
         public static async Task GetGameID(Game game) {
-            var searchString = BuildIdQueryString(game.Name);
-            var responseString = "";
-            
-            using (var client = new HttpClient())
-                responseString = await client.GetStringAsync(searchString);
-
-            var blob = await JsonConvert.DeserializeObjectAsync<dynamic>(responseString);
-
+            var fullSearchPath = SearchBase + game.Name;            
             try {
-                game.ID = blob.results[0].id;
+                var resultString = "";
+                using (var httpClient = new HttpClient()) {
+                    resultString = await httpClient.GetStringAsync(fullSearchPath);
+                }
+
+                var xmlDoc = new XmlDocument();
+                xmlDoc.LoadXml(resultString);
+
+                var serializedXml = JsonConvert.SerializeXmlNode(xmlDoc); //XmlSerializer could be used here.
+                var convertedJson = JsonConvert.DeserializeObject<dynamic>(serializedXml);
+
+                game.ID = convertedJson.Data.Game[0].id;
                 gameDataChanged = true;
             }
             catch (ArgumentOutOfRangeException ex) {
                 SBTErrorLogger.Log(ex);
             }
+            catch (Exception ex) {
+                SBTErrorLogger.Log(ex);
+            }
         }
 
-        //Gets the Giant Bomb thumbnail's web URL
-        private static async Task GetThumbUrl(Game game)
-        {
-            var thumbQueryUrl = BuildThumbQueryString(game.ID);
-            var responseString = "";
-            
-            using (var client = new HttpClient())
-                responseString = await client.GetStringAsync(thumbQueryUrl);
-
-            var blob = await JsonConvert.DeserializeObjectAsync<dynamic>(responseString);
-
+        //Gets the GamesDB thumbnail's web URL
+        private static async Task GetThumbUrl(Game game) {
+            var thumbQueryUrl = SearchThumbUrlBase + game.ID.ToString();
+            var resultString = "";
             try {
-                game.ThumbnailPath = blob.results.image.thumb_url;
+                using (var client = new HttpClient())
+                    resultString = await client.GetStringAsync(thumbQueryUrl);
+
+                var xmlDoc = new XmlDocument();
+                xmlDoc.LoadXml(resultString);
+
+                var serializedXml = JsonConvert.SerializeXmlNode(xmlDoc); //XmlSerializer could be used here.
+                var convertedJson = JsonConvert.DeserializeObject<dynamic>(serializedXml);
+                var finalJson = convertedJson.Replace("@", "");
+
+                game.ThumbnailPath = BannerBase + finalJson.Data.Images.boxart[1].thumb;
             }
             catch (RuntimeBinderException ex) {
                 SBTErrorLogger.Log(ex);
                 game.ThumbnailPath = @"pack://application:,,,/Assets/NoThumb.jpg";
             }
+            catch (Exception ex) {
+                SBTErrorLogger.Log(ex);
+                game.ThumbnailPath = @"pack://application:,,,/Assets/NoThumb.jpg";
+            }
+            
         }
 
         //Downloads thumbnail using URL
         //And sets game.ThumbnailPath to local thumb cache
-        private static async Task DownloadThumbnail(Game game)
-        {
+        private static async Task DownloadThumbnail(Game game) {
             var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            if (string.IsNullOrWhiteSpace(game.ThumbnailPath)) return;
 
             var extension = Path.GetExtension(game.ThumbnailPath);
-                
-                //new FileInfo(game.ThumbnailPath);
 
             //Create path for thumbnail on HDD
-            var thumbLocalPath = documentsPath + "\\Save Backup Tool\\Thumbnails\\" + game.Name + extension;
-
+            var thumbLocalPath = String.Format("{0}\\Save Backup Tool\\Thumbnails\\{1}{2}", documentsPath, game.Name, extension);
             var fi = new FileInfo(thumbLocalPath);
+            if (File.Exists(fi.ToString())) return;
 
             //If File doesn't exist, download it.
             try {
-                if (File.Exists(fi.ToString())) return;
                 var webClient = new WebClient();
-                await webClient.DownloadFileTaskAsync(new Uri(game.ThumbnailPath), fi.FullName);
+                var downloadSourceUri = new Uri(game.ThumbnailPath);
+                await webClient.DownloadFileTaskAsync(downloadSourceUri, fi.FullName);
                 game.ThumbnailPath = thumbLocalPath;
                 gameDataChanged = true;
             }
@@ -212,31 +206,17 @@ namespace Saved_Game_Backup
         }
 
 
-        private static readonly Uri GetArt = new Uri(@"http://thegamesdb.net/api/GetArt.php?id=");
-        private static readonly Uri BannerBase = new Uri(@"http://thegamesdb.net/banners/");
 
         public static async Task xmlstuff() {
-            var resultString = "";
-            var url = new Uri(@"http://thegamesdb.net/api/GetGamesList.php?name=Witcher 2 Assassin of Kings");
+  
 
-            using (var httpClient = new HttpClient()) {
-                resultString = await httpClient.GetStringAsync(url);
-            }
-
-            var xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(resultString);
-            var text = JsonConvert.SerializeXmlNode(xmlDoc);
-            var t = JsonConvert.DeserializeObject<dynamic>(text);
-            
-            var blank = t.Data.Game[0].id;
-
-            var combined = GetArt + blank.ToString();
+            var combined = SearchThumbUrlBase + blank.ToString();
 
             var artString = "";
             using (var httpClient = new HttpClient()) {
-                artString = await httpClient.GetStringAsync(combined);    
+                artString = await httpClient.GetStringAsync(combined);
             }
-            
+
 
             var xmlArt = new XmlDocument();
             xmlArt.LoadXml(artString);
@@ -261,3 +241,4 @@ namespace Saved_Game_Backup
     }
 
 }
+
