@@ -120,7 +120,9 @@ namespace Saved_Game_Backup {
                     withoutQuestionMarkXml.Replace("Images", "ImagesWithList");
                     withoutQuestionMarkXml.Replace("Data", "DataWithList");
                     var gamesDBResult = JsonConvert.DeserializeObject<GamesDBThumbResultList>(withoutQuestionMarkXml);
-                    endOfUrl = gamesDBResult.Data.Images.boxart[0].thumb;
+                    var boxList = gamesDBResult.Data.Images.boxart;
+                    foreach (var boxItem in boxList.Where(boxItem => boxItem.thumb.Contains("front")))
+                        endOfUrl = boxItem.thumb;                 
                 } else { //else, there is only one boxart in the result
                     var gamesDBResult = JsonConvert.DeserializeObject<GamesDBThumbResult>(withoutQuestionMarkXml);
                     endOfUrl = gamesDBResult.Data.Images.boxart.thumb;
