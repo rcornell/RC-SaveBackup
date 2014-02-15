@@ -245,14 +245,13 @@ namespace Saved_Game_Backup.ViewModel
             p.SavePrefs(new UserPrefs(_themeInt, _maxBackups, GamesToBackup, LastBackupTime));
         }
 
-        private void ExecuteDetectGames() {         
+        private void ExecuteDetectGames() {
             GamesToBackup = DirectoryFinder.PollDirectories(GamesList);
             foreach (var game in GamesToBackup)
                 GamesList.Remove(game);
 
             RaisePropertyChanged(() => GamesToBackup);
             RaisePropertyChanged(() => GamesList);
-        
         }
 
         private async void ToBackupList() {

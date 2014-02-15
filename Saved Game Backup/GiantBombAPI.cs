@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using System.Xml;
 using Microsoft.CSharp.RuntimeBinder;
 using Newtonsoft.Json;
 
@@ -208,67 +209,51 @@ namespace Saved_Game_Backup
                 SBTErrorLogger.Log(ex);
             }
         }
+
+
+        private static readonly Uri GetArt = new Uri(@"http://thegamesdb.net/api/GetArt.php?id=");
+        private static readonly Uri BannerBase = new Uri(@"http://thegamesdb.net/banners/");
+
+        public static async Task xmlstuff() {
+            var resultString = "";
+            var url = new Uri(@"http://thegamesdb.net/api/GetGamesList.php?name=Witcher 2 Assassin of Kings");
+
+            using (var httpClient = new HttpClient()) {
+                resultString = await httpClient.GetStringAsync(url);
+            }
+
+            var xmlDoc = new XmlDocument();
+            xmlDoc.LoadXml(resultString);
+            var text = JsonConvert.SerializeXmlNode(xmlDoc);
+            var t = JsonConvert.DeserializeObject<dynamic>(text);
+
+            var blank = t.Data.Game[0].id;
+
+            var combined = GetArt + blank.ToString();
+
+            var artString = "";
+            using (var httpClient = new HttpClient()) {
+                artString = await httpClient.GetStringAsync(combined);    
+            }
+            
+
+            var xmlArt = new XmlDocument();
+            xmlArt.LoadXml(artString);
+
+            var artText = JsonConvert.SerializeXmlNode(xmlArt);
+            var newArtText = artText.Replace("@", "");
+            var tt = JsonConvert.DeserializeObject<dynamic>(newArtText);
+
+            var trimmedUrl = tt.Data.Images.boxart[1].thumb;
+            var finalUrl = BannerBase + trimmedUrl.ToString();
+            var webClient = new WebClient();
+            webClient.DownloadFile(finalUrl, @"C:\Users\Rob\Desktop\NEWAPITEST.jpg");
+
+
+
+
+
+        }
     }
-
-    public class StandardResponse
-    {
-        [JsonProperty("error")]
-        public string Error { get; set; }
-
-        [JsonProperty("limit")]
-        public int Limit { get; set; }
-
-        [JsonProperty("offset")]
-        public int Offset { get; set; }
-
-        [JsonProperty("number_of_page_results")]
-        public int NumberOfPageResults { get; set; }
-
-        [JsonProperty("number_of_total_results")]
-        public int NumberOfTotalResults { get; set; }
-
-        [JsonProperty("status_code")]
-        public int StatusCode { get; set; }
-
-        [JsonProperty("version")]
-        public string Version { get; set; }
-    }
-
-    public class ImageURLs
-    {
-        [JsonProperty("icon_url")]
-        public string IconUrl { get; set; }
-
-        [JsonProperty("medium_url")]
-        public string MediumUrl { get; set; }
-
-        [JsonProperty("screen_url")]
-        public string ScreenUrl { get; set; }
-
-        [JsonProperty("small_url")]
-        public string SmallUrl { get; set; }
-
-        [JsonProperty("super_url")]
-        public string SuperUrl { get; set; }
-
-        [JsonProperty("thumb_url")]
-        public string ThumbUrl { get; set; }
-
-        [JsonProperty("tiny_url")]
-        public string TinyUrl { get; set; }
-    }
-
-    public class ImageResult
-    {
-        [JsonProperty("image")]
-        public ImageURLs ImageURLs { get; set; }
-    }
-
-    public class ImageResponse : StandardResponse
-    {
-        [JsonProperty("results")]
-        public ImageResult Results { get; set; }
-    }
-
 
 }
