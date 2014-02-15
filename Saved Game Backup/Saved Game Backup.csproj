@@ -101,6 +101,7 @@
     <Compile Include="Game.cs" />
     <Compile Include="GameListHandler.cs" />
     <Compile Include="GamesDBAPI.cs" />
+    <Compile Include="GamesDBThumbResult.cs" />
     <Compile Include="GiantBombAPI.cs" />
     <Compile Include="Helper\AddGameMessage.cs" />
     <Compile Include="Helper\BackupResultHelper.cs" />

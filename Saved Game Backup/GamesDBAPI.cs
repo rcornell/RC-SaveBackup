@@ -12,31 +12,11 @@ using System.Windows.Media.Imaging;
 using System.Xml;
 using Microsoft.CSharp.RuntimeBinder;
 using Newtonsoft.Json;
+using Xceed.Wpf.Toolkit.Primitives;
 
 namespace Saved_Game_Backup {
 
     public class GamesDBAPI {
-        
-        private BitmapImage _thumbNail;
-        public BitmapImage ThumbNail {
-            get { return _thumbNail; }
-            set {
-                if (_thumbNail == value) return;
-                _thumbNail = value;
-            }
-        }
-
-        private Image _thumbImage;
-        public Image ThumbImage {
-            get { return _thumbImage; }
-            set { _thumbImage = value; }
-        }
-
-        private string _thumbnailPath;
-        public string ThumbnailPath {
-            get { return _thumbnailPath; }
-            set { _thumbnailPath = value; }
-        }
 
         private static bool gameDataChanged;
         private const string GameListPath = @"Assets\Games.json";
@@ -123,10 +103,19 @@ namespace Saved_Game_Backup {
                 xmlDoc.LoadXml(resultString);
 
                 var serializedXml = JsonConvert.SerializeXmlNode(xmlDoc); //XmlSerializer could be used here.
-                var convertedJson = JsonConvert.DeserializeObject<dynamic>(serializedXml);
-                var finalJson = convertedJson.Replace("@", "");
+                var withouAtSignXml = serializedXml.Replace("@", "");
+                var withoutPoundSignXml = withouAtSignXml.Replace("#", "");
+                var withoutQuestionMarkXml = withoutPoundSignXml.Replace("?", "");
+                var convertedJson = JsonConvert.DeserializeObject<GamesDBThumbResult>(withoutQuestionMarkXml);
 
-                game.ThumbnailPath = BannerBase + finalJson.Data.Images.boxart[1].thumb;
+
+
+                //var endOfUrl = convertedJson.Data.Images.boxart.thumb; //May not work in all cases. May want to check for an array of boxart 
+                var something = convertedJson.Data.Images.boxart.thumb; //, then search for "front" 
+                //JUST MAKE THE CLASS THAT JSON2CSHARP GIVES YOU AND HAVE JSONCONVERT COVNERT INTO THAT CLASS
+
+                //game.ThumbnailPath = BannerBase + endOfUrl.ToString();
+
             }
             catch (RuntimeBinderException ex) {
                 SBTErrorLogger.Log(ex);
@@ -168,28 +157,12 @@ namespace Saved_Game_Backup {
         //If something has been changed in the game parameter,
         //Update the json
         private static async Task UpdateGameInJson(Game game) {
-
             var listToReturn = new List<Game>();
-
             var gameJsonList =
                 await JsonConvert.DeserializeObjectAsync<List<Game>>(File.ReadAllText(GameListPath));
             listToReturn.AddRange(gameJsonList.Select(g => g.Name == game.Name ? game : g));
             var fileToWrite = JsonConvert.SerializeObject(listToReturn);
             File.WriteAllText(GameListPath, fileToWrite);
-        }
-
-
-        private static string BuildThumbQueryString(int gameId) {
-            var queryString = String.Format("{0}/{1}/{2}/?api_key={3}&format={4}&field_list={5}", StringBase,
-                ResourceType, gameId, ApiKey, Format, FieldsRequested);
-            return queryString;
-        }
-
-        private static string BuildIdQueryString(string name) {
-            //http://www.giantbomb.com/api/search/?api_key=ab63aeba2395b10932897115dc4bf3fa048e1734&format=json&query=%22skyrim%22&resources=game
-            var searchString = String.Format("{0}/search/?api_key={1}&format={2}&query={3}&resources=game", StringBase,
-                ApiKey, Format, name);
-            return searchString;
         }
 
         public static async Task AddToJson(Game newGameForJson) {
@@ -204,41 +177,6 @@ namespace Saved_Game_Backup {
                 SBTErrorLogger.Log(ex);
             }
         }
-
-
-
-        public static async Task xmlstuff() {
-  
-
-            var combined = SearchThumbUrlBase + blank.ToString();
-
-            var artString = "";
-            using (var httpClient = new HttpClient()) {
-                artString = await httpClient.GetStringAsync(combined);
-            }
-
-
-            var xmlArt = new XmlDocument();
-            xmlArt.LoadXml(artString);
-
-            var artText = JsonConvert.SerializeXmlNode(xmlArt);
-            var newArtText = artText.Replace("@", "");
-            var tt = JsonConvert.DeserializeObject<dynamic>(newArtText);
-
-            var trimmedUrl = tt.Data.Images.boxart[1].thumb;
-            var finalUrl = BannerBase + trimmedUrl.ToString();
-            var webClient = new WebClient();
-            webClient.DownloadFile(finalUrl, @"C:\Users\Rob\Desktop\NEWAPITEST.jpg");
-
-
-            //using (Stream s = File.OpenRead(resultString)) {
-            //    var xml = new XmlSerializer(typeof(string));
-            //    dynamic x =  xml.Deserialize(s);
-            //}
-
-
-        }
     }
-
 }
 

@@ -265,7 +265,7 @@ namespace Saved_Game_Backup.ViewModel
             RaisePropertyChanged(() => GamesToBackup);            
 
             if (!game.ThumbnailPath.Contains("Loading")) return;
-            await GiantBombAPI.GetThumb(game);
+            await GamesDBAPI.GetThumb(game);
         }
 
         private void ToGamesList(Game game) {
