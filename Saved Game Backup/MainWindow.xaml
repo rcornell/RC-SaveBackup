@@ -50,7 +50,7 @@
                 </MenuItem>
                 <MenuItem Command="{Binding Close}" Header="_Exit" />
             </MenuItem>
-            <MenuItem Header="_About" Command="{Binding ShowAbout}"/>
+            <MenuItem Command="{Binding ShowAbout}" Header="_About" />
         </Menu>
         <StackPanel Grid.Row="1"
                     Grid.Column="0"
@@ -143,23 +143,24 @@
                  Padding="3"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  SelectedItem="{Binding SelectedBackupGame}"
-                 Style="{StaticResource ListBoxStyle}">          
+                 Style="{StaticResource ListBoxStyle}">
             <ItemsControl.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
                     <Style.Resources>
                         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
                     </Style.Resources>
-                    <Setter Property="savedGameBackup:MouseDoubleClick.Command" Value="{Binding RelativeSource={RelativeSource AncestorType=ListBox}, Path=DataContext.MoveToGamesList}"/>
-                    <Setter Property="savedGameBackup:MouseDoubleClick.CommandParameter" Value="{Binding}"/>
+                    <Setter Property="savedGameBackup:MouseDoubleClick.Command" Value="{Binding RelativeSource={RelativeSource AncestorType=ListBox}, Path=DataContext.MoveToGamesList}" />
+                    <Setter Property="savedGameBackup:MouseDoubleClick.CommandParameter" Value="{Binding}" />
                     <Setter Property="ContextMenu">
                         <Setter.Value>
                             <ContextMenu>
-                                <MenuItem Command="{Binding Path=Main.MoveToGamesList, Source={StaticResource Locator}}"
+                                <MenuItem Command="{Binding Path=Main.MoveToGamesList,
+                                                            Source={StaticResource Locator}}"
                                           CommandParameter="{Binding}"
                                           Header="Remove game" />
                             </ContextMenu>
                         </Setter.Value>
-                    </Setter>              
+                    </Setter>
                 </Style>
             </ItemsControl.ItemContainerStyle>
             <ListBox.ItemTemplate>
@@ -217,7 +218,7 @@
             </ListBox.ItemContainerStyle>
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseDoubleClick">
-                    <command:EventToCommand Command="{Binding MoveToBackupList, Mode=OneWay}" />
+                    <command:EventToCommand Command="{Binding MoveToBackupList, Mode=OneWay, Delay=100}" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </ListBox>

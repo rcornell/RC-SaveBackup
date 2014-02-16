@@ -68,28 +68,44 @@ namespace Saved_Game_Backup {
 
         //Retrieves GameID if it is the default value 999999 in json file.
         public static async Task GetGameID(Game game) {
-            var fullSearchPath = SearchBase + game.Name;            
-            try {
-                var resultString = "";
-                using (var httpClient = new HttpClient()) {
-                    resultString = await httpClient.GetStringAsync(fullSearchPath);
-                }
+            var fullSearchPath = new Uri(SearchBase + game.Name);
 
-                var xmlDoc = new XmlDocument();
-                xmlDoc.LoadXml(resultString);
+            #region JsonMethod
+            //try {
+            //    var resultString = "";
+            //    using (var httpClient = new HttpClient()) {
+            //        resultString = await httpClient.GetStringAsync(fullSearchPath);
+            //    }
 
-                var serializedXml = JsonConvert.SerializeXmlNode(xmlDoc); //XmlSerializer could be used here.
-                var convertedJson = JsonConvert.DeserializeObject<dynamic>(serializedXml);
+            //    var xmlDoc = new XmlDocument();
+            //    xmlDoc.LoadXml(resultString);
 
-                game.ID = convertedJson.Data.Game[0].id;
-                gameDataChanged = true;
-            }
-            catch (ArgumentOutOfRangeException ex) {
-                SBTErrorLogger.Log(ex);
-            }
-            catch (Exception ex) {
-                SBTErrorLogger.Log(ex);
-            }
+            //    var serializedXml = JsonConvert.SerializeXmlNode(xmlDoc); //XmlSerializer could be used here.
+            //    var convertedJson = JsonConvert.DeserializeObject<dynamic>(serializedXml);
+
+                
+
+            //    if (convertedJson.Data.Game.GetType() == typeof (List<>))
+            //        return;
+
+            //    game.ID = convertedJson.Data.Game[0].id;
+            //    gameDataChanged = true;
+            //}
+            //catch (ArgumentOutOfRangeException ex) {
+            //    SBTErrorLogger.Log(ex);
+            //}
+            //catch (Exception ex) {
+            //    SBTErrorLogger.Log(ex);
+            //}
+            #endregion
+
+            var client = new WebClient();
+            var result = await client.DownloadStringTaskAsync(fullSearchPath);         
+            var indexOfFirstTag = result.IndexOf("<id>");
+            var resultExFirstTag = result.Substring(indexOfFirstTag + 4);
+            var indexOfSecondTag = resultExFirstTag.IndexOf("</id>");
+            game.ID = int.Parse(resultExFirstTag.Remove(indexOfSecondTag));
+
         }
 
         //Gets the GamesDB thumbnail's web URL
