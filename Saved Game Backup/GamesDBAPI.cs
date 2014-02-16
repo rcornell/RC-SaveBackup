@@ -96,54 +96,60 @@ namespace Saved_Game_Backup {
         private static async Task GetThumbUrl(Game game) {
             var thumbQueryUrl = SearchThumbUrlBase + game.ID.ToString();
             var resultString = "";
-            try {
-                using (var client = new HttpClient())
-                    resultString = await client.GetStringAsync(thumbQueryUrl);
 
-                var xmlDoc = new XmlDocument();
-                xmlDoc.LoadXml(resultString);
+            #region JsonMethod
+            //try {
+            //    using (var client = new HttpClient())
+            //        resultString = await client.GetStringAsync(thumbQueryUrl);
 
-                var serializedXml = JsonConvert.SerializeXmlNode(xmlDoc); //XmlSerializer could be used here.
-                var withouAtSignXml = serializedXml.Replace("@", "");
-                var withoutPoundSignXml = withouAtSignXml.Replace("#", "");
-                var withoutQuestionMarkXml = withoutPoundSignXml.Replace("?", "");
-                var dynamicResult = JsonConvert.DeserializeObject<dynamic>(withoutQuestionMarkXml);
+            //    var xmlDoc = new XmlDocument();
+            //    xmlDoc.LoadXml(resultString);
 
-                string gamesDBString = dynamicResult.ToString();
-                var count = Regex.Matches(gamesDBString, "boxart").Count;
-                
-                //var boxartIndex = gamesDBString.IndexOf("boxart");
-                //var newString = gamesDBString.Substring(boxartIndex + 6);
-                
-                var endOfUrl = "";
-                if (count > 3) { //If true, the boxart is a List<Boxart>
-                    withoutQuestionMarkXml.Replace("Images", "ImagesWithList");
-                    withoutQuestionMarkXml.Replace("Data", "DataWithList");
-                    var gamesDBResult = JsonConvert.DeserializeObject<GamesDBThumbResultList>(withoutQuestionMarkXml);
-                    var boxList = gamesDBResult.Data.Images.boxart;
-                    foreach (var boxItem in boxList.Where(boxItem => boxItem.thumb.Contains("front")))
-                        endOfUrl = boxItem.thumb;                 
-                } else { //else, there is only one boxart in the result
-                    var gamesDBResult = JsonConvert.DeserializeObject<GamesDBThumbResult>(withoutQuestionMarkXml);
-                    endOfUrl = gamesDBResult.Data.Images.boxart.thumb;
-                }
+            //    var serializedXml = JsonConvert.SerializeXmlNode(xmlDoc); //XmlSerializer could be used here.
+            //    var withouAtSignXml = serializedXml.Replace("@", "");
+            //    var withoutPoundSignXml = withouAtSignXml.Replace("#", "");
+            //    var withoutQuestionMarkXml = withoutPoundSignXml.Replace("?", "");
+            //    var dynamicResult = JsonConvert.DeserializeObject<dynamic>(withoutQuestionMarkXml);
+
+            //    string gamesDBString = dynamicResult.ToString();
+            //    var count = Regex.Matches(gamesDBString, "boxart").Count;
+            //    var endOfUrl = "";
+            //    if (count > 3) { //If true, the boxart is a List<Boxart>
+            //        withoutQuestionMarkXml.Replace("Images", "ImagesWithList");
+            //        withoutQuestionMarkXml.Replace("Data", "DataWithList");
+            //        var gamesDBResult = JsonConvert.DeserializeObject<GamesDBThumbResultList>(withoutQuestionMarkXml);
+            //        var boxList = gamesDBResult.Data.Images.boxart;
+            //        foreach (var boxItem in boxList.Where(boxItem => boxItem.thumb.Contains("front")))
+            //            endOfUrl = boxItem.thumb;                 
+            //    } else { //else, there is only one boxart in the result
+            //        var gamesDBResult = JsonConvert.DeserializeObject<GamesDBThumbResult>(withoutQuestionMarkXml);
+            //        endOfUrl = gamesDBResult.Data.Images.boxart.thumb;
+            //    }
               
-                
-                //if (gamesDBResult.Data.Images.boxart.thumb.Contains("front"))
-                //    endOfUrl = gamesDBResult.Data.Images.boxart.thumb;
-
-                game.ThumbnailPath = BannerBase + endOfUrl;
-
-            }
-            catch (RuntimeBinderException ex) {
-                SBTErrorLogger.Log(ex);
-                game.ThumbnailPath = @"pack://application:,,,/Assets/NoThumb.jpg";
-            }
-            catch (Exception ex) {
-                SBTErrorLogger.Log(ex);
-                game.ThumbnailPath = @"pack://application:,,,/Assets/NoThumb.jpg";
-            }
             
+            //    game.ThumbnailPath = BannerBase + endOfUrl;
+
+            //}
+            //catch (RuntimeBinderException ex) {
+            //    SBTErrorLogger.Log(ex);
+            //    game.ThumbnailPath = @"pack://application:,,,/Assets/NoThumb.jpg";
+            //}
+            //catch (Exception ex) {
+            //    SBTErrorLogger.Log(ex);
+            //    game.ThumbnailPath = @"pack://application:,,,/Assets/NoThumb.jpg";
+            //}
+            #endregion
+
+            var client = new WebClient();
+            var artResponseString = client.DownloadString(thumbQueryUrl);
+            var index = artResponseString.IndexOf("boxart/thumb/original/front/");
+            var beginningTrimmed = artResponseString.Substring(index);
+            var endIndex = beginningTrimmed.IndexOf("\">");
+            var endTrimmed = beginningTrimmed.Remove(endIndex);
+            var finalUrl = BannerBase + endTrimmed;
+            game.ThumbnailPath = finalUrl;
+            gameDataChanged = true;
+
         }
 
         //Downloads thumbnail using URL
