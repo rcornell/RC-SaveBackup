@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.Remoting.Proxies;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -99,7 +100,7 @@ namespace Saved_Game_Backup {
             //}
             #endregion
 
-            var client = new WebClient();
+            var client = new WebClient() { Proxy = null };
             var result = await client.DownloadStringTaskAsync(fullSearchPath);         
             var indexOfFirstTag = result.IndexOf("<id>");
             var resultExFirstTag = result.Substring(indexOfFirstTag + 4);
@@ -156,8 +157,8 @@ namespace Saved_Game_Backup {
             //}
             #endregion
 
-            var client = new WebClient();
-            var artResponseString = client.DownloadString(thumbQueryUrl);
+            var client = new WebClient() { Proxy = null }; ;
+            var artResponseString = await client.DownloadStringTaskAsync(thumbQueryUrl);
             var index = artResponseString.IndexOf("boxart/thumb/original/front/");
             var beginningTrimmed = artResponseString.Substring(index);
             var endIndex = beginningTrimmed.IndexOf("\">");
