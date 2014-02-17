@@ -112,10 +112,11 @@ namespace Saved_Game_Backup {
         //Gets the GamesDB thumbnail's web URL
         private static async Task GetThumbUrl(Game game) {
             var thumbQueryUrl = SearchThumbUrlBase + game.ID.ToString();
-            var resultString = "";
+            
 
             #region JsonMethod
             //try {
+            //    var resultString = "";
             //    using (var client = new HttpClient())
             //        resultString = await client.GetStringAsync(thumbQueryUrl);
 
