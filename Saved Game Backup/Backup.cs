@@ -44,8 +44,8 @@ namespace Saved_Game_Backup
         public static BackupResultHelper StartBackup(ObservableCollection<Game> games, BackupType backupType, bool backupEnabled) {
             bool success;
             var message = "";
-            //if (!games.Any() && backupType == BackupType.Autobackup && backupEnabled)
-            //    return new BackupResultHelper(true, false, "Autobackup Disabled", DateTime.Now.ToString());
+            if (!games.Any() && backupType == BackupType.Autobackup && backupEnabled)
+                return new BackupResultHelper(true, false, "Autobackup Disabled", DateTime.Now.ToString());
             if(!games.Any())
                 return new BackupResultHelper(false, false, "No games selected.", DateTime.Now.ToString());
 

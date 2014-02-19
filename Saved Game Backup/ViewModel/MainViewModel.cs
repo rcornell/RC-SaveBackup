@@ -329,6 +329,7 @@ namespace Saved_Game_Backup.ViewModel
             RaisePropertyChanged(() => GamesToBackup);
             RaisePropertyChanged(() => SelectedBackupGame);
             RaisePropertyChanged(() => SelectedGame);
+            ExecuteStartBackup();
         }
 
         private void ExecuteSetThemeLight() {
