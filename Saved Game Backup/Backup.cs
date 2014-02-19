@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -36,6 +37,7 @@ namespace Saved_Game_Backup
         private static Timer _delayTimer;
         private static Timer _canBackupTimer;
         private static DateTime _lastAutoBackupTime;
+        private static int _numberOfBackups = 0;
         
         public Backup() {
             
@@ -78,6 +80,7 @@ namespace Saved_Game_Backup
                 Messenger.Default.Send<DateTime>(DateTime.Now);
             }
 
+            HandleBackupResult(success, backupEnabled, message, DateTime.Now.ToString(CultureInfo.CurrentCulture));
             return new BackupResultHelper(success, backupEnabled, message, DateTime.Now.ToString());
 
         }
@@ -190,6 +193,8 @@ namespace Saved_Game_Backup
 
         
         public static void ActivateAutoBackup(ObservableCollection<Game> gamesToBackup, string specifiedFolder = null) {
+
+            _numberOfBackups = 1234;
             _delayTimer = new Timer { Interval = 5000, AutoReset = true};
             _delayTimer.Elapsed += _delayTimer_Elapsed;
             
@@ -313,6 +318,8 @@ namespace Saved_Game_Backup
                                             FileAccess.ReadWrite, FileShare.Read)) {
                                         inStream.CopyTo(outStream);
                                         Console.WriteLine(@"Backup occurred");
+                                        _numberOfBackups++;
+                                        Messenger.Default.Send(_numberOfBackups.ToString());
                                     }
                                 }
                             }
@@ -365,6 +372,31 @@ namespace Saved_Game_Backup
             return editedList;
         }
 
-        
+        public static BackupResultHelper Reset(ObservableCollection<Game> games, BackupType backupType, bool backupEnabled) {
+            if (backupEnabled) DeactivateAutoBackup();
+            games.Clear();
+            return new BackupResultHelper(true, false, "Autobackup Disabled", DateTime.Now.ToString(CultureInfo.CurrentCulture));
+            
+        }
+
+        private static BackupResultHelper HandleBackupResult(bool success, bool backupEnabled, string messageToShow, string date) {
+            var backupButtonText = "";
+            bool autoBackupEnabled;
+            var backupType = BackupType.ToFolder;
+            var message = messageToShow;
+            
+            if (backupEnabled && backupType == BackupType.Autobackup) backupButtonText = "Disable Autobackup";
+            if (!BackupEnabled && BackupType == BackupType.Autobackup) BackupButtonText = "Enable Autobackup";
+            RaisePropertyChanged(() => BackupButtonText);
+
+            AutoBackupVisibility = BackupEnabled ? Visibility.Visible : Visibility.Hidden;
+            RaisePropertyChanged(() => AutoBackupVisibility);
+
+            if (!result.AutobackupEnabled) LastBackupTime = result.BackupDateTime;
+            RaisePropertyChanged(() => LastBackupTime);
+
+            return new BackupResultHelper(success, backupEnabled, message, date);
+
+        }
     }
 }

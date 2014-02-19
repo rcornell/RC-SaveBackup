@@ -12,12 +12,14 @@ namespace Saved_Game_Backup.Helper
         public bool AutobackupEnabled { get; set; }
         public string Message { get; set; }
         public string BackupDateTime { get; set; }
+        public string BackupButtonText { get; set; }
 
-        public BackupResultHelper(bool success, bool autobackupEnabled, string message, string dateTime) {
+        public BackupResultHelper(bool success, bool autobackupEnabled, string message, string dateTime, string backupButtonText) {
             Success = success;
             AutobackupEnabled = autobackupEnabled;
             Message = message;
             BackupDateTime = dateTime;
+            BackupButtonText = backupButtonText;
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing.Text;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.RightsManagement;
@@ -147,7 +148,7 @@ namespace Saved_Game_Backup.ViewModel
             get { return _themeInt; }
             set { _themeInt = value; }
         }
-        public int NumberOfBackups { get; set; }
+        public string NumberOfBackups { get; set; }
 
         public RelayCommand ShowAbout {
             get { return new RelayCommand(() => ExecuteShowAbout());}
@@ -194,7 +195,7 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         public MainViewModel() {
-            NumberOfBackups = 0;
+            NumberOfBackups = "0";
             HardDrives = DirectoryFinder.CreateHardDriveCollection();
             GamesList = DirectoryFinder.ReturnGamesList();
             GamesToBackup = new ObservableCollection<Game>();
@@ -212,6 +213,11 @@ namespace Saved_Game_Backup.ViewModel
             Messenger.Default.Register<DateTime>(this, s => {
                 LastBackupTime = s.ToLongDateString() + s.ToLongTimeString();
                 RaisePropertyChanged(() => LastBackupTime);
+            });
+
+            Messenger.Default.Register<string>(this, i => {
+                NumberOfBackups = string.Format("{0:N0}",i); 
+                RaisePropertyChanged(() => NumberOfBackups);
             });
 
           
@@ -329,7 +335,8 @@ namespace Saved_Game_Backup.ViewModel
             RaisePropertyChanged(() => GamesToBackup);
             RaisePropertyChanged(() => SelectedBackupGame);
             RaisePropertyChanged(() => SelectedGame);
-            ExecuteStartBackup();
+            var success = Backup.Reset(GamesToBackup, BackupType, BackupEnabled);
+            HandleBackupResult(success);
         }
 
         private void ExecuteSetThemeLight() {
