@@ -103,8 +103,8 @@ namespace Saved_Game_Backup.ViewModel
             set {
                 _backupType = value;
                 BackupLimitVisibility = _backupType == BackupType.Autobackup ? Visibility.Visible : Visibility.Hidden;
-                if (_backupType == BackupType.Autobackup && _backupEnabled) BackupButtonText = "Disable Autobackup";
-                if (_backupType == BackupType.Autobackup && !_backupEnabled) BackupButtonText = "Enable Autobackup";
+                if (_backupType == BackupType.Autobackup && BackupEnabled) BackupButtonText = "Disable Autobackup";
+                if (_backupType == BackupType.Autobackup && !BackupEnabled) BackupButtonText = "Enable Autobackup";
                 if (_backupType != BackupType.Autobackup) BackupButtonText = "Backup Saves";
                 RaisePropertyChanged(() => BackupLimitVisibility);
                 RaisePropertyChanged(() => BackupButtonText);
@@ -136,7 +136,7 @@ namespace Saved_Game_Backup.ViewModel
             set { _specifiedFolder = value; }
         }
         public string BackupButtonText { get; set; }
-        private bool _backupEnabled;
+        public bool BackupEnabled { get; set; }
         private int _maxBackups;
         public int MaxBackups {
             get { return _maxBackups; }
@@ -274,7 +274,7 @@ namespace Saved_Game_Backup.ViewModel
             var gameToMove = game;
     
              //Make this work
-            if (_backupEnabled) {
+            if (BackupEnabled) {
                 var result = Backup.RemoveFromAutobackup(gameToMove);
                 GamesToBackup.Remove(gameToMove);
                 RaisePropertyChanged(() => GamesToBackup);
@@ -295,7 +295,7 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ExecuteStartBackup() {
-            var success = Backup.StartBackup(GamesToBackup, BackupType, _backupEnabled);
+            var success = Backup.StartBackup(GamesToBackup, BackupType, BackupEnabled);
             HandleBackupResult(success);
         }
 
@@ -304,12 +304,12 @@ namespace Saved_Game_Backup.ViewModel
                 MessageBox.Show(result.Message, "Operation Failed.", MessageBoxButton.OK, MessageBoxImage.Hand);
                 return;
             }
-            _backupEnabled = result.AutobackupEnabled;
-            if (_backupEnabled && BackupType == BackupType.Autobackup) BackupButtonText = "Disable Autobackup";
-            if (!_backupEnabled && BackupType == BackupType.Autobackup) BackupButtonText = "Enable Autobackup";
+            BackupEnabled = result.AutobackupEnabled;
+            if (BackupEnabled && BackupType == BackupType.Autobackup) BackupButtonText = "Disable Autobackup";
+            if (!BackupEnabled && BackupType == BackupType.Autobackup) BackupButtonText = "Enable Autobackup";
             RaisePropertyChanged(() => BackupButtonText);         
 
-            AutoBackupVisibility = _backupEnabled ? Visibility.Visible : Visibility.Hidden;
+            AutoBackupVisibility = BackupEnabled ? Visibility.Visible : Visibility.Hidden;
             RaisePropertyChanged(() => AutoBackupVisibility);
 
             if (!result.AutobackupEnabled) LastBackupTime = result.BackupDateTime;

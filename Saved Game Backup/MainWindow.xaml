@@ -67,7 +67,8 @@
         </StackPanel>
         <DockPanel Grid.Row="2" Grid.Column="0">
             <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Top">
-                <Button Margin="3"
+                <Button MinHeight="33"
+                        Margin="3"
                         VerticalAlignment="Center"
                         Command="{Binding StartBackup}"
                         Content="{Binding BackupButtonText}"
@@ -95,14 +96,12 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
-                <Border Margin="3"
-                        HorizontalAlignment="Center"
-                        Background="#CC00FF00"
-                        CornerRadius="3"
-                        Visibility="{Binding AutoBackupVisibility,
-                                             UpdateSourceTrigger=PropertyChanged}">
+                <!--  <Button Style="{StaticResource AutobackupStyle}"></Button>  -->
+                <Border Style="{StaticResource AutobackupStyle}" Visibility="{Binding AutoBackupVisibility, UpdateSourceTrigger=PropertyChanged}">
                     <TextBlock HorizontalAlignment="Center"
                                VerticalAlignment="Center"
+                               FontSize="18"
+                               IsEnabled="{Binding BackupEnabled}"
                                Style="{StaticResource TextStyle}"
                                Text="Autobackup Enabled"
                                Visibility="{Binding AutoBackupVisibility,

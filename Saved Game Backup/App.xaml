@@ -218,39 +218,62 @@
                                     </BeginStoryboard>
                                 </Trigger.ExitActions>
                             </Trigger>
-                            <!--
-                                <Trigger Property="IsMouseOver" Value="False">
-                                <Trigger.EnterActions>
-                                <BeginStoryboard>
-                                <Storyboard>
-                                <DoubleAnimation Duration="0:0:0.2"
-                                From="1.2"
-                                To="1"
-                                Storyboard.TargetProperty="(savedGameBackup:WrapPanelGame.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)">
-                                <DoubleAnimation.EasingFunction>
-                                <PowerEase Power="5"></PowerEase>
-                                </DoubleAnimation.EasingFunction>
-                                </DoubleAnimation>
-                                <DoubleAnimation Duration="0:0:0.2"
-                                From="1.2"
-                                To="1"
-                                Storyboard.TargetProperty="(savedGameBackup:WrapPanelGame.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)">
-                                <DoubleAnimation.EasingFunction>
-                                <PowerEase Power="5"></PowerEase>
-                                </DoubleAnimation.EasingFunction>
-                                </DoubleAnimation>
-                                </Storyboard>
-                                </BeginStoryboard>
-                                </Trigger.EnterActions>
-                                </Trigger>
-                            -->
-
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
 
+        <!--  Autobackup Box Style goes here  -->
+        <LinearGradientBrush x:Key="AutoBackupBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+            <GradientStop Offset="0" Color="#4C0FF50F" />
+            <GradientStop Offset="1" Color="#3C11F01B" />
+        </LinearGradientBrush>
+
+
+        <Style x:Key="AutobackupStyle" TargetType="{x:Type Border}">
+            <Setter Property="Background" Value="{StaticResource AutoBackupBrush}" />
+            <Setter Property="Margin" Value="3" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+        </Style>
+
+        <!--
+            <Style x:Key="AutobackupStyle" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="{StaticResource AutoBackupBrush}" />
+            <Setter Property="Margin" Value="3"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+            <Setter.Value>
+            <ControlTemplate>
+            <Border x:Name="AutobackupBorder"
+            Width="{TemplateBinding Width}"
+            Height="{TemplateBinding Height}"
+            Background="{TemplateBinding Background}"
+            Margin="{TemplateBinding Margin}"
+            HorizontalAlignment="{TemplateBinding HorizontalAlignment}">
+            <Border.RenderTransform>
+            <ScaleTransform/>
+            </Border.RenderTransform>
+            <Border.Triggers>
+            <EventTrigger>
+            <BeginStoryboard>
+            <Storyboard>
+            <DoubleAnimation AutoReverse="True"
+            Duration="0:0:0.5"
+            From="1"
+            Storyboard.TargetProperty="(Border.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)"
+            To="0.9"/>
+            </Storyboard>
+            </BeginStoryboard>
+            </EventTrigger>
+            </Border.Triggers>
+            <ContentPresenter/>
+            </Border>
+            </ControlTemplate>
+            </Setter.Value>
+            </Setter>
+            </Style>
+        -->
 
         <!--  BUTTON STYLE GOES HERE  -->
         <LinearGradientBrush x:Key="MyButtonBrush" StartPoint="0.5,0" EndPoint="0.5,1">
