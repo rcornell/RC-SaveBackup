@@ -96,16 +96,29 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
-                <!--  <Button Style="{StaticResource AutobackupStyle}"></Button>  -->
+
                 <Border Style="{StaticResource AutobackupStyle}" Visibility="{Binding AutoBackupVisibility, UpdateSourceTrigger=PropertyChanged}">
-                    <TextBlock HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               FontSize="18"
-                               IsEnabled="{Binding BackupEnabled}"
-                               Style="{StaticResource TextStyle}"
-                               Text="Autobackup Enabled"
-                               Visibility="{Binding AutoBackupVisibility,
-                                                    UpdateSourceTrigger=PropertyChanged}" />
+                    <StackPanel>
+                        <TextBlock HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontSize="18"
+                                   IsEnabled="{Binding BackupEnabled}"
+                                   Style="{StaticResource TextStyle}"
+                                   Text="Autobackup Enabled"
+                                   Visibility="{Binding AutoBackupVisibility,
+                                                        UpdateSourceTrigger=PropertyChanged}" />
+                        <StackPanel Orientation="Horizontal" 
+                                    HorizontalAlignment="Center" Visibility="{Binding AutoBackupVisibility}">
+                            <TextBlock Margin="3"
+                                       Style="{StaticResource TextStyle}"
+                                       FontSize="12"
+                                       Text="Number of Autobackups:" />
+                            <TextBlock Margin="3"
+                                       Style="{StaticResource TextStyle}"
+                                       Text="{Binding NumberOfBackups}"
+                                       FontSize="12"/>
+                        </StackPanel>
+                    </StackPanel>
                 </Border>
                 <Button Margin="3"
                         HorizontalAlignment="Stretch"

@@ -147,6 +147,7 @@ namespace Saved_Game_Backup.ViewModel
             get { return _themeInt; }
             set { _themeInt = value; }
         }
+        public int NumberOfBackups { get; set; }
 
         public RelayCommand ShowAbout {
             get { return new RelayCommand(() => ExecuteShowAbout());}
@@ -193,6 +194,7 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         public MainViewModel() {
+            NumberOfBackups = 0;
             HardDrives = DirectoryFinder.CreateHardDriveCollection();
             GamesList = DirectoryFinder.ReturnGamesList();
             GamesToBackup = new ObservableCollection<Game>();

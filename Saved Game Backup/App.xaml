@@ -93,7 +93,8 @@
                                 <TextBlock HorizontalAlignment="Center"
                                            VerticalAlignment="Center"
                                            Text="{TemplateBinding Title}"
-                                           TextWrapping="NoWrap" />
+                                           TextAlignment="Center"
+                                           TextWrapping="Wrap" />
                             </StackPanel>
                         </Border>
                         <ControlTemplate.Triggers>
