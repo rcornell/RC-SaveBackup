@@ -486,7 +486,7 @@
   },
   {
     "Name":"Hotline Miami",
-    "Path":"\\Documents",
+    "Path":"\\Documents\\My Games\\HotlineMiami",
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
@@ -540,7 +540,7 @@
   },
   {
     "Name":"Metal Gear Rising Revengeance",
-    "Path":"\\Documents",
+    "Path":"\\Documents\\My Games\\MGR\\SaveData",
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
@@ -639,7 +639,7 @@
   },
   {
     "Name":"Rogue Legacy",
-    "Path":"\\Documents",
+    "Path":"\\Documents\\SavedGames\\RogueLegacy\\RogueLegacyStorageContainer",
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
@@ -666,7 +666,7 @@
   },
   {
     "Name":"Shadow Warrior",
-    "Path":"\\Documents",
+    "Path":"\\Documents\\Shadow Warrior\\profiles",
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
@@ -801,7 +801,7 @@
   },
   {
     "Name":"The Witcher 2 Assassins of Kings",
-    "Path":"\\Documents",
+    "Path":"\\Documents\\Witcher 2\\gamesaves",
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
@@ -819,7 +819,7 @@
   },
   {
     "Name":"X3 Albion Prelude",
-    "Path":"\\Documents",
+    "Path":"\\Documents\\egosoft\\x rebirth",
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
@@ -838,6 +838,15 @@
   {
     "Name":"XCOM Enemy Unknown",
     "Path":"\\Documents",
+    "ID":999999,
+    "HasCustomPath":"FALSE",
+    "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
+    "HasThumb":"FALSE",
+    "RootFolder":""
+  },
+  {
+    "Name":"XCOM Enemy Within",
+    "Path":"\\Documents\\My Games\\XCOM - Enemy Within\\XComGame\\SaveData",
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
