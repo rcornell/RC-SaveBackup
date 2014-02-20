@@ -45,12 +45,12 @@ namespace Saved_Game_Backup
         }
 
         public static BackupResultHelper StartBackup(ObservableCollection<Game> games, BackupType backupType, bool backupEnabled) {
-            bool success;
+            var success = false;
             var message = "";
             if (!games.Any() && backupType == BackupType.Autobackup && backupEnabled)
-                HandleBackupResult(true, false, "Autobackup Disabled", backupType, DateTime.Now.ToString(_culture));
+                return HandleBackupResult(true, false, "Autobackup Disabled", backupType, DateTime.Now.ToString(_culture));
             if (!games.Any())
-                HandleBackupResult(false, false, "No games selected.", backupType, DateTime.Now.ToString(_culture));
+                return HandleBackupResult(success, false, "No games selected.", backupType, DateTime.Now.ToString(_culture));
 
             var gamesToBackup = ModifyGamePaths(games);
             switch (backupType) {
@@ -385,6 +385,7 @@ namespace Saved_Game_Backup
 
         private static BackupResultHelper HandleBackupResult(bool success, bool backupEnabled, string messageToShow, BackupType backupType, string date) {
             var backupButtonText = "Backup Saves";
+            if (!success) return new BackupResultHelper(success, backupEnabled, messageToShow, date, backupButtonText);
 
             var message = messageToShow;
             
