@@ -38,6 +38,7 @@ namespace Saved_Game_Backup
         private static Timer _canBackupTimer;
         private static DateTime _lastAutoBackupTime;
         private static int _numberOfBackups = 0;
+        private static CultureInfo _culture = CultureInfo.CurrentCulture;
         
         public Backup() {
             
@@ -47,9 +48,9 @@ namespace Saved_Game_Backup
             bool success;
             var message = "";
             if (!games.Any() && backupType == BackupType.Autobackup && backupEnabled)
-                return new BackupResultHelper(true, false, "Autobackup Disabled", DateTime.Now.ToString());
-            if(!games.Any())
-                return new BackupResultHelper(false, false, "No games selected.", DateTime.Now.ToString());
+                HandleBackupResult(true, false, "Autobackup Disabled", backupType, DateTime.Now.ToString(_culture));
+            if (!games.Any())
+                HandleBackupResult(false, false, "No games selected.", backupType, DateTime.Now.ToString(_culture));
 
             var gamesToBackup = ModifyGamePaths(games);
             switch (backupType) {
@@ -80,8 +81,7 @@ namespace Saved_Game_Backup
                 Messenger.Default.Send<DateTime>(DateTime.Now);
             }
 
-            HandleBackupResult(success, backupEnabled, message, DateTime.Now.ToString(CultureInfo.CurrentCulture));
-            return new BackupResultHelper(success, backupEnabled, message, DateTime.Now.ToString());
+           return HandleBackupResult(success, backupEnabled, message, backupType, DateTime.Now.ToString(CultureInfo.CurrentCulture));
 
         }
 
@@ -231,15 +231,19 @@ namespace Saved_Game_Backup
         
 
         public static BackupResultHelper RemoveFromAutobackup(Game game) {
-            if (!_fileWatcherList.Any()) return new BackupResultHelper(false, false, "No games on autobackup.", DateTime.Now.ToString());
+            if (!_fileWatcherList.Any())
+                HandleBackupResult(false, false, "No games on autobackup.", BackupType.Autobackup,
+                    DateTime.Now.ToString(_culture));
             for (var i = 0; i <= _fileWatcherList.Count(); i++) {
                 if (!_fileWatcherList[i].Path.Contains(game.Path)) continue;
                 _fileWatcherList.RemoveAt(i);
                 break;
             }
+            
+            
             return _fileWatcherList.Any()
-                ? new BackupResultHelper(true, true, "Game removed from autobackup", DateTime.Now.ToString())
-                : new BackupResultHelper(true, false, "Last game removed from Autobackup.\r\nAutobackup disabled.", DateTime.Now.ToString());
+                ? HandleBackupResult(true, true, "Game removed from autobackup", BackupType.Autobackup, DateTime.Now.ToString(_culture))
+                : HandleBackupResult(true, false, "Last game removed from Autobackup.\r\nAutobackup disabled.", BackupType.Autobackup, DateTime.Now.ToString(_culture));
 
         }
 
@@ -375,27 +379,20 @@ namespace Saved_Game_Backup
         public static BackupResultHelper Reset(ObservableCollection<Game> games, BackupType backupType, bool backupEnabled) {
             if (backupEnabled) DeactivateAutoBackup();
             games.Clear();
-            return new BackupResultHelper(true, false, "Autobackup Disabled", DateTime.Now.ToString(CultureInfo.CurrentCulture));
-            
+            return HandleBackupResult(true, backupEnabled, "Autobackup Disabled", backupType, DateTime.Now.ToString(_culture));
+
         }
 
-        private static BackupResultHelper HandleBackupResult(bool success, bool backupEnabled, string messageToShow, string date) {
-            var backupButtonText = "";
-            bool autoBackupEnabled;
-            var backupType = BackupType.ToFolder;
+        private static BackupResultHelper HandleBackupResult(bool success, bool backupEnabled, string messageToShow, BackupType backupType, string date) {
+            var backupButtonText = "Backup Saves";
+
             var message = messageToShow;
             
             if (backupEnabled && backupType == BackupType.Autobackup) backupButtonText = "Disable Autobackup";
-            if (!BackupEnabled && BackupType == BackupType.Autobackup) BackupButtonText = "Enable Autobackup";
-            RaisePropertyChanged(() => BackupButtonText);
+            if (!backupEnabled && backupType == BackupType.Autobackup) backupButtonText = "Enable Autobackup";
 
-            AutoBackupVisibility = BackupEnabled ? Visibility.Visible : Visibility.Hidden;
-            RaisePropertyChanged(() => AutoBackupVisibility);
 
-            if (!result.AutobackupEnabled) LastBackupTime = result.BackupDateTime;
-            RaisePropertyChanged(() => LastBackupTime);
-
-            return new BackupResultHelper(success, backupEnabled, message, date);
+            return new BackupResultHelper(success, backupEnabled, message, date, backupButtonText);
 
         }
     }
