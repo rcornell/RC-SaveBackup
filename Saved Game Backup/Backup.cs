@@ -379,7 +379,7 @@ namespace Saved_Game_Backup
         public static BackupResultHelper Reset(ObservableCollection<Game> games, BackupType backupType, bool backupEnabled) {
             if (backupEnabled) DeactivateAutoBackup();
             games.Clear();
-            return HandleBackupResult(true, backupEnabled, "Autobackup Disabled", backupType, DateTime.Now.ToString(_culture));
+            return HandleBackupResult(true, false, "Autobackup Disabled", backupType, DateTime.Now.ToString(_culture));
 
         }
 

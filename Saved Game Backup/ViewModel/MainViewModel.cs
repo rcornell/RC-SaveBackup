@@ -219,11 +219,6 @@ namespace Saved_Game_Backup.ViewModel
             DirectoryFinder.CheckDirectories();
             SetUpInterface();
 
-            Messenger.Default.Register<DateTime>(this, s => {
-                LastBackupTime = s.ToLongDateString() + s.ToLongTimeString();
-                RaisePropertyChanged(() => LastBackupTime);
-            });
-
             Messenger.Default.Register<string>(this, i => {
                 NumberOfBackups = string.Format("{0:N0}",i); 
                 RaisePropertyChanged(() => NumberOfBackups);
@@ -312,8 +307,8 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ExecuteStartBackup() {
-            var success = Backup.StartBackup(GamesToBackup, BackupType, BackupEnabled);
-            HandleBackupResult(success);
+            var result = Backup.StartBackup(GamesToBackup, BackupType, BackupEnabled);
+            HandleBackupResult(result);
         }
 
         private void HandleBackupResult(BackupResultHelper result) {
@@ -324,7 +319,7 @@ namespace Saved_Game_Backup.ViewModel
             BackupEnabled = result.AutobackupEnabled;
             BackupButtonText = result.BackupButtonText;
 
-            if (!result.AutobackupEnabled) LastBackupTime = result.BackupDateTime;
+            if (!result.AutobackupEnabled && BackupType != BackupType.Autobackup) LastBackupTime = result.BackupDateTime;
 
             RaisePropertyChanged(() => LastBackupTime);
             RaisePropertyChanged(() => BackupButtonText);
@@ -335,7 +330,7 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ExecuteReset() {
-            GamesToBackup.Clear();
+            //GamesToBackup.Clear();
             _specifiedFolder = null;
             _selectedGame = null;
             _selectedBackupGame = null;
@@ -343,8 +338,8 @@ namespace Saved_Game_Backup.ViewModel
             RaisePropertyChanged(() => GamesToBackup);
             RaisePropertyChanged(() => SelectedBackupGame);
             RaisePropertyChanged(() => SelectedGame);
-            var success = Backup.Reset(GamesToBackup, BackupType, BackupEnabled);
-            HandleBackupResult(success);
+            var result = Backup.Reset(GamesToBackup, BackupType, BackupEnabled);
+            HandleBackupResult(result);
         }
 
         private void ExecuteSetThemeLight() {
