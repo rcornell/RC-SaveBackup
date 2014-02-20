@@ -325,7 +325,8 @@ namespace Saved_Game_Backup.ViewModel
             RaisePropertyChanged(() => BackupButtonText);
             RaisePropertyChanged(() => AutoBackupVisibility);
             RaisePropertyChanged(() => BackupEnabled);
-            
+
+            if (string.IsNullOrWhiteSpace(result.Message)) return;
             MessageBox.Show(result.Message, "Operation Successful", MessageBoxButton.OK);
         }
 
