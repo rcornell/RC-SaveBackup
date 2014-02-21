@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
@@ -366,7 +367,7 @@ namespace Saved_Game_Backup
 
         private static void SaveChanged(object source, FileSystemEventArgs e) {
             Game autoBackupGame = null;
-            Console.WriteLine(@"autoBackupGame set");
+            Console.WriteLine(@"autoBackupGame is {0}", autoBackupGame.Name);
 
             foreach (var a in _gamesToAutoBackup.Where(a => e.FullPath.Contains(a.Name) || e.FullPath.Contains(a.RootFolder))) {
                 autoBackupGame = a;
@@ -385,17 +386,15 @@ namespace Saved_Game_Backup
             var indexOfGamePart = e.FullPath.IndexOf(autoBackupGame.RootFolder);
             var friendlyPath = e.FullPath.Substring(0, indexOfGamePart);
             var newPath = e.FullPath.Replace(friendlyPath, "\\");
-            Console.WriteLine(@"newPath set");
+            Console.WriteLine(@"newPath is {0}", newPath);
 
             if (Directory.Exists(e.FullPath) && autoBackupGame != null) {
                 //True if directory, else it's a file.
                 //Do stuff for backing up a directory here.
             } else {
-                //Do stuff for backing up a file here.
-                try
-                {
+                try { 
                     var copyDestinationPath = new FileInfo(_specifiedAutoBackupFolder + newPath);
-                    Console.WriteLine(@"copyDestinationPath set");
+                    Console.WriteLine(@"copyDestinationPath is {0}", copyDestinationPath);
                     if (!Directory.Exists(copyDestinationPath.DirectoryName))
                         Directory.CreateDirectory(copyDestinationPath.DirectoryName);
                     if (File.Exists(e.FullPath))
@@ -403,23 +402,22 @@ namespace Saved_Game_Backup
                         using (var inStream = new FileStream(e.FullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                         {
                             using (var outStream = new FileStream(copyDestinationPath.ToString(), FileMode.Create,
-                                    FileAccess.ReadWrite, FileShare.Read))
-                            {
+                                    FileAccess.ReadWrite, FileShare.Read)) {
+                                activeWatcher.EnableRaisingEvents = false;
                                 inStream.CopyTo(outStream);
+                                activeWatcher.EnableRaisingEvents = true;
                                 Console.WriteLine(@"Backup occurred");
-                                _numberOfBackups++;
+                                Debug.WriteLine(@"Backup #{0} occurred for {1} on {2}. Type was {3}", ++_numberOfBackups, autoBackupGame.Name, DateTime.Now, e.ChangeType);
                                 Messenger.Default.Send(_numberOfBackups);
                             }
                         }
                     }
                 }
-                catch (FileNotFoundException ex)
-                {
+                catch (FileNotFoundException ex) {
                     SBTErrorLogger.Log(ex);
                     //Will occur if a file is temporarily written during the saving process, then deleted.
                 }
-                catch (IOException ex)
-                {
+                catch (IOException ex) {
                     SBTErrorLogger.Log(ex); //Occurs if a game has locked access to a file.
                 }
             }
@@ -435,7 +433,59 @@ namespace Saved_Game_Backup
         }
 
         private static void SaveCreated(object source, FileSystemEventArgs e) {
-            
+            Game autoBackupGame = null;
+            Console.WriteLine(@"autoBackupGame is {0}", autoBackupGame.Name);
+
+            foreach (var a in _gamesToAutoBackup.Where(a => e.FullPath.Contains(a.Name) || e.FullPath.Contains(a.RootFolder))) {
+                autoBackupGame = a;
+            }
+
+            if (autoBackupGame.RootFolder == null) {
+                var dir = new DirectoryInfo(autoBackupGame.Path);
+                autoBackupGame.RootFolder = dir.Name;
+            }
+
+            var activeWatcher = new FileSystemWatcher();
+            foreach (var watcher in _fileWatcherList.Where(w => w.Path == autoBackupGame.Path)) {
+                activeWatcher = watcher;
+            }
+
+            var indexOfGamePart = e.FullPath.IndexOf(autoBackupGame.RootFolder);
+            var friendlyPath = e.FullPath.Substring(0, indexOfGamePart);
+            var newPath = e.FullPath.Replace(friendlyPath, "\\");
+            Console.WriteLine(@"newPath is {0}", newPath);
+
+            if (Directory.Exists(e.FullPath) && autoBackupGame != null) {
+                //True if directory, else it's a file.
+                //Do stuff for backing up a directory here.
+            } else {
+                try {
+                    var copyDestinationPath = new FileInfo(_specifiedAutoBackupFolder + newPath);
+                    Console.WriteLine(@"copyDestinationPath is {0}", copyDestinationPath);
+                    if (!Directory.Exists(copyDestinationPath.DirectoryName))
+                        Directory.CreateDirectory(copyDestinationPath.DirectoryName);
+                    if (File.Exists(e.FullPath)) {
+                        using (var inStream = new FileStream(e.FullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
+                            using (var outStream = new FileStream(copyDestinationPath.ToString(), FileMode.Create,
+                                    FileAccess.ReadWrite, FileShare.Read)) {
+                                activeWatcher.EnableRaisingEvents = false;
+                                inStream.CopyTo(outStream);
+                                activeWatcher.EnableRaisingEvents = true;
+                                Debug.WriteLine(@"Backup #{0} occurred for {1} on {2}. Type was {3}", ++_numberOfBackups, autoBackupGame.Name, DateTime.Now, e.ChangeType);
+                                Messenger.Default.Send(_numberOfBackups);
+                            }
+                        }
+                    }
+                }
+                catch (FileNotFoundException ex) {
+                    SBTErrorLogger.Log(ex);
+                    //Will occur if a file is temporarily written during the saving process, then deleted.
+                }
+                catch (IOException ex) {
+                    SBTErrorLogger.Log(ex); //Occurs if a game has locked access to a file.
+                }
+            }
+            Messenger.Default.Send<DateTime>(DateTime.Now);
         }
 
         /// <summary>
