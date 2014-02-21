@@ -217,9 +217,9 @@ namespace Saved_Game_Backup
             foreach (var game in gamesToBackup.Where(game => Directory.Exists(game.Path))) {
                 _fileWatcherList.Add(new FileSystemWatcher(game.Path));
                 _fileWatcherList[watcherNumber].Changed += OnChanged;
-                //_fileWatcherList[watcherNumber].Created += new FileSystemEventHandler(OnChanged);
-                //_fileWatcherList[watcherNumber].Deleted += new FileSystemEventHandler(OnChanged);
-                //_fileWatcherList[watcherNumber].Renamed += new RenamedEventHandler(OnChanged);
+                _fileWatcherList[watcherNumber].Created += OnChanged;
+                _fileWatcherList[watcherNumber].Deleted += OnChanged;
+                _fileWatcherList[watcherNumber].Renamed += OnChanged;
                 _fileWatcherList[watcherNumber].NotifyFilter = NotifyFilters.CreationTime |  NotifyFilters.LastWrite
                                                                | NotifyFilters.FileName | NotifyFilters.DirectoryName;
                 _fileWatcherList[watcherNumber].IncludeSubdirectories = true;
@@ -367,10 +367,17 @@ namespace Saved_Game_Backup
 
         private static void SaveChanged(object source, FileSystemEventArgs e) {
             Game autoBackupGame = null;
-            Console.WriteLine(@"autoBackupGame is {0}", autoBackupGame.Name);
 
-            foreach (var a in _gamesToAutoBackup.Where(a => e.FullPath.Contains(a.Name) || e.FullPath.Contains(a.RootFolder))) {
-                autoBackupGame = a;
+            try {
+                foreach (
+                    var a in
+                        _gamesToAutoBackup.Where(a => e.FullPath.Contains(a.Name) || e.FullPath.Contains(a.RootFolder))) {
+                    autoBackupGame = a;
+                }
+                Console.WriteLine(@"In SaveChanged(), autoBackupGame is {0}", autoBackupGame.Name);
+            }
+            catch (NullReferenceException ex) {
+                SBTErrorLogger.Log(ex);
             }
 
             if (autoBackupGame.RootFolder == null) {
@@ -386,7 +393,7 @@ namespace Saved_Game_Backup
             var indexOfGamePart = e.FullPath.IndexOf(autoBackupGame.RootFolder);
             var friendlyPath = e.FullPath.Substring(0, indexOfGamePart);
             var newPath = e.FullPath.Replace(friendlyPath, "\\");
-            Console.WriteLine(@"newPath is {0}", newPath);
+            Console.WriteLine(@"In SaveChanged(), newPath is {0}", newPath);
 
             if (Directory.Exists(e.FullPath) && autoBackupGame != null) {
                 //True if directory, else it's a file.
@@ -394,7 +401,7 @@ namespace Saved_Game_Backup
             } else {
                 try { 
                     var copyDestinationPath = new FileInfo(_specifiedAutoBackupFolder + newPath);
-                    Console.WriteLine(@"copyDestinationPath is {0}", copyDestinationPath);
+                    Console.WriteLine(@"In SaveChanged(), copyDestinationPath is {0}", copyDestinationPath);
                     if (!Directory.Exists(copyDestinationPath.DirectoryName))
                         Directory.CreateDirectory(copyDestinationPath.DirectoryName);
                     if (File.Exists(e.FullPath))
@@ -406,7 +413,6 @@ namespace Saved_Game_Backup
                                 activeWatcher.EnableRaisingEvents = false;
                                 inStream.CopyTo(outStream);
                                 activeWatcher.EnableRaisingEvents = true;
-                                Console.WriteLine(@"Backup occurred");
                                 Debug.WriteLine(@"Backup #{0} occurred for {1} on {2}. Type was {3}", ++_numberOfBackups, autoBackupGame.Name, DateTime.Now, e.ChangeType);
                                 Messenger.Default.Send(_numberOfBackups);
                             }
@@ -425,19 +431,25 @@ namespace Saved_Game_Backup
         }
 
         private static void SaveDeleted(object souce, FileSystemEventArgs e) {
-            
+            Console.WriteLine("A SaveDelete occurred");
         }
 
         private static void SaveRenamed(object source, FileSystemEventArgs e) {
-            
+            Console.WriteLine("A SaveRename occurred");
         }
 
         private static void SaveCreated(object source, FileSystemEventArgs e) {
             Game autoBackupGame = null;
-            Console.WriteLine(@"autoBackupGame is {0}", autoBackupGame.Name);
 
-            foreach (var a in _gamesToAutoBackup.Where(a => e.FullPath.Contains(a.Name) || e.FullPath.Contains(a.RootFolder))) {
-                autoBackupGame = a;
+            try {
+                foreach (
+                    var a in _gamesToAutoBackup.Where(a => e.FullPath.Contains(a.Name) || e.FullPath.Contains(a.RootFolder))) {
+                    autoBackupGame = a;
+                }
+                Console.WriteLine(@"In SaveCreated(), autoBackupGame is {0}", autoBackupGame.Name);
+            }
+            catch (NullReferenceException ex) {
+                SBTErrorLogger.Log(ex);
             }
 
             if (autoBackupGame.RootFolder == null) {
@@ -453,7 +465,7 @@ namespace Saved_Game_Backup
             var indexOfGamePart = e.FullPath.IndexOf(autoBackupGame.RootFolder);
             var friendlyPath = e.FullPath.Substring(0, indexOfGamePart);
             var newPath = e.FullPath.Replace(friendlyPath, "\\");
-            Console.WriteLine(@"newPath is {0}", newPath);
+            Console.WriteLine(@"In SaveCreated(), newPath is {0}", newPath);
 
             if (Directory.Exists(e.FullPath) && autoBackupGame != null) {
                 //True if directory, else it's a file.
@@ -461,7 +473,7 @@ namespace Saved_Game_Backup
             } else {
                 try {
                     var copyDestinationPath = new FileInfo(_specifiedAutoBackupFolder + newPath);
-                    Console.WriteLine(@"copyDestinationPath is {0}", copyDestinationPath);
+                    Console.WriteLine(@"In SaveCreated(), copyDestinationPath is {0}", copyDestinationPath);
                     if (!Directory.Exists(copyDestinationPath.DirectoryName))
                         Directory.CreateDirectory(copyDestinationPath.DirectoryName);
                     if (File.Exists(e.FullPath)) {
