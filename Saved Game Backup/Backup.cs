@@ -194,7 +194,7 @@ namespace Saved_Game_Backup
         
         public static void ActivateAutoBackup(ObservableCollection<Game> gamesToBackup, string specifiedFolder = null) {
 
-            _numberOfBackups = 1234;
+            //_numberOfBackups = 1234;
             _delayTimer = new Timer { Interval = 5000, AutoReset = true};
             _delayTimer.Elapsed += _delayTimer_Elapsed;
             
@@ -323,7 +323,7 @@ namespace Saved_Game_Backup
                                         inStream.CopyTo(outStream);
                                         Console.WriteLine(@"Backup occurred");
                                         _numberOfBackups++;
-                                        Messenger.Default.Send(_numberOfBackups.ToString());
+                                        Messenger.Default.Send(_numberOfBackups);
                                     }
                                 }
                             }
@@ -340,10 +340,6 @@ namespace Saved_Game_Backup
                 }
                 break;
             }
-        }
-
-        private static void BackupFile(FileSystemEventArgs e) {
-            
         }
 
         /// <summary>

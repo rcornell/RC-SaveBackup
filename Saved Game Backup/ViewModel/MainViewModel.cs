@@ -104,12 +104,11 @@ namespace Saved_Game_Backup.ViewModel
             set {
                 _backupType = value;
                 BackupLimitVisibility = _backupType == BackupType.Autobackup ? Visibility.Visible : Visibility.Hidden;
-                if (_backupType == BackupType.Autobackup && BackupEnabled) BackupButtonText = "Disable Autobackup";
-                if (_backupType == BackupType.Autobackup && !BackupEnabled) BackupButtonText = "Enable Autobackup";
+                if (_backupType == BackupType.Autobackup && BackupEnabled) BackupButtonText = "Disable auto-backup.";
+                if (_backupType == BackupType.Autobackup && !BackupEnabled) BackupButtonText = "Enable auto-backup.";
                 if (_backupType != BackupType.Autobackup) BackupButtonText = "Backup Saves";
                 RaisePropertyChanged(() => BackupLimitVisibility);
                 RaisePropertyChanged(() => BackupButtonText);
-                
             }
         }
         public string LastBackupTime { get; set; }
@@ -157,16 +156,16 @@ namespace Saved_Game_Backup.ViewModel
             get { return _themeInt; }
             set { _themeInt = value; }
         }
-        public string NumberOfBackups { get; set; }
+        public int NumberOfBackups { get; set; }
 
         public RelayCommand ShowAbout {
-            get { return new RelayCommand(() => ExecuteShowAbout());}
+            get { return new RelayCommand(ExecuteShowAbout);}
         }
         public RelayCommand MoveToBackupList
         {
             get
             {
-                return new RelayCommand(() => ToBackupList());
+                return new RelayCommand(ToBackupList);
             }
         }
         public RelayCommand<Game> MoveToGamesList {
@@ -175,36 +174,33 @@ namespace Saved_Game_Backup.ViewModel
             }
         }    
         public RelayCommand StartBackup {
-            get { return new RelayCommand(() => ExecuteStartBackup());}
+            get { return new RelayCommand(ExecuteStartBackup);}
         }
         public RelayCommand ResetList
         {
-            get { return new RelayCommand(() => ExecuteReset()); }
+            get { return new RelayCommand(ExecuteReset); }
         }
         public RelayCommand DetectGames {
-            get { return new RelayCommand(() => ExecuteDetectGames()); }
+            get { return new RelayCommand(ExecuteDetectGames); }
         }
         public RelayCommand SetThemeLight
         {
-            get { return new RelayCommand(() => ExecuteSetThemeLight()); }
+            get { return new RelayCommand(ExecuteSetThemeLight); }
         }
         public RelayCommand SetThemeDark
         {
-            get { return new RelayCommand(() => ExecuteSetThemeDark()); }
+            get { return new RelayCommand(ExecuteSetThemeDark); }
         }
-        //public RelayCommand OpenOptionsWindow {
-        //    get { return new RelayCommand(() => ExecuteOpenOptionsWindow());}
-        //}
         public RelayCommand OpenAddGameWindow
         {
-            get { return new RelayCommand(() => ExecuteOpenAddGameWindow()); }
+            get { return new RelayCommand(ExecuteOpenAddGameWindow); }
         }
         public RelayCommand Close {
-            get { return new RelayCommand(() => CloseApplication()); }
+            get { return new RelayCommand(CloseApplication); }
         }
 
         public MainViewModel() {
-            NumberOfBackups = "0";
+            NumberOfBackups = 0;
             HardDrives = DirectoryFinder.CreateHardDriveCollection();
             GamesList = DirectoryFinder.ReturnGamesList();
             GamesToBackup = new ObservableCollection<Game>();
@@ -219,12 +215,10 @@ namespace Saved_Game_Backup.ViewModel
             DirectoryFinder.CheckDirectories();
             SetUpInterface();
 
-            Messenger.Default.Register<string>(this, i => {
-                NumberOfBackups = string.Format("{0:N0}",i); 
+            Messenger.Default.Register<int>(this, i => {
+                NumberOfBackups = i;
                 RaisePropertyChanged(() => NumberOfBackups);
             });
-
-          
         }
 
         //~MainViewModel() {
@@ -285,7 +279,6 @@ namespace Saved_Game_Backup.ViewModel
                 return;
             var gameToMove = game;
     
-             //Make this work
             if (BackupEnabled) {
                 var result = Backup.RemoveFromAutobackup(gameToMove);
                 GamesToBackup.Remove(gameToMove);

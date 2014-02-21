@@ -117,7 +117,7 @@
                             <TextBlock Margin="3"
                                        FontSize="12"
                                        Style="{StaticResource TextStyle}"
-                                       Text="{Binding NumberOfBackups}" />
+                                       Text="{Binding NumberOfBackups, StringFormat='{}{0:#,#.}'}" />
                         </StackPanel>
                     </StackPanel>
                 </Border>
