@@ -221,7 +221,7 @@ namespace Saved_Game_Backup
                 _fileWatcherList[watcherNumber].NotifyFilter = NotifyFilters.CreationTime |  NotifyFilters.LastWrite
                                                                | NotifyFilters.FileName | NotifyFilters.DirectoryName;
                 _fileWatcherList[watcherNumber].IncludeSubdirectories = true;
-                _fileWatcherList[watcherNumber].Filter = "";
+                _fileWatcherList[watcherNumber].Filter = "*";
                 _fileWatcherList[watcherNumber].EnableRaisingEvents = true;
                 watcherNumber++;
             }
