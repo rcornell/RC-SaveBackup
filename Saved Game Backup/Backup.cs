@@ -40,6 +40,9 @@ namespace Saved_Game_Backup
         private static DateTime _lastAutoBackupTime;
         private static int _numberOfBackups = 0;
         private static CultureInfo _culture = CultureInfo.CurrentCulture;
+        private static int _numberOfRecursiveCreatedCalls = 0;
+        private static int _numberOfRecursiveRenamedCalls = 0;
+        private static int _numberOfRecursiveChangedCalls = 0;
         
         public Backup() {
             
@@ -358,14 +361,18 @@ namespace Saved_Game_Backup
 
                             var newMessage = ex.Message + " " + e.ChangeType + " " + e.OldName + " " + e.Name;
                             SBTErrorLogger.Log(newMessage); //Occurs if a game has locked access to a file.
-                            if (ex.Message.Contains("it is being used"))//Collission with game's save process is occuring. Retry rename.
-                                OnRenamed(source, e);
+                            if (ex.Message.Contains("it is being used")) {//Collission with game's save process is occuring. Retry rename.
+                                _numberOfRecursiveRenamedCalls++;
+                                Debug.WriteLine(@"Number of recursive OnRenamed calls: {0}", _numberOfRecursiveRenamedCalls);
+                                OnRenamed(source, e);                              
+                            }
                         }
                     }
             //    }
             //    break;
             //}
             //Messenger.Default.Send<DateTime>(DateTime.Now);
+            _numberOfRecursiveRenamedCalls = 0;
         }
 
         private static void OnChanged(object source, FileSystemEventArgs e) {
@@ -513,7 +520,8 @@ namespace Saved_Game_Backup
                     //Will occur if a file is temporarily written during the saving process, then deleted.
                 }
                 catch (IOException ex) {
-                    SBTErrorLogger.Log(ex.Message); //Occurs if a game has locked access to a file.
+                    var newMessage = ex.Message + " " + e.ChangeType + " " + e.Name;
+                    SBTErrorLogger.Log(newMessage); //Occurs if a game has locked access to a file.
                 }
             }
             Messenger.Default.Send<DateTime>(DateTime.Now);
@@ -615,16 +623,26 @@ namespace Saved_Game_Backup
                         }
                         activeWatcher.EnableRaisingEvents = true;
                     }
+                    Debug.WriteLine(@"SUCCESSFUL CREATE: {0}", renameDestPath);
                 }
                 catch (FileNotFoundException ex) {
                     SBTErrorLogger.Log(ex.Message);
                     //Will occur if a file is temporarily written during the saving process, then deleted.
                 }
                 catch (IOException ex) {
-                    SBTErrorLogger.Log(ex.Message); //Occurs if a game has locked access to a file.
+                    var newMessage = ex.Message + " " + e.ChangeType + " " + e.Name;
+                    SBTErrorLogger.Log(newMessage); //Occurs if a game has locked access to a file.
+                    if (ex.Message.Contains("it is being used"))
+                    {//Collission with game's save process is occuring. Retry create.
+                        _numberOfRecursiveCreatedCalls++;
+                        Debug.WriteLine(@"Number of recursive SaveCreate calls: {0}", _numberOfRecursiveCreatedCalls);
+                        SaveCreated(source, e);                
+                    }                 
                 }
             }
             Messenger.Default.Send<DateTime>(DateTime.Now);
+            //
+            _numberOfRecursiveCreatedCalls = 0;
         }
 
         /// <summary>
