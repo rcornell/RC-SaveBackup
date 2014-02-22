@@ -215,10 +215,16 @@ namespace Saved_Game_Backup.ViewModel
             DirectoryFinder.CheckDirectories();
             SetUpInterface();
 
-            Messenger.Default.Register<int>(this, i => {
-                NumberOfBackups = i;
-                RaisePropertyChanged(() => NumberOfBackups);
-            });
+            try {
+                Messenger.Default.Register<int>(this, i => {
+                    NumberOfBackups = i;
+                    RaisePropertyChanged(() => NumberOfBackups);
+                });
+            }
+            catch (Exception ex) {
+                SBTErrorLogger.Log(ex.Message);
+            }
+
         }
 
         //~MainViewModel() {
