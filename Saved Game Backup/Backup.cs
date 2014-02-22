@@ -512,7 +512,7 @@ namespace Saved_Game_Backup
                                 inStream.CopyTo(outStream);
                                 //activeWatcher.EnableRaisingEvents = true;
                                 //Debug.WriteLine(@"SaveChanged occurred for Backup #{0}. Game was {1} on {2}.", ++_numberOfBackups, autoBackupGame.Name, DateTime.Now);
-                                Messenger.Default.Send(_numberOfBackups);
+                                //Messenger.Default.Send(_numberOfBackups);
                             }
                         }
                     }
@@ -630,10 +630,13 @@ namespace Saved_Game_Backup
                                     //activeWatcher.EnableRaisingEvents = false;
                                     inStream.CopyTo(outStream);
                                     //activeWatcher.EnableRaisingEvents = true;
-                                    Debug.WriteLine(@"SUCCESSFUL CREATE: For Backup #{0} on {1}.", ++_numberOfBackups, DateTime.Now);
-                                    Debug.WriteLine(@"SUCCESSFUL CREATE: For Backup #{0} File was: {1}", _numberOfBackups, renameDestPath);
-                                    Debug.WriteLine(@"SUCCESSFUL CREATE: FOr Backup #{0} Game was: {1}", _numberOfBackups, autoBackupGame.Name);
-                                    Messenger.Default.Send(_numberOfBackups);
+                                    //Debug.WriteLine(@"SUCCESSFUL CREATE: For Backup #{0} on {1}.", ++_numberOfBackups, DateTime.Now);
+                                    //Debug.WriteLine(@"SUCCESSFUL CREATE: For Backup #{0} File was: {1}", _numberOfBackups, renameDestPath);
+                                    //Debug.WriteLine(@"SUCCESSFUL CREATE: FOr Backup #{0} Game was: {1}", _numberOfBackups, autoBackupGame.Name);
+                                    Debug.WriteLine(@"SUCCESSFUL CREATE: On {0}.", DateTime.Now);
+                                    Debug.WriteLine(@"SUCCESSFUL CREATE: File was: {0}", renameDestPath);
+                                    Debug.WriteLine(@"SUCCESSFUL CREATE: Game was: {0}", autoBackupGame.Name);
+                                    //Messenger.Default.Send(_numberOfBackups);
                                 }
                             }
                         }
