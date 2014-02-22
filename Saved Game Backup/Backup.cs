@@ -288,7 +288,7 @@ namespace Saved_Game_Backup
                     continue;
                 }
                 if (_canBackupTimer.Enabled) {
-                    Console.WriteLine("A SaveRename occurred");
+                    Console.WriteLine(@"A SaveRename is about to occur");
                     Game autoBackupGame = null;
 
                     try {
@@ -473,14 +473,13 @@ namespace Saved_Game_Backup
             var destBaseIndex = e.FullPath.IndexOf(autoBackupGame.RootFolder);
             var destTruncBase = e.FullPath.Substring(destBaseIndex);
             var renameDestPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder, destTruncBase)); //Path of new fileName in backup folder
-            Console.WriteLine(@"In SaveChanged(), newPath is {0}", renameDestPath);
+            Console.WriteLine(@"In SaveChanged(), renameDestPath is {0}", renameDestPath);
 
             if (Directory.Exists(e.FullPath) && autoBackupGame != null) {
                 //True if directory, else it's a file.
                 //Do stuff for backing up a directory here.
             } else {
                 try { 
-                    Console.WriteLine(@"In SaveChanged(), copyDestinationPath is {0}", renameDestPath);
                     if (!Directory.Exists(renameDestPath.DirectoryName))
                         Directory.CreateDirectory(renameDestPath.DirectoryName);
                     if (File.Exists(e.FullPath))
@@ -492,7 +491,7 @@ namespace Saved_Game_Backup
                                 activeWatcher.EnableRaisingEvents = false;
                                 inStream.CopyTo(outStream);
                                 activeWatcher.EnableRaisingEvents = true;
-                                Debug.WriteLine(@"Backup #{0} occurred for {1} on {2}. Type was {3}", ++_numberOfBackups, autoBackupGame.Name, DateTime.Now, e.ChangeType);
+                                Debug.WriteLine(@"SaveChanged occurred for Backup #{0}. Game was {1} on {2}.", ++_numberOfBackups, autoBackupGame.Name, DateTime.Now);
                                 Messenger.Default.Send(_numberOfBackups);
                             }
                         }
@@ -509,8 +508,48 @@ namespace Saved_Game_Backup
             Messenger.Default.Send<DateTime>(DateTime.Now);
         }
 
-        private static void SaveDeleted(object souce, FileSystemEventArgs e) {
-            Console.WriteLine("A SaveDelete occurred");
+        private static void SaveDeleted(object source, FileSystemEventArgs e) {
+            Console.WriteLine(@"A SaveDelete is about to occur");
+            Game autoBackupGame = null;
+
+            try {
+                foreach (
+                    var a in
+                        _gamesToAutoBackup.Where(
+                            a => e.FullPath.Contains(a.Name) || e.FullPath.Contains(a.RootFolder))) {
+                    autoBackupGame = a;
+                }
+                Console.WriteLine(@"In SaveDeleted(), autoBackupGame is {0}", autoBackupGame.Name);
+            }
+            catch (NullReferenceException ex) {
+                SBTErrorLogger.Log(ex);
+            }
+
+            if (autoBackupGame.RootFolder == null) {
+                var dir = new DirectoryInfo(autoBackupGame.Path);
+                autoBackupGame.RootFolder = dir.Name;
+            }
+
+            var targetBaseIndex = e.FullPath.IndexOf(autoBackupGame.RootFolder);
+            var targetTruncBase = e.FullPath.Substring(targetBaseIndex);
+            var deleteTargetPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder, targetTruncBase)); //Path of new fileName in backup folder
+            Console.WriteLine(@"In SaveDeleted(), deleteTargetPath is {0}", deleteTargetPath);
+
+            if (Directory.Exists(e.FullPath) && autoBackupGame != null) {
+                //True if directory, else it's a file.
+            } else {
+                try {
+                    if (!File.Exists(deleteTargetPath.FullName)) return; //If autobackup directory does not contain file to be deleted.
+                    File.Delete(deleteTargetPath.FullName);
+                    Debug.WriteLine(@"Delete occurred for {0} on {1}. Deleted file {2} in autobackup folder.", autoBackupGame.Name, DateTime.Now, e.Name);
+                }
+                catch (FileNotFoundException ex) {
+                    SBTErrorLogger.Log(ex);
+                }
+                catch (IOException ex) {
+                    SBTErrorLogger.Log(ex); //Occurs if a game has locked access to a file.
+                }
+            }
         }
         
         private static void SaveCreated(object source, FileSystemEventArgs e) {
@@ -540,14 +579,13 @@ namespace Saved_Game_Backup
             var destBaseIndex = e.FullPath.IndexOf(autoBackupGame.RootFolder);
             var destTruncBase = e.FullPath.Substring(destBaseIndex);
             var renameDestPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder, destTruncBase)); //Path of new fileName in backup folder
-            Console.WriteLine(@"In SaveChanged(), newPath is {0}", renameDestPath);
+            Console.WriteLine(@"In SaveCreated(), renameDestPath is {0}", renameDestPath);
 
             if (Directory.Exists(e.FullPath) && autoBackupGame != null) {
                 //True if directory, else it's a file.
                 //Do stuff for backing up a directory here.
             } else {
                 try {
-                    Console.WriteLine(@"In SaveCreated(), copyDestinationPath is {0}", renameDestPath);
                     if (!Directory.Exists(renameDestPath.DirectoryName))
                         Directory.CreateDirectory(renameDestPath.DirectoryName);
                     if (File.Exists(e.FullPath)) {
@@ -557,7 +595,7 @@ namespace Saved_Game_Backup
                                 activeWatcher.EnableRaisingEvents = false;
                                 inStream.CopyTo(outStream);
                                 activeWatcher.EnableRaisingEvents = true;
-                                Debug.WriteLine(@"Backup #{0} occurred for {1} on {2}. Type was {3}", ++_numberOfBackups, autoBackupGame.Name, DateTime.Now, e.ChangeType);
+                                Debug.WriteLine(@"SaveCreated occurred for Backup #{0}. Game was {1} on {2}.", ++_numberOfBackups, autoBackupGame.Name, DateTime.Now);
                                 Messenger.Default.Send(_numberOfBackups);
                             }
                         }
