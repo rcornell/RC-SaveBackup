@@ -194,7 +194,6 @@ namespace Saved_Game_Backup
             ActivateAutoBackup(gamesToBackup, specifiedFolder);
             return true;
         }
-
         
         public static void ActivateAutoBackup(ObservableCollection<Game> gamesToBackup, string specifiedFolder = null) {
             _delayTimer = new Timer { Interval = 5000, AutoReset = true};
@@ -230,8 +229,6 @@ namespace Saved_Game_Backup
                 watcherNumber++;
             }
         }
-
-        
 
         public static BackupResultHelper RemoveFromAutobackup(Game game) {
             if (!_fileWatcherList.Any())
@@ -514,7 +511,7 @@ namespace Saved_Game_Backup
                                 //activeWatcher.EnableRaisingEvents = false;
                                 inStream.CopyTo(outStream);
                                 //activeWatcher.EnableRaisingEvents = true;
-                                Debug.WriteLine(@"SaveChanged occurred for Backup #{0}. Game was {1} on {2}.", ++_numberOfBackups, autoBackupGame.Name, DateTime.Now);
+                                //Debug.WriteLine(@"SaveChanged occurred for Backup #{0}. Game was {1} on {2}.", ++_numberOfBackups, autoBackupGame.Name, DateTime.Now);
                                 Messenger.Default.Send(_numberOfBackups);
                             }
                         }
@@ -634,7 +631,7 @@ namespace Saved_Game_Backup
                                     inStream.CopyTo(outStream);
                                     //activeWatcher.EnableRaisingEvents = true;
                                     Debug.WriteLine(@"SUCCESSFUL CREATE: {0}", renameDestPath);
-                                    //Debug.WriteLine(@"SaveCreated occurred for Backup #{0}. Game was {1} on {2}.", ++_numberOfBackups, autoBackupGame.Name, DateTime.Now);
+                                    Debug.WriteLine(@"SaveCreated occurred for Backup #{0}. Game was {1} on {2}.", ++_numberOfBackups, autoBackupGame.Name, DateTime.Now);
                                     Messenger.Default.Send(_numberOfBackups);
                                 }
                             }
@@ -642,7 +639,8 @@ namespace Saved_Game_Backup
                         catch (FileNotFoundException ex)
                         {
                             //activeWatcher.EnableRaisingEvents = true;
-                            SBTErrorLogger.Log(ex.Message);
+                            var newMessage = ex.Message + " " + e.ChangeType + " " + e.Name;
+                            SBTErrorLogger.Log(newMessage);
                             //Will occur if a file is temporarily written during the saving process, then deleted.
                         }
                         catch (IOException ex)
@@ -650,12 +648,11 @@ namespace Saved_Game_Backup
                             //activeWatcher.EnableRaisingEvents = true;
                             var newMessage = ex.Message + " " + e.ChangeType + " " + e.Name;
                             SBTErrorLogger.Log(newMessage); //Occurs if a game has locked access to a file.
-                            //if (ex.Message.Contains("it is being used"))
-                            //{//Collission with game's save process is occuring. Retry create.
-                            //    _numberOfRecursiveCreatedCalls++;
-                            //    Debug.WriteLine(@"Number of recursive SaveCreate calls: {0}", _numberOfRecursiveCreatedCalls);
-                            //    SaveCreated(source, e);
-                            //}                 
+                            if (ex.Message.Contains("it is being used")) {//Collission with game's save process is occuring. Retry create.
+                                _numberOfRecursiveCreatedCalls++;
+                                Debug.WriteLine(@"Number of recursive SaveCreate calls: {0}", _numberOfRecursiveCreatedCalls);
+                                SaveCreated(source, e);
+                            }                 
                         }
                         if (!activeWatcher.EnableRaisingEvents)
                             activeWatcher.EnableRaisingEvents = true;
