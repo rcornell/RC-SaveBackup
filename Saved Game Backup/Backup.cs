@@ -124,10 +124,10 @@ namespace Saved_Game_Backup
                     file.CopyTo(destinationPath.ToString(), true);
                 }
                 catch (IOException ex) {
-                    SBTErrorLogger.Log(ex);
+                    SBTErrorLogger.Log(ex.Message);
                 }
                 catch (NullReferenceException ex) {
-                    SBTErrorLogger.Log(ex); 
+                    SBTErrorLogger.Log(ex.Message); 
                 }
             }
         }
@@ -302,7 +302,7 @@ namespace Saved_Game_Backup
                         Console.WriteLine(@"In OnRenamed(), autoBackupGame is {0}", autoBackupGame.Name);
                     }
                     catch (NullReferenceException ex) {
-                        SBTErrorLogger.Log(ex);
+                        SBTErrorLogger.Log(ex.Message);
                     }
 
                     if (autoBackupGame.RootFolder == null) {
@@ -351,12 +351,14 @@ namespace Saved_Game_Backup
                             }
                         }
                         catch (FileNotFoundException ex) {
-                            SBTErrorLogger.Log(ex);
+                            SBTErrorLogger.Log(ex.Message);
                             //Will occur if a file is temporarily written during the saving process, then deleted.
                         }
                         catch (IOException ex) {
-                            SBTErrorLogger.Log(ex); //Occurs if a game has locked access to a file.
-                            if(ex.Message.Contains("in use"))//Collission with game's save process is occuring. Retry rename.
+
+                            var newMessage = ex.Message + " " + e.ChangeType + " " + e.OldName + " " + e.Name;
+                            SBTErrorLogger.Log(newMessage); //Occurs if a game has locked access to a file.
+                            if (ex.Message.Contains("it is being used"))//Collission with game's save process is occuring. Retry rename.
                                 OnRenamed(source, e);
                         }
                     }
@@ -466,7 +468,7 @@ namespace Saved_Game_Backup
                // Console.WriteLine(@"In SaveChanged(), autoBackupGame is {0}", autoBackupGame.Name);
             }
             catch (NullReferenceException ex) {
-                SBTErrorLogger.Log(ex);
+                SBTErrorLogger.Log(ex.Message);
             }
 
             if (autoBackupGame.RootFolder == null) {
@@ -507,11 +509,11 @@ namespace Saved_Game_Backup
                     }
                 }
                 catch (FileNotFoundException ex) {
-                    SBTErrorLogger.Log(ex);
+                    SBTErrorLogger.Log(ex.Message);
                     //Will occur if a file is temporarily written during the saving process, then deleted.
                 }
                 catch (IOException ex) {
-                    SBTErrorLogger.Log(ex); //Occurs if a game has locked access to a file.
+                    SBTErrorLogger.Log(ex.Message); //Occurs if a game has locked access to a file.
                 }
             }
             Messenger.Default.Send<DateTime>(DateTime.Now);
@@ -531,7 +533,7 @@ namespace Saved_Game_Backup
                 //Console.WriteLine(@"In SaveDeleted(), autoBackupGame is {0}", autoBackupGame.Name);
             }
             catch (NullReferenceException ex) {
-                SBTErrorLogger.Log(ex);
+                SBTErrorLogger.Log(ex.Message);
             }
 
             if (autoBackupGame.RootFolder == null) {
@@ -553,10 +555,10 @@ namespace Saved_Game_Backup
                     //Debug.WriteLine(@"Delete occurred for {0} on {1}. Deleted file {2} in autobackup folder.", autoBackupGame.Name, DateTime.Now, e.Name);
                 }
                 catch (FileNotFoundException ex) {
-                    SBTErrorLogger.Log(ex);
+                    SBTErrorLogger.Log(ex.Message);
                 }
                 catch (IOException ex) {
-                    SBTErrorLogger.Log(ex); //Occurs if a game has locked access to a file.
+                    SBTErrorLogger.Log(ex.Message); //Occurs if a game has locked access to a file.
                 }
             }
         }
@@ -575,7 +577,7 @@ namespace Saved_Game_Backup
                // Console.WriteLine(@"In SaveCreated(), autoBackupGame is {0}", autoBackupGame.Name);
             }
             catch (NullReferenceException ex) {
-                SBTErrorLogger.Log(ex);
+                SBTErrorLogger.Log(ex.Message);
             }
 
             if (autoBackupGame.RootFolder == null) {
@@ -615,11 +617,11 @@ namespace Saved_Game_Backup
                     }
                 }
                 catch (FileNotFoundException ex) {
-                    SBTErrorLogger.Log(ex);
+                    SBTErrorLogger.Log(ex.Message);
                     //Will occur if a file is temporarily written during the saving process, then deleted.
                 }
                 catch (IOException ex) {
-                    SBTErrorLogger.Log(ex); //Occurs if a game has locked access to a file.
+                    SBTErrorLogger.Log(ex.Message); //Occurs if a game has locked access to a file.
                 }
             }
             Messenger.Default.Send<DateTime>(DateTime.Now);
@@ -650,7 +652,7 @@ namespace Saved_Game_Backup
                 }
             }
             catch (Exception ex) {
-                SBTErrorLogger.Log(ex);
+                SBTErrorLogger.Log(ex.Message);
             }
             return editedList;
         }

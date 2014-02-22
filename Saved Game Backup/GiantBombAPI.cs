@@ -119,7 +119,7 @@ namespace Saved_Game_Backup
                 gameDataChanged = true;
             }
             catch (ArgumentOutOfRangeException ex) {
-                SBTErrorLogger.Log(ex);
+                SBTErrorLogger.Log(ex.Message);
             }
         }
 
@@ -138,7 +138,7 @@ namespace Saved_Game_Backup
                 game.ThumbnailPath = blob.results.image.thumb_url;
             }
             catch (RuntimeBinderException ex) {
-                SBTErrorLogger.Log(ex);
+                SBTErrorLogger.Log(ex.Message);
                 game.ThumbnailPath = @"pack://application:,,,/Assets/NoThumb.jpg";
             }
         }
@@ -167,7 +167,7 @@ namespace Saved_Game_Backup
                 gameDataChanged = true;
             }
             catch (Exception ex) {
-                SBTErrorLogger.Log(ex);
+                SBTErrorLogger.Log(ex.Message);
             }
         }
 
@@ -207,7 +207,7 @@ namespace Saved_Game_Backup
                 File.WriteAllText(GameListPath, fileToWrite);
             }
             catch (Exception ex) {
-                SBTErrorLogger.Log(ex);
+                SBTErrorLogger.Log(ex.Message);
             }
         }
 

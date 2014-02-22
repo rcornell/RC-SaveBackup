@@ -30,7 +30,7 @@ namespace Saved_Game_Backup
                     return prefs;
                 }
                 catch (SerializationException ex) {
-                    SBTErrorLogger.Log(ex);
+                    SBTErrorLogger.Log(ex.Message);
                 }
                 return new UserPrefs(0,5,null, "");
             }

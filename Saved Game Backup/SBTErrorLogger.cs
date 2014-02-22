@@ -12,10 +12,10 @@ namespace Saved_Game_Backup
         private static readonly string MyDocs = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         private const string SbtPath = "\\Save Backup Tool\\Error\\";
 
-        public static void Log(Exception ex) {
+        public static void Log(string ex) {
             Directory.CreateDirectory(MyDocs + SbtPath);
             var sb = new StringBuilder();
-            sb.AppendLine(ex.Message);
+            sb.AppendLine(ex);
             //if (!string.IsNullOrWhiteSpace(ex.InnerException.Message)) sb.AppendLine(ex.InnerException.Message);
             //if (!string.IsNullOrWhiteSpace(ex.Source)) sb.AppendLine(ex.Source);
             // if (!string.IsNullOrWhiteSpace(ex.StackTrace)) sb.AppendLine(ex.StackTrace);

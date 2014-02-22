@@ -192,7 +192,7 @@ namespace Saved_Game_Backup {
                 gameDataChanged = true;
             }
             catch (Exception ex) {
-                SBTErrorLogger.Log(ex);
+                SBTErrorLogger.Log(ex.Message);
             }
         }
 
@@ -216,7 +216,7 @@ namespace Saved_Game_Backup {
                 File.WriteAllText(GameListPath, fileToWrite);
             }
             catch (Exception ex) {
-                SBTErrorLogger.Log(ex);
+                SBTErrorLogger.Log(ex.Message);
             }
         }
     }
