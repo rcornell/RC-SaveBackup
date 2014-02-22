@@ -194,8 +194,6 @@ namespace Saved_Game_Backup
 
         
         public static void ActivateAutoBackup(ObservableCollection<Game> gamesToBackup, string specifiedFolder = null) {
-
-            //_numberOfBackups = 1234;
             _delayTimer = new Timer { Interval = 5000, AutoReset = true};
             _delayTimer.Elapsed += _delayTimer_Elapsed;
             
@@ -205,7 +203,7 @@ namespace Saved_Game_Backup
             _lastAutoBackupTime = DateTime.Now;
 
             _fileWatcherList = new List<FileSystemWatcher>();
-            _gamesToAutoBackup = gamesToBackup;
+            _gamesToAutoBackup = gamesToBackup; //Is this line needed?
 
             if (_specifiedAutoBackupFolder == null) {
                 var fb = new FolderBrowserDialog() {SelectedPath = _hardDrive, ShowNewFolderButton = true};
@@ -219,7 +217,7 @@ namespace Saved_Game_Backup
                 _fileWatcherList[watcherNumber].Changed += OnChanged;
                 _fileWatcherList[watcherNumber].Created += OnChanged;
                 _fileWatcherList[watcherNumber].Deleted += OnChanged;
-                _fileWatcherList[watcherNumber].Renamed += OnChanged;
+                _fileWatcherList[watcherNumber].Renamed += OnRenamed;
                 _fileWatcherList[watcherNumber].NotifyFilter = NotifyFilters.CreationTime |  NotifyFilters.LastWrite
                                                                | NotifyFilters.FileName | NotifyFilters.DirectoryName;
                 _fileWatcherList[watcherNumber].IncludeSubdirectories = true;
@@ -277,6 +275,101 @@ namespace Saved_Game_Backup
             _canBackupTimer.Enabled = false;
         }
 
+        private static void OnRenamed(object source, RenamedEventArgs e) {
+
+            while (true) {
+                if (!_delayTimer.Enabled && !_canBackupTimer.Enabled &&
+                    (DateTime.Now - _lastAutoBackupTime).Seconds > 10) {
+                    _delayTimer.Enabled = true;
+                    _delayTimer.Start();
+                    continue;
+                }
+                if (!_canBackupTimer.Enabled && _delayTimer.Enabled) {
+                    continue;
+                }
+                if (_canBackupTimer.Enabled) {
+
+
+
+                    Console.WriteLine("A SaveRename occurred");
+                    Game autoBackupGame = null;
+
+                    try {
+                        foreach (
+                            var a in
+                                _gamesToAutoBackup.Where(
+                                    a => e.FullPath.Contains(a.Name) || e.FullPath.Contains(a.RootFolder))) {
+                            autoBackupGame = a;
+                        }
+                        Console.WriteLine(@"In SaveRenamed(), autoBackupGame is {0}", autoBackupGame.Name);
+                    }
+                    catch (NullReferenceException ex) {
+                        SBTErrorLogger.Log(ex);
+                    }
+
+                    if (autoBackupGame.RootFolder == null) {
+                        var dir = new DirectoryInfo(autoBackupGame.Path);
+                        autoBackupGame.RootFolder = dir.Name;
+                    }
+
+                    var activeWatcher = new FileSystemWatcher();
+                    foreach (var watcher in _fileWatcherList.Where(w => w.Path == autoBackupGame.Path)) {
+                        activeWatcher = watcher;
+                    }
+
+                    var indexOfGamePart = e.FullPath.IndexOf(autoBackupGame.RootFolder);
+                    var friendlyPath = e.FullPath.Substring(0, indexOfGamePart);
+                    var newPath = e.FullPath.Replace(friendlyPath, "\\");
+                    Console.WriteLine(@"In SaveRenamed(), newPath is {0}", newPath);
+
+                    var originBaseIndex = e.OldFullPath.IndexOf(autoBackupGame.RootFolder);
+                    var originTruncBase = e.OldFullPath.Substring(originBaseIndex);
+                    var renameOriginPath = Path.Combine(_specifiedAutoBackupFolder, originTruncBase);
+
+                    var destBaseIndex = e.FullPath.IndexOf(autoBackupGame.RootFolder);
+                    var destTruncBase = e.FullPath.Substring(destBaseIndex);
+                    var renameDestPath = Path.Combine(_specifiedAutoBackupFolder, destTruncBase);
+
+                    if (Directory.Exists(e.FullPath) && autoBackupGame != null) {
+                        //True if directory, else it's a file.
+                        //Do stuff for backing up a directory here.
+                    }
+                    else {
+                        try {
+                            var copyDestinationPath = new FileInfo(_specifiedAutoBackupFolder + newPath);
+                            Console.WriteLine(@"In SaveRenamed(), copyDestinationPath is {0}", copyDestinationPath);
+                            if (!Directory.Exists(copyDestinationPath.DirectoryName))
+                                Directory.CreateDirectory(copyDestinationPath.DirectoryName);
+                            if (File.Exists(e.FullPath)) {
+                                using (var inStream = new FileStream(e.FullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
+                                    using (var outStream = new FileStream(copyDestinationPath.ToString(), FileMode.Create, FileAccess.ReadWrite, FileShare.Read)) {
+                                activeWatcher.EnableRaisingEvents = false;
+                                inStream.CopyTo(outStream);
+                                activeWatcher.EnableRaisingEvents = true;
+                                Debug.WriteLine(@"Rename occurred for {0} on {1}.", autoBackupGame.Name, DateTime.Now);
+                                    }
+                                }
+                                
+                            }
+                            else {
+                                File.Copy(renameOriginPath, renameDestPath, true);
+                                File.Delete(renameOriginPath);
+                                Debug.WriteLine(@"Rename occurred for {0} on {1}.", autoBackupGame.Name, DateTime.Now);    
+                            }
+                        }
+                        catch (FileNotFoundException ex) {
+                            SBTErrorLogger.Log(ex);
+                            //Will occur if a file is temporarily written during the saving process, then deleted.
+                        }
+                        catch (IOException ex) {
+                            SBTErrorLogger.Log(ex); //Occurs if a game has locked access to a file.
+                        }
+                    }
+                }
+                break;
+            }
+            Messenger.Default.Send<DateTime>(DateTime.Now);
+        }
 
         private static void OnChanged(object source, FileSystemEventArgs e) {
 
@@ -297,11 +390,8 @@ namespace Saved_Game_Backup
                         case "Deleted":
                             SaveDeleted(source, e);
                             break;
-                        case "Created":
-                            SaveCreated(source, e);
-                            break;
                         default:
-                            SaveRenamed(source, e);
+                            SaveCreated(source, e);
                             break;
                     }
 
@@ -433,11 +523,7 @@ namespace Saved_Game_Backup
         private static void SaveDeleted(object souce, FileSystemEventArgs e) {
             Console.WriteLine("A SaveDelete occurred");
         }
-
-        private static void SaveRenamed(object source, FileSystemEventArgs e) {
-            Console.WriteLine("A SaveRename occurred");
-        }
-
+        
         private static void SaveCreated(object source, FileSystemEventArgs e) {
             Game autoBackupGame = null;
 
