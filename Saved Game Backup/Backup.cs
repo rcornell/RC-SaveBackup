@@ -279,7 +279,7 @@ namespace Saved_Game_Backup
 
             while (true) {
                 if (!_delayTimer.Enabled && !_canBackupTimer.Enabled &&
-                    (DateTime.Now - _lastAutoBackupTime).Seconds > 1) {
+                    (DateTime.Now - _lastAutoBackupTime).Seconds > 10) {
                     _delayTimer.Enabled = true;
                     _delayTimer.Start();
                     continue;
@@ -316,34 +316,32 @@ namespace Saved_Game_Backup
                     var destBaseIndex = e.FullPath.IndexOf(autoBackupGame.RootFolder);
                     var destTruncBase = e.FullPath.Substring(destBaseIndex);
                     var renameDestPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder, destTruncBase)); //Path of new fileName in backup folder
-                    Console.WriteLine(@"In OnRenamed(), renameDestPath is {0}", renameDestPath);
+                    Console.WriteLine(@"In OnRenamed(), newPath is {0}", renameDestPath);
 
                     if (Directory.Exists(e.FullPath) && autoBackupGame != null) {
                         //True if directory, else it's a file.
                         //Do stuff for backing up a directory here.
                     }
                     else {
-                        var activeWatcher = new FileSystemWatcher();
                         try {
                             //If autobackup target directory contains the old file name, use File.Copy()
                             //If autobackup target directory does not contain the old file name, copy the new file from gamesave directory.
-                            Console.WriteLine(@"In OnRenamed(), renameDestPath is {0}", renameDestPath);
+                            Console.WriteLine(@"In OnRenamed(), copyDestinationPath is {0}", renameDestPath);
                             if (!Directory.Exists(renameDestPath.DirectoryName))
                                 Directory.CreateDirectory(renameDestPath.DirectoryName);
                             if (!File.Exists(renameOriginPath)) {
                                 using (var inStream = new FileStream(e.FullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
                                     using (var outStream = new FileStream(renameDestPath.FullName, FileMode.Create, FileAccess.ReadWrite, FileShare.Read)) {
-                                        
+                                        var activeWatcher = new FileSystemWatcher();
                                         foreach (var watcher in _fileWatcherList.Where(w => w.Path == autoBackupGame.Path)) {
                                             activeWatcher = watcher;
                                         }
                                         activeWatcher.EnableRaisingEvents = false;
                                         inStream.CopyTo(outStream);
-                                        
+                                        activeWatcher.EnableRaisingEvents = true;
                                         Debug.WriteLine(@"Rename occurred for {0} on {1}. Old filename: {2}. New filename: {3}.", autoBackupGame.Name, DateTime.Now, e.OldName, e.Name);
                                     }
                                 }
-                                activeWatcher.EnableRaisingEvents = true;
                             } else {
                                 File.Copy(renameOriginPath, renameDestPath.FullName, true);
                                 File.Delete(renameOriginPath);
@@ -493,11 +491,10 @@ namespace Saved_Game_Backup
                                 activeWatcher.EnableRaisingEvents = false;
                                 inStream.CopyTo(outStream);
                                 activeWatcher.EnableRaisingEvents = true;
-                                Debug.WriteLine(@"SaveChanged occurred for Backup #{0}, file {1}. Game was {2} on {3}.", ++_numberOfBackups, e.Name, autoBackupGame.Name, DateTime.Now);
+                                Debug.WriteLine(@"SaveChanged occurred for Backup #{0}. Game was {1} on {2}.", ++_numberOfBackups, autoBackupGame.Name, DateTime.Now);
                                 Messenger.Default.Send(_numberOfBackups);
                             }
                         }
-                        activeWatcher.EnableRaisingEvents = true;
                     }
                 }
                 catch (FileNotFoundException ex) {
