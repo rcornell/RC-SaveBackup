@@ -288,9 +288,6 @@ namespace Saved_Game_Backup
                     continue;
                 }
                 if (_canBackupTimer.Enabled) {
-
-
-
                     Console.WriteLine("A SaveRename occurred");
                     Game autoBackupGame = null;
 
@@ -388,7 +385,6 @@ namespace Saved_Game_Backup
                             SaveCreated(source, e);
                             break;
                     }
-
                     #region old code
                     //Game autoBackupGame = null;
                     //Console.WriteLine(@"autoBackupGame set");
@@ -474,25 +470,24 @@ namespace Saved_Game_Backup
                 activeWatcher = watcher;
             }
 
-            var indexOfGamePart = e.FullPath.IndexOf(autoBackupGame.RootFolder);
-            var friendlyPath = e.FullPath.Substring(0, indexOfGamePart);
-            var newPath = e.FullPath.Replace(friendlyPath, "\\");
-            Console.WriteLine(@"In SaveChanged(), newPath is {0}", newPath);
+            var destBaseIndex = e.FullPath.IndexOf(autoBackupGame.RootFolder);
+            var destTruncBase = e.FullPath.Substring(destBaseIndex);
+            var renameDestPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder, destTruncBase)); //Path of new fileName in backup folder
+            Console.WriteLine(@"In SaveChanged(), newPath is {0}", renameDestPath);
 
             if (Directory.Exists(e.FullPath) && autoBackupGame != null) {
                 //True if directory, else it's a file.
                 //Do stuff for backing up a directory here.
             } else {
                 try { 
-                    var copyDestinationPath = new FileInfo(_specifiedAutoBackupFolder + newPath);
-                    Console.WriteLine(@"In SaveChanged(), copyDestinationPath is {0}", copyDestinationPath);
-                    if (!Directory.Exists(copyDestinationPath.DirectoryName))
-                        Directory.CreateDirectory(copyDestinationPath.DirectoryName);
+                    Console.WriteLine(@"In SaveChanged(), copyDestinationPath is {0}", renameDestPath);
+                    if (!Directory.Exists(renameDestPath.DirectoryName))
+                        Directory.CreateDirectory(renameDestPath.DirectoryName);
                     if (File.Exists(e.FullPath))
                     {
                         using (var inStream = new FileStream(e.FullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                         {
-                            using (var outStream = new FileStream(copyDestinationPath.ToString(), FileMode.Create,
+                            using (var outStream = new FileStream(renameDestPath.ToString(), FileMode.Create,
                                     FileAccess.ReadWrite, FileShare.Read)) {
                                 activeWatcher.EnableRaisingEvents = false;
                                 inStream.CopyTo(outStream);
@@ -542,23 +537,22 @@ namespace Saved_Game_Backup
                 activeWatcher = watcher;
             }
 
-            var indexOfGamePart = e.FullPath.IndexOf(autoBackupGame.RootFolder);
-            var friendlyPath = e.FullPath.Substring(0, indexOfGamePart);
-            var newPath = e.FullPath.Replace(friendlyPath, "\\");
-            Console.WriteLine(@"In SaveCreated(), newPath is {0}", newPath);
+            var destBaseIndex = e.FullPath.IndexOf(autoBackupGame.RootFolder);
+            var destTruncBase = e.FullPath.Substring(destBaseIndex);
+            var renameDestPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder, destTruncBase)); //Path of new fileName in backup folder
+            Console.WriteLine(@"In SaveChanged(), newPath is {0}", renameDestPath);
 
             if (Directory.Exists(e.FullPath) && autoBackupGame != null) {
                 //True if directory, else it's a file.
                 //Do stuff for backing up a directory here.
             } else {
                 try {
-                    var copyDestinationPath = new FileInfo(_specifiedAutoBackupFolder + newPath);
-                    Console.WriteLine(@"In SaveCreated(), copyDestinationPath is {0}", copyDestinationPath);
-                    if (!Directory.Exists(copyDestinationPath.DirectoryName))
-                        Directory.CreateDirectory(copyDestinationPath.DirectoryName);
+                    Console.WriteLine(@"In SaveCreated(), copyDestinationPath is {0}", renameDestPath);
+                    if (!Directory.Exists(renameDestPath.DirectoryName))
+                        Directory.CreateDirectory(renameDestPath.DirectoryName);
                     if (File.Exists(e.FullPath)) {
                         using (var inStream = new FileStream(e.FullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
-                            using (var outStream = new FileStream(copyDestinationPath.ToString(), FileMode.Create,
+                            using (var outStream = new FileStream(renameDestPath.ToString(), FileMode.Create,
                                     FileAccess.ReadWrite, FileShare.Read)) {
                                 activeWatcher.EnableRaisingEvents = false;
                                 inStream.CopyTo(outStream);
