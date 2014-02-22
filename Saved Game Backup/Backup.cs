@@ -280,17 +280,17 @@ namespace Saved_Game_Backup
 
         private static void OnRenamed(object source, RenamedEventArgs e) {
             Debug.WriteLine(@"Event type: {0}. Old file name:{1}. New file name: {2}. Time: {3}.{4}", e.ChangeType, e.OldName, e.Name, DateTime.Now.ToLongTimeString(), DateTime.Now.Millisecond);
-            //while (true) {
-            //    if (!_delayTimer.Enabled && !_canBackupTimer.Enabled &&
-            //        (DateTime.Now - _lastAutoBackupTime).Seconds > 10) {
-            //        _delayTimer.Enabled = true;
-            //        _delayTimer.Start();
-            //        continue;
-            //    }
-            //    if (!_canBackupTimer.Enabled && _delayTimer.Enabled) {
-            //        continue;
-            //    }
-            //    if (_canBackupTimer.Enabled) {
+            while (true) {
+                if (!_delayTimer.Enabled && !_canBackupTimer.Enabled &&
+                    (DateTime.Now - _lastAutoBackupTime).Seconds > 10) {
+                    _delayTimer.Enabled = true;
+                    _delayTimer.Start();
+                    continue;
+                }
+                if (!_canBackupTimer.Enabled && _delayTimer.Enabled) {
+                    continue;
+                }
+                if (_canBackupTimer.Enabled) {
                     Console.WriteLine(@"A SaveRename is about to occur");
                     #region RenameSetupStuff
                     Game autoBackupGame = null;
@@ -368,30 +368,30 @@ namespace Saved_Game_Backup
                             }
                         }
                     }
-            //    }
-            //    break;
-            //}
-            //Messenger.Default.Send<DateTime>(DateTime.Now);
+                }
+                break;
+            }
+            Messenger.Default.Send<DateTime>(DateTime.Now);
             _numberOfRecursiveRenamedCalls = 0;
         }
 
         private static void OnChanged(object source, FileSystemEventArgs e) {
             Debug.WriteLine(@"Event type: {0}. File name:{1}. Time: {2}.{3}", e.ChangeType, e.Name, DateTime.Now.ToLongTimeString(), DateTime.Now.Millisecond);
 
-            //while (true)
-            //{
-            //    if (!_delayTimer.Enabled && !_canBackupTimer.Enabled && (DateTime.Now - _lastAutoBackupTime).Seconds > 1)
-            //    {
-            //        _delayTimer.Enabled = true;
-            //        _delayTimer.Start();
-            //        continue;
-            //    }
-            //    if (!_canBackupTimer.Enabled && _delayTimer.Enabled)
-            //    {
-            //        continue;
-            //    }
-            //    if (_canBackupTimer.Enabled)
-            //    {
+            while (true)
+            {
+                if (!_delayTimer.Enabled && !_canBackupTimer.Enabled && (DateTime.Now - _lastAutoBackupTime).Seconds > 1)
+                {
+                    _delayTimer.Enabled = true;
+                    _delayTimer.Start();
+                    continue;
+                }
+                if (!_canBackupTimer.Enabled && _delayTimer.Enabled)
+                {
+                    continue;
+                }
+                if (_canBackupTimer.Enabled)
+                {
             switch (e.ChangeType.ToString()) {
                 case "Changed":
                     SaveChanged(source, e);
@@ -403,7 +403,7 @@ namespace Saved_Game_Backup
                     SaveCreated(source, e);
                     break;
             }
-            //        #region old code
+                    #region old code
             //        //Game autoBackupGame = null;
             //        //Console.WriteLine(@"autoBackupGame set");
 
@@ -457,13 +457,14 @@ namespace Saved_Game_Backup
             //        //    }
             //        //}
             //        //Messenger.Default.Send<DateTime>(DateTime.Now);
-            //        #endregion
-            //    }
-            //    break;
-            //}
+                    #endregion
+                }
+                break;
+            }
         }
 
         private static void SaveChanged(object source, FileSystemEventArgs e) {
+            Debug.WriteLine(@"Event type: {0}. File name:{1}. Time: {2}.{3}", e.ChangeType, e.Name, DateTime.Now.ToLongTimeString(), DateTime.Now.Millisecond);
             Game autoBackupGame = null;
 
             try {
@@ -472,7 +473,7 @@ namespace Saved_Game_Backup
                         _gamesToAutoBackup.Where(a => e.FullPath.Contains(a.Name) || e.FullPath.Contains(a.RootFolder))) {
                     autoBackupGame = a;
                 }
-               // Console.WriteLine(@"In SaveChanged(), autoBackupGame is {0}", autoBackupGame.Name);
+                Console.WriteLine(@"In SaveChanged(), autoBackupGame is {0}", autoBackupGame.Name);
             }
             catch (NullReferenceException ex) {
                 SBTErrorLogger.Log(ex.Message);
@@ -491,7 +492,7 @@ namespace Saved_Game_Backup
             var destBaseIndex = e.FullPath.IndexOf(autoBackupGame.RootFolder);
             var destTruncBase = e.FullPath.Substring(destBaseIndex);
             var renameDestPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder, destTruncBase)); //Path of new fileName in backup folder
-            //Console.WriteLine(@"In SaveChanged(), renameDestPath is {0}", renameDestPath);
+            Console.WriteLine(@"In SaveChanged(), renameDestPath is {0}", renameDestPath);
 
             if (Directory.Exists(e.FullPath) && autoBackupGame != null) {
                 //True if directory, else it's a file.
@@ -509,7 +510,7 @@ namespace Saved_Game_Backup
                                 activeWatcher.EnableRaisingEvents = false;
                                 inStream.CopyTo(outStream);
                                 activeWatcher.EnableRaisingEvents = true;
-                                //Debug.WriteLine(@"SaveChanged occurred for Backup #{0}. Game was {1} on {2}.", ++_numberOfBackups, autoBackupGame.Name, DateTime.Now);
+                                Debug.WriteLine(@"SaveChanged occurred for Backup #{0}. Game was {1} on {2}.", ++_numberOfBackups, autoBackupGame.Name, DateTime.Now);
                                 Messenger.Default.Send(_numberOfBackups);
                             }
                         }
@@ -522,9 +523,15 @@ namespace Saved_Game_Backup
                 catch (IOException ex) {
                     var newMessage = ex.Message + " " + e.ChangeType + " " + e.Name;
                     SBTErrorLogger.Log(newMessage); //Occurs if a game has locked access to a file.
+                    if (ex.Message.Contains("it is being used")) {//Collission with game's save process is occuring. Retry Change.
+                        _numberOfRecursiveChangedCalls++;
+                        Debug.WriteLine(@"Number of recursive SaveChanged calls: {0}", _numberOfRecursiveChangedCalls);
+                        SaveChanged(source, e);
+                    }
                 }
             }
             Messenger.Default.Send<DateTime>(DateTime.Now);
+            _numberOfRecursiveChangedCalls = 0;
         }
 
         private static void SaveDeleted(object source, FileSystemEventArgs e) {
