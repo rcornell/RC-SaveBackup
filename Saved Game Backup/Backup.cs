@@ -74,14 +74,14 @@ namespace Saved_Game_Backup
 
             //Can this be simplified?
             if (backupType == BackupType.Autobackup && success && !backupEnabled){
-                message = "Autobackup Enabled!";
+                message = @"Autobackup Enabled!";
                 backupEnabled = true;
             } else if (backupType == BackupType.Autobackup && success && backupEnabled) {
-                message = "Autobackup Disabled!";
+                message = @"Autobackup Disabled!";
                 backupEnabled = false;
             }
             else {
-                message = "Backup Complete!";
+                message = @"Backup Complete!";
                 Messenger.Default.Send<DateTime>(DateTime.Now);
             }
 
@@ -361,7 +361,7 @@ namespace Saved_Game_Backup
                             //activeWatcher.EnableRaisingEvents = true;
                             var newMessage = ex.Message + " " + e.ChangeType + " " + e.OldName + " " + e.Name;
                             SBTErrorLogger.Log(newMessage); //Occurs if a game has locked access to a file.
-                            if (ex.Message.Contains("it is being used")) {//Collission with game's save process is occuring. Retry rename.
+                            if (ex.Message.Contains(@"it is being used")) {//Collission with game's save process is occuring. Retry rename.
                                 _numberOfRecursiveRenamedCalls++;
                                 Debug.WriteLine(@"Number of recursive OnRenamed calls: {0}", _numberOfRecursiveRenamedCalls);
                                 OnRenamed(source, e);                              
@@ -499,15 +499,15 @@ namespace Saved_Game_Backup
                 //True if directory, else it's a file.
                 //Do stuff for backing up a directory here.
             } else {
-                try { 
+                try {
                     if (!Directory.Exists(renameDestPath.DirectoryName))
                         Directory.CreateDirectory(renameDestPath.DirectoryName);
-                    if (File.Exists(e.FullPath))
-                    {
-                        using (var inStream = new FileStream(e.FullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                        {
+                    if (File.Exists(e.FullPath)) {
+                        using (
+                            var inStream = new FileStream(e.FullPath, FileMode.Open, FileAccess.Read,
+                                FileShare.ReadWrite)) {
                             using (var outStream = new FileStream(renameDestPath.ToString(), FileMode.Create,
-                                    FileAccess.ReadWrite, FileShare.Read)) {
+                                FileAccess.ReadWrite, FileShare.Read)) {
                                 //activeWatcher.EnableRaisingEvents = false;
                                 inStream.CopyTo(outStream);
                                 //activeWatcher.EnableRaisingEvents = true;
@@ -526,11 +526,14 @@ namespace Saved_Game_Backup
                     //activeWatcher.EnableRaisingEvents = true;
                     var newMessage = ex.Message + " " + e.ChangeType + " " + e.Name;
                     SBTErrorLogger.Log(newMessage); //Occurs if a game has locked access to a file.
-                    if (ex.Message.Contains("it is being used")) {//Collission with game's save process is occuring. Retry Change.
+                    if (ex.Message.Contains(@"it is being used")) {//Collission with game's save process is occuring. Retry Change.
                         _numberOfRecursiveChangedCalls++;
                         Debug.WriteLine(@"Number of recursive SaveChanged calls: {0}", _numberOfRecursiveChangedCalls);
                         SaveChanged(source, e);
                     }
+                }
+                catch (ArgumentException ex) {
+                    SBTErrorLogger.Log(ex.Message);    
                 }
             }
             Messenger.Default.Send<DateTime>(DateTime.Now);
@@ -582,7 +585,7 @@ namespace Saved_Game_Backup
         }
     
         private static void SaveCreated(object source, FileSystemEventArgs e) {
-            Debug.WriteLine("Entering method: SaveCreated");
+            Debug.WriteLine(@"Entering method: SaveCreated");
             Game autoBackupGame = null;
 
             try {
@@ -633,9 +636,11 @@ namespace Saved_Game_Backup
                                     //Debug.WriteLine(@"SUCCESSFUL CREATE: For Backup #{0} on {1}.", ++_numberOfBackups, DateTime.Now);
                                     //Debug.WriteLine(@"SUCCESSFUL CREATE: For Backup #{0} File was: {1}", _numberOfBackups, renameDestPath);
                                     //Debug.WriteLine(@"SUCCESSFUL CREATE: FOr Backup #{0} Game was: {1}", _numberOfBackups, autoBackupGame.Name);
-                                    Debug.WriteLine(@"SUCCESSFUL CREATE: On {0}.", DateTime.Now);
-                                    Debug.WriteLine(@"SUCCESSFUL CREATE: File was: {0}", renameDestPath);
-                                    Debug.WriteLine(@"SUCCESSFUL CREATE: Game was: {0}", autoBackupGame.Name);
+                                    //Debug.WriteLine(@"SUCCESSFUL CREATE: On {0}.", DateTime.Now);
+                                    //Debug.WriteLine(@"SUCCESSFUL CREATE: File was: {0}", renameDestPath);
+                                    //Debug.WriteLine(@"SUCCESSFUL CREATE: Game was: {0}", autoBackupGame.Name);
+                                    Console.WriteLine(@"SUCCESSFUL CREATE");
+                                   
                                     //Messenger.Default.Send(_numberOfBackups);
                                 }
                             }
@@ -652,7 +657,7 @@ namespace Saved_Game_Backup
                             //activeWatcher.EnableRaisingEvents = true;
                             var newMessage = ex.Message + " " + e.ChangeType + " " + e.Name;
                             SBTErrorLogger.Log(newMessage); //Occurs if a game has locked access to a file.
-                            if (ex.Message.Contains("it is being used")) {//Collission with game's save process is occuring. Retry create.
+                            if (ex.Message.Contains(@"it is being used")) {//Collission with game's save process is occuring. Retry create.
                                 _numberOfRecursiveCreatedCalls++;
                                 Debug.WriteLine(@"Number of recursive SaveCreate calls: {0}", _numberOfRecursiveCreatedCalls);
                                 SaveCreated(source, e);
@@ -670,7 +675,7 @@ namespace Saved_Game_Backup
             _numberOfRecursiveCreatedCalls = 0;
             if (!activeWatcher.EnableRaisingEvents)
                 activeWatcher.EnableRaisingEvents = true;
-            Debug.WriteLine("Exiting method: SaveCreated");
+            Debug.WriteLine(@"Exiting method: SaveCreated");
         }
 
         /// <summary>
