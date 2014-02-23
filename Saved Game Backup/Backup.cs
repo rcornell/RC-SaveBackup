@@ -219,7 +219,7 @@ namespace Saved_Game_Backup
                 _fileWatcherList[watcherNumber].Renamed += OnRenamed;
                 _fileWatcherList[watcherNumber].Error += OnError;
                 _fileWatcherList[watcherNumber].NotifyFilter = NotifyFilters.CreationTime | NotifyFilters.LastWrite
-                                                               | NotifyFilters.FileName | NotifyFilters.LastAccess ;
+                                                               | NotifyFilters.FileName ;
                 _fileWatcherList[watcherNumber].IncludeSubdirectories = true;
                 _fileWatcherList[watcherNumber].Filter = "*";
                 _fileWatcherList[watcherNumber].EnableRaisingEvents = true;
