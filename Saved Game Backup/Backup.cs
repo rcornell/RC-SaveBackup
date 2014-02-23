@@ -312,13 +312,13 @@ namespace Saved_Game_Backup
                         }
 
                         var originBaseIndex = e.OldFullPath.IndexOf(autoBackupGame.RootFolder);
-                        var originTruncBase = e.OldFullPath.Substring(originBaseIndex - 2);
+                        var originTruncBase = e.OldFullPath.Substring(originBaseIndex - 1);
                         var renameOriginPath = _specifiedAutoBackupFolder.FullName + originTruncBase;
                             //Path of old fileName in backup folder
                         Debug.WriteLine(@"START OnRenamed origin path is {0}", renameOriginPath);
 
                         var destBaseIndex = e.FullPath.IndexOf(autoBackupGame.RootFolder);
-                        var destTruncBase = e.FullPath.Substring(destBaseIndex - 2);
+                        var destTruncBase = e.FullPath.Substring(destBaseIndex - 1);
                         var renameDestPath = _specifiedAutoBackupFolder.FullName + destTruncBase;
                         var renameDestDir = new DirectoryInfo(renameDestPath);
                             //Path of new fileName in backup folder
@@ -331,8 +331,8 @@ namespace Saved_Game_Backup
                             try {
                                 //If autobackup target directory contains the old file name, use File.Copy()
                                 //If autobackup target directory does not contain the old file name, copy the new file from gamesave directory.
-                                if (!Directory.Exists(renameDestDir.FullName))
-                                    Directory.CreateDirectory(renameDestDir.FullName);
+                                if (!Directory.Exists(renameDestDir.Parent.FullName))
+                                    Directory.CreateDirectory(renameDestDir.Parent.FullName);
                                 if (!File.Exists(renameOriginPath)) {
                                     using (
                                         var inStream = new FileStream(e.FullPath, FileMode.Open, FileAccess.Read,
@@ -456,20 +456,21 @@ namespace Saved_Game_Backup
             }
 
             var destBaseIndex = e.FullPath.IndexOf(autoBackupGame.RootFolder);
-            var destTruncBase = new FileInfo(e.FullPath.Substring(destBaseIndex));
-            var changeDestPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder.FullName, destTruncBase.FullName));
+            var destTruncBase = e.FullPath.Substring(destBaseIndex - 1);
+            var changeDestPath = _specifiedAutoBackupFolder.FullName + destTruncBase;
+            var changeDestDir = new DirectoryInfo(changeDestPath);
 
             if (Directory.Exists(e.FullPath)) {} 
             else {
                 try {
-                    if (!Directory.Exists(changeDestPath.DirectoryName))
-                        Directory.CreateDirectory(changeDestPath.DirectoryName);
+                    if (!Directory.Exists(changeDestDir.Parent.FullName))
+                        Directory.CreateDirectory(changeDestDir.Parent.FullName);
                     if (File.Exists(e.FullPath)) {
                         using (
                             var inStream = new FileStream(e.FullPath, FileMode.Open, FileAccess.Read,
                                 FileShare.ReadWrite)) {
                             Debug.WriteLine(@"START SaveChanged inStream created");
-                            using (var outStream = new FileStream(changeDestPath.FullName, FileMode.Create,
+                            using (var outStream = new FileStream(changeDestPath, FileMode.Create,
                                 FileAccess.ReadWrite, FileShare.Read)) {
                                     Debug.WriteLine(@"START SaveChanged outStream created");
                                     inStream.CopyTo(outStream);
