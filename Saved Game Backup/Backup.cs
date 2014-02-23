@@ -394,7 +394,8 @@ namespace Saved_Game_Backup
             }
         }
 
-        private static void OnChanged(object source, FileSystemEventArgs e) {          
+        private static void OnChanged(object source, FileSystemEventArgs e) {
+            try {
             while (true)
             {
                 if (!_delayTimer.Enabled && !_canBackupTimer.Enabled)
@@ -424,9 +425,16 @@ namespace Saved_Game_Backup
                 }
                 break;
             }
+            }
+            catch (ArgumentException ex)
+            {
+                SBTErrorLogger.Log(ex.Message);
+            }
         }
 
-        private static void SaveChanged(object source, FileSystemEventArgs e) {        
+        private static void SaveChanged(object source, FileSystemEventArgs e) {
+            var startMsg = string.Format(@"Start SaveChanged for file {0}", e.FullPath);
+            Debug.WriteLine(startMsg);
             try {
             Game autoBackupGame = null;
 
@@ -459,8 +467,10 @@ namespace Saved_Game_Backup
                         using (
                             var inStream = new FileStream(e.FullPath, FileMode.Open, FileAccess.Read,
                                 FileShare.ReadWrite)) {
+                            Debug.WriteLine(@"START SaveChanged inStream created");
                             using (var outStream = new FileStream(changeDestPath.ToString(), FileMode.Create,
                                 FileAccess.ReadWrite, FileShare.Read)) {
+                                    Debug.WriteLine(@"START SaveChanged outStream created");
                                 inStream.CopyTo(outStream);
                             }
                         }
@@ -468,11 +478,13 @@ namespace Saved_Game_Backup
                 }
                 catch (FileNotFoundException ex) {
                     SBTErrorLogger.Log(ex.Message);
+                    Debug.WriteLine(@"ABORT SaveChanged Exception encountered");
                 }
                 catch (IOException ex) {
                     //activeWatcher.EnableRaisingEvents = true;
                     var newMessage = string.Format(@"{0} {1} {2}", ex.Message, e.ChangeType, e.Name);
-                    SBTErrorLogger.Log(newMessage); 
+                    SBTErrorLogger.Log(newMessage);
+                    Debug.WriteLine(@"ABORT SaveChanged IOException encountered");
                     if (ex.Message.Contains(@"it is being used")) {
                         Debug.WriteLine(@"Recursively calling SaveChanged()");
                         SaveChanged(source, e);
@@ -487,6 +499,8 @@ namespace Saved_Game_Backup
             {
                 SBTErrorLogger.Log(ex.Message);
             }
+            var exitMsg = string.Format(@"EXIT SaveChanged for file {0}", e.FullPath);
+            Debug.WriteLine(exitMsg);
         }
 
         private static void SaveDeleted(object source, FileSystemEventArgs e) {
