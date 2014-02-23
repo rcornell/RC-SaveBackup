@@ -319,7 +319,7 @@ namespace Saved_Game_Backup
 
                         var destBaseIndex = e.FullPath.IndexOf(autoBackupGame.RootFolder);
                         var destTruncBase = new FileInfo(e.FullPath.Substring(destBaseIndex));
-                        var renameDestPath = Path.Combine(_specifiedAutoBackupFolder.FullName, destTruncBase.FullName);
+                        var renameDestPath = _specifiedAutoBackupFolder.FullName + destTruncBase.FullName;
                         var renameDestDir = new DirectoryInfo(renameDestPath);
                             //Path of new fileName in backup folder
                         Debug.WriteLine(@"START OnRenamed destination path is " + renameDestPath);
