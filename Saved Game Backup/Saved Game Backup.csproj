@@ -110,6 +110,7 @@
     <Compile Include="OptionsWindow.xaml.cs">
       <DependentUpon>OptionsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PathCompare.cs" />
     <Compile Include="PrefSaver.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="SBTErrorLogger.cs" />
