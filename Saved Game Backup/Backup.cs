@@ -504,41 +504,48 @@ namespace Saved_Game_Backup
         }
 
         private static void SaveDeleted(object source, FileSystemEventArgs e) {
-            Game autoBackupGame = null;//make argumentexception try catch
-
             try {
-                foreach (
-                    var a in
-                        _gamesToAutoBackup.Where(
-                            a => e.FullPath.Contains(a.Name) || e.FullPath.Contains(a.RootFolder))) {
-                    autoBackupGame = a;
-                }
-            }
-            catch (NullReferenceException ex) {
-                SBTErrorLogger.Log(ex.Message);
-            }
+                Game autoBackupGame = null; //make argumentexception try catch
 
-            if (autoBackupGame.RootFolder == null) {
-                var dir = new DirectoryInfo(autoBackupGame.Path);
-                autoBackupGame.RootFolder = dir.Name;
-            }
-
-            var targetBaseIndex = e.FullPath.IndexOf(autoBackupGame.RootFolder);
-            var targetTruncBase = new FileInfo(e.FullPath.Substring(targetBaseIndex));
-            var deleteTargetPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder.FullName, targetTruncBase.FullName)); 
-
-            if (Directory.Exists(e.FullPath)) {} 
-            else {
                 try {
-                    if (!File.Exists(deleteTargetPath.FullName)) return; //If autobackup directory does not contain file to be deleted.
-                        File.Delete(deleteTargetPath.FullName);                     
+                    foreach (
+                        var a in
+                            _gamesToAutoBackup.Where(
+                                a => e.FullPath.Contains(a.Name) || e.FullPath.Contains(a.RootFolder))) {
+                        autoBackupGame = a;
+                    }
                 }
-                catch (FileNotFoundException ex) {
+                catch (NullReferenceException ex) {
                     SBTErrorLogger.Log(ex.Message);
                 }
-                catch (IOException ex) {
-                    SBTErrorLogger.Log(ex.Message);
+
+                if (autoBackupGame.RootFolder == null) {
+                    var dir = new DirectoryInfo(autoBackupGame.Path);
+                    autoBackupGame.RootFolder = dir.Name;
                 }
+
+                var targetBaseIndex = e.FullPath.IndexOf(autoBackupGame.RootFolder);
+                var targetTruncBase = new FileInfo(e.FullPath.Substring(targetBaseIndex));
+                var deleteTargetPath =
+                    new FileInfo(Path.Combine(_specifiedAutoBackupFolder.FullName, targetTruncBase.FullName));
+
+                if (Directory.Exists(e.FullPath)) {}
+                else {
+                    try {
+                        if (!File.Exists(deleteTargetPath.FullName))
+                            return; //If autobackup directory does not contain file to be deleted.
+                        File.Delete(deleteTargetPath.FullName);
+                    }
+                    catch (FileNotFoundException ex) {
+                        SBTErrorLogger.Log(ex.Message);
+                    }
+                    catch (IOException ex) {
+                        SBTErrorLogger.Log(ex.Message);
+                    }
+                }
+            }
+            catch (ArgumentException ex) {
+                SBTErrorLogger.Log(ex.Message);
             }
         }
     
