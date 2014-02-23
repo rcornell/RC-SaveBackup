@@ -312,14 +312,14 @@ namespace Saved_Game_Backup
                         }
 
                         var originBaseIndex = e.OldFullPath.IndexOf(autoBackupGame.RootFolder);
-                        var originTruncBase = e.OldFullPath.Substring(originBaseIndex);
-                        var renameOriginPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder.FullName, originTruncBase));
+                        var originTruncBase = new FileInfo(e.OldFullPath.Substring(originBaseIndex));
+                        var renameOriginPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder.FullName, originTruncBase.FullName));
                             //Path of old fileName in backup folder
                         Debug.WriteLine(@"START OnRenamed origin path is {0}", renameOriginPath);
 
                         var destBaseIndex = e.FullPath.IndexOf(autoBackupGame.RootFolder);
-                        var destTruncBase = e.FullPath.Substring(destBaseIndex);
-                        var renameDestPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder.FullName, destTruncBase));
+                        var destTruncBase = new FileInfo(e.FullPath.Substring(destBaseIndex));
+                        var renameDestPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder.FullName, destTruncBase.FullName));
                             //Path of new fileName in backup folder
                         Debug.WriteLine(@"START OnRenamed destination path is {0}", renameDestPath);
 
@@ -455,8 +455,8 @@ namespace Saved_Game_Backup
             }
 
             var destBaseIndex = e.FullPath.IndexOf(autoBackupGame.RootFolder);
-            var destTruncBase = e.FullPath.Substring(destBaseIndex);
-            var changeDestPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder.FullName, destTruncBase));
+            var destTruncBase = new FileInfo(e.FullPath.Substring(destBaseIndex));
+            var changeDestPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder.FullName, destTruncBase.FullName));
 
             if (Directory.Exists(e.FullPath)) {} 
             else {
@@ -468,10 +468,10 @@ namespace Saved_Game_Backup
                             var inStream = new FileStream(e.FullPath, FileMode.Open, FileAccess.Read,
                                 FileShare.ReadWrite)) {
                             Debug.WriteLine(@"START SaveChanged inStream created");
-                            using (var outStream = new FileStream(changeDestPath.ToString(), FileMode.Create,
+                            using (var outStream = new FileStream(changeDestPath.FullName, FileMode.Create,
                                 FileAccess.ReadWrite, FileShare.Read)) {
                                     Debug.WriteLine(@"START SaveChanged outStream created");
-                                inStream.CopyTo(outStream);
+                                    inStream.CopyTo(outStream);
                             }
                         }
                     }
@@ -504,7 +504,7 @@ namespace Saved_Game_Backup
         }
 
         private static void SaveDeleted(object source, FileSystemEventArgs e) {
-            Game autoBackupGame = null;
+            Game autoBackupGame = null;//make argumentexception try catch
 
             try {
                 foreach (
@@ -524,8 +524,8 @@ namespace Saved_Game_Backup
             }
 
             var targetBaseIndex = e.FullPath.IndexOf(autoBackupGame.RootFolder);
-            var targetTruncBase = e.FullPath.Substring(targetBaseIndex);
-            var deleteTargetPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder.FullName, targetTruncBase)); 
+            var targetTruncBase = new FileInfo(e.FullPath.Substring(targetBaseIndex));
+            var deleteTargetPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder.FullName, targetTruncBase.FullName)); 
 
             if (Directory.Exists(e.FullPath)) {} 
             else {
@@ -564,8 +564,8 @@ namespace Saved_Game_Backup
             }
 
             var destBaseIndex = e.FullPath.IndexOf(autoBackupGame.RootFolder);
-            var destTruncBase = e.FullPath.Substring(destBaseIndex);
-            var createdDestPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder.FullName, destTruncBase));
+            var destTruncBase = new FileInfo(e.FullPath.Substring(destBaseIndex));
+            var createdDestPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder.FullName, destTruncBase.FullName));
             Debug.WriteLine(@"START SaveCreated destination path is {0}", createdDestPath);
 
             if (Directory.Exists(e.FullPath)) {} 
