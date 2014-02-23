@@ -494,6 +494,9 @@ namespace Saved_Game_Backup
         }
     
         private static void SaveCreated(object source, FileSystemEventArgs e) {
+            var startMsg = string.Format(@"START SaveCreated for {0}", e.FullPath);
+            Debug.WriteLine(startMsg);
+
             Game autoBackupGame = null;
             try {
                 foreach (
@@ -512,20 +515,25 @@ namespace Saved_Game_Backup
 
             var destBaseIndex = e.FullPath.IndexOf(autoBackupGame.RootFolder);
             var destTruncBase = e.FullPath.Substring(destBaseIndex);
-            var createdDestPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder, destTruncBase)); 
+            var createdDestPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder, destTruncBase));
+            Debug.WriteLine(@"START SaveCreated destination path is {0}", createdDestPath);
 
             if (Directory.Exists(e.FullPath)) {} 
             else {
                if (!Directory.Exists(createdDestPath.DirectoryName))
                         Directory.CreateDirectory(createdDestPath.DirectoryName);
-                if (!File.Exists(e.FullPath)) return;
+                if (!File.Exists(e.FullPath)) {
+                    Debug.WriteLine(@"ABORT SaveCreated source file not found. File was {0}", e.Name); //Concerning
+                    return;
+                }
                 try {
                     using (
                         var inStream = new FileStream(e.FullPath, FileMode.Open, FileAccess.Read,
                             FileShare.ReadWrite)) {
-                        using (var outStream = new FileStream(createdDestPath.ToString(), FileMode.Create,
+                        using (var outStream = new FileStream(createdDestPath.FullName, FileMode.Create,
                             FileAccess.ReadWrite, FileShare.Read)) {
                             inStream.CopyTo(outStream);
+                            Debug.WriteLine(@"SUCCESSFUL CREATE for {0}", createdDestPath);
                         }
                     }
                 }
@@ -548,6 +556,9 @@ namespace Saved_Game_Backup
                     SBTErrorLogger.Log(ex.Message);
                 }
             }
+
+            var exitMsg = string.Format(@"EXIT SaveCreated for {0}", e.FullPath);
+            Debug.WriteLine(exitMsg);
         }
 
         /// <summary>
