@@ -217,6 +217,7 @@ namespace Saved_Game_Backup
                 _fileWatcherList[watcherNumber].Created += OnChanged;
                 _fileWatcherList[watcherNumber].Deleted += OnChanged;
                 _fileWatcherList[watcherNumber].Renamed += OnRenamed;
+                _fileWatcherList[watcherNumber].Error += OnError;
                 _fileWatcherList[watcherNumber].NotifyFilter = NotifyFilters.CreationTime | NotifyFilters.LastWrite
                                                                | NotifyFilters.FileName | NotifyFilters.LastAccess ;
                 _fileWatcherList[watcherNumber].IncludeSubdirectories = true;
@@ -570,6 +571,12 @@ namespace Saved_Game_Backup
 
             var exitMsg = string.Format(@"EXIT SaveCreated for {0}", e.FullPath);
             Debug.WriteLine(exitMsg);
+        }
+
+        private static void OnError(object source, ErrorEventArgs e) {
+            var ex = e.GetException();
+            var message = ex.Message;
+            SBTErrorLogger.Log(message);
         }
 
         /// <summary>
