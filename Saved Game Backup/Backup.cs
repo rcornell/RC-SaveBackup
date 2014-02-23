@@ -34,7 +34,7 @@ namespace Saved_Game_Backup
         private static string _myDocuments = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         private static readonly string _userPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         private static string _userName = Environment.UserName;
-        private static string _specifiedAutoBackupFolder;
+        private static DirectoryInfo _specifiedAutoBackupFolder;
         private static Timer _delayTimer;
         private static Timer _canBackupTimer;
         private static DateTime _lastAutoBackupTime;
@@ -203,11 +203,10 @@ namespace Saved_Game_Backup
 
             _fileWatcherList = new List<FileSystemWatcher>();
             _gamesToAutoBackup = gamesToBackup; //Is this line needed?
-
             if (_specifiedAutoBackupFolder == null) {
                 var fb = new FolderBrowserDialog() {SelectedPath = _hardDrive, ShowNewFolderButton = true};
                 if (fb.ShowDialog() == DialogResult.OK)
-                    _specifiedAutoBackupFolder = fb.SelectedPath;
+                    _specifiedAutoBackupFolder = new DirectoryInfo(fb.SelectedPath);
             }
 
             var watcherNumber = 0;
@@ -314,13 +313,13 @@ namespace Saved_Game_Backup
 
                         var originBaseIndex = e.OldFullPath.IndexOf(autoBackupGame.RootFolder);
                         var originTruncBase = e.OldFullPath.Substring(originBaseIndex);
-                        var renameOriginPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder, originTruncBase));
+                        var renameOriginPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder.FullName, originTruncBase));
                             //Path of old fileName in backup folder
                         Debug.WriteLine(@"START OnRenamed origin path is {0}", renameOriginPath);
 
                         var destBaseIndex = e.FullPath.IndexOf(autoBackupGame.RootFolder);
                         var destTruncBase = e.FullPath.Substring(destBaseIndex);
-                        var renameDestPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder, destTruncBase));
+                        var renameDestPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder.FullName, destTruncBase));
                             //Path of new fileName in backup folder
                         Debug.WriteLine(@"START OnRenamed destination path is {0}", renameDestPath);
 
@@ -457,9 +456,9 @@ namespace Saved_Game_Backup
 
             var destBaseIndex = e.FullPath.IndexOf(autoBackupGame.RootFolder);
             var destTruncBase = e.FullPath.Substring(destBaseIndex);
-            var changeDestPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder, destTruncBase));
+            var changeDestPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder.FullName, destTruncBase));
 
-            if (Directory.Exists(e.FullPath) && autoBackupGame != null) {} 
+            if (Directory.Exists(e.FullPath)) {} 
             else {
                 try {
                     if (!Directory.Exists(changeDestPath.DirectoryName))
@@ -526,7 +525,7 @@ namespace Saved_Game_Backup
 
             var targetBaseIndex = e.FullPath.IndexOf(autoBackupGame.RootFolder);
             var targetTruncBase = e.FullPath.Substring(targetBaseIndex);
-            var deleteTargetPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder, targetTruncBase)); 
+            var deleteTargetPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder.FullName, targetTruncBase)); 
 
             if (Directory.Exists(e.FullPath)) {} 
             else {
@@ -566,7 +565,7 @@ namespace Saved_Game_Backup
 
             var destBaseIndex = e.FullPath.IndexOf(autoBackupGame.RootFolder);
             var destTruncBase = e.FullPath.Substring(destBaseIndex);
-            var createdDestPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder, destTruncBase));
+            var createdDestPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder.FullName, destTruncBase));
             Debug.WriteLine(@"START SaveCreated destination path is {0}", createdDestPath);
 
             if (Directory.Exists(e.FullPath)) {} 
