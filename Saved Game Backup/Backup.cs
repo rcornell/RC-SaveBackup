@@ -277,103 +277,121 @@ namespace Saved_Game_Backup
         }
 
         private static void OnRenamed(object source, RenamedEventArgs e) {
-            var startMsg = string.Format(@"START OnRenamed for {0}", e.FullPath);
-            Debug.WriteLine(startMsg);
-            while (true) {
-                if (!_delayTimer.Enabled && !_canBackupTimer.Enabled) {
-                    _delayTimer.Enabled = true;
-                    _delayTimer.Start();
-                    continue;
-                }
-                if (!_canBackupTimer.Enabled && _delayTimer.Enabled) {
-                    continue;
-                }
-                if (_canBackupTimer.Enabled) {
-                    #region RenameSetupStuff
-                    Game autoBackupGame = null;
-
-                    try {
-                        foreach (
-                            var a in
-                                _gamesToAutoBackup.Where(
-                                    a => e.FullPath.Contains(a.Name) || e.FullPath.Contains(a.RootFolder))) {
-                            autoBackupGame = a;
-                        }
+            try {
+                var startMsg = string.Format(@"START OnRenamed for {0}", e.FullPath);
+                Debug.WriteLine(startMsg);
+                while (true) {
+                    if (!_delayTimer.Enabled && !_canBackupTimer.Enabled) {
+                        _delayTimer.Enabled = true;
+                        _delayTimer.Start();
+                        continue;
                     }
-                    catch (NullReferenceException ex) {
-                        SBTErrorLogger.Log(ex.Message);
+                    if (!_canBackupTimer.Enabled && _delayTimer.Enabled) {
+                        continue;
                     }
+                    if (_canBackupTimer.Enabled) {
+                        #region RenameSetupStuff
 
-                    if (autoBackupGame.RootFolder == null) {
-                        var dir = new DirectoryInfo(autoBackupGame.Path);
-                        autoBackupGame.RootFolder = dir.Name;
-                    }
+                        Game autoBackupGame = null;
 
-                    var originBaseIndex = e.OldFullPath.IndexOf(autoBackupGame.RootFolder);
-                    var originTruncBase = e.OldFullPath.Substring(originBaseIndex);
-                    var renameOriginPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder, originTruncBase)); //Path of old fileName in backup folder
-                    Debug.WriteLine(@"START OnRenamed origin path is {0}", renameOriginPath);
-
-                    var destBaseIndex = e.FullPath.IndexOf(autoBackupGame.RootFolder);
-                    var destTruncBase = e.FullPath.Substring(destBaseIndex);
-                    var renameDestPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder, destTruncBase)); //Path of new fileName in backup folder
-                    Debug.WriteLine(@"START OnRenamed destination path is {0}", renameDestPath);
-                    #endregion
-
-                    if (Directory.Exists(e.FullPath)) {}
-                    else {
                         try {
-                            //If autobackup target directory contains the old file name, use File.Copy()
-                            //If autobackup target directory does not contain the old file name, copy the new file from gamesave directory.
-                            if (!Directory.Exists(renameDestPath.DirectoryName))
-                                Directory.CreateDirectory(renameDestPath.DirectoryName);
-                            if (!File.Exists(renameOriginPath.FullName)) {
-                                using (
-                                    var inStream = new FileStream(e.FullPath, FileMode.Open, FileAccess.Read,
-                                        FileShare.ReadWrite)) {
+                            foreach (
+                                var a in
+                                    _gamesToAutoBackup.Where(
+                                        a => e.FullPath.Contains(a.Name) || e.FullPath.Contains(a.RootFolder))) {
+                                autoBackupGame = a;
+                            }
+                        }
+                        catch (NullReferenceException ex) {
+                            SBTErrorLogger.Log(ex.Message);
+                        }
+
+                        if (autoBackupGame.RootFolder == null) {
+                            var dir = new DirectoryInfo(autoBackupGame.Path);
+                            autoBackupGame.RootFolder = dir.Name;
+                        }
+
+                        var originBaseIndex = e.OldFullPath.IndexOf(autoBackupGame.RootFolder);
+                        var originTruncBase = e.OldFullPath.Substring(originBaseIndex);
+                        var renameOriginPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder, originTruncBase));
+                            //Path of old fileName in backup folder
+                        Debug.WriteLine(@"START OnRenamed origin path is {0}", renameOriginPath);
+
+                        var destBaseIndex = e.FullPath.IndexOf(autoBackupGame.RootFolder);
+                        var destTruncBase = e.FullPath.Substring(destBaseIndex);
+                        var renameDestPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder, destTruncBase));
+                            //Path of new fileName in backup folder
+                        Debug.WriteLine(@"START OnRenamed destination path is {0}", renameDestPath);
+
+                        #endregion
+
+                        if (Directory.Exists(e.FullPath)) {}
+                        else {
+                            try {
+                                //If autobackup target directory contains the old file name, use File.Copy()
+                                //If autobackup target directory does not contain the old file name, copy the new file from gamesave directory.
+                                if (!Directory.Exists(renameDestPath.DirectoryName))
+                                    Directory.CreateDirectory(renameDestPath.DirectoryName);
+                                if (!File.Exists(renameOriginPath.FullName)) {
                                     using (
-                                        var outStream = new FileStream(renameDestPath.FullName, FileMode.Create,
-                                            FileAccess.ReadWrite, FileShare.Read)) {
-                                        inStream.CopyTo(outStream);
-                                        Debug.WriteLine(
-                                            @"SUCCESSFUL RENAME Old filename was {0}. New filename is {1}.", e.OldName, e.Name);
+                                        var inStream = new FileStream(e.FullPath, FileMode.Open, FileAccess.Read,
+                                            FileShare.ReadWrite)) {
+                                        using (
+                                            var outStream = new FileStream(renameDestPath.FullName, FileMode.Create,
+                                                FileAccess.ReadWrite, FileShare.Read)) {
+                                            inStream.CopyTo(outStream);
+                                            Debug.WriteLine(
+                                                @"SUCCESSFUL RENAME Old filename was {0}. New filename is {1}.",
+                                                e.OldName, e.Name);
+                                        }
                                     }
                                 }
-                            }
-                            else {
-                                Debug.WriteLine(@"START OnRenamed Cant find source file in game directory. Looking in autobackup folder.");
-                                using ( var inStream = new FileStream(renameOriginPath.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) { 
-                                    using (var outStream = new FileStream(renameDestPath.FullName, FileMode.Create, FileAccess.ReadWrite, FileShare.Read)) {
-                                        inStream.CopyTo(outStream);
-                                        Debug.WriteLine(
-                                            @"SUCCESSFUL RENAME Old filename was {0}. New filename is {1}.", e.OldName, e.Name);
+                                else {
+                                    Debug.WriteLine(
+                                        @"START OnRenamed Cant find source file in game directory. Looking in autobackup folder.");
+                                    using (
+                                        var inStream = new FileStream(renameOriginPath.FullName, FileMode.Open,
+                                            FileAccess.Read, FileShare.ReadWrite)) {
+                                        using (
+                                            var outStream = new FileStream(renameDestPath.FullName, FileMode.Create,
+                                                FileAccess.ReadWrite, FileShare.Read)) {
+                                            inStream.CopyTo(outStream);
+                                            Debug.WriteLine(
+                                                @"SUCCESSFUL RENAME Old filename was {0}. New filename is {1}.",
+                                                e.OldName, e.Name);
+                                        }
                                     }
+                                    File.Delete(renameOriginPath.FullName);
+                                    Debug.WriteLine(
+                                        @"SUCCESSFUL RENAME Old filename was {0}. New filename is {1}.", e.OldName,
+                                        e.Name);
                                 }
-                                File.Delete(renameOriginPath.FullName);
-                                Debug.WriteLine(
-                                    @"SUCCESSFUL RENAME Old filename was {0}. New filename is {1}.", e.OldName, e.Name);
                             }
-                        }
-                        catch (FileNotFoundException ex) {
-                            SBTErrorLogger.Log(ex.Message);
-                        }
-                        catch (IOException ex) {
-                            var newMessage = string.Format(@"{0} {1} {2} {3}", ex.Message, e.ChangeType, e.OldName, e.Name);
-                            SBTErrorLogger.Log(newMessage);
-                            if (ex.Message.Contains(@"it is being used")) {
-                                Debug.WriteLine(@"Recursively calling OnRenamed()");
-                                OnRenamed(source, e);
+                            catch (FileNotFoundException ex) {
+                                SBTErrorLogger.Log(ex.Message);
                             }
-                        }
-                        catch (ArgumentException ex) {
-                            SBTErrorLogger.Log(ex.Message);
+                            catch (IOException ex) {
+                                var newMessage = string.Format(@"{0} {1} {2} {3}", ex.Message, e.ChangeType, e.OldName,
+                                    e.Name);
+                                SBTErrorLogger.Log(newMessage);
+                                if (ex.Message.Contains(@"it is being used")) {
+                                    Debug.WriteLine(@"Recursively calling OnRenamed()");
+                                    OnRenamed(source, e);
+                                }
+                            }
+                            catch (ArgumentException ex) {
+                                SBTErrorLogger.Log(ex.Message);
+                            }
                         }
                     }
+                    break;
                 }
-                break;
+                var exitMsg = string.Format(@"EXIT OnRenamed for {0}", e.FullPath);
+                Debug.WriteLine(exitMsg);
             }
-            var exitMsg = string.Format(@"EXIT OnRenamed for {0}", e.FullPath);
-            Debug.WriteLine(exitMsg);
+            catch (ArgumentException ex) {
+                SBTErrorLogger.Log(ex.Message);
+            }
         }
 
         private static void OnChanged(object source, FileSystemEventArgs e) {          
@@ -409,6 +427,7 @@ namespace Saved_Game_Backup
         }
 
         private static void SaveChanged(object source, FileSystemEventArgs e) {        
+            try {
             Game autoBackupGame = null;
 
             try {
@@ -463,6 +482,11 @@ namespace Saved_Game_Backup
                     SBTErrorLogger.Log(ex.Message);    
                 }
             }
+            }
+            catch (ArgumentException ex)
+            {
+                SBTErrorLogger.Log(ex.Message);
+            }
         }
 
         private static void SaveDeleted(object source, FileSystemEventArgs e) {
@@ -505,6 +529,7 @@ namespace Saved_Game_Backup
         }
     
         private static void SaveCreated(object source, FileSystemEventArgs e) {
+            try {
             var startMsg = string.Format(@"START SaveCreated for {0}", e.FullPath);
             Debug.WriteLine(startMsg);
 
@@ -571,6 +596,11 @@ namespace Saved_Game_Backup
 
             var exitMsg = string.Format(@"EXIT SaveCreated for {0}", e.FullPath);
             Debug.WriteLine(exitMsg);
+            }
+            catch (ArgumentException ex)
+            {
+                SBTErrorLogger.Log(ex.Message);
+            }
         }
 
         private static void OnError(object source, ErrorEventArgs e) {
