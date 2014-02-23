@@ -156,7 +156,12 @@ namespace Saved_Game_Backup.ViewModel
             get { return _themeInt; }
             set { _themeInt = value; }
         }
-        public int NumberOfBackups { get; set; }
+
+        private int _numberOfBackups;
+        public int NumberOfBackups {
+            get { return _numberOfBackups; }
+            set { _numberOfBackups = value; }
+        }
 
         public RelayCommand ShowAbout {
             get { return new RelayCommand(ExecuteShowAbout);}
@@ -231,13 +236,13 @@ namespace Saved_Game_Backup.ViewModel
 
         }
 
-        public void PollAutobackup() {
-            Backup.PollAutobackup(GamesToBackup, 1000);
+        public async void PollAutobackup() {
+            await Backup.PollAutobackup(GamesToBackup, 1000);
         }
 
-        //~MainViewModel() {
-        //  CloseApplication();
-        //}
+        ~MainViewModel() {
+          CloseApplication();
+        }
 
         private void SetUpInterface() {
             if (!PrefSaver.CheckForPrefs()) {

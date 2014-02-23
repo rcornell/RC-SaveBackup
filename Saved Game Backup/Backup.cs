@@ -688,7 +688,7 @@ namespace Saved_Game_Backup
 
         }
 
-        public static async void PollAutobackup(ObservableCollection<Game> games, int interval) {
+        public static async Task PollAutobackup(ObservableCollection<Game> games, int interval) {
             _specifiedAutoBackupFolder = new DirectoryInfo(@"C\Users\Rob\Desktop\SBTTest"); //Won't need this after testing
             if (_specifiedAutoBackupFolder == null) {
                 var fb = new FolderBrowserDialog() {SelectedPath = _hardDrive, ShowNewFolderButton = true};
@@ -710,9 +710,11 @@ namespace Saved_Game_Backup
             }
 
 
-            foreach (var pair in pathPairs.Where(d => !File.Exists(d.DestinationPath))) { 
-                using (var inStream = new FileStream(pair.SourcePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
-                  using(var outStream = new FileStream(pair.DestinationPath, FileMode.Create, FileAccess.ReadWrite, FileShare.Read)) {
+            foreach (var pair in pathPairs.Where(d => !File.Exists(d.DestinationPath))) {
+                string source = pair.SourcePath;
+                string destination = pair.DestinationPath;
+                using (var inStream = new FileStream(source, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
+                  using(var outStream = new FileStream(destination, FileMode.Create, FileAccess.ReadWrite, FileShare.Read)) {
                      await inStream.CopyToAsync(outStream);
                   }
                 }
