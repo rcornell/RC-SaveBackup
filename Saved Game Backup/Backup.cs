@@ -481,7 +481,6 @@ namespace Saved_Game_Backup
                     Debug.WriteLine(@"ABORT SaveChanged Exception encountered");
                 }
                 catch (IOException ex) {
-                    //activeWatcher.EnableRaisingEvents = true;
                     var newMessage = string.Format(@"{0} {1} {2}", ex.Message, e.ChangeType, e.Name);
                     SBTErrorLogger.Log(newMessage);
                     Debug.WriteLine(@"ABORT SaveChanged IOException encountered");
