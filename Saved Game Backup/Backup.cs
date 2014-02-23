@@ -212,7 +212,8 @@ namespace Saved_Game_Backup
 
             var watcherNumber = 0;
             foreach (var game in gamesToBackup.Where(game => Directory.Exists(game.Path))) {
-                _fileWatcherList.Add(new FileSystemWatcher(game.Path));
+                var filePath = new FileInfo(game.Path);
+                _fileWatcherList.Add(new FileSystemWatcher(filePath.FullName));
                 _fileWatcherList[watcherNumber].Changed += OnChanged;
                 _fileWatcherList[watcherNumber].Created += OnChanged;
                 _fileWatcherList[watcherNumber].Deleted += OnChanged;
