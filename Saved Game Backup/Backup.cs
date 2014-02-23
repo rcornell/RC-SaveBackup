@@ -222,7 +222,7 @@ namespace Saved_Game_Backup
                 _fileWatcherList[watcherNumber].IncludeSubdirectories = true;
                 _fileWatcherList[watcherNumber].Filter = "*";
                 _fileWatcherList[watcherNumber].EnableRaisingEvents = true;
-                _fileWatcherList[watcherNumber].InternalBufferSize = 1000000;
+                _fileWatcherList[watcherNumber].InternalBufferSize = 65536;
                 watcherNumber++;
             }
         }
