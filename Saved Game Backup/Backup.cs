@@ -79,7 +79,7 @@ namespace Saved_Game_Backup
             }
             else {
                 message = @"Backup Complete!";
-                Messenger.Default.Send<DateTime>(DateTime.Now);
+                //Messenger.Default.Send<DateTime>(DateTime.Now);
             }
 
            return HandleBackupResult(success, backupEnabled, message, backupType, DateTime.Now.ToString(CultureInfo.CurrentCulture));
@@ -221,7 +221,8 @@ namespace Saved_Game_Backup
                                                                | NotifyFilters.FileName | NotifyFilters.LastAccess ;
                 _fileWatcherList[watcherNumber].IncludeSubdirectories = true;
                 _fileWatcherList[watcherNumber].Filter = "*";
-                _fileWatcherList[watcherNumber].EnableRaisingEvents = true;               
+                _fileWatcherList[watcherNumber].EnableRaisingEvents = true;
+                _fileWatcherList[watcherNumber].InternalBufferSize = 1000000;
                 watcherNumber++;
             }
         }
@@ -339,6 +340,7 @@ namespace Saved_Game_Backup
                                 }
                             }
                             else {
+                                Debug.WriteLine(@"START OnRenamed Cant find source file in game directory. Looking in autobackup folder.");
                                 using ( var inStream = new FileStream(renameOriginPath.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) { 
                                     using (var outStream = new FileStream(renameDestPath.FullName, FileMode.Create, FileAccess.ReadWrite, FileShare.Read)) {
                                         inStream.CopyTo(outStream);
