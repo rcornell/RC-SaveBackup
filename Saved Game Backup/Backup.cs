@@ -315,7 +315,7 @@ namespace Saved_Game_Backup
                         var originTruncBase = e.OldFullPath.Substring(originBaseIndex - 1);
                         var renameOriginPath = _specifiedAutoBackupFolder.FullName + originTruncBase;
                             //Path of old fileName in backup folder
-                        Debug.WriteLine(@"START OnRenamed origin path is {0}", renameOriginPath);
+                        Debug.WriteLine(@"START OnRenamed origin path is " + renameOriginPath);
 
                         var destBaseIndex = e.FullPath.IndexOf(autoBackupGame.RootFolder);
                         var destTruncBase = e.FullPath.Substring(destBaseIndex - 1);
