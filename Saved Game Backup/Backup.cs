@@ -217,15 +217,14 @@ namespace Saved_Game_Backup
             foreach (var game in gamesToBackup.Where(game => Directory.Exists(game.Path))) {
                 _fileWatcherList.Add(new FileSystemWatcher(game.Path));
                 //_fileWatcherList[watcherNumber].Changed += OnChanged;
-                //_fileWatcherList[watcherNumber].Created += OnChanged;
+                _fileWatcherList[watcherNumber].Created += OnChanged;
                 _fileWatcherList[watcherNumber].Deleted += OnChanged;
-                _fileWatcherList[watcherNumber].Renamed += OnRenamed;
+                //_fileWatcherList[watcherNumber].Renamed += OnRenamed;
                 _fileWatcherList[watcherNumber].NotifyFilter = NotifyFilters.CreationTime | NotifyFilters.LastWrite
                                                                | NotifyFilters.FileName | NotifyFilters.LastAccess ;
                 _fileWatcherList[watcherNumber].IncludeSubdirectories = true;
                 _fileWatcherList[watcherNumber].Filter = "*";
-                _fileWatcherList[watcherNumber].EnableRaisingEvents = true;
-                _fileWatcherList[watcherNumber].InternalBufferSize = 24588;
+                _fileWatcherList[watcherNumber].EnableRaisingEvents = true;               
                 watcherNumber++;
             }
         }
@@ -549,7 +548,7 @@ namespace Saved_Game_Backup
                     SBTErrorLogger.Log(ex.Message);    
                 }
             }
-            Messenger.Default.Send<DateTime>(DateTime.Now);
+            //Messenger.Default.Send<DateTime>(DateTime.Now);
             _numberOfRecursiveChangedCalls = 0;
         }
 
@@ -677,14 +676,16 @@ namespace Saved_Game_Backup
                         catch (ArgumentException ex) {
                             SBTErrorLogger.Log(ex.Message);
                         }
-                        if (!activeWatcher.EnableRaisingEvents)
-                            activeWatcher.EnableRaisingEvents = true;
+                        catch (Exception ex) {
+                            SBTErrorLogger.Log(ex.Message);
+                        }
+
                     }
                     
                 
                
             }
-            Messenger.Default.Send<DateTime>(DateTime.Now);
+            //Messenger.Default.Send<DateTime>(DateTime.Now);
             //
             _numberOfRecursiveCreatedCalls = 0;
             if (!activeWatcher.EnableRaisingEvents)
