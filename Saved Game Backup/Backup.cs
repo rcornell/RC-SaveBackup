@@ -312,14 +312,14 @@ namespace Saved_Game_Backup
                         }
 
                         var originBaseIndex = e.OldFullPath.IndexOf(autoBackupGame.RootFolder);
-                        var originTruncBase = new FileInfo(e.OldFullPath.Substring(originBaseIndex));
-                        var renameOriginPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder.FullName, originTruncBase.FullName));
+                        var originTruncBase = e.OldFullPath.Substring(originBaseIndex - 2);
+                        var renameOriginPath = _specifiedAutoBackupFolder.FullName + originTruncBase;
                             //Path of old fileName in backup folder
                         Debug.WriteLine(@"START OnRenamed origin path is {0}", renameOriginPath);
 
                         var destBaseIndex = e.FullPath.IndexOf(autoBackupGame.RootFolder);
-                        var destTruncBase = new FileInfo(e.FullPath.Substring(destBaseIndex));
-                        var renameDestPath = _specifiedAutoBackupFolder.FullName + destTruncBase.FullName;
+                        var destTruncBase = e.FullPath.Substring(destBaseIndex - 2);
+                        var renameDestPath = _specifiedAutoBackupFolder.FullName + destTruncBase;
                         var renameDestDir = new DirectoryInfo(renameDestPath);
                             //Path of new fileName in backup folder
                         Debug.WriteLine(@"START OnRenamed destination path is " + renameDestPath);
@@ -333,7 +333,7 @@ namespace Saved_Game_Backup
                                 //If autobackup target directory does not contain the old file name, copy the new file from gamesave directory.
                                 if (!Directory.Exists(renameDestDir.FullName))
                                     Directory.CreateDirectory(renameDestDir.FullName);
-                                if (!File.Exists(renameOriginPath.FullName)) {
+                                if (!File.Exists(renameOriginPath)) {
                                     using (
                                         var inStream = new FileStream(e.FullPath, FileMode.Open, FileAccess.Read,
                                             FileShare.ReadWrite)) {
@@ -351,7 +351,7 @@ namespace Saved_Game_Backup
                                     Debug.WriteLine(
                                         @"START OnRenamed Cant find source file in game directory. Looking in autobackup folder.");
                                     using (
-                                        var inStream = new FileStream(renameOriginPath.FullName, FileMode.Open,
+                                        var inStream = new FileStream(renameOriginPath, FileMode.Open,
                                             FileAccess.Read, FileShare.ReadWrite)) {
                                         using (
                                             var outStream = new FileStream(renameDestPath, FileMode.Create,
@@ -362,7 +362,7 @@ namespace Saved_Game_Backup
                                                 e.OldName, e.Name);
                                         }
                                     }
-                                    File.Delete(renameOriginPath.FullName);
+                                    File.Delete(renameOriginPath);
                                     Debug.WriteLine(
                                         @"SUCCESSFUL RENAME Old filename was {0}. New filename is {1}.", e.OldName,
                                         e.Name);
