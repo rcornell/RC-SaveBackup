@@ -211,8 +211,8 @@ namespace Saved_Game_Backup
 
             var watcherNumber = 0;
             foreach (var game in gamesToBackup.Where(game => Directory.Exists(game.Path))) {
-                var filePath = new FileInfo(game.Path);
-                _fileWatcherList.Add(new FileSystemWatcher(filePath.FullName));
+                var filePath = new FileInfo(game.Path + "\\");
+                _fileWatcherList.Add(new FileSystemWatcher(filePath.ToString()));
                 _fileWatcherList[watcherNumber].Changed += OnChanged;
                 _fileWatcherList[watcherNumber].Created += OnChanged;
                 _fileWatcherList[watcherNumber].Deleted += OnChanged;
@@ -319,9 +319,10 @@ namespace Saved_Game_Backup
 
                         var destBaseIndex = e.FullPath.IndexOf(autoBackupGame.RootFolder);
                         var destTruncBase = new FileInfo(e.FullPath.Substring(destBaseIndex));
-                        var renameDestPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder.FullName, destTruncBase.FullName));
+                        var renameDestPath = Path.Combine(_specifiedAutoBackupFolder.FullName, destTruncBase.FullName);
+                        var renameDestDir = new DirectoryInfo(renameDestPath);
                             //Path of new fileName in backup folder
-                        Debug.WriteLine(@"START OnRenamed destination path is {0}", renameDestPath);
+                        Debug.WriteLine(@"START OnRenamed destination path is " + renameDestPath);
 
                         #endregion
 
@@ -330,14 +331,14 @@ namespace Saved_Game_Backup
                             try {
                                 //If autobackup target directory contains the old file name, use File.Copy()
                                 //If autobackup target directory does not contain the old file name, copy the new file from gamesave directory.
-                                if (!Directory.Exists(renameDestPath.DirectoryName))
-                                    Directory.CreateDirectory(renameDestPath.DirectoryName);
+                                if (!Directory.Exists(renameDestDir.FullName))
+                                    Directory.CreateDirectory(renameDestDir.FullName);
                                 if (!File.Exists(renameOriginPath.FullName)) {
                                     using (
                                         var inStream = new FileStream(e.FullPath, FileMode.Open, FileAccess.Read,
                                             FileShare.ReadWrite)) {
                                         using (
-                                            var outStream = new FileStream(renameDestPath.FullName, FileMode.Create,
+                                            var outStream = new FileStream(renameDestPath, FileMode.Create,
                                                 FileAccess.ReadWrite, FileShare.Read)) {
                                             inStream.CopyTo(outStream);
                                             Debug.WriteLine(
@@ -353,7 +354,7 @@ namespace Saved_Game_Backup
                                         var inStream = new FileStream(renameOriginPath.FullName, FileMode.Open,
                                             FileAccess.Read, FileShare.ReadWrite)) {
                                         using (
-                                            var outStream = new FileStream(renameDestPath.FullName, FileMode.Create,
+                                            var outStream = new FileStream(renameDestPath, FileMode.Create,
                                                 FileAccess.ReadWrite, FileShare.Read)) {
                                             inStream.CopyTo(outStream);
                                             Debug.WriteLine(
@@ -681,6 +682,10 @@ namespace Saved_Game_Backup
 
             return new BackupResultHelper(success, backupEnabled, message, date, backupButtonText);
 
+        }
+
+        public static async void PollAutobackup(ObservableCollection<Game> gamesToBackup, int interval) {
+            
         }
     }
 }
