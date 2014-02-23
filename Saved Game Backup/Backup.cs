@@ -688,7 +688,8 @@ namespace Saved_Game_Backup
 
         }
 
-        public static async void PollAutobackup(ObservableCollection<Game> gamesToBackup, int interval) {
+        public static async void PollAutobackup(ObservableCollection<Game> games, int interval) {
+            var gamesToBackup = ModifyGamePaths(games);
             var autoBackupPaths = new List<string>();
             var pathPairs = new List<PathCompare>();
             foreach (var game in gamesToBackup) {
@@ -701,6 +702,7 @@ namespace Saved_Game_Backup
                     pathPairs.Add(new PathCompare(path, destinationPath)); //Use this
                 }
             }
+
 
             //source and target paths exist. Do rest now.
         }

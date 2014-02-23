@@ -96,7 +96,7 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
-
+                <Button Style="{StaticResource SbtButtonStyle}" Content="TEST POLL" Command="{Binding TestPollAutoBackup}"/>
                 <Border Style="{StaticResource AutobackupStyle}" Visibility="{Binding AutoBackupVisibility, UpdateSourceTrigger=PropertyChanged}">
                     <StackPanel>
                         <TextBlock HorizontalAlignment="Center"

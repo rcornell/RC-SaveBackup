@@ -199,6 +199,10 @@ namespace Saved_Game_Backup.ViewModel
             get { return new RelayCommand(CloseApplication); }
         }
 
+        public RelayCommand TestPollAutoBackup {
+            get { return new RelayCommand(PollAutobackup);}
+        }
+
         public MainViewModel() {
             NumberOfBackups = 0;
             HardDrives = DirectoryFinder.CreateHardDriveCollection();
@@ -225,6 +229,10 @@ namespace Saved_Game_Backup.ViewModel
             //    SBTErrorLogger.Log(ex.Message);
             //}
 
+        }
+
+        public void PollAutobackup() {
+            Backup.PollAutobackup(GamesToBackup, 1000);
         }
 
         //~MainViewModel() {
