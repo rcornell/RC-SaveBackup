@@ -689,7 +689,18 @@ namespace Saved_Game_Backup
         }
 
         public static async void PollAutobackup(ObservableCollection<Game> gamesToBackup, int interval) {
-            
+            var autoBackupPaths = new List<string>();
+            foreach (var game in gamesToBackup) {
+                var gameFilePaths = Directory.GetFiles(game.Path, "*", SearchOption.AllDirectories);
+                foreach (var path in gameFilePaths) {
+                    var index = path.IndexOf(game.RootFolder);
+                    var substring = path.Substring(index - 1);
+                    var newPath = _specifiedAutoBackupFolder + substring;
+                    autoBackupPaths.Add(newPath);
+                }
+            }
+
+            //source and target paths exist. Do rest now.
         }
     }
 }
