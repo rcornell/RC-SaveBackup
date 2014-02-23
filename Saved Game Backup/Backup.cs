@@ -470,10 +470,10 @@ namespace Saved_Game_Backup
                             var inStream = new FileStream(e.FullPath, FileMode.Open, FileAccess.Read,
                                 FileShare.ReadWrite)) {
                             Debug.WriteLine(@"START SaveChanged inStream created");
-                            using (var outStream = new FileStream(changeDestPath, FileMode.Create,
-                                FileAccess.ReadWrite, FileShare.Read)) {
-                                    Debug.WriteLine(@"START SaveChanged outStream created");
-                                    inStream.CopyTo(outStream);
+                            using (var outStream = new FileStream(changeDestPath, FileMode.Create, FileAccess.ReadWrite, FileShare.Read)) {
+                                Debug.WriteLine(@"START SaveChanged outStream created");
+                                inStream.CopyTo(outStream);
+                                Debug.WriteLine(@"SUCCESSFUL SAVECHANGED");
                             }
                         }
                     }
@@ -572,14 +572,15 @@ namespace Saved_Game_Backup
             }
 
             var destBaseIndex = e.FullPath.IndexOf(autoBackupGame.RootFolder);
-            var destTruncBase = new FileInfo(e.FullPath.Substring(destBaseIndex));
-            var createdDestPath = new FileInfo(Path.Combine(_specifiedAutoBackupFolder.FullName, destTruncBase.FullName));
+            var destTruncBase = e.FullPath.Substring(destBaseIndex - 1);
+            var createdDestPath = _specifiedAutoBackupFolder.FullName + destTruncBase;
+            var createdDestDir = new DirectoryInfo(createdDestPath);
             Debug.WriteLine(@"START SaveCreated destination path is {0}", createdDestPath);
 
             if (Directory.Exists(e.FullPath)) {} 
             else {
-               if (!Directory.Exists(createdDestPath.DirectoryName))
-                        Directory.CreateDirectory(createdDestPath.DirectoryName);
+               if (!Directory.Exists(createdDestDir.Parent.FullName))
+                   Directory.CreateDirectory(createdDestDir.Parent.FullName);
                 if (!File.Exists(e.FullPath)) {
                     var fileName = new FileInfo(e.FullPath);
                     Debug.WriteLine(@"ABORT SaveCreated source file not found. File was {0}", fileName); //Concerning
@@ -589,10 +590,12 @@ namespace Saved_Game_Backup
                     using (
                         var inStream = new FileStream(e.FullPath, FileMode.Open, FileAccess.Read,
                             FileShare.ReadWrite)) {
-                        using (var outStream = new FileStream(createdDestPath.FullName, FileMode.Create,
+                                Debug.WriteLine(@"START SaveCreated inStream created");
+                        using (var outStream = new FileStream(createdDestPath, FileMode.Create,
                             FileAccess.ReadWrite, FileShare.Read)) {
+                            Debug.WriteLine(@"START SaveCreated outStream created");
                             inStream.CopyTo(outStream);
-                            Debug.WriteLine(@"SUCCESSFUL CREATE for {0}", createdDestPath);
+                            Debug.WriteLine(@"SUCCESSFUL CREATE for " + createdDestPath);
                         }
                     }
                 }
