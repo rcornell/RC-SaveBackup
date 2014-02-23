@@ -689,6 +689,12 @@ namespace Saved_Game_Backup
         }
 
         public static async void PollAutobackup(ObservableCollection<Game> games, int interval) {
+            _specifiedAutoBackupFolder = new DirectoryInfo(@"C\Users\Rob\Desktop\SBTTest"); //Won't need this after testing
+            if (_specifiedAutoBackupFolder == null) {
+                var fb = new FolderBrowserDialog() {SelectedPath = _hardDrive, ShowNewFolderButton = true};
+                if (fb.ShowDialog() == DialogResult.OK)
+                    _specifiedAutoBackupFolder = new DirectoryInfo(fb.SelectedPath);
+            }
             var gamesToBackup = ModifyGamePaths(games);
             var autoBackupPaths = new List<string>();
             var pathPairs = new List<PathCompare>();
@@ -702,6 +708,18 @@ namespace Saved_Game_Backup
                     pathPairs.Add(new PathCompare(path, destinationPath)); //Use this
                 }
             }
+
+
+            foreach (var pair in pathPairs.Where(d => !File.Exists(d.DestinationPath))) { 
+                using (var inStream = new FileStream(pair.SourcePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
+                  using(var outStream = new FileStream(pair.DestinationPath, FileMode.Create, FileAccess.ReadWrite, FileShare.Read)) {
+                     await inStream.CopyToAsync(outStream);
+                  }
+                }
+            }
+                  
+
+
 
 
             //source and target paths exist. Do rest now.
