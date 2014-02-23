@@ -316,7 +316,7 @@ namespace Saved_Game_Backup
                     Console.WriteLine(@"In OnRenamed(), renameDestPath is {0}", renameDestPath);
                     #endregion
 
-                    if (Directory.Exists(e.FullPath) && autoBackupGame != null) {}
+                    if (Directory.Exists(e.FullPath)) {}
                     else {
                         try {
                             //If autobackup target directory contains the old file name, use File.Copy()
@@ -523,7 +523,8 @@ namespace Saved_Game_Backup
                if (!Directory.Exists(createdDestPath.DirectoryName))
                         Directory.CreateDirectory(createdDestPath.DirectoryName);
                 if (!File.Exists(e.FullPath)) {
-                    Debug.WriteLine(@"ABORT SaveCreated source file not found. File was {0}", e.Name); //Concerning
+                    var fileName = new FileInfo(e.FullPath);
+                    Debug.WriteLine(@"ABORT SaveCreated source file not found. File was {0}", fileName); //Concerning
                     return;
                 }
                 try {
