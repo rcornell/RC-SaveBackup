@@ -37,6 +37,7 @@ namespace Saved_Game_Backup
         private static DirectoryInfo _specifiedAutoBackupFolder;
         private static Timer _delayTimer;
         private static Timer _canBackupTimer;
+        private static Timer _intervalBackupTimer;
         private static DateTime _lastAutoBackupTime;
         private static int _numberOfBackups = 0;
         private static CultureInfo _culture = CultureInfo.CurrentCulture;
@@ -689,7 +690,7 @@ namespace Saved_Game_Backup
         }
 
         public static async Task PollAutobackup(ObservableCollection<Game> games, int interval) {
-            _specifiedAutoBackupFolder = new DirectoryInfo(@"C\Users\Rob\Desktop\SBTTest"); //Won't need this after testing
+            _specifiedAutoBackupFolder = new DirectoryInfo(@"C:\Users\Rob\Desktop\SBTTest"); //Won't need this after testing
             if (_specifiedAutoBackupFolder == null) {
                 var fb = new FolderBrowserDialog() {SelectedPath = _hardDrive, ShowNewFolderButton = true};
                 if (fb.ShowDialog() == DialogResult.OK)
@@ -709,21 +710,18 @@ namespace Saved_Game_Backup
                 }
             }
 
+            foreach (var dir in pathPairs.Select(pair => new FileInfo(pair.DestinationPath))) {
+                if (Directory.Exists(dir.DirectoryName)) continue;
+                Directory.CreateDirectory(dir.DirectoryName);
+            }
 
             foreach (var pair in pathPairs.Where(d => !File.Exists(d.DestinationPath))) {
-                string source = pair.SourcePath;
-                string destination = pair.DestinationPath;
-                using (var inStream = new FileStream(source, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
-                  using(var outStream = new FileStream(destination, FileMode.Create, FileAccess.ReadWrite, FileShare.Read)) {
+                using (var inStream = new FileStream(pair.SourcePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
+                  using(var outStream = new FileStream(pair.DestinationPath, FileMode.Create, FileAccess.ReadWrite, FileShare.Read)) {
                      await inStream.CopyToAsync(outStream);
                   }
                 }
-            }
-                  
-
-
-
-
+            }                
             //source and target paths exist. Do rest now.
         }
     }
