@@ -699,7 +699,6 @@ namespace Saved_Game_Backup
                     _specifiedAutoBackupFolder = new DirectoryInfo(fb.SelectedPath);
             }
             var gamesToBackup = ModifyGamePaths(games);
-            var autoBackupPaths = new List<string>();
             pathPairs = new List<PathCompare>();
             foreach (var game in gamesToBackup) {
                 var gameFilePaths = Directory.GetFiles(game.Path, "*", SearchOption.AllDirectories);
@@ -707,8 +706,7 @@ namespace Saved_Game_Backup
                     var index = path.IndexOf(game.RootFolder);
                     var substring = path.Substring(index - 1);
                     var destinationPath = _specifiedAutoBackupFolder + substring;
-                    autoBackupPaths.Add(destinationPath); //May not need this anymore
-                    pathPairs.Add(new PathCompare(path, destinationPath)); //Use this
+                    pathPairs.Add(new PathCompare(path, destinationPath));
                 }
             }
 
@@ -717,7 +715,7 @@ namespace Saved_Game_Backup
                 Directory.CreateDirectory(dir.DirectoryName);
             }
 
-            _intervalBackupTimer = new Timer {AutoReset = false, Enabled = true, Interval = interval};
+            _intervalBackupTimer = new Timer { AutoReset = false, Enabled = true, Interval = interval}; //Only running once
             _intervalBackupTimer.Elapsed += _intervalBackupTimer_Elapsed;
             _intervalBackupTimer.Start();
                             
