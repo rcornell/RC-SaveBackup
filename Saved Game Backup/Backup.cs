@@ -715,7 +715,7 @@ namespace Saved_Game_Backup
                 Directory.CreateDirectory(dir.DirectoryName);
             }
 
-            _intervalBackupTimer = new Timer { AutoReset = false, Enabled = true, Interval = interval}; //Only running once
+            _intervalBackupTimer = new Timer { Enabled = true, Interval = interval}; //Only running once
             _intervalBackupTimer.Elapsed += _intervalBackupTimer_Elapsed;
             _intervalBackupTimer.Start();
                             
@@ -726,7 +726,7 @@ namespace Saved_Game_Backup
             IntervalBackup();
         }
 
-        private static async void IntervalBackup() {
+        private static async void IntervalBackup() { //Only achieves objective when it is first run. Needs code to compare files.
             Debug.WriteLine(@"Entering IntervalBackup");
             try {
                 foreach (var pair in pathPairs.Where(d => !File.Exists(d.DestinationPath))) {
