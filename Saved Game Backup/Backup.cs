@@ -226,7 +226,7 @@ namespace Saved_Game_Backup
                 _fileWatcherList[watcherNumber].IncludeSubdirectories = true;
                 _fileWatcherList[watcherNumber].Filter = "*";
                 _fileWatcherList[watcherNumber].EnableRaisingEvents = true;
-                _fileWatcherList[watcherNumber].InternalBufferSize = 65536;
+                _fileWatcherList[watcherNumber].InternalBufferSize = 16384;
                 watcherNumber++;
             }
         }
@@ -692,7 +692,6 @@ namespace Saved_Game_Backup
         }
 
         public static void PollAutobackup(ObservableCollection<Game> games, int interval) {
-            _specifiedAutoBackupFolder = new DirectoryInfo(@"C:\Users\Rob\Desktop\SBTTest"); //Won't need this after testing
             if (_specifiedAutoBackupFolder == null) {
                 var fb = new FolderBrowserDialog() {SelectedPath = _hardDrive, ShowNewFolderButton = true};
                 if (fb.ShowDialog() == DialogResult.OK)
@@ -715,7 +714,7 @@ namespace Saved_Game_Backup
                 Directory.CreateDirectory(dir.DirectoryName);
             }
 
-            _intervalBackupTimer = new Timer { Enabled = true, Interval = interval}; //Only running once
+            _intervalBackupTimer = new Timer { AutoReset = true,Enabled = true, Interval = interval}; //Only running once, remove autoreset when done testing
             _intervalBackupTimer.Elapsed += _intervalBackupTimer_Elapsed;
             _intervalBackupTimer.Start();
                             
@@ -723,17 +722,38 @@ namespace Saved_Game_Backup
 
         private static void _intervalBackupTimer_Elapsed(object sender, ElapsedEventArgs e) {
             Debug.WriteLine(@"Interval timer elapsed.");
+            _intervalBackupTimer.Enabled = false; //REMOVE AFTER TESTING
             IntervalBackup();
+
         }
 
-        private static async void IntervalBackup() { //Only achieves objective when it is first run. Needs code to compare files.
-            Debug.WriteLine(@"Entering IntervalBackup");
+        private static async void IntervalBackup() { 
+            Debug.WriteLine(@"Entering IntervalBackup");           
             try {
-                foreach (var pair in pathPairs.Where(d => !File.Exists(d.DestinationPath))) {
-                    using (var inStream = new FileStream(pair.SourcePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) { 
-                        using (var outStream = new FileStream(pair.DestinationPath, FileMode.Create, FileAccess.ReadWrite, FileShare.Read)) {
-                            await inStream.CopyToAsync(outStream);
-                            Debug.WriteLine(@"File copied.");
+                foreach (var pair in pathPairs) {
+                    if (File.Exists(pair.DestinationPath)) { //If destination file exists, compare source and destination
+                        if (FileCompare(pair.SourcePath, pair.DestinationPath)) continue;
+                        using (
+                            var inStream = new FileStream(pair.SourcePath, FileMode.Open, FileAccess.Read,
+                                FileShare.ReadWrite)) {
+                            using (
+                                var outStream = new FileStream(pair.DestinationPath, FileMode.Create,
+                                    FileAccess.ReadWrite, FileShare.Read)) {
+                                await inStream.CopyToAsync(outStream);
+                                Debug.WriteLine(@"File copied.");
+                            }
+                        }
+                    }
+                    else { //If destination file doesn't exist, copy.
+                        using (
+                            var inStream = new FileStream(pair.SourcePath, FileMode.Open, FileAccess.Read,
+                                FileShare.ReadWrite)) {
+                            using (
+                                var outStream = new FileStream(pair.DestinationPath, FileMode.Create,
+                                    FileAccess.ReadWrite, FileShare.Read)) {
+                                await inStream.CopyToAsync(outStream);
+                                Debug.WriteLine(@"File copied.");
+                            }
                         }
                     }
                 }
@@ -751,6 +771,55 @@ namespace Saved_Game_Backup
                 SBTErrorLogger.Log(ex.Message);
             }
             Debug.WriteLine(@"Exiting IntervalBackup");
+        }
+
+        // This method accepts two strings the represent two files to 
+        // compare. A return value of 0 indicates that the contents of the files
+        // are the same. A return value of any other value indicates that the 
+        // files are not the same.
+        private static bool FileCompare(string file1, string file2) {
+            int file1Byte;
+            int file2Byte;
+
+            // Determine if the same file was referenced two times.
+            if (file1 == file2) {
+                // Return true to indicate that the files are the same.
+                return true;
+            }
+
+            // Open the two files.
+            var fs1 = new FileStream(file1, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            var fs2 = new FileStream(file2, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+
+            // Check the file sizes. If they are not the same, the files 
+            // are not the same.
+            if (fs1.Length != fs2.Length) {
+                // Close the file
+                fs1.Close();
+                fs2.Close();
+
+                // Return false to indicate files are different
+                return false;
+            }
+
+            // Read and compare a byte from each file until either a
+            // non-matching set of bytes is found or until the end of
+            // file1 is reached.
+            do {
+                // Read one byte from each file.
+                file1Byte = fs1.ReadByte();
+                file2Byte = fs2.ReadByte();
+            }
+            while ((file1Byte == file2Byte) && (file1Byte != -1));
+
+            // Close the files.
+            fs1.Close();
+            fs2.Close();
+
+            // Return the success of the comparison. "file1byte" is 
+            // equal to "file2byte" at this point only if the files are 
+            // the same.
+            return ((file1Byte - file2Byte) == 0);
         }
 
     }

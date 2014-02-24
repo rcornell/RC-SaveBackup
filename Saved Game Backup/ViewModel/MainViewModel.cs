@@ -289,7 +289,7 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         public void PollAutobackup() {
-            Backup.PollAutobackup(GamesToBackup, 10000);
+            Backup.PollAutobackup(GamesToBackup, 1000);
         }
 
         ~MainViewModel() {
