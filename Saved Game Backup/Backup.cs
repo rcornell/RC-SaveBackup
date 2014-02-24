@@ -724,7 +724,6 @@ namespace Saved_Game_Backup
             Debug.WriteLine(@"Interval timer elapsed.");
             _intervalBackupTimer.Enabled = false; //REMOVE AFTER TESTING
             IntervalBackup();
-
         }
 
         private static async void IntervalBackup() { 
@@ -771,6 +770,11 @@ namespace Saved_Game_Backup
                 SBTErrorLogger.Log(ex.Message);
             }
             Debug.WriteLine(@"Exiting IntervalBackup");
+        }
+
+        public string MD5HashFile(string fn) { //Utilize in comparing files? Store hashes and compare. Eric concerned about speed.
+            var hash = MD5.Create().ComputeHash(File.ReadAllBytes(fn));
+            return BitConverter.ToString(hash).Replace("-", "");
         }
 
         // This method accepts two strings the represent two files to 
