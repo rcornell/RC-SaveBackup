@@ -28,24 +28,6 @@ namespace Saved_Game_Backup.ViewModel
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
 
-
-        //TEST!!!
-        //public ObservableCollection<WrapPanelGame> GamesToBackup { get; set; }
-
-        //public RelayCommand AddPanelGame {
-        //    get { return new RelayCommand(() => ExecuteAddPanelGame());}
-        //}
-
-        //public void ExecuteAddPanelGame() {
-        //    if(GamesToBackup==null)
-        //        GamesToBackup = new ObservableCollection<WrapPanelGame>();
-        //    GamesToBackup.Add(new WrapPanelGame() { Game = GamesList[0] });
-        //    RaisePropertyChanged(() => GamesToBackup);
-        //}
-
-        //public ObservableCollection<WrapPanelGame> WrapPanelGames { get; set; } 
-        //public WrapPanelGame SelectedWrapPanelGame { get; set; }
-
         private const string _about =
             "I made this program in an attempt to help people keep track of their saved games in case of catastrophe. It should work, but Autobackup can be touchy sometimes. If you have any issues please email me at rob.cornell@gmail.com.";
         public string About { get { return _about; }}
@@ -306,8 +288,8 @@ namespace Saved_Game_Backup.ViewModel
 
         }
 
-        public async void PollAutobackup() {
-            await Backup.PollAutobackup(GamesToBackup, 1000);
+        public void PollAutobackup() {
+            Backup.PollAutobackup(GamesToBackup, 10000);
         }
 
         ~MainViewModel() {

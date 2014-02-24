@@ -14,6 +14,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
@@ -30,6 +31,7 @@ namespace Saved_Game_Backup
 
         private static ObservableCollection<Game> _gamesToAutoBackup = new ObservableCollection<Game>();
         private static List<FileSystemWatcher> _fileWatcherList;
+        private static List<PathCompare> pathPairs; 
         private static readonly string _hardDrive = Path.GetPathRoot(Environment.SystemDirectory);
         private static string _myDocuments = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         private static readonly string _userPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
@@ -277,7 +279,7 @@ namespace Saved_Game_Backup
             _canBackupTimer.Enabled = false;
         }
 
-        private static void OnRenamed(object source, RenamedEventArgs e) {
+        private static void OnRenamed(object sender, RenamedEventArgs e) {
             try {
                 var startMsg = string.Format(@"START OnRenamed for {0}", e.FullPath);
                 Debug.WriteLine(startMsg);
@@ -378,7 +380,7 @@ namespace Saved_Game_Backup
                                 SBTErrorLogger.Log(newMessage);
                                 if (ex.Message.Contains(@"it is being used")) {
                                     Debug.WriteLine(@"Recursively calling OnRenamed()");
-                                    OnRenamed(source, e);
+                                    OnRenamed(sender, e);
                                 }
                             }
                             catch (ArgumentException ex) {
@@ -396,7 +398,7 @@ namespace Saved_Game_Backup
             }
         }
 
-        private static void OnChanged(object source, FileSystemEventArgs e) {
+        private static void OnChanged(object sender, FileSystemEventArgs e) {
             try {
             while (true)
             {
@@ -415,13 +417,13 @@ namespace Saved_Game_Backup
                     switch (e.ChangeType.ToString())
                     {
                         case "Changed":
-                            SaveChanged(source, e);
+                            SaveChanged(sender, e);
                             break;
                         case "Deleted":
-                            SaveDeleted(source, e);
+                            SaveDeleted(sender, e);
                             break;
                         default:
-                            SaveCreated(source, e);
+                            SaveCreated(sender, e);
                             break;
                     }        
                 }
@@ -434,7 +436,7 @@ namespace Saved_Game_Backup
             }
         }
 
-        private static void SaveChanged(object source, FileSystemEventArgs e) {
+        private static void SaveChanged(object sender, FileSystemEventArgs e) {
             var startMsg = string.Format(@"Start SaveChanged for file {0}", e.FullPath);
             Debug.WriteLine(startMsg);
             try {
@@ -489,7 +491,7 @@ namespace Saved_Game_Backup
                     Debug.WriteLine(@"ABORT SaveChanged IOException encountered");
                     if (ex.Message.Contains(@"it is being used")) {
                         Debug.WriteLine(@"Recursively calling SaveChanged()");
-                        SaveChanged(source, e);
+                        SaveChanged(sender, e);
                     }
                 }
                 catch (ArgumentException ex) {
@@ -505,7 +507,7 @@ namespace Saved_Game_Backup
             Debug.WriteLine(exitMsg);
         }
 
-        private static void SaveDeleted(object source, FileSystemEventArgs e) {
+        private static void SaveDeleted(object sender, FileSystemEventArgs e) {
             try {
                 Game autoBackupGame = null; //make argumentexception try catch
 
@@ -551,7 +553,7 @@ namespace Saved_Game_Backup
             }
         }
     
-        private static void SaveCreated(object source, FileSystemEventArgs e) {
+        private static void SaveCreated(object sender, FileSystemEventArgs e) {
             try {
             var startMsg = string.Format(@"START SaveCreated for {0}", e.FullPath);
             Debug.WriteLine(startMsg);
@@ -609,7 +611,7 @@ namespace Saved_Game_Backup
                     SBTErrorLogger.Log(newMessage);
                     if (ex.Message.Contains(@"it is being used")) { 
                         Debug.WriteLine(@"Recursively calling SaveCreated()");
-                        SaveCreated(source, e);
+                        SaveCreated(sender, e);
                     }
                 }
                 catch (ArgumentException ex) {
@@ -629,7 +631,7 @@ namespace Saved_Game_Backup
             }
         }
 
-        private static void OnError(object source, ErrorEventArgs e) {
+        private static void OnError(object sender, ErrorEventArgs e) {
             var ex = e.GetException();
             var message = ex.Message;
             SBTErrorLogger.Log(message);
@@ -689,7 +691,7 @@ namespace Saved_Game_Backup
 
         }
 
-        public static async Task PollAutobackup(ObservableCollection<Game> games, int interval) {
+        public static void PollAutobackup(ObservableCollection<Game> games, int interval) {
             _specifiedAutoBackupFolder = new DirectoryInfo(@"C:\Users\Rob\Desktop\SBTTest"); //Won't need this after testing
             if (_specifiedAutoBackupFolder == null) {
                 var fb = new FolderBrowserDialog() {SelectedPath = _hardDrive, ShowNewFolderButton = true};
@@ -698,7 +700,7 @@ namespace Saved_Game_Backup
             }
             var gamesToBackup = ModifyGamePaths(games);
             var autoBackupPaths = new List<string>();
-            var pathPairs = new List<PathCompare>();
+            pathPairs = new List<PathCompare>();
             foreach (var game in gamesToBackup) {
                 var gameFilePaths = Directory.GetFiles(game.Path, "*", SearchOption.AllDirectories);
                 foreach (var path in gameFilePaths) {
@@ -715,14 +717,35 @@ namespace Saved_Game_Backup
                 Directory.CreateDirectory(dir.DirectoryName);
             }
 
-            foreach (var pair in pathPairs.Where(d => !File.Exists(d.DestinationPath))) {
-                using (var inStream = new FileStream(pair.SourcePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
-                  using(var outStream = new FileStream(pair.DestinationPath, FileMode.Create, FileAccess.ReadWrite, FileShare.Read)) {
-                     await inStream.CopyToAsync(outStream);
-                  }
+            _intervalBackupTimer = new Timer {AutoReset = false, Enabled = true, Interval = interval};
+            _intervalBackupTimer.Elapsed += _intervalBackupTimer_Elapsed;
+            _intervalBackupTimer.Start();
+                            
+        }
+
+        private static void _intervalBackupTimer_Elapsed(object sender, ElapsedEventArgs e) {
+            IntervalBackup();
+        }
+
+        private static async void IntervalBackup() {
+            try {
+                foreach (var pair in pathPairs.Where(d => !File.Exists(d.DestinationPath))) {
+                    using (var inStream = new FileStream(pair.SourcePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) { 
+                        using (var outStream = new FileStream(pair.DestinationPath, FileMode.Create, FileAccess.ReadWrite, FileShare.Read)) {
+                            await inStream.CopyToAsync(outStream);
+                        }
+                    }
                 }
-            }                
-            //source and target paths exist. Do rest now.
+            }
+            catch (ArgumentException ex) {
+                SBTErrorLogger.Log(ex.Message);
+            }
+            catch (IOException ex) {
+                SBTErrorLogger.Log(ex.Message);
+            }
+            catch (Exception ex) {
+                SBTErrorLogger.Log(ex.Message);
+            }
         }
     }
 }
