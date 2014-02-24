@@ -724,28 +724,36 @@ namespace Saved_Game_Backup
         }
 
         private static void _intervalBackupTimer_Elapsed(object sender, ElapsedEventArgs e) {
+            Debug.WriteLine(@"Interval timer elapsed.");
             IntervalBackup();
         }
 
         private static async void IntervalBackup() {
+            Debug.WriteLine(@"Entering IntervalBackup");
             try {
                 foreach (var pair in pathPairs.Where(d => !File.Exists(d.DestinationPath))) {
                     using (var inStream = new FileStream(pair.SourcePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) { 
                         using (var outStream = new FileStream(pair.DestinationPath, FileMode.Create, FileAccess.ReadWrite, FileShare.Read)) {
                             await inStream.CopyToAsync(outStream);
+                            Debug.WriteLine(@"File copied.");
                         }
                     }
                 }
             }
             catch (ArgumentException ex) {
+                Debug.WriteLine(@"ERROR during IntervalBackup");
                 SBTErrorLogger.Log(ex.Message);
             }
             catch (IOException ex) {
+                Debug.WriteLine(@"ERROR during IntervalBackup");
                 SBTErrorLogger.Log(ex.Message);
             }
             catch (Exception ex) {
+                Debug.WriteLine(@"ERROR during IntervalBackup");
                 SBTErrorLogger.Log(ex.Message);
             }
+            Debug.WriteLine(@"Exiting IntervalBackup");
         }
+
     }
 }
