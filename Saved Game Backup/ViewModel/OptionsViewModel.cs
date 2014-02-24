@@ -89,7 +89,6 @@ namespace Saved_Game_Backup.ViewModel {
                 BackupType.ToZip
             };
             _background = main.Background;
-            _hardDrives = main.HardDrives;
         }
 
         private void ExecuteChooseFolder() {

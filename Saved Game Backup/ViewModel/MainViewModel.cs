@@ -1,24 +1,9 @@
-using System;
-using System.Collections.Generic;
+
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Drawing.Text;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Security.RightsManagement;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Automation;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using Saved_Game_Backup.Helper;
 using Application = System.Windows.Application;
@@ -68,36 +53,84 @@ namespace Saved_Game_Backup.ViewModel
         private Visibility _autoBackupVisibility;
         public Visibility AutoBackupVisibility {
             get { return _autoBackupVisibility; }
-            set { _autoBackupVisibility = value; }
+            set {
+                _autoBackupVisibility = value; 
+                RaisePropertyChanged(() => AutoBackupVisibility);
+            }
         }
         public Visibility BackupLimitVisibility { get; set; }
-       
-        public ObservableCollection<string> HardDrives { get; set; } 
-        public ObservableCollection<Game> GamesList { get; set; } 
-        public ObservableCollection<Game> GamesToBackup { get; set; }
-        public ObservableCollection<string> GameNames { get; set; }
+
+        private ObservableCollection<Game> _gamesList;
+        public ObservableCollection<Game> GamesList {
+            get {
+                return _gamesList;
+            }
+            set {
+                _gamesList = value;
+                RaisePropertyChanged(() => GamesList);
+            }
+        }
+
+        private ObservableCollection<Game> _gamesToBackup;
+        public ObservableCollection<Game> GamesToBackup {
+            get {
+                return _gamesToBackup;
+            }
+            set {
+                _gamesToBackup = value;
+                RaisePropertyChanged(() => GamesToBackup);
+            }
+        }
+
+        private ObservableCollection<string> _gameNames;
+        public ObservableCollection<string> GameNames {
+            get {
+                return _gameNames;
+            }
+            set {
+                _gameNames = value;
+                RaisePropertyChanged(() => GameNames); 
+            }
+        }
 
         private Brush _background;
         public Brush Background {
             get { return _background; }
-            set { _background = value; }
+            set {
+                _background = value; 
+                RaisePropertyChanged(() => Background);
+            }
         }
+
         private Brush _listBoxBackground;
         public Brush ListBoxBackground {
             get { return _listBoxBackground; }
-            set { _listBoxBackground = value; }
+            set {
+                _listBoxBackground = value;
+                RaisePropertyChanged(() => ListBoxBackground);
+            }
         }
-        public ObservableCollection<object> Brushes { get; set; }
+
+        private ObservableCollection<object> _brushes;
+        public ObservableCollection<object> Brushes {
+            get { return _brushes; }
+            set {
+                _brushes = value;
+                RaisePropertyChanged(() => Brushes);
+            }
+            
+        }
 
         private ObservableCollection<BackupType> _backupTypes;
         public ObservableCollection<BackupType> BackupTypes
         {
             get { return _backupTypes; }
-            set
-            {
+            set {
                 _backupTypes = value;
+                RaisePropertyChanged(() => BackupTypes);
             }
         }
+
         private BackupType _backupType;
         public BackupType BackupType {
             get { return _backupType; }
@@ -109,33 +142,59 @@ namespace Saved_Game_Backup.ViewModel
                 if (_backupType != BackupType.Autobackup) BackupButtonText = "Backup Saves";
                 RaisePropertyChanged(() => BackupLimitVisibility);
                 RaisePropertyChanged(() => BackupButtonText);
+                RaisePropertyChanged(() => BackupType);
             }
         }
-        public string LastBackupTime { get; set; }
 
-        //private string _selectedHardDrive;
-        //public string SelectedHardDrive {
-        //    get { return _selectedHardDrive; }
-        //    set { _selectedHardDrive = value; }
-        //}
-        private Game _selectedGame;
-        public Game SelectedGame
-        {
-            get { return _selectedGame; }
-            set { _selectedGame = value; }
+        private string _lastBackupTime;
+        public string LastBackupTime {
+            get {
+                return _lastBackupTime;
+            }
+            set {
+                _lastBackupTime = value;
+                RaisePropertyChanged(() => LastBackupTime);
+            }
         }
+
+        private Game _selectedGame;
+        public Game SelectedGame {
+            get { return _selectedGame; }
+            set {
+                _selectedGame = value; 
+                RaisePropertyChanged(() => SelectedGame);
+            }
+        }
+
         private Game _selectedBackupGame;
         public Game SelectedBackupGame
         {
             get { return _selectedBackupGame; }
-            set { _selectedBackupGame = value; }
+            set {
+                _selectedBackupGame = value; 
+                RaisePropertyChanged(() => SelectedBackupGame);
+            }
         }
+
         private string _specifiedFolder;
         public string SpecifiedFolder {
             get { return _specifiedFolder; }
-            set { _specifiedFolder = value; }
+            set {
+                _specifiedFolder = value; 
+                RaisePropertyChanged(() => SpecifiedFolder);
+            }
         }
-        public string BackupButtonText { get; set; }
+
+        private string _backupButtonText;
+        public string BackupButtonText {
+            get {
+                return _backupButtonText;
+            }
+            set {
+                _backupButtonText = value;
+                RaisePropertyChanged(() => BackupButtonText);
+            }
+        }
 
         private bool _backupEnabled;
         public bool BackupEnabled {
@@ -143,24 +202,36 @@ namespace Saved_Game_Backup.ViewModel
             set {
                 _backupEnabled = value;
                 AutoBackupVisibility = _backupEnabled ? Visibility.Visible : Visibility.Hidden;
+                RaisePropertyChanged(() => BackupEnabled);
+                RaisePropertyChanged(() => AutoBackupVisibility);
             } 
         }
 
         private int _maxBackups;
         public int MaxBackups {
             get { return _maxBackups; }
-            set { _maxBackups = value; }
+            set {
+                _maxBackups = value; 
+                RaisePropertyChanged(() => MaxBackups);
+            }
         }
+
         private int _themeInt;
         public int ThemeInt {
             get { return _themeInt; }
-            set { _themeInt = value; }
+            set {
+                _themeInt = value; 
+                RaisePropertyChanged(() => ThemeInt);
+            }
         }
 
         private int _numberOfBackups;
         public int NumberOfBackups {
             get { return _numberOfBackups; }
-            set { _numberOfBackups = value; }
+            set {
+                _numberOfBackups = value; 
+                RaisePropertyChanged(() => NumberOfBackups);
+            }
         }
 
         public RelayCommand ShowAbout {
@@ -210,7 +281,6 @@ namespace Saved_Game_Backup.ViewModel
 
         public MainViewModel() {
             NumberOfBackups = 0;
-            HardDrives = DirectoryFinder.CreateHardDriveCollection();
             GamesList = DirectoryFinder.ReturnGamesList();
             GamesToBackup = new ObservableCollection<Game>();
             BackupTypes = new ObservableCollection<BackupType>() {
@@ -256,13 +326,9 @@ namespace Saved_Game_Backup.ViewModel
                 _themeInt = prefs.Theme;
                 LastBackupTime = prefs.LastBackupTime;
                 if (prefs.SelectedGames != null) GamesToBackup = prefs.SelectedGames;
-                RaisePropertyChanged(() => GamesToBackup);
             }
             Brushes = Theme.ToggleTheme(_themeInt);
-            RaisePropertyChanged(() => Brushes);
             AutoBackupVisibility = Visibility.Hidden;
-            RaisePropertyChanged(() => AutoBackupVisibility);
-            RaisePropertyChanged(() => LastBackupTime);
         }
 
         private void SaveUserPrefs() {
@@ -272,11 +338,6 @@ namespace Saved_Game_Backup.ViewModel
 
         private void ExecuteDetectGames() {
             GamesToBackup = DirectoryFinder.PollDirectories(GamesList);
-            foreach (var game in GamesToBackup)
-                GamesList.Remove(game);
-
-            RaisePropertyChanged(() => GamesToBackup);
-            RaisePropertyChanged(() => GamesList);
         }
 
         private async void ToBackupList() {
@@ -286,7 +347,6 @@ namespace Saved_Game_Backup.ViewModel
             if (GamesToBackup.Contains(game)) return;
             GamesToBackup.Add(game);
 
-            //GamesToBackup = new ObservableCollection<Game>(GamesToBackup.OrderBy(s => s.Name));
             RaisePropertyChanged(() => GamesToBackup);            
 
             if (!game.ThumbnailPath.Contains("Loading")) return;
@@ -325,7 +385,7 @@ namespace Saved_Game_Backup.ViewModel
 
         private void HandleBackupResult(BackupResultHelper result) {
             if (!result.Success) { 
-                MessageBox.Show(result.Message, "Operation Failed.", MessageBoxButton.OK, MessageBoxImage.Hand);
+                MessageBox.Show(result.Message, @"Operation failed", MessageBoxButton.OK, MessageBoxImage.Hand);
                 return;
             }
             BackupEnabled = result.AutobackupEnabled;
@@ -333,24 +393,16 @@ namespace Saved_Game_Backup.ViewModel
 
             if (!result.AutobackupEnabled && BackupType != BackupType.Autobackup) LastBackupTime = result.BackupDateTime;
 
-            RaisePropertyChanged(() => LastBackupTime);
-            RaisePropertyChanged(() => BackupButtonText);
-            RaisePropertyChanged(() => AutoBackupVisibility);
-            RaisePropertyChanged(() => BackupEnabled);
-
             if (string.IsNullOrWhiteSpace(result.Message)) return;
-            MessageBox.Show(result.Message, "Operation Successful", MessageBoxButton.OK);
+            MessageBox.Show(result.Message, @"Operation successful", MessageBoxButton.OK);
         }
 
         private void ExecuteReset() {
             //GamesToBackup.Clear();
-            _specifiedFolder = null;
-            _selectedGame = null;
-            _selectedBackupGame = null;
+            SpecifiedFolder = null;
+            SelectedGame = null;
+            SelectedBackupGame = null;
 
-            RaisePropertyChanged(() => GamesToBackup);
-            RaisePropertyChanged(() => SelectedBackupGame);
-            RaisePropertyChanged(() => SelectedGame);
             var result = Backup.Reset(GamesToBackup, BackupType, BackupEnabled);
             HandleBackupResult(result);
         }
@@ -358,13 +410,11 @@ namespace Saved_Game_Backup.ViewModel
         private void ExecuteSetThemeLight() {
             _themeInt = 0;
             Brushes = Theme.ToggleTheme(_themeInt);
-            RaisePropertyChanged(() => Brushes);
         }
         
         private void ExecuteSetThemeDark() {
             _themeInt = 1;
             Brushes = Theme.ToggleTheme(_themeInt);
-            RaisePropertyChanged(() => Brushes);
         }
 
         private void CloseApplication() {
@@ -383,7 +433,8 @@ namespace Saved_Game_Backup.ViewModel
 
             if (newGameForJson == null) return;
             await GiantBombAPI.AddToJson(newGameForJson);
-            MessageBox.Show(newGameForJson.Name + " added to list.");
+            var msg = string.Format("{0} added to list.", newGameForJson.Name);
+            MessageBox.Show(msg);
             UpdateGamesList();
         }
 
