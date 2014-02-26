@@ -927,6 +927,7 @@ namespace Saved_Game_Backup {
                             using (var outStream = new FileStream(destPath, FileMode.Create)) {
                                 await inStream.CopyToAsync(outStream);
                                 Debug.WriteLine(@"SUCCESSFUL COPY: {0} copied to {1}", sourceFile.Name, destPath);
+                                _numberOfBackups++;
                             }
                         }
                     }
@@ -948,6 +949,7 @@ namespace Saved_Game_Backup {
             var endtime = Watch.Elapsed;
             Debug.WriteLine(@"CopySaves finished at {0}", endtime);
             Debug.WriteLine(@"CopySaves finished in {0}.", (endtime - startTime));
+            Messenger.Default.Send(_numberOfBackups);
         }
 
         //Scans files in-depth to check for matching files
@@ -992,10 +994,12 @@ namespace Saved_Game_Backup {
                         using (var outStream = new FileStream(destPath, FileMode.Create)) {
                             await inStream.CopyToAsync(outStream);
                             Debug.WriteLine(@"SUCCESSFUL COPY: {0} copied to {1}", sourceFile.Name, destPath);
+                            _numberOfBackups++;
                         }
                     }
                 }
             }
+            Messenger.Default.Send(_numberOfBackups);
         }
     }
 }

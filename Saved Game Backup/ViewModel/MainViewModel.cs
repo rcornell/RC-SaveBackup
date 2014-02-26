@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -277,16 +278,13 @@ namespace Saved_Game_Backup.ViewModel
             DirectoryFinder.CheckDirectories();
             SetUpInterface();
 
-            //try {
-            //    Messenger.Default.Register<int>(this, i => {
-            //        NumberOfBackups = i;
-            //        RaisePropertyChanged(() => NumberOfBackups);
-            //    });
-            //}
-            //catch (Exception ex) {
-            //    SBTErrorLogger.Log(ex.Message);
-            //}
-
+            try {
+                Messenger.Default.Register<int>(this, i => {
+                    NumberOfBackups = i;
+                });
+            } catch (Exception ex) {
+                SBTErrorLogger.Log(ex.Message);
+            }
         }
 
         public void PollAutobackup() {
