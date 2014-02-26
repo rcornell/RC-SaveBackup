@@ -13,6 +13,8 @@ namespace Saved_Game_Backup.Helper
         public string Message { get; set; }
         public string BackupDateTime { get; set; }
         public string BackupButtonText { get; set; }
+        
+        public BackupResultHelper(){}
 
         public BackupResultHelper(bool success, bool autobackupEnabled, string message, string dateTime, string backupButtonText) {
             Success = success;

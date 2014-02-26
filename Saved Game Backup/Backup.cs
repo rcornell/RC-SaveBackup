@@ -66,6 +66,7 @@ namespace Saved_Game_Backup {
             bool backupEnabled, int interval = 0) {
             GamesToBackup = ModifyGamePaths(games);
             var success = false;
+            var helper = new BackupResultHelper();
             var message = "";
             if (!games.Any() && backupType == BackupType.Autobackup && backupEnabled)
                 return HandleBackupResult(true, false, "Autobackup Disabled", backupType,
@@ -83,7 +84,7 @@ namespace Saved_Game_Backup {
                     success = BackupSaves(gamesToBackup);
                     break;
                 case BackupType.Autobackup:
-                    success = ToggleAutoBackup(backupEnabled, interval).Result;
+                    helper = ToggleAutoBackup(backupEnabled, interval).Result;
                     break;
                 default:
                     success = false;
@@ -205,7 +206,7 @@ namespace Saved_Game_Backup {
         /// <param name="backupEnabled"></param>
         /// <param name="specifiedFolder"></param>
         /// <returns></returns>
-        public static async Task<bool> ToggleAutoBackup(bool backupEnabled, int interval) {
+        public static async Task<BackupResultHelper> ToggleAutoBackup(bool backupEnabled, int interval) {
             if (backupEnabled) {
                 return SetupPollAutobackup(backupEnabled, interval).Result;
             }
@@ -770,7 +771,7 @@ namespace Saved_Game_Backup {
         }
 
 
-        public static async Task<bool> SetupPollAutobackup(bool backupEnabled, int interval, List<Game> TESTGAMES = null) {
+        public static async Task<BackupResultHelper> SetupPollAutobackup(bool backupEnabled, int interval, List<Game> TESTGAMES = null) {
             //FOR TESTING ONLY
             if (TESTGAMES != null) GamesToBackup = TESTGAMES;
 
@@ -778,22 +779,29 @@ namespace Saved_Game_Backup {
             if (backupEnabled) {
                 _pollAutobackupTimer.Stop();
                 _fileWatcherList.Clear();
-                return true;
+                return new BackupResultHelper(true, !backupEnabled, "Autobackup disabled.",
+                    DateTime.Now.ToLongTimeString(), "Enable autobackup");
             }
             if (_autoBackupDirectoryInfo == null) {
                 var fb = new FolderBrowserDialog() {ShowNewFolderButton = true};
                 if (fb.ShowDialog() == DialogResult.OK)
                     _autoBackupDirectoryInfo = new DirectoryInfo(fb.SelectedPath);
-                else return false;
+                else return new BackupResultHelper(false, backupEnabled, "", DateTime.Now.ToLongTimeString(), "Enable autobackup");
             }
             Debug.WriteLine(@"Setting up Poll Autobackup");
 
+            GameTargetDictionary = new Dictionary<Game, List<FileInfo>>();
+            GameFileDictionary = new Dictionary<Game, List<FileInfo>>();
             foreach (var game in GamesToBackup) {
-                var targetDirectory = new DirectoryInfo(_autoBackupDirectoryInfo.FullName + game.Name); //Need slashes?
+                var targetDirectory = new DirectoryInfo(_autoBackupDirectoryInfo.FullName + "\\" + game.Name);
+                if (!Directory.Exists(targetDirectory.FullName)) Directory.CreateDirectory(targetDirectory.FullName);
                 var targets = targetDirectory.GetFiles("*", SearchOption.AllDirectories).ToList();
                 GameTargetDictionary.Add(game, targets);
 
                 var sourceDirectory = new DirectoryInfo(game.Path);
+                if (!Directory.Exists(sourceDirectory.FullName))
+                    return new BackupResultHelper(false, backupEnabled, "Game directory not found.", DateTime.Now.ToLongTimeString(),
+                        "Enable Autobackup");
                 var sources = sourceDirectory.GetFiles("*", SearchOption.AllDirectories).ToList();
                 GameFileDictionary.Add(game, sources);
 
@@ -805,10 +813,11 @@ namespace Saved_Game_Backup {
             _pollAutobackupTimer.Elapsed += _pollAutobackupTimer_Elapsed;
             _pollAutobackupTimer.Start();
             Debug.WriteLine(@"Finished initializing Poll Autobackup Timer.");
-            return true;
+            return new BackupResultHelper(true, true, "Autobackup enabled", DateTime.Now.ToLongTimeString(), "Disable autobackup");
         }
 
         private static Task ComputeSourceHashes() {
+            HashDictionary = new Dictionary<FileInfo, string>();
             for (var i = 0; i <= GamesToBackup.Count; i++) {
                 var sourceFiles = new List<FileInfo>();
                 GameFileDictionary.TryGetValue(GamesToBackup[i], out sourceFiles);
