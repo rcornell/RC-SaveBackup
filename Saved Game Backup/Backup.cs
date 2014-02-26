@@ -65,7 +65,7 @@ namespace Saved_Game_Backup {
 
         public static BackupResultHelper StartBackup(List<Game> games, BackupType backupType,
             bool backupEnabled) {
-            GamesToBackup = games;
+            GamesToBackup = ModifyGamePaths(games);
             var success = false;
             var message = "";
             if (!games.Any() && backupType == BackupType.Autobackup && backupEnabled)
@@ -719,32 +719,6 @@ namespace Saved_Game_Backup {
             return new BackupResultHelper(success, backupEnabled, message, date, backupButtonText);
         }
 
-        public static void PollAutobackup(List<Game> games, int interval) {
-            if (_autoBackupDirectoryInfo == null) {
-                var fb = new FolderBrowserDialog() {SelectedPath = _hardDrive, ShowNewFolderButton = true};
-                if (fb.ShowDialog() == DialogResult.OK)
-                    _autoBackupDirectoryInfo = new DirectoryInfo(fb.SelectedPath);
-            }
-            var gamesToBackup = ModifyGamePaths(games);
-            pathPairs = new List<PathCompare>();
-            foreach (var game in gamesToBackup) {
-                var gameFilePaths = Directory.GetFiles(game.Path, "*", SearchOption.AllDirectories);
-                foreach (var path in gameFilePaths) {
-                    var index = path.IndexOf(game.RootFolder);
-                    var substring = path.Substring(index - 1);
-                    var destinationPath = _autoBackupDirectoryInfo + substring;
-                    pathPairs.Add(new PathCompare(path, destinationPath));
-                }
-            }
-
-            foreach (var dir in pathPairs.Select(pair => new FileInfo(pair.DestinationPath))) {
-                if (Directory.Exists(dir.DirectoryName)) continue;
-                Directory.CreateDirectory(dir.DirectoryName);
-            }
-
-            
-        }
-
         private static void _pollAutobackupTimer_Elapsed(object sender, ElapsedEventArgs e) {
             Debug.WriteLine(@"Poll Autobackup timer elapsed.");
             _pollAutobackupTimer.Enabled = false; //REMOVE AFTER TESTING
@@ -921,6 +895,9 @@ namespace Saved_Game_Backup {
                         var index = sourceFile.FullName.IndexOf(game.RootFolder);
                         var substring = sourceFile.FullName.Substring(index);
                         var destPath = _autoBackupDirectoryInfo.FullName + substring;
+                        var dir = new FileInfo(destPath);
+                        if (!Directory.Exists(dir.DirectoryName))
+                            Directory.CreateDirectory(dir.DirectoryName);
                         using (
                             var inStream = new FileStream(sourceFile.FullName, FileMode.Open, FileAccess.Read,
                                 FileShare.ReadWrite)) {
@@ -988,6 +965,9 @@ namespace Saved_Game_Backup {
                     var index = sourceFile.FullName.IndexOf(game.RootFolder);
                     var substring = sourceFile.FullName.Substring(index);
                     var destPath = _autoBackupDirectoryInfo.FullName + substring;
+                    var dir = new FileInfo(destPath);
+                    if (!Directory.Exists(dir.DirectoryName))
+                        Directory.CreateDirectory(dir.DirectoryName);
                     using (
                         var inStream = new FileStream(sourceFile.FullName, FileMode.Open, FileAccess.Read,
                             FileShare.ReadWrite)) {
