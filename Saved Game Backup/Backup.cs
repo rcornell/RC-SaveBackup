@@ -64,7 +64,7 @@ namespace Saved_Game_Backup {
         }
 
         public static BackupResultHelper StartBackup(List<Game> games, BackupType backupType,
-            bool backupEnabled) {
+            bool backupEnabled, int interval = null) {
             GamesToBackup = ModifyGamePaths(games);
             var success = false;
             var message = "";
@@ -206,15 +206,12 @@ namespace Saved_Game_Backup {
         /// <param name="backupEnabled"></param>
         /// <param name="specifiedFolder"></param>
         /// <returns></returns>
-        public static bool ToggleAutoBackup(List<Game> gamesToBackup, bool backupEnabled,
-            string specifiedFolder = null) {
+        public static async Task<bool> ToggleAutoBackup(bool backupEnabled) {
             if (backupEnabled) {
-                DeactivateAutoBackup();
-                return true;
+                return SetupPollAutobackup(999999, backupEnabled).Result;
             }
 
-            ActivateAutoBackup(gamesToBackup, specifiedFolder);
-            return true;
+            return SetupPollAutobackup(interval, backupEnabled).Result; 
         }
 
         public static void ActivateAutoBackup(List<Game> gamesToBackup, string specifiedFolder = null)
@@ -248,7 +245,6 @@ namespace Saved_Game_Backup {
                 _fileWatcherList[watcherNumber].IncludeSubdirectories = true;
                 _fileWatcherList[watcherNumber].Filter = "*";
                 _fileWatcherList[watcherNumber].EnableRaisingEvents = true;
-                _fileWatcherList[watcherNumber].InternalBufferSize = 16384;
                 watcherNumber++;
             }
         }
@@ -775,7 +771,11 @@ namespace Saved_Game_Backup {
         }
 
 
-        private async Task<bool> SetupPollAutobackup(int interval, bool backupEnabled) {
+        public static async Task<bool> SetupPollAutobackup(int interval, bool backupEnabled, List<Game> TESTGAMES = null) {
+            //FOR TESTING ONLY
+            if (TESTGAMES != null) GamesToBackup = TESTGAMES;
+
+
             if (backupEnabled) {
                 _pollAutobackupTimer.Stop();
                 _fileWatcherList.Clear();

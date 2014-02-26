@@ -287,8 +287,9 @@ namespace Saved_Game_Backup.ViewModel
             }
         }
 
-        public void PollAutobackup() {
-            Backup.PollAutobackup(GamesToBackup.ToList(), 1000);
+        public async void PollAutobackup() {
+            var testList = Backup.ModifyGamePaths(GamesToBackup);
+           await Backup.SetupPollAutobackup(1000, false, testList);
         }
 
         ~MainViewModel() {
