@@ -290,7 +290,7 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         public void PollAutobackup() {
-            Backup.PollAutobackup(GamesToBackup, 1000);
+            Backup.PollAutobackup(GamesToBackup.ToList(), 1000);
         }
 
         ~MainViewModel() {
@@ -386,7 +386,7 @@ namespace Saved_Game_Backup.ViewModel
             SelectedGame = null;
             SelectedBackupGame = null;
 
-            var result = Backup.Reset(GamesToBackup, BackupType, BackupEnabled);
+            var result = Backup.Reset(GamesToBackup.ToList(), BackupType, BackupEnabled);
             HandleBackupResult(result);
         }
 

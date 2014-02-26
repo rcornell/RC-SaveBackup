@@ -65,6 +65,7 @@ namespace Saved_Game_Backup {
 
         public static BackupResultHelper StartBackup(List<Game> games, BackupType backupType,
             bool backupEnabled) {
+            GamesToBackup = games;
             var success = false;
             var message = "";
             if (!games.Any() && backupType == BackupType.Autobackup && backupEnabled)
@@ -107,7 +108,7 @@ namespace Saved_Game_Backup {
                 DateTime.Now.ToString(CultureInfo.CurrentCulture));
         }
 
-        public static bool BackupSaves(ObservableCollection<Game> gamesList, string specifiedfolder = null) {
+        public static bool BackupSaves(List<Game> gamesList, string specifiedfolder = null) {
             string destination;
 
             var fd = new FolderBrowserDialog() {
@@ -155,7 +156,7 @@ namespace Saved_Game_Backup {
             }
         }
 
-        public static bool BackupAndZip(ObservableCollection<Game> gamesList, string specifiedfolder = null) {
+        public static bool BackupAndZip(List<Game> gamesList, string specifiedfolder = null) {
             string zipSource;
             FileInfo zipDestination;
 
@@ -205,7 +206,7 @@ namespace Saved_Game_Backup {
         /// <param name="backupEnabled"></param>
         /// <param name="specifiedFolder"></param>
         /// <returns></returns>
-        public static bool ToggleAutoBackup(ObservableCollection<Game> gamesToBackup, bool backupEnabled,
+        public static bool ToggleAutoBackup(List<Game> gamesToBackup, bool backupEnabled,
             string specifiedFolder = null) {
             if (backupEnabled) {
                 DeactivateAutoBackup();
@@ -216,7 +217,8 @@ namespace Saved_Game_Backup {
             return true;
         }
 
-        public static void ActivateAutoBackup(ObservableCollection<Game> gamesToBackup, string specifiedFolder = null) {
+        public static void ActivateAutoBackup(List<Game> gamesToBackup, string specifiedFolder = null)
+        {
             _delayTimer = new Timer {Interval = 5000, AutoReset = true};
             _delayTimer.Elapsed += _delayTimer_Elapsed;
 
@@ -226,7 +228,6 @@ namespace Saved_Game_Backup {
             _lastAutoBackupTime = DateTime.Now;
 
             _fileWatcherList = new List<FileSystemWatcher>();
-            _gamesToAutoBackup = gamesToBackup; //Is this line needed?
             if (_autoBackupDirectoryInfo == null) {
                 var fb = new FolderBrowserDialog() {SelectedPath = _hardDrive, ShowNewFolderButton = true};
                 if (fb.ShowDialog() == DialogResult.OK)
@@ -277,7 +278,8 @@ namespace Saved_Game_Backup {
             _fileWatcherList.Clear();
         }
 
-        public static bool CanBackup(ObservableCollection<Game> gamesToBackup) {
+        public static bool CanBackup(List<Game> gamesToBackup)
+        {
             if (_hardDrive == null) {
                 MessageBox.Show(
                     "Cannot find OS drive. \r\nPlease add each game using \r\nthe 'Add Game to List' button.");
@@ -666,8 +668,8 @@ namespace Saved_Game_Backup {
         /// new list.
         /// </summary>
         /// <param name="gamesToBackup"></param>
-        internal static ObservableCollection<Game> ModifyGamePaths(IEnumerable<Game> gamesToBackup) {
-            var editedList = new ObservableCollection<Game>();
+        internal static List<Game> ModifyGamePaths(IEnumerable<Game> gamesToBackup) {
+            var editedList = new List<Game>();
             try {
                 foreach (var game in gamesToBackup) {
                     if (!game.HasCustomPath && game.Path.Contains("Documents"))
@@ -692,7 +694,7 @@ namespace Saved_Game_Backup {
             return editedList;
         }
 
-        public static BackupResultHelper Reset(ObservableCollection<Game> games, BackupType backupType,
+        public static BackupResultHelper Reset(List<Game> games, BackupType backupType,
             bool backupEnabled) {
             var message = "";
             if (backupEnabled) {
@@ -717,7 +719,7 @@ namespace Saved_Game_Backup {
             return new BackupResultHelper(success, backupEnabled, message, date, backupButtonText);
         }
 
-        public static void PollAutobackup(ObservableCollection<Game> games, int interval) {
+        public static void PollAutobackup(List<Game> games, int interval) {
             if (_autoBackupDirectoryInfo == null) {
                 var fb = new FolderBrowserDialog() {SelectedPath = _hardDrive, ShowNewFolderButton = true};
                 if (fb.ShowDialog() == DialogResult.OK)
