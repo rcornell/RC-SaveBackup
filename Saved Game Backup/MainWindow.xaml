@@ -96,7 +96,9 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
-                <Button Style="{StaticResource SbtButtonStyle}" Content="TEST POLL" Command="{Binding TestPollAutoBackup}"/>
+                <Button Command="{Binding TestPollAutoBackup}"
+                        Content="TEST POLL"
+                        Style="{StaticResource SbtButtonStyle}" />
                 <Border Style="{StaticResource AutobackupStyle}" Visibility="{Binding AutoBackupVisibility, UpdateSourceTrigger=PropertyChanged}">
                     <StackPanel>
                         <TextBlock HorizontalAlignment="Center"
@@ -117,7 +119,8 @@
                             <TextBlock Margin="3"
                                        FontSize="12"
                                        Style="{StaticResource TextStyle}"
-                                       Text="{Binding NumberOfBackups, StringFormat='{}{0:#,#.}'}" />
+                                       Text="{Binding NumberOfBackups,
+                                                      StringFormat='{}{0:#,#.}'}" />
                         </StackPanel>
                     </StackPanel>
                 </Border>

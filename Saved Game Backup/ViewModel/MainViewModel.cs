@@ -2,6 +2,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Media;
 using GalaSoft.MvvmLight;
@@ -200,6 +201,15 @@ namespace Saved_Game_Backup.ViewModel
             }
         }
 
+        private int _interval;
+        public int Interval {
+            get { return _interval; }
+            set {
+                _interval = value;
+                RaisePropertyChanged(() => Interval);
+            }
+        }
+
         private int _themeInt;
         public int ThemeInt {
             get { return _themeInt; }
@@ -243,10 +253,10 @@ namespace Saved_Game_Backup.ViewModel
         public RelayCommand DetectGames {
             get { return new RelayCommand(ExecuteDetectGames); }
         }
-        public RelayCommand SetThemeLight
-        {
-            get { return new RelayCommand(ExecuteSetThemeLight); }
-        }
+        //public RelayCommand SetThemeLight
+        //{
+        //    get { return new RelayCommand(ExecuteSetThemeLight); }
+        //}
         public RelayCommand SetThemeDark
         {
             get { return new RelayCommand(ExecuteSetThemeDark); }
@@ -255,9 +265,9 @@ namespace Saved_Game_Backup.ViewModel
         {
             get { return new RelayCommand(ExecuteOpenAddGameWindow); }
         }
-        public RelayCommand Close {
-            get { return new RelayCommand(CloseApplication); }
-        }
+        //public RelayCommand Close {
+        //    get { return new RelayCommand(CloseApplication); }
+        //}
 
         public RelayCommand TestPollAutoBackup {
             get { return new RelayCommand(PollAutobackup);}
@@ -278,13 +288,13 @@ namespace Saved_Game_Backup.ViewModel
             DirectoryFinder.CheckDirectories();
             SetUpInterface();
 
-            try {
-                Messenger.Default.Register<int>(this, i => {
-                    NumberOfBackups = i;
-                });
-            } catch (Exception ex) {
-                SBTErrorLogger.Log(ex.Message);
-            }
+            //try {
+            //    Messenger.Default.Register<int>(this, i => {
+            //        NumberOfBackups = i;
+            //    });
+            //} catch (Exception ex) {
+            //    SBTErrorLogger.Log(ex.Message);
+            //}
         }
 
         public async void PollAutobackup() {
@@ -292,9 +302,10 @@ namespace Saved_Game_Backup.ViewModel
            await Backup.SetupPollAutobackup(false, 10000, testList);
         }
 
-        ~MainViewModel() {
-          CloseApplication();
-        }
+        ///Currently crashing designer.
+        //~MainViewModel() {
+        //  CloseApplication();
+        //}
 
         private void SetUpInterface() {
             if (!PrefSaver.CheckForPrefs()) {
@@ -389,21 +400,21 @@ namespace Saved_Game_Backup.ViewModel
             HandleBackupResult(result);
         }
 
-        private void ExecuteSetThemeLight() {
-            _themeInt = 0;
-            Brushes = Theme.ToggleTheme(_themeInt);
-        }
+        //private void ExecuteSetThemeLight() {
+        //    _themeInt = 0;
+        //    Brushes = Theme.ToggleTheme(_themeInt);
+        //}
         
         private void ExecuteSetThemeDark() {
             _themeInt = 1;
             Brushes = Theme.ToggleTheme(_themeInt);
         }
 
-        private void CloseApplication() {
-            SaveUserPrefs();
-            if (Application.Current != null)
-                Application.Current.Shutdown();
-        }      
+        //private void CloseApplication() {
+        //    SaveUserPrefs();
+        //    if (Application.Current != null)
+        //        Application.Current.Shutdown();
+        //}      
 
         private async void ExecuteOpenAddGameWindow() {
             Game newGameForJson = null;

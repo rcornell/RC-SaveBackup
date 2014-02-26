@@ -11,7 +11,7 @@
         Height="300"
         DataContext="{Binding Path=Options,
                               Source={StaticResource Locator}}"
-        Icon="Resources/SGBIcon.ico"
+        Icon="Assets\SGBIcon.ico"
         Padding="3"
         WindowStartupLocation="CenterScreen"
         WindowStyle="SingleBorderWindow">
