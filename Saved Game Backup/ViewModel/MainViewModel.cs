@@ -264,9 +264,9 @@ namespace Saved_Game_Backup.ViewModel
         {
             get { return new RelayCommand(ExecuteOpenAddGameWindow); }
         }
-        //public RelayCommand Close {
-        //    get { return new RelayCommand(CloseApplication); }
-        //}
+        public RelayCommand Close {
+            get { return new RelayCommand(CloseApplication); }
+        }
 
         public RelayCommand TestPollAutoBackup {
             get { return new RelayCommand(PollAutobackup);}
@@ -390,7 +390,7 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ExecuteReset() {
-            //GamesToBackup.Clear();
+            GamesToBackup.Clear();
             SpecifiedFolder = null;
             SelectedGame = null;
             SelectedBackupGame = null;
@@ -409,11 +409,11 @@ namespace Saved_Game_Backup.ViewModel
             Brushes = Theme.ToggleTheme(_themeInt);
         }
 
-        //private void CloseApplication() {
-        //    SaveUserPrefs();
-        //    if (Application.Current != null)
-        //        Application.Current.Shutdown();
-        //}      
+        private void CloseApplication() {
+            SaveUserPrefs();
+            if (Application.Current != null)
+                Application.Current.Shutdown();
+        }      
 
         private async void ExecuteOpenAddGameWindow() {
             Game newGameForJson = null;
