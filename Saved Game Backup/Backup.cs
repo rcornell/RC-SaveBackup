@@ -29,7 +29,6 @@ namespace Saved_Game_Backup {
     public class Backup {
         private static ObservableCollection<Game> _gamesToAutoBackup = new ObservableCollection<Game>();
         private static List<FileSystemWatcher> _fileWatcherList;
-        private static List<PathCompare> pathPairs;
         private static readonly string _hardDrive = Path.GetPathRoot(Environment.SystemDirectory);
         private static string _myDocuments = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         private static readonly string _userPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
@@ -64,7 +63,7 @@ namespace Saved_Game_Backup {
         }
 
         public static BackupResultHelper StartBackup(List<Game> games, BackupType backupType,
-            bool backupEnabled, int interval = null) {
+            bool backupEnabled, int interval = 0) {
             GamesToBackup = ModifyGamePaths(games);
             var success = false;
             var message = "";
@@ -84,7 +83,7 @@ namespace Saved_Game_Backup {
                     success = BackupSaves(gamesToBackup);
                     break;
                 case BackupType.Autobackup:
-                    success = ToggleAutoBackup(gamesToBackup, backupEnabled);
+                    success = ToggleAutoBackup(backupEnabled, interval).Result;
                     break;
                 default:
                     success = false;
@@ -206,12 +205,12 @@ namespace Saved_Game_Backup {
         /// <param name="backupEnabled"></param>
         /// <param name="specifiedFolder"></param>
         /// <returns></returns>
-        public static async Task<bool> ToggleAutoBackup(bool backupEnabled) {
+        public static async Task<bool> ToggleAutoBackup(bool backupEnabled, int interval) {
             if (backupEnabled) {
-                return SetupPollAutobackup(999999, backupEnabled).Result;
+                return SetupPollAutobackup(backupEnabled, interval).Result;
             }
 
-            return SetupPollAutobackup(interval, backupEnabled).Result; 
+            return SetupPollAutobackup(backupEnabled, interval).Result; 
         }
 
         public static void ActivateAutoBackup(List<Game> gamesToBackup, string specifiedFolder = null)
@@ -771,7 +770,7 @@ namespace Saved_Game_Backup {
         }
 
 
-        public static async Task<bool> SetupPollAutobackup(int interval, bool backupEnabled, List<Game> TESTGAMES = null) {
+        public static async Task<bool> SetupPollAutobackup(bool backupEnabled, int interval, List<Game> TESTGAMES = null) {
             //FOR TESTING ONLY
             if (TESTGAMES != null) GamesToBackup = TESTGAMES;
 
