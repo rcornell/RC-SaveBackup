@@ -253,10 +253,9 @@ namespace Saved_Game_Backup.ViewModel
         public RelayCommand DetectGames {
             get { return new RelayCommand(ExecuteDetectGames); }
         }
-        //public RelayCommand SetThemeLight
-        //{
-        //    get { return new RelayCommand(ExecuteSetThemeLight); }
-        //}
+        public RelayCommand SetThemeLight {
+            get { return new RelayCommand(ExecuteSetThemeLight); }
+        }
         public RelayCommand SetThemeDark
         {
             get { return new RelayCommand(ExecuteSetThemeDark); }
@@ -288,13 +287,13 @@ namespace Saved_Game_Backup.ViewModel
             DirectoryFinder.CheckDirectories();
             SetUpInterface();
 
-            //try {
-            //    Messenger.Default.Register<int>(this, i => {
-            //        NumberOfBackups = i;
-            //    });
-            //} catch (Exception ex) {
-            //    SBTErrorLogger.Log(ex.Message);
-            //}
+            try {
+                Messenger.Default.Register<int>(this, i => {
+                    NumberOfBackups = i;
+                });
+            } catch (Exception ex) {
+                SBTErrorLogger.Log(ex.Message);
+            }
         }
 
         public async void PollAutobackup() {
@@ -400,10 +399,10 @@ namespace Saved_Game_Backup.ViewModel
             HandleBackupResult(result);
         }
 
-        //private void ExecuteSetThemeLight() {
-        //    _themeInt = 0;
-        //    Brushes = Theme.ToggleTheme(_themeInt);
-        //}
+        private void ExecuteSetThemeLight() {
+            _themeInt = 0;
+            Brushes = Theme.ToggleTheme(_themeInt);
+        }
         
         private void ExecuteSetThemeDark() {
             _themeInt = 1;
