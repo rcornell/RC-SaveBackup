@@ -37,7 +37,7 @@ namespace Saved_Game_Backup {
         private static DirectoryInfo _autoBackupDirectoryInfo;
         private static Timer _delayTimer;
         private static Timer _canBackupTimer;
-        private static Timer _intervalBackupTimer;
+        private static Timer _pollAutobackupTimer;
         private static DateTime _lastAutoBackupTime;
         private static int _numberOfBackups = 0;
         private static CultureInfo _culture = CultureInfo.CurrentCulture;
@@ -742,64 +742,13 @@ namespace Saved_Game_Backup {
                 Directory.CreateDirectory(dir.DirectoryName);
             }
 
-            _intervalBackupTimer = new Timer {AutoReset = true, Enabled = true, Interval = interval};
-                //Only running once, remove autoreset when done testing
-            _intervalBackupTimer.Elapsed += _intervalBackupTimer_Elapsed;
-            _intervalBackupTimer.Start();
+            
         }
 
-        private static void _intervalBackupTimer_Elapsed(object sender, ElapsedEventArgs e) {
-            Debug.WriteLine(@"Interval timer elapsed.");
-            _intervalBackupTimer.Enabled = false; //REMOVE AFTER TESTING
-            IntervalBackup();
-        }
-
-        private static async void IntervalBackup() {
-            Debug.WriteLine(@"Entering IntervalBackup");
-            try {
-                foreach (var pair in pathPairs) {
-                    if (File.Exists(pair.DestinationPath)) {
-                        //If destination file exists, compare source and destination
-                        if (FileCompare(pair.SourcePath, pair.DestinationPath)) continue;
-                        using (
-                            var inStream = new FileStream(pair.SourcePath, FileMode.Open, FileAccess.Read,
-                                FileShare.ReadWrite)) {
-                            using (
-                                var outStream = new FileStream(pair.DestinationPath, FileMode.Create,
-                                    FileAccess.ReadWrite, FileShare.Read)) {
-                                await inStream.CopyToAsync(outStream);
-                                Debug.WriteLine(@"File copied.");
-                            }
-                        }
-                    }
-                    else {
-                        //If destination file doesn't exist, copy.
-                        using (
-                            var inStream = new FileStream(pair.SourcePath, FileMode.Open, FileAccess.Read,
-                                FileShare.ReadWrite)) {
-                            using (
-                                var outStream = new FileStream(pair.DestinationPath, FileMode.Create,
-                                    FileAccess.ReadWrite, FileShare.Read)) {
-                                await inStream.CopyToAsync(outStream);
-                                Debug.WriteLine(@"File copied.");
-                            }
-                        }
-                    }
-                }
-            }
-            catch (ArgumentException ex) {
-                Debug.WriteLine(@"ERROR during IntervalBackup");
-                SBTErrorLogger.Log(ex.Message);
-            }
-            catch (IOException ex) {
-                Debug.WriteLine(@"ERROR during IntervalBackup");
-                SBTErrorLogger.Log(ex.Message);
-            }
-            catch (Exception ex) {
-                Debug.WriteLine(@"ERROR during IntervalBackup");
-                SBTErrorLogger.Log(ex.Message);
-            }
-            Debug.WriteLine(@"Exiting IntervalBackup");
+        private static void _pollAutobackupTimer_Elapsed(object sender, ElapsedEventArgs e) {
+            Debug.WriteLine(@"Poll Autobackup timer elapsed.");
+            _pollAutobackupTimer.Enabled = false; //REMOVE AFTER TESTING
+            PollAutobackup();
         }
 
 
@@ -852,17 +801,21 @@ namespace Saved_Game_Backup {
         }
 
 
-        private async void SetupPollAutobackup(List<Game> gamesToBackup) {
-            GamesToBackup = gamesToBackup;
+        private async Task<bool> SetupPollAutobackup(int interval, bool backupEnabled) {
+            if (backupEnabled) {
+                _pollAutobackupTimer.Stop();
+                _fileWatcherList.Clear();
+                return true;
+            }
             if (_autoBackupDirectoryInfo == null) {
                 var fb = new FolderBrowserDialog() {ShowNewFolderButton = true};
-                if (fb.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (fb.ShowDialog() == DialogResult.OK)
                     _autoBackupDirectoryInfo = new DirectoryInfo(fb.SelectedPath);
-                else return;
+                else return false;
             }
             Debug.WriteLine(@"Setting up Poll Autobackup");
 
-            foreach (var game in gamesToBackup) {
+            foreach (var game in GamesToBackup) {
                 var targetDirectory = new DirectoryInfo(_autoBackupDirectoryInfo.FullName + game.Name); //Need slashes?
                 var targets = targetDirectory.GetFiles("*", SearchOption.AllDirectories).ToList();
                 GameTargetDictionary.Add(game, targets);
@@ -874,7 +827,12 @@ namespace Saved_Game_Backup {
                 await ComputeSourceHashes();
             }
             Debug.WriteLine(@"Setup of Poll Autobackup complete.");
-            PollAutobackup();
+            Debug.WriteLine(@"Initializing Poll Autobackup Timer.");
+            _pollAutobackupTimer = new Timer { AutoReset = true, Enabled = true, Interval = interval }; //Only running once, remove autoreset when done testing
+            _pollAutobackupTimer.Elapsed += _pollAutobackupTimer_Elapsed;
+            _pollAutobackupTimer.Start();
+            Debug.WriteLine(@"Finished initializing Poll Autobackup Timer.");
+            return true;
         }
 
         private static Task ComputeSourceHashes() {
@@ -974,12 +932,18 @@ namespace Saved_Game_Backup {
                     }
                 }
             }
+            catch (ArgumentException ex) {
+                Debug.WriteLine(@"ERROR during CopySaves");
+                SBTErrorLogger.Log(ex.Message);
+            }
             catch (IOException ex) {
-                Console.WriteLine(ex.Message);
+                Debug.WriteLine(@"ERROR during CopySaves");
+                SBTErrorLogger.Log(ex.Message);
             }
             catch (Exception ex) {
-                Console.WriteLine(ex.Message);
-            } //!!!! COMPLETE THESE
+                Debug.WriteLine(@"ERROR during CopySaves");
+                SBTErrorLogger.Log(ex.Message);
+            }
 
             var endtime = Watch.Elapsed;
             Debug.WriteLine(@"CopySaves finished at {0}", endtime);
