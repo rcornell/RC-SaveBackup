@@ -1,5 +1,6 @@
 
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using GalaSoft.MvvmLight;
@@ -361,7 +362,7 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ExecuteStartBackup() {
-            var result = Backup.StartBackup(GamesToBackup, BackupType, BackupEnabled);
+            var result = Backup.StartBackup(GamesToBackup.ToList(), BackupType, BackupEnabled);
             HandleBackupResult(result);
         }
 
