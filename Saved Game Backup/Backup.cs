@@ -43,9 +43,27 @@ namespace Saved_Game_Backup
         private static DateTime _lastAutoBackupTime;
         private static int _numberOfBackups = 0;
         private static CultureInfo _culture = CultureInfo.CurrentCulture;
+
+
+        //Properties for new methods.
+        public static Stopwatch Watch;
+        public static List<FileInfo> SourceFiles;
+        public static List<FileInfo> TargetFiles;
+        public static List<Game> GamesToBackup;
+        public static Dictionary<FileInfo, string> HashDictionary;
+        public static Dictionary<Game, List<FileInfo>> GameFileDictionary;
+        public static Dictionary<Game, List<FileInfo>> GameTargetDictionary;
+        public static Dictionary<Game, List<FileInfo>> FilesToCopyDictionary;
+        private static bool _firstPoll;
+        private static DirectoryInfo _autoBackupDirectoryInfo;
         
         public Backup() {
-            
+            Watch = new Stopwatch();
+            HashDictionary = new Dictionary<FileInfo, string>();
+            GameFileDictionary = new Dictionary<Game, List<FileInfo>>();
+            GameTargetDictionary = new Dictionary<Game, List<FileInfo>>();
+            FilesToCopyDictionary = new Dictionary<Game, List<FileInfo>>();
+            _firstPoll = true;
         }
 
         public static BackupResultHelper StartBackup(ObservableCollection<Game> games, BackupType backupType, bool backupEnabled) {
@@ -772,10 +790,6 @@ namespace Saved_Game_Backup
             Debug.WriteLine(@"Exiting IntervalBackup");
         }
 
-        public string MD5HashFile(string fn) { //Utilize in comparing files? Store hashes and compare. Eric concerned about speed.
-            var hash = MD5.Create().ComputeHash(File.ReadAllBytes(fn));
-            return BitConverter.ToString(hash).Replace("-", "");
-        }
 
         // This method accepts two strings the represent two files to 
         // compare. A return value of 0 indicates that the contents of the files
@@ -802,7 +816,7 @@ namespace Saved_Game_Backup
                 fs1.Close();
                 fs2.Close();
 
-                // Return false to indicate files are different
+                //Return false to indicate files are different
                 return false;
             }
 
@@ -824,6 +838,217 @@ namespace Saved_Game_Backup
             // equal to "file2byte" at this point only if the files are 
             // the same.
             return ((file1Byte - file2Byte) == 0);
+        }
+
+
+        private async void SetupPollAutobackup(List<Game> gamesToBackup)
+        {
+            GamesToBackup = gamesToBackup;
+            if (_autoBackupDirectoryInfo == null)
+            {
+                var fb = new FolderBrowserDialog() { ShowNewFolderButton = true };
+                if (fb.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    _autoBackupDirectoryInfo = new DirectoryInfo(fb.SelectedPath);
+                else return;
+            }
+            Debug.WriteLine(@"Setting up Poll Autobackup");
+
+            foreach (var game in gamesToBackup)
+            {
+                var targetDirectory = new DirectoryInfo(_autoBackupDirectoryInfo.FullName + game.Name); //Need slashes?
+                var targets = targetDirectory.GetFiles("*", SearchOption.AllDirectories).ToList();
+                GameTargetDictionary.Add(game, targets);
+
+                var sourceDirectory = new DirectoryInfo(game.Path);
+                var sources = sourceDirectory.GetFiles("*", SearchOption.AllDirectories).ToList();
+                GameFileDictionary.Add(game, sources);
+
+                await ComputeSourceHashes();
+            }
+            Debug.WriteLine(@"Setup of Poll Autobackup complete.");
+            PollAutobackup();
+        }
+
+        private static Task ComputeSourceHashes()
+        {
+            for (var i = 0; i <= GamesToBackup.Count; i++)
+            {
+                var sourceFiles = new List<FileInfo>();
+                GameFileDictionary.TryGetValue(GamesToBackup[i], out sourceFiles);
+                if (sourceFiles == null) continue;
+                foreach (var file in sourceFiles)
+                {
+                    var hash = MD5.Create().ComputeHash(File.ReadAllBytes(file.FullName)); //How can I get this to run asynchronously?
+                    var hashString = BitConverter.ToString(hash).Replace("-", "");
+                    HashDictionary.Add(file, hashString);
+                }
+            }
+            return null;
+        }
+
+        //Should FileSystemWatcher add files to be copied and that's it?
+
+
+        private static async void PollAutobackup()
+        {
+            Watch.Start();
+            var startTime = Watch.Elapsed;
+            Debug.WriteLine(@"Starting PollAutobackup at {0}", startTime);
+
+            if (!_firstPoll)
+                AppendSourceFiles();
+            foreach (var game in GamesToBackup)
+            {
+                List<FileInfo> sourceFiles;
+                List<FileInfo> targetFiles;
+                GameFileDictionary.TryGetValue(game, out sourceFiles);
+                GameTargetDictionary.TryGetValue(game, out targetFiles);
+                var filesToCopy = await CompareFiles(sourceFiles, targetFiles); //Look for source files NOT in target directory & copy them.
+                await CopySaves(filesToCopy);
+                filesToCopy.Clear();
+                await Scanner(sourceFiles, targetFiles);
+
+                await CopyUnknownHashesFiles();
+            }
+
+            var endTime = Watch.Elapsed;
+            Debug.WriteLine(@"PollAutobackup ended at {0}", endTime);
+            Debug.WriteLine(@"PollAutobackup completed in {0}", (endTime - startTime));
+
+            _firstPoll = false;
+        }
+
+        private static void AppendSourceFiles()
+        {
+            foreach (var game in GamesToBackup)
+            {
+                var directory = new DirectoryInfo(game.Path);
+                var currentSourceFiles = new List<FileInfo>();
+                GameFileDictionary.TryGetValue(game, out currentSourceFiles);
+                if (currentSourceFiles == null) continue;
+                foreach (var file in directory.GetFiles("*", SearchOption.AllDirectories).ToList())
+                {
+                    if (currentSourceFiles.Contains(file)) continue;
+                    currentSourceFiles.Add(file); //Does this set the dictionary's list or make a new one?
+                }
+            }
+        }
+
+
+        //Finds files that don't exist in target directory and calls CopySaves to copy them.
+        //Does not catch files that exist in target directory with the same name as source.
+        //That gets handled later.
+        private static async Task<List<FileInfo>> CompareFiles(List<FileInfo> sourceFiles, List<FileInfo> targetFiles)
+        {
+            var sourceFilesToCopy = new List<FileInfo>();
+            foreach (var source in sourceFiles)
+            {
+                if (targetFiles.Exists(a => a.ToString().Contains(source.Name))) continue;
+                sourceFilesToCopy.Add(source);
+            }
+            return sourceFilesToCopy;
+        }
+
+        //Copies files in list for specified Game
+        private static async Task CopySaves(List<FileInfo> filesToCopy)
+        {
+            //INSERT TRY/CATCH
+            var startTime = Watch.Elapsed;
+            Debug.WriteLine(@"CopySaves starting at {0}", startTime);
+            try
+            {
+                foreach (var game in GamesToBackup)
+                {
+                    List<FileInfo> files;
+                    GameFileDictionary.TryGetValue(game, out files);
+                    if (files == null) continue;
+                    foreach (var sourceFile in files)
+                    {
+                        var index = sourceFile.FullName.IndexOf(game.RootFolder);
+                        var substring = sourceFile.FullName.Substring(index);
+                        var destPath = _autoBackupDirectoryInfo.FullName + substring;
+                        using (
+                            var inStream = new FileStream(sourceFile.FullName, FileMode.Open, FileAccess.Read,
+                                FileShare.ReadWrite))
+                        {
+                            using (var outStream = new FileStream(destPath, FileMode.Create))
+                            {
+                                await inStream.CopyToAsync(outStream);
+                                Debug.WriteLine(@"SUCCESSFUL COPY: {0} copied to {1}", sourceFile.Name, destPath);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            } //!!!! COMPLETE THESE
+
+            var endtime = Watch.Elapsed;
+            Debug.WriteLine(@"CopySaves finished at {0}", endtime);
+            Debug.WriteLine(@"CopySaves finished in {0}.", (endtime - startTime));
+        }
+
+        //Scans files in-depth to check for matching files
+        private static Task Scanner(List<FileInfo> sourceFiles, List<FileInfo> targetFiles)
+        {
+            var _startTime = Watch.Elapsed;
+            Debug.WriteLine(@"Scanner started at {0}", _startTime);
+
+            foreach (var game in GamesToBackup)
+            {
+                var filesToCopy = new List<FileInfo>();
+                foreach (var source in sourceFiles)
+                {
+                    var source1 = source; //suggested by resharper
+                    foreach (var target in targetFiles.Where(t => source1 != null && t.FullName == source1.FullName))
+                    {
+                        if (source.Length == target.Length) continue;
+                        var hash = MD5.Create().ComputeHash(File.ReadAllBytes(target.FullName));
+                        var hashString = BitConverter.ToString(hash).Replace("-", "");
+                        if (!HashDictionary.ContainsValue(hashString)) //Compare using hashString
+                            filesToCopy.Add(source);
+                    }
+                }
+                FilesToCopyDictionary.Add(game, filesToCopy);
+            }
+            var EndTime = Watch.Elapsed;
+            Debug.WriteLine(@"Scanner complete after {0}", EndTime);
+            Debug.WriteLine(@"Scanner completed in {0}", (EndTime - _startTime));
+            return null;
+        }
+
+        private static async Task CopyUnknownHashesFiles()
+        {
+            //have this copy everything in FilesToCopyDictionary
+
+            foreach (var game in GamesToBackup)
+            {
+                List<FileInfo> filesToCopy;
+                FilesToCopyDictionary.TryGetValue(game, out filesToCopy);
+                if (filesToCopy == null) continue;
+                foreach (var sourceFile in filesToCopy)
+                {
+                    var index = sourceFile.FullName.IndexOf(game.RootFolder);
+                    var substring = sourceFile.FullName.Substring(index);
+                    var destPath = _autoBackupDirectoryInfo.FullName + substring;
+                    using (
+                        var inStream = new FileStream(sourceFile.FullName, FileMode.Open, FileAccess.Read,
+                            FileShare.ReadWrite))
+                    {
+                        using (var outStream = new FileStream(destPath, FileMode.Create))
+                        {
+                            await inStream.CopyToAsync(outStream);
+                            Debug.WriteLine(@"SUCCESSFUL COPY: {0} copied to {1}", sourceFile.Name, destPath);
+                        }
+                    }
+                }
+            }
         }
 
     }
