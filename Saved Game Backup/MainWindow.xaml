@@ -94,6 +94,15 @@
 
                     <xctk:IntegerUpDown Margin="3" Text="{Binding MaxBackups, UpdateSourceTrigger=PropertyChanged, Delay=100}" />
                 </StackPanel>
+                <StackPanel Margin="3"
+                            Orientation="Horizontal"
+                            Visibility="{Binding AutoBackupVisibility}">
+                    <TextBlock VerticalAlignment="Center"
+                               Style="{StaticResource TextStyle}"
+                               Text="Autobackup Interval"
+                               TextWrapping="Wrap" />
+                    <xctk:IntegerUpDown Margin="3" Text="{Binding Interval, UpdateSourceTrigger=PropertyChanged, Delay=100}" />
+                </StackPanel>
             </StackPanel>
             <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
                 <Button Command="{Binding TestPollAutoBackup}"
