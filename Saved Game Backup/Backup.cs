@@ -742,11 +742,11 @@ namespace Saved_Game_Backup {
                 var sources = sourceDirectory.GetFiles("*", SearchOption.AllDirectories).ToList();
                 GameFileDictionary.Add(game, sources);
 
-                var success = await ComputeSourceHashes();
-                if (!success)
-                    return new BackupResultHelper(false, backupEnabled,
-                        "Error during autobackup hash creation.\r\nPlease email the developer if you encounter this.",
-                        DateTime.Now.ToLongTimeString(), "Enable autobackup");
+                //var success = await ComputeSourceHashes();
+                //if (!success)
+                //    return new BackupResultHelper(false, backupEnabled,
+                //        "Error during autobackup hash creation.\r\nPlease email the developer if you encounter this.",
+                //        DateTime.Now.ToLongTimeString(), "Enable autobackup");
             }
             Debug.WriteLine(@"Setup of Poll Autobackup complete.");
             Debug.WriteLine(@"Initializing Poll Autobackup Timer.");
@@ -787,7 +787,7 @@ namespace Saved_Game_Backup {
             var startTime = Watch.Elapsed;
             Debug.WriteLine(@"Starting PollAutobackup at {0}", startTime);
 
-            if (_firstPoll)
+            if (!_firstPoll)
                 AppendSourceFiles();
             foreach (var game in GamesToBackup) {
                 List<FileInfo> sourceFiles;
@@ -897,10 +897,11 @@ namespace Saved_Game_Backup {
                         fileAdded = true;
                     } else if (source.Length == target.Length && source1.Name == target.Name) { //Same name, same length. Compare bytes.
                         if (await Task.Run(() => !FileCompare(source.FullName, target.FullName))) {
-                            filesToCopy.Add(source1);
+                            filesToCopy.Add(source1); //Bytes are different. Copy.
                             fileAdded = true;
                         }
-                    } else if (source.Name == target.Name) { //If length are the same, FileCompare is the same, but names match. Skip the rest of targetFiles loop.
+                    } 
+                    if (source.Name == target.Name) { //If length are the same, FileCompare is the same, but names match. Skip the rest of targetFiles loop.
                         matchedFileFound = true;
                     }
                     if (fileAdded || matchedFileFound) break;
