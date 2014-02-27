@@ -707,58 +707,6 @@ namespace Saved_Game_Backup {
             return new BackupResultHelper(success, backupEnabled, message, date, backupButtonText);
         }
 
-        
-
-
-        // This method accepts two strings the represent two files to 
-        // compare. A return value of 0 indicates that the contents of the files
-        // are the same. A return value of any other value indicates that the 
-        // files are not the same.
-        private static bool FileCompare(string file1, string file2) {
-            int file1Byte;
-            int file2Byte;
-
-            // Determine if the same file was referenced two times.
-            if (file1 == file2) {
-                // Return true to indicate that the files are the same.
-                return true;
-            }
-
-            // Open the two files.
-            var fs1 = new FileStream(file1, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            var fs2 = new FileStream(file2, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-
-            // Check the file sizes. If they are not the same, the files 
-            // are not the same.
-            if (fs1.Length != fs2.Length) {
-                // Close the file
-                fs1.Close();
-                fs2.Close();
-
-                //Return false to indicate files are different
-                return false;
-            }
-
-            // Read and compare a byte from each file until either a
-            // non-matching set of bytes is found or until the end of
-            // file1 is reached.
-            do {
-                // Read one byte from each file.
-                file1Byte = fs1.ReadByte();
-                file2Byte = fs2.ReadByte();
-            } while ((file1Byte == file2Byte) && (file1Byte != -1));
-
-            // Close the files.
-            fs1.Close();
-            fs2.Close();
-
-            // Return the success of the comparison. "file1byte" is 
-            // equal to "file2byte" at this point only if the files are 
-            // the same.
-            return ((file1Byte - file2Byte) == 0);
-        }
-
-
         public static async Task<BackupResultHelper> SetupPollAutobackup(bool backupEnabled, int interval, List<Game> TESTGAMES = null) {
             //FOR TESTING ONLY
             if (TESTGAMES != null) GamesToBackup = TESTGAMES;
@@ -944,13 +892,9 @@ namespace Saved_Game_Backup {
             var filesToCopy = new List<FileInfo>();
             foreach (var source in sourceFiles) {
                 var source1 = source; //suggested by resharper
-                foreach (var target in targetFiles.Where(t => source1 != null && t.Name == source1.Name)) { //This is working strangely.
-                    if (source.Length == target.Length) continue; //Doesn't detect minute differences.
-                    var hash = await Task.Run(() => MD5.Create().ComputeHash(File.ReadAllBytes(target.FullName)));
-                    var hashString = BitConverter.ToString(hash).Replace("-", "");
-                    if (!HashDictionary.ContainsValue(hashString)) //Compare using hashString
-                        filesToCopy.Add(source);
-                }
+                filesToCopy.AddRange(from target in targetFiles.Where(t => t.Name == source1.Name) 
+                                     where !FileCompare(source.FullName, target.FullName) 
+                                     select source);
             }
             var endTime = Watch.Elapsed;
             Debug.WriteLine(@"Scanner complete after {0}", endTime);
@@ -990,6 +934,54 @@ namespace Saved_Game_Backup {
                 SBTErrorLogger.Log(ex.Message);
             }
         Messenger.Default.Send(_numberOfBackups);
+        }
+
+         // This method accepts two strings the represent two files to 
+        // compare. A return value of 0 indicates that the contents of the files
+        // are the same. A return value of any other value indicates that the 
+        // files are not the same.
+        private static bool FileCompare(string file1, string file2) {
+            int file1Byte;
+            int file2Byte;
+
+            // Determine if the same file was referenced two times.
+            if (file1 == file2) {
+                // Return true to indicate that the files are the same.
+                return true;
+            }
+
+            // Open the two files.
+            var fs1 = new FileStream(file1, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            var fs2 = new FileStream(file2, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+
+            // Check the file sizes. If they are not the same, the files 
+            // are not the same.
+            if (fs1.Length != fs2.Length) {
+                // Close the file
+                fs1.Close();
+                fs2.Close();
+
+                //Return false to indicate files are different
+                return false;
+            }
+
+            // Read and compare a byte from each file until either a
+            // non-matching set of bytes is found or until the end of
+            // file1 is reached.
+            do {
+                // Read one byte from each file.
+                file1Byte = fs1.ReadByte();
+                file2Byte = fs2.ReadByte();
+            } while ((file1Byte == file2Byte) && (file1Byte != -1));
+
+            // Close the files.
+            fs1.Close();
+            fs2.Close();
+
+            // Return the success of the comparison. "file1byte" is 
+            // equal to "file2byte" at this point only if the files are 
+            // the same.
+            return ((file1Byte - file2Byte) == 0);
         }
     }
 }
