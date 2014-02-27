@@ -891,10 +891,14 @@ namespace Saved_Game_Backup {
                 var source1 = source; //suggested by resharper
                 foreach (var target in targetFiles) {
                     var fileAdded = false;
-                    if (source1.Name == target.Name) {
-                        if (await Task.Run(() => FileCompare(source.FullName, target.FullName)))
+                    if (source1.Length != target.Length && source1.Name == target.Name) { //Same name, different Length. Copy.
+                        filesToCopy.Add(source1);
+                        fileAdded = true;
+                    } else if (source.Length == target.Length && source1.Name == target.Name) { //Same name, same length. Compare bytes.
+                        if (await Task.Run(() => FileCompare(source.FullName, target.FullName))) {
                             filesToCopy.Add(source1);
                             fileAdded = true;
+                        }
                     }
                     if (fileAdded) break;
                 }
