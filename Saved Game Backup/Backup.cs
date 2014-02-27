@@ -891,6 +891,7 @@ namespace Saved_Game_Backup {
                 var source1 = source; //suggested by resharper
                 foreach (var target in targetFiles) {
                     var fileAdded = false;
+                    var matchedFileFound = false;
                     if (source1.Length != target.Length && source1.Name == target.Name) { //Same name, different Length. Copy.
                         filesToCopy.Add(source1);
                         fileAdded = true;
@@ -899,13 +900,17 @@ namespace Saved_Game_Backup {
                             filesToCopy.Add(source1);
                             fileAdded = true;
                         }
+                    } else if (source.Name == target.Name) { //If length are the same, FileCompare is the same, but names match. Skip the rest of targetFiles loop.
+                        matchedFileFound = true;
                     }
-                    if (fileAdded) break;
+                    if (fileAdded || matchedFileFound) break;
                 }
             }
             var endTime = Watch.Elapsed;
             Debug.WriteLine(@"Scanner complete after {0}", endTime);
+            Debug.WriteLine(@"Scanner has {0} files to copy", filesToCopy.Count);
             Debug.WriteLine(@"Scanner completed in {0}", (endTime - startTime));
+            
             return filesToCopy;
         }
 
