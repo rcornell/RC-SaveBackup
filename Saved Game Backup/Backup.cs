@@ -895,7 +895,7 @@ namespace Saved_Game_Backup {
                         filesToCopy.Add(source1);
                         fileAdded = true;
                     } else if (source.Length == target.Length && source1.Name == target.Name) { //Same name, same length. Compare bytes.
-                        if (await Task.Run(() => FileCompare(source.FullName, target.FullName))) {
+                        if (await Task.Run(() => !FileCompare(source.FullName, target.FullName))) {
                             filesToCopy.Add(source1);
                             fileAdded = true;
                         }
