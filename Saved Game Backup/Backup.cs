@@ -797,13 +797,10 @@ namespace Saved_Game_Backup {
                 var filesToCopy = CompareFiles(sourceFiles, targetFiles); //Look for source files NOT in target directory & copy them.
                 await CopySaves(game, filesToCopy);
 
-                var fileDictionary = new List<FileInfo>();
                 if (targetFiles != null && targetFiles.Any()) {
-                    fileDictionary = await Scanner(sourceFiles, targetFiles); //Only called when files exist in the target directory to compare.
-                }
-
-                if (fileDictionary.Any())
-                    await CopyUnknownHashesFiles(game, fileDictionary);
+                    filesToCopy = await Scanner(sourceFiles, targetFiles); //Only called when files exist in the target directory to compare.
+                    await CopySaves(game, filesToCopy);
+                }   
             }
 
             var endTime = Watch.Elapsed;
@@ -886,54 +883,20 @@ namespace Saved_Game_Backup {
         }
 
         //Scans files in-depth to check for matching files
-        private async static Task<List<FileInfo>> Scanner(List<FileInfo> sourceFiles, List<FileInfo> targetFiles) {
+        private async static Task<List<FileInfo>> Scanner(IEnumerable<FileInfo> sourceFiles, List<FileInfo> targetFiles) {
             var startTime = Watch.Elapsed;
             Debug.WriteLine(@"Scanner started at {0}", startTime);
             var filesToCopy = new List<FileInfo>();
             foreach (var source in sourceFiles) {
                 var source1 = source; //suggested by resharper
-                filesToCopy.AddRange(from target in targetFiles.Where(t => t.Name == source1.Name) 
+                await Task.Run(() => filesToCopy.AddRange(from target in targetFiles.Where(t => t.Name == source1.Name) 
                                      where !FileCompare(source.FullName, target.FullName) 
-                                     select source);
+                                     select source));
             }
             var endTime = Watch.Elapsed;
             Debug.WriteLine(@"Scanner complete after {0}", endTime);
             Debug.WriteLine(@"Scanner completed in {0}", (endTime - startTime));
             return filesToCopy;
-        }
-
-        private static async Task CopyUnknownHashesFiles(Game game, IEnumerable<FileInfo> filesToCopy) {
-            try {
-                foreach (var sourceFile in filesToCopy) {
-                    var index = sourceFile.FullName.IndexOf(game.RootFolder);
-                    var substring = sourceFile.FullName.Substring(index);
-                    var destPath = _autoBackupDirectoryInfo.FullName + "\\" + substring;
-                    var dir = new FileInfo(destPath);
-                    if (!Directory.Exists(dir.DirectoryName))
-                        Directory.CreateDirectory(dir.DirectoryName);
-                    using (
-                        var inStream = new FileStream(sourceFile.FullName, FileMode.Open, FileAccess.Read,
-                            FileShare.ReadWrite)) {
-                        using (var outStream = new FileStream(destPath, FileMode.Create)) {
-                            await inStream.CopyToAsync(outStream);
-                            Debug.WriteLine(@"SUCCESSFUL COPY: {0} copied to {1}", sourceFile.Name, destPath);
-                            _numberOfBackups++;
-                        }
-                    }
-                }
-            } catch (ArgumentException ex) {
-                Debug.WriteLine(@"ERROR during CopySaves");
-                SBTErrorLogger.Log(ex.Message);
-            }
-            catch (IOException ex) {
-                Debug.WriteLine(@"ERROR during CopySaves");
-                SBTErrorLogger.Log(ex.Message);
-            }
-            catch (Exception ex) {
-                Debug.WriteLine(@"ERROR during CopySaves");
-                SBTErrorLogger.Log(ex.Message);
-            }
-        Messenger.Default.Send(_numberOfBackups);
         }
 
          // This method accepts two strings the represent two files to 
