@@ -371,7 +371,7 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ExecuteStartBackup() {
-            var result = Backup.StartBackup(GamesToBackup.ToList(), BackupType, BackupEnabled).Result;
+            var result = Backup.StartBackup(GamesToBackup.ToList(), BackupType, BackupEnabled);
             HandleBackupResult(result);
         }
 

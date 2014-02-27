@@ -62,7 +62,7 @@ namespace Saved_Game_Backup {
             _firstPoll = true;
         }
 
-        public static async Task<BackupResultHelper> StartBackup(List<Game> games, BackupType backupType,
+        public static BackupResultHelper StartBackup(List<Game> games, BackupType backupType,
             bool backupEnabled, int interval = 0) {
             GamesToBackup = ModifyGamePaths(games);
             var success = false;
@@ -84,7 +84,7 @@ namespace Saved_Game_Backup {
                     success = BackupSaves(gamesToBackup);
                     break;
                 case BackupType.Autobackup:
-                    return await ToggleAutoBackup(backupEnabled, interval);
+                    return ToggleAutoBackup(backupEnabled, interval);
                 default:
                     success = false;
                     break;
@@ -206,7 +206,7 @@ namespace Saved_Game_Backup {
         /// <param name="backupEnabled"></param>
         /// <param name="specifiedFolder"></param>
         /// <returns></returns>
-        public static async Task<BackupResultHelper> ToggleAutoBackup(bool backupEnabled, int interval) {
+        public static BackupResultHelper ToggleAutoBackup(bool backupEnabled, int interval) {
             if (backupEnabled) {
                 return SetupPollAutobackup(backupEnabled, interval).Result;
             }
@@ -829,7 +829,7 @@ namespace Saved_Game_Backup {
                 GameFileDictionary.TryGetValue(game, out sourceFiles);
                 if (sourceFiles == null) continue;
                 foreach (var file in sourceFiles) {
-                    var hash = MD5.Create().ComputeHash(File.ReadAllBytes(file.FullName));
+                    var hash = await Task.Run(() => MD5.Create().ComputeHash(File.ReadAllBytes(file.FullName)));
                     //How can I get this to run asynchronously?
                     var hashString = BitConverter.ToString(hash).Replace("-", "");
                     HashDictionary.Add(file, hashString);
@@ -854,7 +854,7 @@ namespace Saved_Game_Backup {
                 List<FileInfo> targetFiles;
                 GameFileDictionary.TryGetValue(game, out sourceFiles);
                 GameTargetDictionary.TryGetValue(game, out targetFiles);
-                var filesToCopy = await CompareFiles(sourceFiles, targetFiles);
+                var filesToCopy = CompareFiles(sourceFiles, targetFiles);
                     //Look for source files NOT in target directory & copy them.
                 await CopySaves(filesToCopy);
                 filesToCopy.Clear();
@@ -888,7 +888,7 @@ namespace Saved_Game_Backup {
         //Finds files that don't exist in target directory and calls CopySaves to copy them.
         //Does not catch files that exist in target directory with the same name as source.
         //That gets handled later.
-        private static async Task<List<FileInfo>> CompareFiles(List<FileInfo> sourceFiles, List<FileInfo> targetFiles) {
+        private static List<FileInfo> CompareFiles(List<FileInfo> sourceFiles, List<FileInfo> targetFiles) {
             var sourceFilesToCopy = new List<FileInfo>();
             foreach (var source in sourceFiles) {
                 if (targetFiles.Exists(a => a.ToString().Contains(source.Name))) continue;
@@ -956,7 +956,7 @@ namespace Saved_Game_Backup {
                     var source1 = source; //suggested by resharper
                     foreach (var target in targetFiles.Where(t => source1 != null && t.FullName == source1.FullName)) {
                         if (source.Length == target.Length) continue;
-                        var hash = MD5.Create().ComputeHash(File.ReadAllBytes(target.FullName));
+                        var hash = await Task.Run(() => MD5.Create().ComputeHash(File.ReadAllBytes(target.FullName)));
                         var hashString = BitConverter.ToString(hash).Replace("-", "");
                         if (!HashDictionary.ContainsValue(hashString)) //Compare using hashString
                             filesToCopy.Add(source);
