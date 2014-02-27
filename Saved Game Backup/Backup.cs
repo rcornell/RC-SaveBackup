@@ -858,7 +858,8 @@ namespace Saved_Game_Backup {
                     //Look for source files NOT in target directory & copy them.
                 await CopySaves(filesToCopy);
                 filesToCopy.Clear();
-                await Scanner(sourceFiles, targetFiles);
+                if (targetFiles != null && targetFiles.Any())
+                    await Scanner(sourceFiles, targetFiles); //Only called when files exist in the target directory to compare.
 
                 await CopyUnknownHashesFiles();
             }
@@ -877,8 +878,8 @@ namespace Saved_Game_Backup {
                 GameFileDictionary.TryGetValue(game, out currentSourceFiles);
                 if (currentSourceFiles == null) continue;
                 foreach (var file in directory.GetFiles("*", SearchOption.AllDirectories).ToList()) {
-                    if (currentSourceFiles.Contains(file)) continue;
-                    currentSourceFiles.Add(file); //Does this set the dictionary's list or make a new one?
+                    if (currentSourceFiles.Exists(f => f.FullName == file.FullName && f.Length == file.Length)) continue;
+                    currentSourceFiles.Add(file);
                 }
             }
         }
@@ -945,7 +946,7 @@ namespace Saved_Game_Backup {
         }
 
         //Scans files in-depth to check for matching files
-        private static Task Scanner(List<FileInfo> sourceFiles, List<FileInfo> targetFiles) {
+        private async static Task Scanner(List<FileInfo> sourceFiles, List<FileInfo> targetFiles) {
             var _startTime = Watch.Elapsed;
             Debug.WriteLine(@"Scanner started at {0}", _startTime);
 
@@ -961,12 +962,12 @@ namespace Saved_Game_Backup {
                             filesToCopy.Add(source);
                     }
                 }
-                FilesToCopyDictionary.Add(game, filesToCopy);
+                if (filesToCopy.Any())
+                    FilesToCopyDictionary.Add(game, filesToCopy);
             }
             var EndTime = Watch.Elapsed;
             Debug.WriteLine(@"Scanner complete after {0}", EndTime);
             Debug.WriteLine(@"Scanner completed in {0}", (EndTime - _startTime));
-            return null;
         }
 
         private static async Task CopyUnknownHashesFiles() {
