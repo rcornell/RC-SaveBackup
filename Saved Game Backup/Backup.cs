@@ -62,7 +62,7 @@ namespace Saved_Game_Backup {
             _firstPoll = true;
         }
 
-        public static BackupResultHelper StartBackup(List<Game> games, BackupType backupType,
+        public static async Task<BackupResultHelper> StartBackup(List<Game> games, BackupType backupType,
             bool backupEnabled, int interval = 0) {
             GamesToBackup = ModifyGamePaths(games);
             var success = false;
@@ -84,12 +84,12 @@ namespace Saved_Game_Backup {
                     success = BackupSaves(gamesToBackup);
                     break;
                 case BackupType.Autobackup:
-                    helper = ToggleAutoBackup(backupEnabled, interval).Result;
-                    break;
+                    return await ToggleAutoBackup(backupEnabled, interval);
                 default:
                     success = false;
                     break;
             }
+
 
             if (backupType == BackupType.Autobackup && success && !backupEnabled) {
                 message = @"Autobackup Enabled!";
@@ -842,6 +842,7 @@ namespace Saved_Game_Backup {
 
 
         private static async void PollAutobackup() {
+            Watch = new Stopwatch();
             Watch.Start();
             var startTime = Watch.Elapsed;
             Debug.WriteLine(@"Starting PollAutobackup at {0}", startTime);
