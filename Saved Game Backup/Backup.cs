@@ -910,7 +910,7 @@ namespace Saved_Game_Backup {
                     foreach (var sourceFile in files) {
                         var index = sourceFile.FullName.IndexOf(game.RootFolder);
                         var substring = sourceFile.FullName.Substring(index);
-                        var destPath = _autoBackupDirectoryInfo.FullName + substring;
+                        var destPath = _autoBackupDirectoryInfo.FullName + "\\" + substring;
                         var dir = new FileInfo(destPath);
                         if (!Directory.Exists(dir.DirectoryName))
                             Directory.CreateDirectory(dir.DirectoryName);
@@ -980,7 +980,7 @@ namespace Saved_Game_Backup {
                 foreach (var sourceFile in filesToCopy) {
                     var index = sourceFile.FullName.IndexOf(game.RootFolder);
                     var substring = sourceFile.FullName.Substring(index);
-                    var destPath = _autoBackupDirectoryInfo.FullName + substring;
+                    var destPath = _autoBackupDirectoryInfo.FullName + "\\" + substring;
                     var dir = new FileInfo(destPath);
                     if (!Directory.Exists(dir.DirectoryName))
                         Directory.CreateDirectory(dir.DirectoryName);
