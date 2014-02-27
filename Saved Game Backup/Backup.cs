@@ -962,8 +962,9 @@ namespace Saved_Game_Backup {
                             filesToCopy.Add(source);
                     }
                 }
-                if (filesToCopy.Any())
-                    FilesToCopyDictionary.Add(game, filesToCopy);
+                if (filesToCopy.Any()){
+                    FilesToCopyDictionary = new Dictionary<Game, List<FileInfo>> {{game, filesToCopy}};
+                }
             }
             var EndTime = Watch.Elapsed;
             Debug.WriteLine(@"Scanner complete after {0}", EndTime);
