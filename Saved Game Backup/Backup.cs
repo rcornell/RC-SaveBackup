@@ -896,12 +896,12 @@ namespace Saved_Game_Backup {
         /// </summary>
         /// <param name="filesToCopy"></param>
         /// <returns></returns>
-        private static async Task CopySaves(Game game, List<FileInfo> filesToCopy) {
+        private static async Task CopySaves(Game game, IEnumerable<FileInfo> filesToCopy) {
             var startTime = Watch.Elapsed;
             Debug.WriteLine(@"CopySaves starting at {0}", startTime);
             try {
                 foreach (var sourceFile in filesToCopy) {
-                    var index = sourceFile.FullName.IndexOf(game.RootFolder);
+                    var index = sourceFile.FullName.IndexOf(game.RootFolder, StringComparison.Ordinal);
                     var substring = sourceFile.FullName.Substring(index);
                     var destPath = _autoBackupDirectoryInfo.FullName + "\\" + substring;
                     var dir = new FileInfo(destPath);
@@ -959,7 +959,7 @@ namespace Saved_Game_Backup {
         }
 
         private static async Task CopyUnknownHashesFiles(Game game, List<FileInfo> filesToCopy) {
-            //have this copy everything in FilesToCopyDictionary
+            try {
                 foreach (var sourceFile in filesToCopy) {
                     var index = sourceFile.FullName.IndexOf(game.RootFolder);
                     var substring = sourceFile.FullName.Substring(index);
@@ -977,8 +977,19 @@ namespace Saved_Game_Backup {
                         }
                     }
                 }
-
-            Messenger.Default.Send(_numberOfBackups);
+            } catch (ArgumentException ex) {
+                Debug.WriteLine(@"ERROR during CopySaves");
+                SBTErrorLogger.Log(ex.Message);
+            }
+            catch (IOException ex) {
+                Debug.WriteLine(@"ERROR during CopySaves");
+                SBTErrorLogger.Log(ex.Message);
+            }
+            catch (Exception ex) {
+                Debug.WriteLine(@"ERROR during CopySaves");
+                SBTErrorLogger.Log(ex.Message);
+            }
+        Messenger.Default.Send(_numberOfBackups);
         }
     }
 }
