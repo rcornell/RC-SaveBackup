@@ -891,17 +891,18 @@ namespace Saved_Game_Backup {
             return sourceFilesToCopy;
         }
 
-        //Copies files in list for specified Game
+        /// <summary>
+        /// Copies files in list for specified Game
+        /// </summary>
+        /// <param name="filesToCopy"></param>
+        /// <returns></returns>
+
         private static async Task CopySaves(List<FileInfo> filesToCopy) {
-            //INSERT TRY/CATCH
             var startTime = Watch.Elapsed;
             Debug.WriteLine(@"CopySaves starting at {0}", startTime);
             try {
                 foreach (var game in GamesToBackup) {
-                    List<FileInfo> files;
-                    GameFileDictionary.TryGetValue(game, out files);
-                    if (files == null) continue;
-                    foreach (var sourceFile in files) {
+                    foreach (var sourceFile in filesToCopy) {
                         var index = sourceFile.FullName.IndexOf(game.RootFolder);
                         var substring = sourceFile.FullName.Substring(index);
                         var destPath = _autoBackupDirectoryInfo.FullName + "\\" + substring;
