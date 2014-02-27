@@ -823,7 +823,6 @@ namespace Saved_Game_Backup {
                 if (sourceFiles == null) continue;
                 foreach (var file in sourceFiles) {
                     var hash = await Task.Run(() => MD5.Create().ComputeHash(File.ReadAllBytes(file.FullName)));
-                    //How can I get this to run asynchronously?
                     var hashString = BitConverter.ToString(hash).Replace("-", "");
                     HashDictionary.Add(file, hashString);
                 }
@@ -847,8 +846,7 @@ namespace Saved_Game_Backup {
                 List<FileInfo> targetFiles;
                 GameFileDictionary.TryGetValue(game, out sourceFiles);
                 GameTargetDictionary.TryGetValue(game, out targetFiles);
-                var filesToCopy = CompareFiles(sourceFiles, targetFiles);
-                    //Look for source files NOT in target directory & copy them.
+                var filesToCopy = CompareFiles(sourceFiles, targetFiles); //Look for source files NOT in target directory & copy them.
                 await CopySaves(filesToCopy);
 
                 var fileDictionary = new Dictionary<Game, List<FileInfo>>();
@@ -857,7 +855,7 @@ namespace Saved_Game_Backup {
                 }
 
                 if (fileDictionary.Any())
-                    await CopyUnknownHashesFiles();
+                    await CopyUnknownHashesFiles(fileDictionary);
             }
 
             var endTime = Watch.Elapsed;
