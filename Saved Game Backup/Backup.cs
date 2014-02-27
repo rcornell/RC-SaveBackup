@@ -889,9 +889,15 @@ namespace Saved_Game_Backup {
             var filesToCopy = new List<FileInfo>();
             foreach (var source in sourceFiles) {
                 var source1 = source; //suggested by resharper
-                await Task.Run(() => filesToCopy.AddRange(from target in targetFiles.Where(t => t.Name == source1.Name) 
-                                     where !FileCompare(source.FullName, target.FullName) 
-                                     select source));
+                foreach (var target in targetFiles) {
+                    var fileAdded = false;
+                    if (source1.Name == target.Name) {
+                        if (await Task.Run(() => FileCompare(source.FullName, target.FullName)))
+                            filesToCopy.Add(source1);
+                            fileAdded = true;
+                    }
+                    if (fileAdded) break;
+                }
             }
             var endTime = Watch.Elapsed;
             Debug.WriteLine(@"Scanner complete after {0}", endTime);
