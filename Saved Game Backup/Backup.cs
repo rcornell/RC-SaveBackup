@@ -839,7 +839,7 @@ namespace Saved_Game_Backup {
             var startTime = Watch.Elapsed;
             Debug.WriteLine(@"Starting PollAutobackup at {0}", startTime);
 
-            if (!_firstPoll)
+            if (_firstPoll)
                 AppendSourceFiles();
             foreach (var game in GamesToBackup) {
                 List<FileInfo> sourceFiles;
@@ -944,8 +944,8 @@ namespace Saved_Game_Backup {
             var filesToCopy = new List<FileInfo>();
             foreach (var source in sourceFiles) {
                 var source1 = source; //suggested by resharper
-                foreach (var target in targetFiles.Where(t => source1 != null && t.FullName == source1.FullName)) {
-                    if (source.Length == target.Length) continue;
+                foreach (var target in targetFiles.Where(t => source1 != null && t.Name == source1.Name)) { //This is working strangely.
+                    if (source.Length == target.Length) continue; //Doesn't detect minute differences.
                     var hash = await Task.Run(() => MD5.Create().ComputeHash(File.ReadAllBytes(target.FullName)));
                     var hashString = BitConverter.ToString(hash).Replace("-", "");
                     if (!HashDictionary.ContainsValue(hashString)) //Compare using hashString
@@ -958,7 +958,7 @@ namespace Saved_Game_Backup {
             return filesToCopy;
         }
 
-        private static async Task CopyUnknownHashesFiles(Game game, List<FileInfo> filesToCopy) {
+        private static async Task CopyUnknownHashesFiles(Game game, IEnumerable<FileInfo> filesToCopy) {
             try {
                 foreach (var sourceFile in filesToCopy) {
                     var index = sourceFile.FullName.IndexOf(game.RootFolder);
