@@ -50,17 +50,9 @@ namespace Saved_Game_Backup {
         public static Dictionary<FileInfo, string> HashDictionary;
         public static Dictionary<Game, List<FileInfo>> GameFileDictionary;
         public static Dictionary<Game, List<FileInfo>> GameTargetDictionary;
-        public static Dictionary<Game, List<FileInfo>> FilesToCopyDictionary;
         private static bool _firstPoll;
 
-        public Backup() {
-            Watch = new Stopwatch();
-            HashDictionary = new Dictionary<FileInfo, string>();
-            GameFileDictionary = new Dictionary<Game, List<FileInfo>>();
-            GameTargetDictionary = new Dictionary<Game, List<FileInfo>>();
-            FilesToCopyDictionary = new Dictionary<Game, List<FileInfo>>();
-            _firstPoll = true;
-        }
+        public Backup() {}
 
         public static BackupResultHelper StartBackup(List<Game> games, BackupType backupType,
             bool backupEnabled, int interval = 0) {
@@ -770,6 +762,7 @@ namespace Saved_Game_Backup {
         public static async Task<BackupResultHelper> SetupPollAutobackup(bool backupEnabled, int interval, List<Game> TESTGAMES = null) {
             //FOR TESTING ONLY
             if (TESTGAMES != null) GamesToBackup = TESTGAMES;
+            _firstPoll = true;
 
 
             if (backupEnabled) {
@@ -857,11 +850,14 @@ namespace Saved_Game_Backup {
                 var filesToCopy = CompareFiles(sourceFiles, targetFiles);
                     //Look for source files NOT in target directory & copy them.
                 await CopySaves(filesToCopy);
-                filesToCopy.Clear();
-                if (targetFiles != null && targetFiles.Any())
-                    await Scanner(sourceFiles, targetFiles); //Only called when files exist in the target directory to compare.
 
-                await CopyUnknownHashesFiles();
+                var fileDictionary = new Dictionary<Game, List<FileInfo>>();
+                if (targetFiles != null && targetFiles.Any()) {
+                    fileDictionary = await Scanner(sourceFiles, targetFiles); //Only called when files exist in the target directory to compare.
+                }
+
+                if (fileDictionary.Any())
+                    await CopyUnknownHashesFiles();
             }
 
             var endTime = Watch.Elapsed;
@@ -946,10 +942,10 @@ namespace Saved_Game_Backup {
         }
 
         //Scans files in-depth to check for matching files
-        private async static Task Scanner(List<FileInfo> sourceFiles, List<FileInfo> targetFiles) {
-            var _startTime = Watch.Elapsed;
-            Debug.WriteLine(@"Scanner started at {0}", _startTime);
-
+        private async static Task<Dictionary<Game, List<FileInfo>>> Scanner(List<FileInfo> sourceFiles, List<FileInfo> targetFiles) {
+            var startTime = Watch.Elapsed;
+            Debug.WriteLine(@"Scanner started at {0}", startTime);
+            var filesToCopyDictionary = new Dictionary<Game, List<FileInfo>>();
             foreach (var game in GamesToBackup) {
                 var filesToCopy = new List<FileInfo>();
                 foreach (var source in sourceFiles) {
@@ -962,21 +958,20 @@ namespace Saved_Game_Backup {
                             filesToCopy.Add(source);
                     }
                 }
-                if (filesToCopy.Any()){
-                    FilesToCopyDictionary = new Dictionary<Game, List<FileInfo>> {{game, filesToCopy}};
-                }
+                filesToCopyDictionary.Add(game, filesToCopy);
             }
-            var EndTime = Watch.Elapsed;
-            Debug.WriteLine(@"Scanner complete after {0}", EndTime);
-            Debug.WriteLine(@"Scanner completed in {0}", (EndTime - _startTime));
+            var endTime = Watch.Elapsed;
+            Debug.WriteLine(@"Scanner complete after {0}", endTime);
+            Debug.WriteLine(@"Scanner completed in {0}", (endTime - startTime));
+            return filesToCopyDictionary;
         }
 
-        private static async Task CopyUnknownHashesFiles() {
+        private static async Task CopyUnknownHashesFiles(Dictionary<Game, List<FileInfo>> filesToCopyDictionary) {
             //have this copy everything in FilesToCopyDictionary
 
             foreach (var game in GamesToBackup) {
                 List<FileInfo> filesToCopy;
-                FilesToCopyDictionary.TryGetValue(game, out filesToCopy);
+                filesToCopyDictionary.TryGetValue(game, out filesToCopy);
                 if (filesToCopy == null) continue;
                 foreach (var sourceFile in filesToCopy) {
                     var index = sourceFile.FullName.IndexOf(game.RootFolder);
