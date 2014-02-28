@@ -40,15 +40,22 @@ namespace Saved_Game_Backup
         private static bool _firstPoll;
         private static bool BackupEnabled;
 
-        public static BackupResultHelper ToggleAutoBackup(bool backupEnabled, int interval) {
+        public static BackupResultHelper ToggleAutoBackup(bool backupEnabled, int interval, DirectoryInfo autobackupDi) {
             BackupEnabled = backupEnabled;
-            if (!backupEnabled) {
-                InitializeWatchers();
-                return SetupPollAutobackup(backupEnabled, interval);
-            }
+            _autoBackupDirectoryInfo = autobackupDi;
+            if (backupEnabled) return SetupPollAutobackup(backupEnabled, interval);
+            InitializeWatchers();
+            return SetupPollAutobackup(backupEnabled, interval);
+        }
 
-            return SetupPollAutobackup(backupEnabled, interval); 
-        }     
+        private static void InitializeAutobackup(int interval) {
+            
+        }
+
+        private static void ShutdownAutobackup() {
+            ShutdownWatchers();
+            ShutdownPollAutobackup();
+        }
 
         public static BackupResultHelper RemoveFromAutobackup(Game game) {
             if (!_fileWatcherList.Any() && !GamesToBackup.Any())
@@ -64,9 +71,15 @@ namespace Saved_Game_Backup
                     GamesToBackup.RemoveAt(i);
             }
 
+            //If there is a difference between lists, shut down all operations.
+            if ((!_fileWatcherList.Any() && GamesToBackup.Any()) || (_fileWatcherList.Any() && !GamesToBackup.Any())) {
+                ShutdownWatchers(); //If you hit this, there is a problem.
+                _pollAutobackupTimer.Enabled = false;
+            }
+
             var time = DateTime.Now.ToLongTimeString();
             var message = _fileWatcherList.Any() ? string.Format("{0} removed from auto-backup", game.Name) : "Last game removed from Autobackup.\r\nAutobackup disabled.";
-            return _fileWatcherList.Any()
+            return (_fileWatcherList.Any() && GamesToBackup.Any())
                 ? new BackupResultHelper() {
                     Success = true,
                     AutobackupEnabled = true,
@@ -82,6 +95,7 @@ namespace Saved_Game_Backup
         }        
 
         public static void InitializeWatchers() {
+            Debug.WriteLine(@"Initializing Watchers");
             _delayTimer = new Timer {Interval = 5000, AutoReset = true};
             _delayTimer.Elapsed += _delayTimer_Elapsed;
 
@@ -91,16 +105,11 @@ namespace Saved_Game_Backup
             _lastAutoBackupTime = DateTime.Now;
 
             _fileWatcherList = new List<FileSystemWatcher>();
-            if (_autoBackupDirectoryInfo == null) {
-                var fb = new FolderBrowserDialog() {SelectedPath = HardDrive, ShowNewFolderButton = true};
-                if (fb.ShowDialog() == DialogResult.OK)
-                    _autoBackupDirectoryInfo = new DirectoryInfo(fb.SelectedPath);
-            }
 
             var watcherNumber = 0;
             foreach (var game in GamesToBackup.Where(game => Directory.Exists(game.Path))) {
                 var filePath = new FileInfo(game.Path + "\\");
-                _fileWatcherList.Add(new FileSystemWatcher(filePath.ToString()));
+                _fileWatcherList.Add(new FileSystemWatcher(filePath.FullName));
                 _fileWatcherList[watcherNumber].Changed += OnChanged;
                 _fileWatcherList[watcherNumber].Created += OnChanged;
                 _fileWatcherList[watcherNumber].Deleted += OnChanged;
@@ -112,15 +121,19 @@ namespace Saved_Game_Backup
                 _fileWatcherList[watcherNumber].Filter = "*";
                 _fileWatcherList[watcherNumber].EnableRaisingEvents = true;
                 watcherNumber++;
+                Debug.WriteLine(@"Watcher added to list");
             }
+            Debug.WriteLine(@"Finished adding {0} Watchers to list", watcherNumber);
         }
 
-        public static void ShutdownWatchers() {       
+        public static void ShutdownWatchers() {
+            Debug.WriteLine(@"Shutting down Watchers and timers");
             _fileWatcherList.Clear();
             _delayTimer.Stop();
             _delayTimer.Dispose();
             _canBackupTimer.Stop();
-            _canBackupTimer.Dispose();           
+            _canBackupTimer.Dispose();
+            Debug.WriteLine(@"All Watchers and timers shut down and cleared");
         }
 
         private static void OnRenamed(object sender, RenamedEventArgs e) {
@@ -480,12 +493,15 @@ namespace Saved_Game_Backup
         }
 
         private static void DisableWatchers() {
+            Debug.WriteLine(@"Disabling Watchers during PollAutobackup");
             foreach (var watcher in _fileWatcherList)
                 watcher.EnableRaisingEvents = false;
         }
+
         private static void EnableWatchers() {
             foreach (var watcher in _fileWatcherList)
                 watcher.EnableRaisingEvents = true;
+            Debug.WriteLine(@"Enabled Watchers after PollAutobackup");
         }
 
          public static BackupResultHelper SetupPollAutobackup(bool backupEnabled, int interval) {
@@ -496,12 +512,7 @@ namespace Saved_Game_Backup
                 return new BackupResultHelper(true, !backupEnabled, "Autobackup disabled.",
                     DateTime.Now.ToLongTimeString(), "Enable auto-backup.");
             }
-            if (_autoBackupDirectoryInfo == null) {
-                var fb = new FolderBrowserDialog() {ShowNewFolderButton = true};
-                if (fb.ShowDialog() == DialogResult.OK)
-                    _autoBackupDirectoryInfo = new DirectoryInfo(fb.SelectedPath);
-                else return new BackupResultHelper(false, backupEnabled, "", DateTime.Now.ToLongTimeString(), "Enable autobackup");
-            }
+
             Debug.WriteLine(@"Setting up Poll Autobackup");
 
             GameTargetDictionary = new Dictionary<Game, List<FileInfo>>();
@@ -539,6 +550,8 @@ namespace Saved_Game_Backup
         /// </summary>
         /// <returns></returns>
         private async static Task ComputeSourceHashes(List<FileInfo> appendedFiles = null) {
+            Debug.WriteLine(@"Starting ComputeSourceHashes");
+            var hashNumber = 0;
             HashDictionary = new Dictionary<FileInfo, string>();
             foreach (var game in GamesToBackup) {
                 List<FileInfo> sourceFiles;
@@ -548,12 +561,14 @@ namespace Saved_Game_Backup
                     var hash = await Task.Run(() => MD5.Create().ComputeHash(File.ReadAllBytes(file.FullName)));
                     var hashString = BitConverter.ToString(hash).Replace("-", "");
                     HashDictionary.Add(file, hashString);
+                    hashNumber++;
                 }
             }
+            Debug.WriteLine(@"Finished ComputeSourceHashes. Created {0} hashes.", hashNumber);
         }
 
         private static async void PollAutobackup() {
-            DisableWatchers();
+
             Watch = new Stopwatch();
             Watch.Start();
             var startTime = Watch.Elapsed;
@@ -585,7 +600,7 @@ namespace Saved_Game_Backup
         private static void AppendSourceFiles() {
             foreach (var game in GamesToBackup) {
                 var directory = new DirectoryInfo(game.Path);
-                var currentSourceFiles = new List<FileInfo>();
+                List<FileInfo> currentSourceFiles;
                 GameFileDictionary.TryGetValue(game, out currentSourceFiles);
                 if (currentSourceFiles == null) continue;
                 foreach (var file in directory.GetFiles("*", SearchOption.AllDirectories).ToList()) {
@@ -744,7 +759,7 @@ namespace Saved_Game_Backup
         #region Timers
         private static void _pollAutobackupTimer_Elapsed(object sender, ElapsedEventArgs e) {
             Debug.WriteLine(@"Poll Autobackup timer elapsed.");
-            _pollAutobackupTimer.Enabled = false; //REMOVE AFTER TESTING
+            DisableWatchers();
             PollAutobackup();
         }
 
