@@ -109,7 +109,7 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
-                <Border Style="{StaticResource AutobackupStyle}" Visibility="{Binding AutoBackupVisibility, UpdateSourceTrigger=PropertyChanged}">
+                <Border Style="{StaticResource AutobackupStyle}" Visibility="{Binding BackupEnabledVisibility}">
                     <StackPanel>
                         <TextBlock HorizontalAlignment="Center"
                                    VerticalAlignment="Center"

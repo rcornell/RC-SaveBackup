@@ -43,7 +43,16 @@ namespace Saved_Game_Backup.ViewModel
                 RaisePropertyChanged(() => AutoBackupVisibility);
             }
         }
-        public Visibility BackupLimitVisibility { get; set; }
+
+        private Visibility _backupEnabledVisibility;
+        public Visibility BackupEnabledVisibility {
+            get { return _backupEnabledVisibility; }
+            set {
+                _backupEnabledVisibility = value;
+                RaisePropertyChanged(() => BackupEnabledVisibility);
+            }
+            
+        }
 
         private ObservableCollection<Game> _gamesList;
         public ObservableCollection<Game> GamesList {
@@ -186,9 +195,9 @@ namespace Saved_Game_Backup.ViewModel
             get { return _backupEnabled; }
             set {
                 _backupEnabled = value;
-                AutoBackupVisibility = _backupEnabled ? Visibility.Visible : Visibility.Hidden;
+                BackupEnabledVisibility = _backupEnabled ? Visibility.Visible : Visibility.Hidden;
                 RaisePropertyChanged(() => BackupEnabled);
-                RaisePropertyChanged(() => AutoBackupVisibility);
+                RaisePropertyChanged(() => BackupEnabledVisibility);
             } 
         }
 
@@ -279,8 +288,6 @@ namespace Saved_Game_Backup.ViewModel
                 BackupType.ToZip
             };
             BackupType = BackupType.ToFolder;
-            
-            BackupLimitVisibility = Visibility.Hidden;
             DirectoryFinder.CheckDirectories();
             SetUpInterface();
 
