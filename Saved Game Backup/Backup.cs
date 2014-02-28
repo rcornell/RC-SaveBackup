@@ -157,8 +157,9 @@ namespace Saved_Game_Backup {
             return new BackupResultHelper(success, backupEnabled, message, date, backupButtonText);
         }
 
-        public static void RemoveFromAutobackup(Game game) {
-            BackupAuto.RemoveFromAutobackup(game);
+        public static BackupResultHelper RemoveFromAutobackup(Game game) {
+           var result = BackupAuto.RemoveFromAutobackup(game);
+           return result;
         }
 
        

@@ -428,7 +428,7 @@ namespace Saved_Game_Backup.ViewModel
             var msg = string.Format("{0} added to list.", newGameForJson.Name);
             MessageBox.Show(msg);
             UpdateGamesList();
-        }
+        } //Should be split up
 
         private void ExecuteShowAbout() {
             MessageBox.Show(About, "About SaveMonkey", MessageBoxButton.OK);

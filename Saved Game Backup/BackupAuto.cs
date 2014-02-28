@@ -6,9 +6,11 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
+using System.Windows.Navigation;
 using GalaSoft.MvvmLight.Messaging;
 using Saved_Game_Backup.Helper;
 using Timer = System.Timers.Timer;
@@ -17,21 +19,16 @@ namespace Saved_Game_Backup
 {
     public class BackupAuto
     {
-        private static readonly string _hardDrive = Path.GetPathRoot(Environment.SystemDirectory);
-        private static string _myDocuments = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        private static readonly string _userPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        private static string _userName = Environment.UserName;
-
+        private static readonly string HardDrive = Path.GetPathRoot(Environment.SystemDirectory);
         private static DirectoryInfo _autoBackupDirectoryInfo;
         private static Timer _delayTimer;
         private static Timer _canBackupTimer;
         private static Timer _pollAutobackupTimer;
         private static DateTime _lastAutoBackupTime;
         private static int _numberOfBackups = 0;
-        private static CultureInfo _culture = CultureInfo.CurrentCulture;
+        private static readonly CultureInfo Culture = CultureInfo.CurrentCulture;
         private static bool _watcherCopiedFile;
         private static List<FileSystemWatcher> _fileWatcherList;
-
         public static Stopwatch Watch;
         public static List<FileInfo> SourceFiles;
         public static List<FileInfo> TargetFiles;
@@ -40,8 +37,10 @@ namespace Saved_Game_Backup
         public static Dictionary<Game, List<FileInfo>> GameFileDictionary;
         public static Dictionary<Game, List<FileInfo>> GameTargetDictionary;
         private static bool _firstPoll;
+        private static bool BackupEnabled;
 
         public static BackupResultHelper ToggleAutoBackup(bool backupEnabled, int interval) {
+            BackupEnabled = backupEnabled;
             if (!backupEnabled) {
                 InitializeWatchers();
                 return SetupPollAutobackup(backupEnabled, interval);
@@ -52,20 +51,26 @@ namespace Saved_Game_Backup
 
         public static BackupResultHelper RemoveFromAutobackup(Game game) {
             if (!_fileWatcherList.Any())
-                HandleBackupResult(false, false, "No games on autobackup.", BackupType.Autobackup,
-                    DateTime.Now.ToString(_culture));
-            for (var i = 0; i <= _fileWatcherList.Count(); i++) {
-                if (!_fileWatcherList[i].Path.Contains(game.Path)) continue;
-                _fileWatcherList.RemoveAt(i);
+                return new BackupResultHelper(){ Success = true, AutobackupEnabled = BackupEnabled, BackupDateTime = DateTime.Now.ToLongTimeString(),Message = "No games to remove."};
+            foreach (var watcher in _fileWatcherList.Where(watcher => watcher.Path.Contains(game.Path))) {
+                _fileWatcherList.Remove(watcher);
                 break;
             }
 
-
+            var time = DateTime.Now.ToLongTimeString();
             return _fileWatcherList.Any()
-                ? HandleBackupResult(true, true, "Game removed from autobackup", BackupType.Autobackup,
-                    DateTime.Now.ToString(_culture))
-                : HandleBackupResult(true, false, "Last game removed from Autobackup.\r\nAutobackup disabled.",
-                    BackupType.Autobackup, DateTime.Now.ToString(_culture));
+                ? new BackupResultHelper() {
+                    Success = true,
+                    AutobackupEnabled = BackupEnabled,
+                    BackupDateTime = time,
+                    Message = "Game removed."
+                }
+                : new BackupResultHelper() {
+                    Success = true,
+                    AutobackupEnabled = false,
+                    BackupDateTime = time,
+                    Message = "Last game removed from Autobackup.\r\nAutobackup disabled.",
+                };
         }        
 
         public static void InitializeWatchers() {
@@ -79,7 +84,7 @@ namespace Saved_Game_Backup
 
             _fileWatcherList = new List<FileSystemWatcher>();
             if (_autoBackupDirectoryInfo == null) {
-                var fb = new FolderBrowserDialog() {SelectedPath = _hardDrive, ShowNewFolderButton = true};
+                var fb = new FolderBrowserDialog() {SelectedPath = HardDrive, ShowNewFolderButton = true};
                 if (fb.ShowDialog() == DialogResult.OK)
                     _autoBackupDirectoryInfo = new DirectoryInfo(fb.SelectedPath);
             }
