@@ -96,6 +96,9 @@
       <DependentUpon>AddGameWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Backup.cs" />
+    <Compile Include="BackupAuto.cs" />
+    <Compile Include="BackupToFolder.cs" />
+    <Compile Include="BackupToZip.cs" />
     <Compile Include="BackupType.cs" />
     <Compile Include="DirectoryFinder.cs" />
     <Compile Include="Game.cs" />
