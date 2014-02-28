@@ -700,16 +700,12 @@ namespace Saved_Game_Backup {
         }
 
         public static BackupResultHelper SetupPollAutobackup(bool backupEnabled, int interval) {
-            //FOR TESTING ONLY
-            //if (TESTGAMES != null) GamesToBackup = TESTGAMES;
             _firstPoll = true;
-
-
             if (backupEnabled) {
                 _pollAutobackupTimer.Stop();
                 _fileWatcherList.Clear();
                 return new BackupResultHelper(true, !backupEnabled, "Autobackup disabled.",
-                    DateTime.Now.ToLongTimeString(), "Enable autobackup");
+                    DateTime.Now.ToLongTimeString(), "Enable auto-backup.");
             }
             if (_autoBackupDirectoryInfo == null) {
                 var fb = new FolderBrowserDialog() {ShowNewFolderButton = true};
@@ -742,7 +738,7 @@ namespace Saved_Game_Backup {
             }
             Debug.WriteLine(@"Setup of Poll Autobackup complete.");
             Debug.WriteLine(@"Initializing Poll Autobackup Timer.");
-            _pollAutobackupTimer = new Timer { AutoReset = true, Enabled = true, Interval = interval }; //Only running once, remove autoreset when done testing
+            _pollAutobackupTimer = new Timer { Enabled = true, Interval = interval }; //Only running once, remove autoreset when done testing
             _pollAutobackupTimer.Elapsed += _pollAutobackupTimer_Elapsed;
             _pollAutobackupTimer.Start();
             Debug.WriteLine(@"Finished initializing Poll Autobackup Timer.");
