@@ -192,7 +192,7 @@ namespace Saved_Game_Backup {
         #endregion
 
         public static BackupResultHelper ToggleAutoBackup(bool backupEnabled, int interval) {
-            if (backupEnabled) {
+            if (!backupEnabled) {
                 InitializeWatchers();
                 return SetupPollAutobackup(backupEnabled, interval).Result;
             }

@@ -205,7 +205,7 @@ namespace Saved_Game_Backup.ViewModel
         public int Interval {
             get { return _interval; }
             set {
-                _interval = value * 60000;
+                _interval = value;
                 RaisePropertyChanged(() => Interval);
             }
         }
@@ -371,7 +371,7 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ExecuteStartBackup() {
-            var result = Backup.StartBackup(GamesToBackup.ToList(), BackupType, BackupEnabled);
+            var result = Backup.StartBackup(GamesToBackup.ToList(), BackupType, BackupEnabled, (Interval * 60000));
             HandleBackupResult(result);
         }
 
