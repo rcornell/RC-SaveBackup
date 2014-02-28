@@ -425,7 +425,7 @@ namespace Saved_Game_Backup {
                 try {
                     foreach (
                         var a in
-                            Games.Where(
+                            GamesToBackup.Where(
                                 a => e.FullPath.Contains(a.Name) || e.FullPath.Contains(a.RootFolder))) {
                         autoBackupGame = a;
                     }
@@ -494,7 +494,7 @@ namespace Saved_Game_Backup {
                 try {
                     foreach (
                         var a in
-                            G.Where(
+                            GamesToBackup.Where(
                                 a => e.FullPath.Contains(a.Name) || e.FullPath.Contains(a.RootFolder))) {
                         autoBackupGame = a;
                     }
