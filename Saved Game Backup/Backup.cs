@@ -96,15 +96,14 @@ namespace Saved_Game_Backup {
             else {
                 message = @"Backup Complete!";
             }
-
             return HandleBackupResult(success, backupEnabled, message, backupType,
                 DateTime.Now.ToString(CultureInfo.CurrentCulture));
         }
 
 
         #region Non-Autobackup Methods
-        public static bool BackupSaves(List<Game> gamesList, string specifiedfolder = null) {
-            string destination;
+        public static bool BackupSaves(List<Game> gamesList) {
+            DirectoryInfo targetDi;
 
             var fd = new FolderBrowserDialog() {
                 SelectedPath = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer),
@@ -113,34 +112,32 @@ namespace Saved_Game_Backup {
             };
 
             if (fd.ShowDialog() == DialogResult.OK)
-                destination = fd.SelectedPath;
+                targetDi = new DirectoryInfo(fd.SelectedPath);
             else {
                 return false;
             }
 
-            if (!Directory.Exists(destination) && !string.IsNullOrWhiteSpace(destination))
-                Directory.CreateDirectory(destination);
+            if (!Directory.Exists(targetDi.FullName) && !string.IsNullOrWhiteSpace(targetDi.FullName))
+                Directory.CreateDirectory(targetDi.FullName);
 
             //This backs up each game using BackupGame()
             foreach (var game in gamesList) {
-                BackupGame(game, game.Path, destination);
+                BackupGame(game, targetDi.FullName);
             }
-
             return true;
         }
 
-        private static void BackupGame(Game game, string sourceDirName, string destDirName) {
-            var allFiles = Directory.GetFiles(sourceDirName, "*.*", SearchOption.AllDirectories);
-
-            foreach (var sourcePath in allFiles) {
+        private static void BackupGame(Game game, string destDirName) {
+            var allFiles = Directory.GetFiles(game.Path, "*.*", SearchOption.AllDirectories);
+            foreach (var sourceFile in allFiles) {
                 try {
-                    var positionOfRootFolder = sourcePath.IndexOf(game.RootFolder, StringComparison.CurrentCulture);
-                    var pathEnd = sourcePath.Substring(positionOfRootFolder);
-                    var destinationPath = new FileInfo(destDirName + "\\" + pathEnd);
-                    var destinationDir = destinationPath.DirectoryName;
+                    var index = sourceFile.IndexOf(game.RootFolder, StringComparison.CurrentCulture);
+                    var substring = sourceFile.Substring(index);
+                    var destinationFi = new FileInfo(destDirName + "\\" + substring);
+                    var destinationDir = destinationFi.DirectoryName;
                     if (!Directory.Exists(destinationDir)) Directory.CreateDirectory(destinationDir);
-                    var file = new FileInfo(sourcePath);
-                    file.CopyTo(destinationPath.ToString(), true);
+                    var file = new FileInfo(sourceFile);
+                    file.CopyTo(destinationFi.FullName, true);
                 }
                 catch (IOException ex) {
                     SBTErrorLogger.Log(ex.Message);
@@ -194,14 +191,6 @@ namespace Saved_Game_Backup {
         }
         #endregion
 
-        /// <summary>
-        /// Returns false if turning off autobackup. Returns true if activating.
-        /// </summary>
-        /// <param name="gamesToBackup"></param>
-        /// <param name="harddrive"></param>
-        /// <param name="backupEnabled"></param>
-        /// <param name="specifiedFolder"></param>
-        /// <returns></returns>
         public static BackupResultHelper ToggleAutoBackup(bool backupEnabled, int interval) {
             if (backupEnabled) {
                 InitializeWatchers();
