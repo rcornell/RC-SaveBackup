@@ -42,8 +42,7 @@ namespace Saved_Game_Backup {
         private static CultureInfo _culture = CultureInfo.CurrentCulture;
         private static bool _watcherCopiedFile;
 
-
-        //Properties for new methods.
+        //Properties for PollAutobackup
         public static Stopwatch Watch;
         public static List<FileInfo> SourceFiles;
         public static List<FileInfo> TargetFiles;

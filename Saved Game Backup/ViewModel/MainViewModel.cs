@@ -121,11 +121,11 @@ namespace Saved_Game_Backup.ViewModel
             get { return _backupType; }
             set {
                 _backupType = value;
-                BackupLimitVisibility = _backupType == BackupType.Autobackup ? Visibility.Visible : Visibility.Hidden;
+                AutoBackupVisibility = _backupType == BackupType.Autobackup ? Visibility.Visible : Visibility.Hidden;
                 if (_backupType == BackupType.Autobackup && BackupEnabled) BackupButtonText = "Disable auto-backup.";
                 if (_backupType == BackupType.Autobackup && !BackupEnabled) BackupButtonText = "Enable auto-backup.";
                 if (_backupType != BackupType.Autobackup) BackupButtonText = "Backup Saves";
-                RaisePropertyChanged(() => BackupLimitVisibility);
+                RaisePropertyChanged(() => AutoBackupVisibility);
                 RaisePropertyChanged(() => BackupButtonText);
                 RaisePropertyChanged(() => BackupType);
             }
@@ -205,7 +205,7 @@ namespace Saved_Game_Backup.ViewModel
         public int Interval {
             get { return _interval; }
             set {
-                _interval = value;
+                _interval = value * 60000;
                 RaisePropertyChanged(() => Interval);
             }
         }

@@ -99,9 +99,13 @@
                             Visibility="{Binding AutoBackupVisibility}">
                     <TextBlock VerticalAlignment="Center"
                                Style="{StaticResource TextStyle}"
-                               Text="Autobackup Interval"
+                               Text="Autobackup interval"
                                TextWrapping="Wrap" />
                     <xctk:IntegerUpDown Margin="3" Text="{Binding Interval, UpdateSourceTrigger=PropertyChanged, Delay=100}" />
+                    <TextBlock VerticalAlignment="Center"
+                               Style="{StaticResource TextStyle}"
+                               Text="min."
+                               TextWrapping="Wrap" />
                 </StackPanel>
             </StackPanel>
             <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
