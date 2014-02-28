@@ -280,6 +280,7 @@ namespace Saved_Game_Backup.ViewModel
         public MainViewModel() {
             NumberOfBackups = 0;
             Interval = 5;
+            BackupEnabledVisibility = Visibility.Hidden;
             GamesList = DirectoryFinder.ReturnGamesList();
             GamesToBackup = new ObservableCollection<Game>();
             BackupTypes = new ObservableCollection<BackupType>() {
@@ -385,7 +386,7 @@ namespace Saved_Game_Backup.ViewModel
             if (!result.AutobackupEnabled && BackupType != BackupType.Autobackup) LastBackupTime = result.BackupDateTime;
 
             if (string.IsNullOrWhiteSpace(result.Message)) return;
-            MessageBox.Show(result.Message, @"Operation successful", MessageBoxButton.OK);
+            //MessageBox.Show(result.Message, @"Operation successful", MessageBoxButton.OK);
         }
 
         private void ExecuteReset() {

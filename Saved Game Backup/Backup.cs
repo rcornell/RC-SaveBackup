@@ -27,7 +27,6 @@ using Timer = System.Timers.Timer;
 
 namespace Saved_Game_Backup {
     public class Backup {
-        private static ObservableCollection<Game> _gamesToAutoBackup = new ObservableCollection<Game>();
         private static List<FileSystemWatcher> _fileWatcherList;
         private static readonly string _hardDrive = Path.GetPathRoot(Environment.SystemDirectory);
         private static string _myDocuments = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -282,7 +281,7 @@ namespace Saved_Game_Backup {
                         try {
                             foreach (
                                 var a in
-                                    _gamesToAutoBackup.Where(
+                                    GamesToBackup.Where(
                                         a => e.FullPath.Contains(a.Name) || e.FullPath.Contains(a.RootFolder))) {
                                 autoBackupGame = a;
                             }
@@ -426,7 +425,7 @@ namespace Saved_Game_Backup {
                 try {
                     foreach (
                         var a in
-                            _gamesToAutoBackup.Where(
+                            Games.Where(
                                 a => e.FullPath.Contains(a.Name) || e.FullPath.Contains(a.RootFolder))) {
                         autoBackupGame = a;
                     }
@@ -495,7 +494,7 @@ namespace Saved_Game_Backup {
                 try {
                     foreach (
                         var a in
-                            _gamesToAutoBackup.Where(
+                            G.Where(
                                 a => e.FullPath.Contains(a.Name) || e.FullPath.Contains(a.RootFolder))) {
                         autoBackupGame = a;
                     }
@@ -543,7 +542,7 @@ namespace Saved_Game_Backup {
                 try {
                     foreach (
                         var a in
-                            _gamesToAutoBackup.Where(
+                            GamesToBackup.Where(
                                 a => e.FullPath.Contains(a.Name) || e.FullPath.Contains(a.RootFolder))) {
                         autoBackupGame = a;
                     }
