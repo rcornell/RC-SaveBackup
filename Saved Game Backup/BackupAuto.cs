@@ -58,18 +58,19 @@ namespace Saved_Game_Backup
             }
 
             var time = DateTime.Now.ToLongTimeString();
+            var message = _fileWatcherList.Any() ? "Game removed" : "Last game removed from Autobackup.\r\nAutobackup disabled.";
             return _fileWatcherList.Any()
                 ? new BackupResultHelper() {
                     Success = true,
-                    AutobackupEnabled = BackupEnabled,
+                    AutobackupEnabled = true,
                     BackupDateTime = time,
-                    Message = "Game removed."
+                    Message = message
                 }
                 : new BackupResultHelper() {
                     Success = true,
                     AutobackupEnabled = false,
                     BackupDateTime = time,
-                    Message = "Last game removed from Autobackup.\r\nAutobackup disabled.",
+                    Message = message,
                 };
         }        
 
