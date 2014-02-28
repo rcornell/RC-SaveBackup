@@ -59,8 +59,9 @@ namespace Saved_Game_Backup {
             bool backupEnabled, int interval = 0) {
             GamesToBackup = ModifyGamePaths(games);
             var success = false;
-            var helper = new BackupResultHelper();
             var message = "";
+            
+            //Check for problems with parameters
             if (!games.Any() && backupType == BackupType.Autobackup && backupEnabled)
                 return HandleBackupResult(true, false, "Autobackup Disabled", backupType,
                     DateTime.Now.ToString(_culture));
@@ -68,13 +69,13 @@ namespace Saved_Game_Backup {
                 return HandleBackupResult(success, false, "No games selected.", backupType,
                     DateTime.Now.ToString(_culture));
 
-            var gamesToBackup = ModifyGamePaths(games);
-            switch (backupType) {                   //CHANGE SWITCH TO RETURN BACKUPRESULTHELPER
+
+            switch (backupType) {                  
                 case BackupType.ToZip:
-                    success = BackupAndZip(gamesToBackup);
+                    success = BackupAndZip(GamesToBackup);
                     break;
                 case BackupType.ToFolder:
-                    success = BackupSaves(gamesToBackup);
+                    success = BackupSaves(GamesToBackup);
                     break;
                 case BackupType.Autobackup:
                     return ToggleAutoBackup(backupEnabled, interval);
@@ -94,13 +95,14 @@ namespace Saved_Game_Backup {
             }
             else {
                 message = @"Backup Complete!";
-                //Messenger.Default.Send<DateTime>(DateTime.Now);
             }
 
             return HandleBackupResult(success, backupEnabled, message, backupType,
                 DateTime.Now.ToString(CultureInfo.CurrentCulture));
         }
 
+
+        #region Non-Autobackup Methods
         public static bool BackupSaves(List<Game> gamesList, string specifiedfolder = null) {
             string destination;
 
@@ -190,6 +192,7 @@ namespace Saved_Game_Backup {
 
             return true;
         }
+        #endregion
 
         /// <summary>
         /// Returns false if turning off autobackup. Returns true if activating.
@@ -206,8 +209,27 @@ namespace Saved_Game_Backup {
             }
 
             return SetupPollAutobackup(backupEnabled, interval).Result; 
-        }
+        }     
 
+        public static BackupResultHelper RemoveFromAutobackup(Game game) {
+            if (!_fileWatcherList.Any())
+                HandleBackupResult(false, false, "No games on autobackup.", BackupType.Autobackup,
+                    DateTime.Now.ToString(_culture));
+            for (var i = 0; i <= _fileWatcherList.Count(); i++) {
+                if (!_fileWatcherList[i].Path.Contains(game.Path)) continue;
+                _fileWatcherList.RemoveAt(i);
+                break;
+            }
+
+
+            return _fileWatcherList.Any()
+                ? HandleBackupResult(true, true, "Game removed from autobackup", BackupType.Autobackup,
+                    DateTime.Now.ToString(_culture))
+                : HandleBackupResult(true, false, "Last game removed from Autobackup.\r\nAutobackup disabled.",
+                    BackupType.Autobackup, DateTime.Now.ToString(_culture));
+        }        
+
+        #region FileSystemWatcher Methods
         public static void InitializeWatchers() {
             _delayTimer = new Timer {Interval = 5000, AutoReset = true};
             _delayTimer.Elapsed += _delayTimer_Elapsed;
@@ -242,24 +264,6 @@ namespace Saved_Game_Backup {
             }
         }
 
-        public static BackupResultHelper RemoveFromAutobackup(Game game) {
-            if (!_fileWatcherList.Any())
-                HandleBackupResult(false, false, "No games on autobackup.", BackupType.Autobackup,
-                    DateTime.Now.ToString(_culture));
-            for (var i = 0; i <= _fileWatcherList.Count(); i++) {
-                if (!_fileWatcherList[i].Path.Contains(game.Path)) continue;
-                _fileWatcherList.RemoveAt(i);
-                break;
-            }
-
-
-            return _fileWatcherList.Any()
-                ? HandleBackupResult(true, true, "Game removed from autobackup", BackupType.Autobackup,
-                    DateTime.Now.ToString(_culture))
-                : HandleBackupResult(true, false, "Last game removed from Autobackup.\r\nAutobackup disabled.",
-                    BackupType.Autobackup, DateTime.Now.ToString(_culture));
-        }
-
         public static void ShutdownWatchers() {       
             _fileWatcherList.Clear();
             _delayTimer.Stop();
@@ -267,21 +271,6 @@ namespace Saved_Game_Backup {
             _canBackupTimer.Stop();
             _canBackupTimer.Dispose();           
         }
-
-        public static bool CanBackup(List<Game> gamesToBackup)
-        {
-            if (_hardDrive == null) {
-                MessageBox.Show(
-                    "Cannot find OS drive. \r\nPlease add each game using \r\nthe 'Add Game to List' button.");
-                return false;
-            }
-
-            if (gamesToBackup.Any()) return true;
-            MessageBox.Show("No games selected. \n\rPlease select at least one game.");
-            return false;
-        }
-
-     
 
         private static void OnRenamed(object sender, RenamedEventArgs e) {
             try {
@@ -639,6 +628,16 @@ namespace Saved_Game_Backup {
             SBTErrorLogger.Log(message);
         }
 
+        private static void DisableWatchers() {
+            foreach (var watcher in _fileWatcherList)
+                watcher.EnableRaisingEvents = false;
+        }
+        private static void EnableWatchers() {
+            foreach (var watcher in _fileWatcherList)
+                watcher.EnableRaisingEvents = true;
+        }
+        #endregion
+
         /// <summary>
         /// Edits the truncated paths in the Games.json file and inserts the 
         /// user's path before the \\Documents\\ or \\AppData\\ folder path.
@@ -673,6 +672,19 @@ namespace Saved_Game_Backup {
             return editedList;
         }
 
+        #region User Interface Methods
+        public static bool CanBackup(List<Game> gamesToBackup) { 
+            if (_hardDrive == null) {
+                MessageBox.Show(
+                    "Cannot find OS drive. \r\nPlease add each game using \r\nthe 'Add Game to List' button.");
+                return false;
+            }
+
+            if (gamesToBackup.Any()) return true;
+            MessageBox.Show("No games selected. \n\rPlease select at least one game.");
+            return false;
+        }
+
         public static BackupResultHelper Reset(List<Game> games, BackupType backupType,
             bool backupEnabled) {
             var message = "";
@@ -683,6 +695,7 @@ namespace Saved_Game_Backup {
             games.Clear();
             return HandleBackupResult(true, false, message, backupType, DateTime.Now.ToString(_culture));
         }
+        #endregion
 
         private static BackupResultHelper HandleBackupResult(bool success, bool backupEnabled, string messageToShow,
             BackupType backupType, string date) {
@@ -826,11 +839,6 @@ namespace Saved_Game_Backup {
             return sourceFilesToCopy;
         }
 
-        /// <summary>
-        /// Copies files in list for specified Game
-        /// </summary>
-        /// <param name="filesToCopy"></param>
-        /// <returns></returns>
         private static async Task CopySaves(Game game, IEnumerable<FileInfo> filesToCopy) {
             var startTime = Watch.Elapsed;
             Debug.WriteLine(@"CopySaves starting at {0}", startTime);
@@ -957,16 +965,7 @@ namespace Saved_Game_Backup {
             // the same.
             return ((file1Byte - file2Byte) == 0);
         }
-
-        private static void DisableWatchers() {
-            foreach (var watcher in _fileWatcherList)
-                watcher.EnableRaisingEvents = false;
-        }
-        private static void EnableWatchers() {
-            foreach (var watcher in _fileWatcherList)
-                watcher.EnableRaisingEvents = true;
-        }
-
+    
         #region Timers
         private static void _pollAutobackupTimer_Elapsed(object sender, ElapsedEventArgs e) {
             Debug.WriteLine(@"Poll Autobackup timer elapsed.");
