@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -50,15 +51,21 @@ namespace Saved_Game_Backup
         }     
 
         public static BackupResultHelper RemoveFromAutobackup(Game game) {
-            if (!_fileWatcherList.Any())
+            if (!_fileWatcherList.Any() && !GamesToBackup.Any())
                 return new BackupResultHelper(){ Success = true, AutobackupEnabled = BackupEnabled, BackupDateTime = DateTime.Now.ToLongTimeString(),Message = "No games to remove."};
-            foreach (var watcher in _fileWatcherList.Where(watcher => watcher.Path.Contains(game.Path))) {
-                _fileWatcherList.Remove(watcher);
-                break;
+
+            for (var i = 0; i < _fileWatcherList.Count; i++) {
+                if (_fileWatcherList[i].Path == game.Path) {
+                    _fileWatcherList.RemoveAt(i);
+                }
+            }
+            for (var i = 0; i < GamesToBackup.Count; i++) {
+                if (GamesToBackup[i].Name == game.Name)
+                    GamesToBackup.RemoveAt(i);
             }
 
             var time = DateTime.Now.ToLongTimeString();
-            var message = _fileWatcherList.Any() ? "Game removed" : "Last game removed from Autobackup.\r\nAutobackup disabled.";
+            var message = _fileWatcherList.Any() ? string.Format("{0} removed from auto-backup", game.Name) : "Last game removed from Autobackup.\r\nAutobackup disabled.";
             return _fileWatcherList.Any()
                 ? new BackupResultHelper() {
                     Success = true,
