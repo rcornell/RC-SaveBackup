@@ -700,7 +700,7 @@ namespace Saved_Game_Backup {
             return new BackupResultHelper(success, backupEnabled, message, date, backupButtonText);
         }
 
-        public static async Task<BackupResultHelper> SetupPollAutobackup(bool backupEnabled, int interval, List<Game> TESTGAMES = null) {
+        public static async Task<BackupResultHelper> SetupPollAutobackup(bool backupEnabled, int interval) {
             //FOR TESTING ONLY
             //if (TESTGAMES != null) GamesToBackup = TESTGAMES;
             _firstPoll = true;

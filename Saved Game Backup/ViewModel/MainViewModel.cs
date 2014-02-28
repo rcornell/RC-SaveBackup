@@ -268,10 +268,6 @@ namespace Saved_Game_Backup.ViewModel
             get { return new RelayCommand(CloseApplication); }
         }
 
-        public RelayCommand TestPollAutoBackup {
-            get { return new RelayCommand(PollAutobackup);}
-        }
-
         public MainViewModel() {
             NumberOfBackups = 0;
             GamesList = DirectoryFinder.ReturnGamesList();
@@ -294,11 +290,6 @@ namespace Saved_Game_Backup.ViewModel
             } catch (Exception ex) {
                 SBTErrorLogger.Log(ex.Message);
             }
-        }
-
-        public async void PollAutobackup() {
-            var testList = Backup.ModifyGamePaths(GamesToBackup); //REMOVE AFTER TESTING
-           await Backup.SetupPollAutobackup(false, 10000, testList);
         }
 
         ///Currently crashing designer.
