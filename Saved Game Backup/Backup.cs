@@ -200,14 +200,14 @@ namespace Saved_Game_Backup {
         /// <returns></returns>
         public static BackupResultHelper ToggleAutoBackup(bool backupEnabled, int interval) {
             if (backupEnabled) {
+                InitializeWatchers();
                 return SetupPollAutobackup(backupEnabled, interval).Result;
             }
 
             return SetupPollAutobackup(backupEnabled, interval).Result; 
         }
 
-        public static void ActivateAutoBackup(List<Game> gamesToBackup, string specifiedFolder = null)
-        {
+        public static void InitializeWatchers() {
             _delayTimer = new Timer {Interval = 5000, AutoReset = true};
             _delayTimer.Elapsed += _delayTimer_Elapsed;
 
@@ -224,7 +224,7 @@ namespace Saved_Game_Backup {
             }
 
             var watcherNumber = 0;
-            foreach (var game in gamesToBackup.Where(game => Directory.Exists(game.Path))) {
+            foreach (var game in GamesToBackup.Where(game => Directory.Exists(game.Path))) {
                 var filePath = new FileInfo(game.Path + "\\");
                 _fileWatcherList.Add(new FileSystemWatcher(filePath.ToString()));
                 _fileWatcherList[watcherNumber].Changed += OnChanged;
@@ -709,7 +709,7 @@ namespace Saved_Game_Backup {
 
         public static async Task<BackupResultHelper> SetupPollAutobackup(bool backupEnabled, int interval, List<Game> TESTGAMES = null) {
             //FOR TESTING ONLY
-            if (TESTGAMES != null) GamesToBackup = TESTGAMES;
+            //if (TESTGAMES != null) GamesToBackup = TESTGAMES;
             _firstPoll = true;
 
 
@@ -798,10 +798,9 @@ namespace Saved_Game_Backup {
                 var filesToCopy = CompareFiles(sourceFiles, targetFiles); //Look for source files NOT in target directory & copy them.
                 await CopySaves(game, filesToCopy);
 
-                if (targetFiles != null && targetFiles.Any()) {
-                    filesToCopy = await Scanner(sourceFiles, targetFiles); //Only called when files exist in the target directory to compare.
-                    await CopySaves(game, filesToCopy);
-                }   
+                if (targetFiles == null || !targetFiles.Any()) continue;
+                filesToCopy = await Scanner(sourceFiles, targetFiles); //Only called when files exist in the target directory to compare.
+                await CopySaves(game, filesToCopy);
             }
 
             var endTime = Watch.Elapsed;
