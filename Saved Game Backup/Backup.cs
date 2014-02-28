@@ -259,11 +259,12 @@ namespace Saved_Game_Backup {
                     BackupType.Autobackup, DateTime.Now.ToString(_culture));
         }
 
-        public static void DeactivateAutoBackup() {
-            foreach (var f in _fileWatcherList) {
-                f.EnableRaisingEvents = false;
-            }
+        public static void ShutdownWatchers() {       
             _fileWatcherList.Clear();
+            _delayTimer.Stop();
+            _delayTimer.Dispose();
+            _canBackupTimer.Stop();
+            _canBackupTimer.Dispose();           
         }
 
         public static bool CanBackup(List<Game> gamesToBackup)
@@ -686,7 +687,7 @@ namespace Saved_Game_Backup {
             bool backupEnabled) {
             var message = "";
             if (backupEnabled) {
-                DeactivateAutoBackup();
+                ShutdownWatchers();
                 message = "Autobackup Disabled";
             }
             games.Clear();
