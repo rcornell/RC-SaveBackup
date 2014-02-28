@@ -298,7 +298,7 @@ namespace Saved_Game_Backup.ViewModel
 
         public async void PollAutobackup() {
             var testList = Backup.ModifyGamePaths(GamesToBackup); //REMOVE AFTER TESTING
-           await Backup.SetupPollAutobackup(false, 3000, testList);
+           await Backup.SetupPollAutobackup(false, 10000, testList);
         }
 
         ///Currently crashing designer.

@@ -782,6 +782,7 @@ namespace Saved_Game_Backup {
 
 
         private static async void PollAutobackup() {
+            DisableWatchers();
             Watch = new Stopwatch();
             Watch.Start();
             var startTime = Watch.Elapsed;
@@ -808,6 +809,7 @@ namespace Saved_Game_Backup {
             Debug.WriteLine(@"PollAutobackup completed in {0}", (endTime - startTime));
 
             _firstPoll = false;
+            EnableWatchers();
         }
 
         private static void AppendSourceFiles() {
@@ -961,6 +963,15 @@ namespace Saved_Game_Backup {
             // equal to "file2byte" at this point only if the files are 
             // the same.
             return ((file1Byte - file2Byte) == 0);
+        }
+
+        private static void DisableWatchers() {
+            foreach (var watcher in _fileWatcherList)
+                watcher.EnableRaisingEvents = false;
+        }
+        private static void EnableWatchers() {
+            foreach (var watcher in _fileWatcherList)
+                watcher.EnableRaisingEvents = true;
         }
     }
 }
