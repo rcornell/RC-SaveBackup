@@ -40,6 +40,7 @@ namespace Saved_Game_Backup {
         private static DateTime _lastAutoBackupTime;
         private static int _numberOfBackups = 0;
         private static CultureInfo _culture = CultureInfo.CurrentCulture;
+        private static bool _watcherCopiedFile;
 
 
         //Properties for new methods.
@@ -280,18 +281,7 @@ namespace Saved_Game_Backup {
             return false;
         }
 
-        private static void _delayTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
-            Debug.WriteLine("DelayTimer elapsed");
-            _canBackupTimer.Enabled = true;
-            _canBackupTimer.Start();
-            _delayTimer.Enabled = false;
-        }
-
-        private static void _canBackupTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
-            Debug.WriteLine("CanBackup timer elapsed");
-            _lastAutoBackupTime = DateTime.Now;
-            _canBackupTimer.Enabled = false;
-        }
+     
 
         private static void OnRenamed(object sender, RenamedEventArgs e) {
             try {
@@ -733,14 +723,14 @@ namespace Saved_Game_Backup {
             foreach (var game in GamesToBackup) {
                 var targetDirectory = new DirectoryInfo(_autoBackupDirectoryInfo.FullName + "\\" + game.Name);
                 if (!Directory.Exists(targetDirectory.FullName)) Directory.CreateDirectory(targetDirectory.FullName);
-                var targets = targetDirectory.GetFiles("*", SearchOption.AllDirectories).ToList();
+                var targets = await Task.Run(() => targetDirectory.GetFiles("*", SearchOption.AllDirectories).ToList());
                 GameTargetDictionary.Add(game, targets);
 
                 var sourceDirectory = new DirectoryInfo(game.Path);
                 if (!Directory.Exists(sourceDirectory.FullName))
                     return new BackupResultHelper(false, backupEnabled, "Game directory not found.", DateTime.Now.ToLongTimeString(),
                         "Enable Autobackup");
-                var sources = sourceDirectory.GetFiles("*", SearchOption.AllDirectories).ToList();
+                var sources = await Task.Run(() =>sourceDirectory.GetFiles("*", SearchOption.AllDirectories).ToList());
                 GameFileDictionary.Add(game, sources);
 
                 //var success = await ComputeSourceHashes();
@@ -758,13 +748,11 @@ namespace Saved_Game_Backup {
             return new BackupResultHelper(true, true, "Autobackup enabled", DateTime.Now.ToLongTimeString(), "Disable autobackup");
         }
 
-        private static void _pollAutobackupTimer_Elapsed(object sender, ElapsedEventArgs e) {
-            Debug.WriteLine(@"Poll Autobackup timer elapsed.");
-            _pollAutobackupTimer.Enabled = false; //REMOVE AFTER TESTING
-            PollAutobackup();
-        }
-
-        private async static Task<bool> ComputeSourceHashes() {
+        /// <summary>
+        /// During SetupPollAutobackup, this makes hashes of all source files for comparison later.
+        /// </summary>
+        /// <returns></returns>
+        private async static Task ComputeSourceHashes(List<FileInfo> appendedFiles = null) {
             HashDictionary = new Dictionary<FileInfo, string>();
             foreach (var game in GamesToBackup) {
                 List<FileInfo> sourceFiles;
@@ -776,11 +764,7 @@ namespace Saved_Game_Backup {
                     HashDictionary.Add(file, hashString);
                 }
             }
-            return true;
         }
-
-        //Should FileSystemWatcher add files to be copied and that's it?
-
 
         private static async void PollAutobackup() {
             DisableWatchers();
@@ -824,11 +808,15 @@ namespace Saved_Game_Backup {
                 }
             }
         }
-
-
-        //Finds files that don't exist in target directory and calls CopySaves to copy them.
-        //Does not catch files that exist in target directory with the same name as source.
-        //That gets handled later.
+        
+        /// <summary>
+        /// Finds files that don't exist in target directory and calls CopySaves to copy them.
+        /// Does not catch files that exist in target directory with the same name as source.
+        /// That gets handled later.
+        /// </summary>
+        /// <param name="sourceFiles"></param>
+        /// <param name="targetFiles"></param>
+        /// <returns></returns>
         private static List<FileInfo> CompareFiles(List<FileInfo> sourceFiles, List<FileInfo> targetFiles) {
             var sourceFilesToCopy = new List<FileInfo>();
             foreach (var source in sourceFiles) {
@@ -884,7 +872,12 @@ namespace Saved_Game_Backup {
             Messenger.Default.Send(_numberOfBackups);
         }
 
-        //Scans files in-depth to check for matching files
+        /// <summary>
+        /// Scans files in-depth to check for matching files
+        /// </summary>
+        /// <param name="sourceFiles"></param>
+        /// <param name="targetFiles"></param>
+        /// <returns></returns>
         private async static Task<List<FileInfo>> Scanner(IEnumerable<FileInfo> sourceFiles, List<FileInfo> targetFiles) {
             var startTime = Watch.Elapsed;
             Debug.WriteLine(@"Scanner started at {0}", startTime);
@@ -973,5 +966,26 @@ namespace Saved_Game_Backup {
             foreach (var watcher in _fileWatcherList)
                 watcher.EnableRaisingEvents = true;
         }
+
+        #region Timers
+        private static void _pollAutobackupTimer_Elapsed(object sender, ElapsedEventArgs e) {
+            Debug.WriteLine(@"Poll Autobackup timer elapsed.");
+            _pollAutobackupTimer.Enabled = false; //REMOVE AFTER TESTING
+            PollAutobackup();
+        }
+
+        private static void _delayTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
+            Debug.WriteLine("DelayTimer elapsed");
+            _canBackupTimer.Enabled = true;
+            _canBackupTimer.Start();
+            _delayTimer.Enabled = false;
+        }
+
+        private static void _canBackupTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
+            Debug.WriteLine("CanBackup timer elapsed");
+            _lastAutoBackupTime = DateTime.Now;
+            _canBackupTimer.Enabled = false;
+        }
+        #endregion
     }
 }
