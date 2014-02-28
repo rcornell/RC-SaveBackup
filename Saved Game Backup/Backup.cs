@@ -149,43 +149,44 @@ namespace Saved_Game_Backup {
         }
 
         public static bool BackupAndZip(List<Game> gamesList, string specifiedfolder = null) {
-            string zipSource;
+            DirectoryInfo zipSourceDi;
             FileInfo zipDestination;
 
             var fd = new SaveFileDialog() {
                 InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer),
                 FileName = "SaveBackups.zip",
                 Filter = @"Zip files (*.zip) | *.zip",
-                Title = @"Select the root folder where this utility will create the SaveBackups folder.",
+                Title = @"Select the location and name of the Zip file.",
                 CheckFileExists = false,
                 OverwritePrompt = true
             };
 
             if (fd.ShowDialog() == DialogResult.OK) {
                 zipDestination = new FileInfo(fd.FileName);
-                zipSource = zipDestination.DirectoryName + "\\Temp";
+                zipSourceDi = new DirectoryInfo(zipDestination.DirectoryName + "\\Temp");
             }
             else {
                 return false;
             }
 
-            if (!Directory.Exists(zipSource))
-                Directory.CreateDirectory(zipSource);
+            if (!Directory.Exists(zipSourceDi.Parent.FullName))
+                Directory.CreateDirectory(zipSourceDi.Parent.FullName);
 
             //Creates temporary directory at ZipSource + the game's name
             //To act as the source folder for the ZipFile class.
             foreach (var game in gamesList) {
-                BackupGame(game, game.Path, zipSource + "\\" + game.Name);
+                var dir = new DirectoryInfo(zipSourceDi.FullName + "\\" + game.Name);
+                BackupGame(game, dir.FullName);
             }
 
             //Delete existing zip file if one exists.
             if (zipDestination.Exists)
                 zipDestination.Delete();
 
-            ZipFile.CreateFromDirectory(zipSource, zipDestination.FullName);
+            ZipFile.CreateFromDirectory(zipSourceDi.FullName, zipDestination.FullName, CompressionLevel.Optimal, false);
 
             //Delete temporary folder that held save files.
-            Directory.Delete(zipSource, true);
+            Directory.Delete(zipSourceDi.FullName, true);
 
             return true;
         }
