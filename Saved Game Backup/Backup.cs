@@ -32,9 +32,8 @@ namespace Saved_Game_Backup {
         private static string _myDocuments = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         private static readonly string _userPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         private static string _userName = Environment.UserName;
-        private static CultureInfo _culture = CultureInfo.CurrentCulture;
-        //Properties for PollAutobackup
-
+        private static readonly CultureInfo Culture = CultureInfo.CurrentCulture;
+        private static readonly BackupResultHelper ErrorResultHelper = new BackupResultHelper(){Success = false ,AutobackupEnabled = false, Message="Error during operation"};
 
         public Backup() {}
 
@@ -47,10 +46,10 @@ namespace Saved_Game_Backup {
             //Check for problems with parameters
             if (!games.Any() && backupType == BackupType.Autobackup && backupEnabled)
                 return HandleBackupResult(true, false, "Autobackup Disabled", backupType,
-                    DateTime.Now.ToString(_culture));
+                    DateTime.Now.ToString(Culture));
             if (!games.Any())
                 return HandleBackupResult(success, false, "No games selected.", backupType,
-                    DateTime.Now.ToString(_culture));
+                    DateTime.Now.ToString(Culture));
 
 
             switch (backupType) {                  
@@ -118,7 +117,6 @@ namespace Saved_Game_Backup {
             return editedList;
         }
 
-        #region User Interface Methods
         public static bool CanBackup(List<Game> gamesToBackup) { 
             if (_hardDrive == null) {
                 MessageBox.Show(
@@ -131,17 +129,15 @@ namespace Saved_Game_Backup {
             return false;
         }
 
-        public static BackupResultHelper Reset(List<Game> games, BackupType backupType,
-            bool backupEnabled) {
+        public static BackupResultHelper Reset(List<Game> games, BackupType backupType, bool backupEnabled) {
             var message = "";
             if (backupEnabled) {
-                //ShutdownWatchers();
-                message = "Autobackup Disabled";
+                foreach (var game in games) BackupAuto.RemoveFromAutobackup(game);
+                message = "Autobackup disabled";
             }
             games.Clear();
-            return HandleBackupResult(true, false, message, backupType, DateTime.Now.ToString(_culture));
+            return HandleBackupResult(true, false, message, backupType, DateTime.Now.ToLongTimeString());
         }
-        #endregion
 
         private static BackupResultHelper HandleBackupResult(bool success, bool backupEnabled, string messageToShow,
             BackupType backupType, string date) {
@@ -150,16 +146,17 @@ namespace Saved_Game_Backup {
 
             var message = messageToShow;
 
-            if (backupEnabled && backupType == BackupType.Autobackup) backupButtonText = "Disable Autobackup";
-            if (!backupEnabled && backupType == BackupType.Autobackup) backupButtonText = "Enable Autobackup";
+            if (backupEnabled && backupType == BackupType.Autobackup) backupButtonText = "Disable auto-backup";
+            if (!backupEnabled && backupType == BackupType.Autobackup) backupButtonText = "Enable auto-backup";
 
 
             return new BackupResultHelper(success, backupEnabled, message, date, backupButtonText);
         }
 
         public static BackupResultHelper RemoveFromAutobackup(Game game) {
-           var result = BackupAuto.RemoveFromAutobackup(game);
-           return result;
+            if (game == null) return ErrorResultHelper;
+            var result = BackupAuto.RemoveFromAutobackup(game);
+            return result;
         }
 
        

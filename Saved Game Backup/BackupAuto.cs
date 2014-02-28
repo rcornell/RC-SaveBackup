@@ -52,7 +52,7 @@ namespace Saved_Game_Backup
 
         public static BackupResultHelper RemoveFromAutobackup(Game game) {
             if (!_fileWatcherList.Any() && !GamesToBackup.Any())
-                return new BackupResultHelper(){ Success = true, AutobackupEnabled = BackupEnabled, BackupDateTime = DateTime.Now.ToLongTimeString(),Message = "No games to remove."};
+                return new BackupResultHelper(){ Success = true, AutobackupEnabled = false, BackupDateTime = DateTime.Now.ToLongTimeString(),Message = "No games to remove."};
 
             for (var i = 0; i < _fileWatcherList.Count; i++) {
                 if (_fileWatcherList[i].Path == game.Path) {
