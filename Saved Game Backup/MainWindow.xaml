@@ -132,6 +132,19 @@
                                        Text="{Binding NumberOfBackups,
                                                       StringFormat='{}{0:#,#.}'}" />
                         </StackPanel>
+                        <StackPanel HorizontalAlignment="Center"
+                                    Orientation="Horizontal"
+                                    Visibility="{Binding AutoBackupVisibility}">
+                            <TextBlock Margin="3"
+                                       FontSize="12"
+                                       Style="{StaticResource TextStyle}"
+                                       Text="Folder: " />
+                            <TextBlock Margin="3"
+                                       FontSize="12"
+                                       Style="{StaticResource TextStyle}"
+                                       Text="BACKUP FOLDER"
+                                       TextWrapping="Wrap" />
+                        </StackPanel>
                     </StackPanel>
                 </Border>
                 <Button Margin="3"

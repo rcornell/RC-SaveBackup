@@ -907,6 +907,8 @@ namespace Saved_Game_Backup {
         // are the same. A return value of any other value indicates that the 
         // files are not the same.
         private static bool FileCompare(string file1, string file2) {
+            Thread.CurrentThread.Priority = ThreadPriority.Lowest; //Useful or no?
+
             int file1Byte;
             int file2Byte;
 
