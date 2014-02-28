@@ -351,6 +351,7 @@ namespace Saved_Game_Backup {
                                             Debug.WriteLine(
                                                 @"SUCCESSFUL RENAME Old filename was {0}. New filename is {1}.",
                                                 e.OldName, e.Name);
+                                            _watcherCopiedFile = true;
                                         }
                                     }
                                 }
@@ -382,10 +383,6 @@ namespace Saved_Game_Backup {
                                 var newMessage = string.Format(@"{0} {1} {2} {3}", ex.Message, e.ChangeType, e.OldName,
                                     e.Name);
                                 SBTErrorLogger.Log(newMessage);
-                                if (ex.Message.Contains(@"it is being used")) {
-                                    Debug.WriteLine(@"Recursively calling OnRenamed()");
-                                    OnRenamed(sender, e);
-                                }
                             }
                             catch (ArgumentException ex) {
                                 SBTErrorLogger.Log(ex.Message);
@@ -400,6 +397,10 @@ namespace Saved_Game_Backup {
             catch (ArgumentException ex) {
                 SBTErrorLogger.Log(ex.Message);
             }
+
+            if (!_watcherCopiedFile) return;
+            Messenger.Default.Send(_numberOfBackups++);
+            _watcherCopiedFile = false;
         }
 
         private static void OnChanged(object sender, FileSystemEventArgs e) {
@@ -432,6 +433,10 @@ namespace Saved_Game_Backup {
             catch (ArgumentException ex) {
                 SBTErrorLogger.Log(ex.Message);
             }
+
+            if (!_watcherCopiedFile) return;
+            Messenger.Default.Send(_numberOfBackups++);
+            _watcherCopiedFile = false;
         }
 
         private static void SaveChanged(object sender, FileSystemEventArgs e) {
@@ -478,6 +483,7 @@ namespace Saved_Game_Backup {
                                     Debug.WriteLine(@"START SaveChanged outStream created");
                                     inStream.CopyTo(outStream);
                                     Debug.WriteLine(@"SUCCESSFUL SAVECHANGED");
+                                    _watcherCopiedFile = true;
                                 }
                             }
                         }
@@ -490,13 +496,10 @@ namespace Saved_Game_Backup {
                         var newMessage = string.Format(@"{0} {1} {2}", ex.Message, e.ChangeType, e.Name);
                         SBTErrorLogger.Log(newMessage);
                         Debug.WriteLine(@"ABORT SaveChanged IOException encountered");
-                        if (ex.Message.Contains(@"it is being used")) {
-                            Debug.WriteLine(@"Recursively calling SaveChanged()");
-                            SaveChanged(sender, e);
-                        }
                     }
                     catch (ArgumentException ex) {
                         SBTErrorLogger.Log(ex.Message);
+                        Debug.WriteLine(@"ABORT SaveChanged Exception encountered");
                     }
                 }
             }
@@ -602,6 +605,7 @@ namespace Saved_Game_Backup {
                                 Debug.WriteLine(@"START SaveCreated outStream created");
                                 inStream.CopyTo(outStream);
                                 Debug.WriteLine(@"SUCCESSFUL CREATE for " + createdDestPath);
+                                _watcherCopiedFile = true;
                             }
                         }
                     }
@@ -612,10 +616,6 @@ namespace Saved_Game_Backup {
                     catch (IOException ex) {
                         var newMessage = string.Format(@"{0} {1} {2}", ex.Message, e.ChangeType, e.Name);
                         SBTErrorLogger.Log(newMessage);
-                        if (ex.Message.Contains(@"it is being used")) {
-                            Debug.WriteLine(@"Recursively calling SaveCreated()");
-                            SaveCreated(sender, e);
-                        }
                     }
                     catch (ArgumentException ex) {
                         SBTErrorLogger.Log(ex.Message);
