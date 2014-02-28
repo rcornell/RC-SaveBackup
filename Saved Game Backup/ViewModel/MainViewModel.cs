@@ -270,6 +270,7 @@ namespace Saved_Game_Backup.ViewModel
 
         public MainViewModel() {
             NumberOfBackups = 0;
+            Interval = 5;
             GamesList = DirectoryFinder.ReturnGamesList();
             GamesToBackup = new ObservableCollection<Game>();
             BackupTypes = new ObservableCollection<BackupType>() {

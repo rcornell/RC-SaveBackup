@@ -194,10 +194,10 @@ namespace Saved_Game_Backup {
         public static BackupResultHelper ToggleAutoBackup(bool backupEnabled, int interval) {
             if (!backupEnabled) {
                 InitializeWatchers();
-                return SetupPollAutobackup(backupEnabled, interval).Result;
+                return SetupPollAutobackup(backupEnabled, interval);
             }
 
-            return SetupPollAutobackup(backupEnabled, interval).Result; 
+            return SetupPollAutobackup(backupEnabled, interval); 
         }     
 
         public static BackupResultHelper RemoveFromAutobackup(Game game) {
@@ -700,7 +700,7 @@ namespace Saved_Game_Backup {
             return new BackupResultHelper(success, backupEnabled, message, date, backupButtonText);
         }
 
-        public static async Task<BackupResultHelper> SetupPollAutobackup(bool backupEnabled, int interval) {
+        public static BackupResultHelper SetupPollAutobackup(bool backupEnabled, int interval) {
             //FOR TESTING ONLY
             //if (TESTGAMES != null) GamesToBackup = TESTGAMES;
             _firstPoll = true;
@@ -725,14 +725,14 @@ namespace Saved_Game_Backup {
             foreach (var game in GamesToBackup) {
                 var targetDirectory = new DirectoryInfo(_autoBackupDirectoryInfo.FullName + "\\" + game.Name);
                 if (!Directory.Exists(targetDirectory.FullName)) Directory.CreateDirectory(targetDirectory.FullName);
-                var targets = await Task.Run(() => targetDirectory.GetFiles("*", SearchOption.AllDirectories).ToList());
+                var targets = targetDirectory.GetFiles("*", SearchOption.AllDirectories).ToList();
                 GameTargetDictionary.Add(game, targets);
 
                 var sourceDirectory = new DirectoryInfo(game.Path);
                 if (!Directory.Exists(sourceDirectory.FullName))
                     return new BackupResultHelper(false, backupEnabled, "Game directory not found.", DateTime.Now.ToLongTimeString(),
                         "Enable Autobackup");
-                var sources = await Task.Run(() =>sourceDirectory.GetFiles("*", SearchOption.AllDirectories).ToList());
+                var sources = sourceDirectory.GetFiles("*", SearchOption.AllDirectories).ToList();
                 GameFileDictionary.Add(game, sources);
 
                 //var success = await ComputeSourceHashes();
