@@ -207,6 +207,16 @@ namespace Saved_Game_Backup.ViewModel
             set {
                 _specifiedFolder = value; 
                 RaisePropertyChanged(() => SpecifiedFolder);
+                DisplaySpecifiedFolder = _specifiedFolder.FullName;
+            }
+        }
+
+        private string _displaySpecifiedFolder;
+        public string DisplaySpecifiedFolder {
+            get { return _displaySpecifiedFolder; }
+            set {
+                _displaySpecifiedFolder = DirectoryFinder.FormatDisplayPath(value);
+                RaisePropertyChanged(() => DisplaySpecifiedFolder);                
             }
         }
 

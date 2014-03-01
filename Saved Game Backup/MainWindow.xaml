@@ -50,11 +50,11 @@
                 </MenuItem>
                 <MenuItem Command="{Binding Close}" Header="_Exit" />
             </MenuItem>
-            <MenuItem Command="{Binding ShowAbout}" Header="_About" />
             <MenuItem Header="_Options">
                 <MenuItem Header="_Cloud Storage Settings"/>
                 <MenuItem Header="_Auto-backup Settings"/>
             </MenuItem>
+            <MenuItem Command="{Binding ShowAbout}" Header="_About" />
         </Menu>
         <StackPanel Grid.Row="1"
                     Grid.Column="0"
@@ -106,7 +106,7 @@
 
             <!--  CAN'T CURRENTLY ACCOMODATE LONG FOLDER PATHS  -->
             <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
-                <Border Style="{StaticResource AutobackupStyle}" Visibility="{Binding BackupEnabledVisibility}">
+                <Border MaxWidth="206" Style="{StaticResource AutobackupStyle}" Visibility="{Binding BackupEnabledVisibility}">
                     <StackPanel>
                         <TextBlock HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
@@ -152,7 +152,7 @@
                             <TextBlock Margin="0,3,3,3"
                                        FontSize="12"
                                        Style="{StaticResource TextStyle}"
-                                       Text="{Binding SpecifiedFolder}"
+                                       Text="{Binding DisplaySpecifiedFolder}"
                                        TextWrapping="Wrap" />
                         </StackPanel>
                     </StackPanel>

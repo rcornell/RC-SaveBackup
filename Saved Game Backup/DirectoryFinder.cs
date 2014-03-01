@@ -73,5 +73,14 @@ namespace Saved_Game_Backup
             }
             return detectedGamesList;
         }
+
+        public static string FormatDisplayPath(string directory) {
+            if (directory.Length <= 30) return directory;
+
+            var dir = new DirectoryInfo(directory);
+            var parent = dir.Name;
+            var root = dir.Root;
+            return root + "...\\" + parent;
+        }
     }
 }
