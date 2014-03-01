@@ -35,7 +35,7 @@ namespace Saved_Game_Backup {
 
         public Backup() {}
 
-        public static BackupResultHelper StartBackup(List<Game> games, BackupType backupType, bool backupEnabled, int interval = 0, DirectoryInfo targetDi = null, FileInfo targetFile = null) {
+        public static async Task<BackupResultHelper> StartBackup(List<Game> games, BackupType backupType, bool backupEnabled, int interval = 0, DirectoryInfo targetDi = null, FileInfo targetFile = null) {
             
             var gamesToBackup = ModifyGamePaths(games);
             
@@ -50,7 +50,7 @@ namespace Saved_Game_Backup {
 
             switch (backupType) {                  
                 case BackupType.ToZip:
-                    return BackupToZip.BackupAndZip(gamesToBackup, targetFile);
+                    return await BackupToZip.BackupAndZip(gamesToBackup, targetFile);
                 case BackupType.ToFolder:
                     return BackupToFolder.BackupSaves(gamesToBackup, targetDi);
                 case BackupType.Autobackup:

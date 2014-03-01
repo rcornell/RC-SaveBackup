@@ -18,7 +18,7 @@ namespace Saved_Game_Backup {
         private static string _userName = Environment.UserName;
         private static readonly BackupResultHelper ErrorResultHelper = new BackupResultHelper() { Success = false, AutobackupEnabled = false, Message = "No source files found for game." };
 
-        public static BackupResultHelper BackupAndZip(List<Game> gamesList, FileInfo targetFi) {
+        public static async Task<BackupResultHelper> BackupAndZip(List<Game> gamesList, FileInfo targetFi) {
             var zipSourceDi = new DirectoryInfo(targetFi.Directory + "\\Temp");
             
             //Delete existing file if it exists
@@ -36,7 +36,7 @@ namespace Saved_Game_Backup {
             }
 
             //Zip files from temp folder
-            ZipFile.CreateFromDirectory(zipSourceDi.FullName, targetFi.FullName, CompressionLevel.Optimal, false);
+            await Task.Run(() => ZipFile.CreateFromDirectory(zipSourceDi.FullName, targetFi.FullName, CompressionLevel.Optimal, false));
 
             //Delete temporary folder that held save files.
             Directory.Delete(zipSourceDi.FullName, true);

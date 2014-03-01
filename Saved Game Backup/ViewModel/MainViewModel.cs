@@ -440,7 +440,7 @@ namespace Saved_Game_Backup.ViewModel
                     break;
             }
             var result = Backup.StartBackup(GamesToBackup.ToList(), BackupType, BackupEnabled, Interval, SpecifiedFolder, _specifiedFile);
-            HandleBackupResult(result);
+            HandleBackupResult(result.Result);
         }
 
         private void HandleBackupResult(BackupResultHelper result) {

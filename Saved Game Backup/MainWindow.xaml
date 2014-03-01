@@ -51,8 +51,8 @@
                 <MenuItem Command="{Binding Close}" Header="_Exit" />
             </MenuItem>
             <MenuItem Header="_Options">
-                <MenuItem Header="_Cloud Storage Settings"/>
-                <MenuItem Header="_Auto-backup Settings"/>
+                <MenuItem Header="_Cloud Storage Settings" />
+                <MenuItem Header="_Auto-backup Settings" />
             </MenuItem>
             <MenuItem Command="{Binding ShowAbout}" Header="_About" />
         </Menu>
@@ -103,10 +103,8 @@
                                TextWrapping="Wrap" />
                 </StackPanel>
             </StackPanel>
-
-            <!--  CAN'T CURRENTLY ACCOMODATE LONG FOLDER PATHS  -->
             <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
-                <Border MaxWidth="206" Style="{StaticResource AutobackupStyle}" Visibility="{Binding BackupEnabledVisibility}">
+                <Border Style="{StaticResource AutobackupStyle}" Visibility="{Binding BackupEnabledVisibility}">
                     <StackPanel>
                         <TextBlock HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
