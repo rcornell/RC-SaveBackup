@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using GalaSoft.MvvmLight.Messaging;
 using Saved_Game_Backup.Helper;
 
 namespace Saved_Game_Backup { 
@@ -17,8 +18,14 @@ namespace Saved_Game_Backup {
         private static readonly string _userPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         private static string _userName = Environment.UserName;
         private static readonly BackupResultHelper ErrorResultHelper = new BackupResultHelper() { Success = false, AutobackupEnabled = false, Message = "No source files found for game." };
+        private static int TotalFiles;
+        private static int FilesComplete;
+        private static ProgressHelper Progress;
 
         public static async Task<BackupResultHelper> BackupAndZip(List<Game> gamesList, FileInfo targetFi) {
+            TotalFiles = 0;
+            FilesComplete = 0;
+            Progress = new ProgressHelper();
             var zipSourceDi = new DirectoryInfo(targetFi.Directory + "\\Temp");
             
             //Delete existing file if it exists
@@ -27,6 +34,11 @@ namespace Saved_Game_Backup {
 
             if (!Directory.Exists(zipSourceDi.FullName))
                 Directory.CreateDirectory(zipSourceDi.FullName);
+            foreach (var game in gamesList.Where(game => Directory.GetFiles(game.Path).Any())) {
+                TotalFiles += Directory.GetFiles(game.Path).Count();
+            }
+            Progress.TotalFiles = TotalFiles;
+
 
             //Creates temporary directory at ZipSource + the game's name
             //To act as the source folder for the ZipFile class.
@@ -56,6 +68,8 @@ namespace Saved_Game_Backup {
                     if (!Directory.Exists(destinationDir)) Directory.CreateDirectory(destinationDir);
                     var file = new FileInfo(sourceFile);
                     file.CopyTo(destinationFi.FullName, true);
+                    FilesComplete++;
+                    UpdateProgress();
                 }
                 catch (IOException ex) {
                     SBTErrorLogger.Log(ex.Message);
@@ -65,6 +79,11 @@ namespace Saved_Game_Backup {
                 }
             }
             return true;
+        }
+
+        private static void UpdateProgress() {
+            Progress.FilesComplete = FilesComplete;
+            Messenger.Default.Send(Progress);
         }
     }
 }
