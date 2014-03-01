@@ -105,7 +105,7 @@
             </StackPanel>
             <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
                 <ProgressBar HorizontalAlignment="Stretch" 
-                             IsIndeterminate="True"
+                             IsIndeterminate="False"
                              Value="{Binding PercentComplete}"
                              Height="20"/>
                 <Border Style="{StaticResource AutobackupStyle}" Visibility="{Binding BackupEnabledVisibility}">

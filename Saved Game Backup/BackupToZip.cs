@@ -35,7 +35,7 @@ namespace Saved_Game_Backup {
             if (!Directory.Exists(zipSourceDi.FullName))
                 Directory.CreateDirectory(zipSourceDi.FullName);
             foreach (var game in gamesList.Where(game => Directory.GetFiles(game.Path, "*", SearchOption.AllDirectories).Any())) {
-                TotalFiles += Directory.GetFiles(game.Path).Count();
+                TotalFiles += Directory.GetFiles(game.Path, "*", SearchOption.AllDirectories).Count();
             }
             Progress.TotalFiles = TotalFiles;
 
