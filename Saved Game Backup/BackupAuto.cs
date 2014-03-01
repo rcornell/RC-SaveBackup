@@ -41,7 +41,8 @@ namespace Saved_Game_Backup
         private static bool BackupEnabled;
         private static readonly BackupResultHelper ErrorResultHelper = new BackupResultHelper() { Success = false, AutobackupEnabled = false, Message = "Error during operation" };
 
-        public static BackupResultHelper ToggleAutoBackup(bool backupEnabled, int interval, DirectoryInfo autobackupDi) {
+        public static BackupResultHelper ToggleAutoBackup(List<Game> gamesToBackup, bool backupEnabled, int interval, DirectoryInfo autobackupDi) {
+            GamesToBackup = gamesToBackup;
             BackupEnabled = backupEnabled;
             _autoBackupDirectoryInfo = autobackupDi;
             if (backupEnabled) return ShutdownAutobackup();
