@@ -39,14 +39,13 @@ namespace Saved_Game_Backup.ViewModel
 
         public FolderBrowserDialog FolderBrowser = new FolderBrowserDialog() {
             ShowNewFolderButton = true,
-            Description = @"Select a folder"
+            Description = @"Select a target folder for auto-backup to copy to."
         };
 
         public SaveFileDialog SaveFileDialog = new SaveFileDialog() {
-            InitialDirectory = Environment.SystemDirectory,
-            Filter = "Zip files | *.zip",
-            DefaultExt = "zip"
-            
+            InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer),
+            Filter = @"Zip files | *.zip",
+            DefaultExt = "zip",
         };
 
         private Visibility _autoBackupVisibility;
@@ -146,8 +145,9 @@ namespace Saved_Game_Backup.ViewModel
                 _backupType = value;
                 AutoBackupVisibility = _backupType == BackupType.Autobackup ? Visibility.Visible : Visibility.Hidden;
                 if (_backupType == BackupType.Autobackup && BackupEnabled) BackupButtonText = "Disable auto-backup.";
-                if (_backupType == BackupType.Autobackup && !BackupEnabled) BackupButtonText = "Enable auto-backup.";
-                if (_backupType != BackupType.Autobackup) BackupButtonText = "Backup Saves";
+                else if (_backupType == BackupType.Autobackup && !BackupEnabled) BackupButtonText = "Enable auto-backup.";
+                else if (_backupType == BackupType.ToFolder) BackupButtonText = "Backup to folder";
+                else BackupButtonText = "Backup to .zip";
                 RaisePropertyChanged(() => AutoBackupVisibility);
                 RaisePropertyChanged(() => BackupButtonText);
                 RaisePropertyChanged(() => BackupType);
@@ -410,12 +410,11 @@ namespace Saved_Game_Backup.ViewModel
                 return;
             }
             BackupEnabled = result.AutobackupEnabled;
-            BackupButtonText = result.BackupButtonText;
+            if (!string.IsNullOrWhiteSpace(result.BackupButtonText))
+                BackupButtonText = result.BackupButtonText;
 
             if (!result.AutobackupEnabled && BackupType != BackupType.Autobackup) LastBackupTime = result.BackupDateTime;
-
-            if (string.IsNullOrWhiteSpace(result.Message)) return;
-            //MessageBox.Show(result.Message, @"Operation successful", MessageBoxButton.OK);
+            if (BackupType != BackupType.Autobackup) MessageBox.Show(@"Backup complete");
         }
 
         private void ExecuteReset() {

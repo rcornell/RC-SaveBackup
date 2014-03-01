@@ -19,7 +19,7 @@ namespace Saved_Game_Backup {
         private static readonly BackupResultHelper ErrorResultHelper = new BackupResultHelper() { Success = false, AutobackupEnabled = false, Message = "No source files found for game." };
 
         public static BackupResultHelper BackupAndZip(List<Game> gamesList, FileInfo targetFi) {
-            var zipSourceDi = new DirectoryInfo(targetFi.FullName + "\\Temp");
+            var zipSourceDi = new DirectoryInfo(targetFi.Directory + "\\Temp");
             
             //Delete existing file if it exists
             if (targetFi.Exists)
