@@ -31,23 +31,21 @@ namespace Saved_Game_Backup {
         private static readonly string HardDrive = Path.GetPathRoot(Environment.SystemDirectory);
         private static readonly string UserPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         private static readonly CultureInfo Culture = CultureInfo.CurrentCulture;
-        private static readonly BackupResultHelper ErrorResultHelper = new BackupResultHelper(){Success = false ,AutobackupEnabled = false, Message="Error during operation"};
+        private static readonly BackupResultHelper ErrorResultHelper = new BackupResultHelper(){Success = false ,AutobackupEnabled = false, Message=@"Error during operation"};
 
         public Backup() {}
 
         public static async Task<BackupResultHelper> StartBackup(List<Game> games, BackupType backupType, bool backupEnabled, int interval = 0, DirectoryInfo targetDi = null, FileInfo targetFile = null) {
-            
-            var gamesToBackup = ModifyGamePaths(games);
-            
             //Check for problems with parameters
             if (!games.Any() && backupType == BackupType.Autobackup && backupEnabled)
-                return HandleBackupResult(true, false, "Autobackup Disabled", backupType,
+                return HandleBackupResult(true, false, @"Autobackup Disabled", backupType,
                     DateTime.Now.ToString(Culture));
             if (!games.Any())
-                return HandleBackupResult(false, false, "No games selected.", backupType,
+                return HandleBackupResult(false, false, @"No games selected.", backupType,
                     DateTime.Now.ToString(Culture));
 
-
+            var gamesToBackup = ModifyGamePaths(games);
+            
             switch (backupType) {                  
                 case BackupType.ToZip:
                    return await BackupToZip.BackupAndZip(gamesToBackup, targetFile);
