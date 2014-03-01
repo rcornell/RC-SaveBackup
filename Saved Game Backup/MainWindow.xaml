@@ -107,7 +107,8 @@
                 <ProgressBar HorizontalAlignment="Stretch" 
                              IsIndeterminate="False"
                              Value="{Binding PercentComplete}"
-                             Height="20"/>
+                             Height="20"
+                             Maximum="1"/>
                 <Border Style="{StaticResource AutobackupStyle}" Visibility="{Binding BackupEnabledVisibility}">
                     <StackPanel>
                         <TextBlock HorizontalAlignment="Center"
