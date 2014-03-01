@@ -207,6 +207,7 @@ namespace Saved_Game_Backup.ViewModel
             set {
                 _specifiedFolder = value; 
                 RaisePropertyChanged(() => SpecifiedFolder);
+                if (_specifiedFile == null) return;
                 DisplaySpecifiedFolder = _specifiedFolder.FullName;
             }
         }
@@ -215,8 +216,9 @@ namespace Saved_Game_Backup.ViewModel
         public string DisplaySpecifiedFolder {
             get { return _displaySpecifiedFolder; }
             set {
+                if (value == null) return;
                 _displaySpecifiedFolder = DirectoryFinder.FormatDisplayPath(value);
-                RaisePropertyChanged(() => DisplaySpecifiedFolder);                
+                RaisePropertyChanged(() => DisplaySpecifiedFolder);
             }
         }
 
@@ -461,13 +463,11 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ExecuteReset() {
+            Backup.Reset(GamesToBackup.ToList(), BackupType, BackupEnabled);
             GamesToBackup.Clear();
             SpecifiedFolder = null;
             SelectedGame = null;
             SelectedBackupGame = null;
-
-            var result = Backup.Reset(GamesToBackup.ToList(), BackupType, BackupEnabled);
-            HandleBackupResult(result);
         }
 
         private void ExecuteSetThemeLight() {

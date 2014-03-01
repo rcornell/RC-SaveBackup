@@ -107,14 +107,11 @@ namespace Saved_Game_Backup {
             return false;
         }
 
-        public static BackupResultHelper Reset(List<Game> games, BackupType backupType, bool backupEnabled) {
-            var message = "";
+        public static void Reset(List<Game> games, BackupType backupType, bool backupEnabled) {
             if (backupEnabled) {
                 foreach (var game in games) BackupAuto.RemoveFromAutobackup(game);
-                message = "Autobackup disabled";
             }
             games.Clear();
-            return HandleBackupResult(true, false, message, backupType, DateTime.Now.ToLongTimeString());
         }
 
         private static BackupResultHelper HandleBackupResult(bool success, bool backupEnabled, string messageToShow,
