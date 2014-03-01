@@ -8,12 +8,14 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media;
+using System.Timers;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Saved_Game_Backup.Helper;
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
+using Timer = System.Timers.Timer;
 
 namespace Saved_Game_Backup.ViewModel
 {
@@ -49,7 +51,9 @@ namespace Saved_Game_Backup.ViewModel
             DefaultExt = "zip",
         };
 
-        public Stopwatch Stopwatch { get; set; }
+        private static readonly TimeSpan IntervalSpan = new TimeSpan(0,0,0,1);
+
+        public System.Timers.Timer Countdown { get; set; }
 
         private TimeSpan _span;
         public TimeSpan Span {
@@ -243,7 +247,9 @@ namespace Saved_Game_Backup.ViewModel
             get { return _interval; }
             set {
                 _interval = value;
+                Span = new TimeSpan(0, 0, _interval, 0);
                 RaisePropertyChanged(() => Interval);
+                RaisePropertyChanged(() => Span);
             }
         }
 
@@ -308,6 +314,9 @@ namespace Saved_Game_Backup.ViewModel
         public MainViewModel() {
             NumberOfBackups = 0;
             Interval = 5;
+            Countdown = new Timer() { Interval = 1000}; //Need synchronizing object?
+            Countdown.Elapsed += Countdown_Elapsed;
+            Span = new TimeSpan(0,0,Interval,0);//Must always be initialized after Interva
             BackupEnabledVisibility = Visibility.Hidden;
             GamesList = DirectoryFinder.ReturnGamesList();
             GamesToBackup = new ObservableCollection<Game>();
@@ -327,6 +336,10 @@ namespace Saved_Game_Backup.ViewModel
             } catch (Exception ex) {
                 SBTErrorLogger.Log(ex.Message);
             }
+        }
+
+        private void Countdown_Elapsed(object sender, ElapsedEventArgs e) {
+            Span = Span.Subtract(IntervalSpan);
         }
 
         ///Currently crashing designer.
@@ -399,6 +412,7 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ExecuteStartBackup() {
+            if (!BackupEnabled)
             switch (BackupType) {
                 case BackupType.ToFolder:
                 case BackupType.Autobackup:
@@ -424,6 +438,9 @@ namespace Saved_Game_Backup.ViewModel
             BackupEnabled = result.AutobackupEnabled;
             if (!string.IsNullOrWhiteSpace(result.BackupButtonText))
                 BackupButtonText = result.BackupButtonText;
+
+            if (BackupEnabled) Countdown.Start(); 
+            else Countdown.Stop();
 
             if (!result.AutobackupEnabled && BackupType != BackupType.Autobackup) LastBackupTime = result.BackupDateTime;
             if (BackupType != BackupType.Autobackup) MessageBox.Show(@"Backup complete");

@@ -133,7 +133,7 @@
                             <TextBlock Margin="0,3,3,3"
                                        FontSize="12"
                                        Style="{StaticResource TextStyle}"
-                                       Text="{Binding SpecifiedFolder}"
+                                       Text="{Binding Span}"
                                        TextWrapping="Wrap" />
                         </StackPanel>
                         <StackPanel HorizontalAlignment="Center"
