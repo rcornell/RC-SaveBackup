@@ -319,7 +319,7 @@ namespace Saved_Game_Backup.ViewModel
             Interval = 5;
             Countdown = new Timer() { Interval = 1000}; //Need synchronizing object?
             Countdown.Elapsed += Countdown_Elapsed;
-            Span = new TimeSpan(0,0,Interval,0);//Must always be initialized after Interva
+            Span = new TimeSpan(0,0,Interval,0); //Must always be initialized after Interval
             BackupEnabledVisibility = Visibility.Hidden;
             GamesList = DirectoryFinder.ReturnGamesList();
             GamesToBackup = new ObservableCollection<Game>();
@@ -339,9 +339,11 @@ namespace Saved_Game_Backup.ViewModel
             } catch (Exception ex) {
                 SBTErrorLogger.Log(ex.Message);
             }
+
+            Messenger.Default.Register<string>(this, t => {
+                LastBackupTime = t;
+            });
         }
-
-
 
         ///Currently crashing designer.
         //~MainViewModel() {
