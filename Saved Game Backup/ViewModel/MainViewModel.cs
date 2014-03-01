@@ -329,7 +329,7 @@ namespace Saved_Game_Backup.ViewModel
         public MainViewModel() {
             NumberOfBackups = 0;
             Interval = 5;
-            Countdown = new Timer() { Interval = 1000}; //Need synchronizing object?
+            Countdown = new Timer() { Interval = 1000 }; //Need synchronizing object?
             Countdown.Elapsed += Countdown_Elapsed;
             Span = new TimeSpan(0,0,Interval,0); //Must always be initialized after Interval
             BackupEnabledVisibility = Visibility.Hidden;
@@ -426,7 +426,7 @@ namespace Saved_Game_Backup.ViewModel
             RaisePropertyChanged(() => GamesList);
         }
 
-        private void ExecuteStartBackup() {
+        private async void ExecuteStartBackup() {
             if (!BackupEnabled)
             switch (BackupType) {
                 case BackupType.ToFolder:
@@ -441,8 +441,8 @@ namespace Saved_Game_Backup.ViewModel
                     else return;
                     break;
             }
-            var result = Backup.StartBackup(GamesToBackup.ToList(), BackupType, BackupEnabled, Interval, SpecifiedFolder, _specifiedFile);
-            HandleBackupResult(result.Result);
+            var result = await Backup.StartBackup(GamesToBackup.ToList(), BackupType, BackupEnabled, Interval, SpecifiedFolder, _specifiedFile);
+            HandleBackupResult(result);
         }
 
         private void HandleBackupResult(BackupResultHelper result) {

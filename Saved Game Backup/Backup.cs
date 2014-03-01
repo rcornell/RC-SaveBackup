@@ -50,7 +50,7 @@ namespace Saved_Game_Backup {
 
             switch (backupType) {                  
                 case BackupType.ToZip:
-                    return await BackupToZip.BackupAndZip(gamesToBackup, targetFile);
+                   return await BackupToZip.BackupAndZip(gamesToBackup, targetFile);
                 case BackupType.ToFolder:
                     return BackupToFolder.BackupSaves(gamesToBackup, targetDi);
                 case BackupType.Autobackup:
