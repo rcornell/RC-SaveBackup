@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -13,77 +14,67 @@ namespace Saved_Game_Backup {
 
     public class BackupToZip {
 
-        private static readonly string _hardDrive = Path.GetPathRoot(Environment.SystemDirectory);
-        private static string _myDocuments = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        private static readonly string _userPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        private static string _userName = Environment.UserName;
         private static readonly BackupResultHelper ErrorResultHelper = new BackupResultHelper() { Success = false, AutobackupEnabled = false, Message = "No source files found for game." };
-        private static int TotalFiles;
-        private static int FilesComplete;
-        private static ProgressHelper Progress;
+        private static ProgressHelper _progress;
 
         public static async Task<BackupResultHelper> BackupAndZip(List<Game> gamesList, FileInfo targetFi) {
-            TotalFiles = 0;
-            FilesComplete = 0;
-            Progress = new ProgressHelper();
-            var zipSourceDi = new DirectoryInfo(targetFi.Directory + "\\Temp");
+            //Initialize progress helper
+            _progress = new ProgressHelper(){FilesComplete = 0, TotalFiles = 0};
             
             //Delete existing file if it exists
             if (targetFi.Exists)
                 targetFi.Delete();
 
-            if (!Directory.Exists(zipSourceDi.FullName))
-                Directory.CreateDirectory(zipSourceDi.FullName);
-            foreach (var game in gamesList.Where(game => Directory.GetFiles(game.Path, "*", SearchOption.AllDirectories).Any())) {
-                TotalFiles += Directory.GetFiles(game.Path, "*", SearchOption.AllDirectories).Count();
+            //Establish total file count for all games. If no files found for a game, return an error.
+            var totalFiles = 0;
+            foreach (var game in gamesList)  {
+                if (Directory.GetFiles(game.Path, "*", SearchOption.AllDirectories).Any())
+                    totalFiles += Directory.GetFiles(game.Path, "*", SearchOption.AllDirectories).Count();
+                else {
+                    ErrorResultHelper.Message = @"No files found for " + game.Name;
+                }
             }
-            Progress.TotalFiles = TotalFiles;
+            _progress.TotalFiles = totalFiles;
 
 
-            //Creates temporary directory at ZipSource + the game's name
-            //To act as the source folder for the ZipFile class.
-            foreach (var game in gamesList) {
-                var dir = new DirectoryInfo(zipSourceDi.FullName + "\\" + game.Name);
-                if (!BackupGame(game, dir.FullName)) return ErrorResultHelper;
+            try {
+                //Create dictionary of source FileInfo's and target truncated paths
+                var zipFileDictionary = new Dictionary<FileInfo, string>();
+                foreach (var game in gamesList) {
+                    var gameFiles = new DirectoryInfo(game.Path).GetFiles("*", SearchOption.AllDirectories);
+                    foreach (var file in gameFiles) {
+                        var index = file.FullName.IndexOf(game.RootFolder, StringComparison.Ordinal);
+                        var substring = file.FullName.Substring(index);
+                        zipFileDictionary.Add(file, substring);
+                    }
+                }
+
+                //Zip files
+                using (var destination = ZipFile.Open(targetFi.FullName, ZipArchiveMode.Create)) {
+                    foreach (var pair in zipFileDictionary) {
+                        await
+                            Task.Run(
+                                () =>
+                                    destination.CreateEntryFromFile(pair.Key.FullName, pair.Value,
+                                        CompressionLevel.Optimal));
+                        _progress.FilesComplete++;
+                        Messenger.Default.Send(_progress);
+                    }
+                }
             }
-
-            //Zip files from temp folder
-            await Task.Run(() => ZipFile.CreateFromDirectory(zipSourceDi.FullName, targetFi.FullName, CompressionLevel.Optimal, false));
-
-            //Delete temporary folder that held save files.
-            Directory.Delete(zipSourceDi.FullName, true);
+            catch (ArgumentException ex) {
+                SBTErrorLogger.Log(ex.Message);
+            } catch (FileNotFoundException ex) {
+                SBTErrorLogger.Log(ex.Message);
+            } catch (UnauthorizedAccessException ex) {
+                SBTErrorLogger.Log(ex.Message);
+            } catch (IOException ex) {
+                SBTErrorLogger.Log(ex.Message);
+            } catch (Exception ex) {
+                SBTErrorLogger.Log(ex.Message);
+            }
             var time = DateTime.Now.ToLongTimeString();
-            return new BackupResultHelper(){Success = true, Message = "Backup complete!", BackupDateTime = time};
-        }
-
-        private static bool BackupGame(Game game, string destDirName) {
-            var allFiles = Directory.GetFiles(game.Path, "*.*", SearchOption.AllDirectories);
-            if (!allFiles.Any()) return false;
-            foreach (var sourceFile in allFiles) {
-                try {
-                    var index = sourceFile.IndexOf(game.RootFolder, StringComparison.CurrentCulture);
-                    var substring = sourceFile.Substring(index);
-                    var destinationFi = new FileInfo(destDirName + "\\" + substring);
-                    var destinationDir = destinationFi.DirectoryName;
-                    if (!Directory.Exists(destinationDir)) Directory.CreateDirectory(destinationDir);
-                    var file = new FileInfo(sourceFile);
-                    file.CopyTo(destinationFi.FullName, true);
-                    FilesComplete++;
-                    UpdateProgress();
-                }
-                catch (IOException ex) {
-                    SBTErrorLogger.Log(ex.Message);
-                }
-                catch (NullReferenceException ex) {
-                    SBTErrorLogger.Log(ex.Message);
-                }
-            }
-            return true;
-        }
-
-        private static void UpdateProgress() {
-            Progress.FilesComplete = FilesComplete;
-            Messenger.Default.Send(Progress);
+            return new BackupResultHelper(){Success = true, Message = "Zip backup complete!", BackupDateTime = time};
         }
     }
 }
