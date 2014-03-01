@@ -39,22 +39,26 @@ namespace Saved_Game_Backup
         public static Dictionary<Game, List<FileInfo>> GameTargetDictionary;
         private static bool _firstPoll;
         private static bool BackupEnabled;
+        private static readonly BackupResultHelper ErrorResultHelper = new BackupResultHelper() { Success = false, AutobackupEnabled = false, Message = "Error during operation" };
 
         public static BackupResultHelper ToggleAutoBackup(bool backupEnabled, int interval, DirectoryInfo autobackupDi) {
             BackupEnabled = backupEnabled;
             _autoBackupDirectoryInfo = autobackupDi;
-            if (backupEnabled) return SetupPollAutobackup(backupEnabled, interval);
+            if (backupEnabled) return ShutdownAutobackup();
+            return InitializeAutobackup(backupEnabled, interval);
+        }
+
+        private static BackupResultHelper InitializeAutobackup(bool backupEnabled, int interval) {
+            if (!GamesToBackup.Any()) return ErrorResultHelper;
             InitializeWatchers();
-            return SetupPollAutobackup(backupEnabled, interval);
+            var result = SetupPollAutobackup(backupEnabled, interval);
+            return result;
         }
 
-        private static void InitializeAutobackup(int interval) {
-            
-        }
-
-        private static void ShutdownAutobackup() {
+        private static BackupResultHelper ShutdownAutobackup() {
             ShutdownWatchers();
             ShutdownPollAutobackup();
+            return new BackupResultHelper(){Success = true, AutobackupEnabled = false, Message = "Auto-backup disabled"};
         }
 
         public static BackupResultHelper RemoveFromAutobackup(Game game) {
@@ -504,7 +508,7 @@ namespace Saved_Game_Backup
             Debug.WriteLine(@"Enabled Watchers after PollAutobackup");
         }
 
-         public static BackupResultHelper SetupPollAutobackup(bool backupEnabled, int interval) {
+        private static BackupResultHelper SetupPollAutobackup(bool backupEnabled, int interval) {
             _firstPoll = true;
             if (backupEnabled) {
                 _pollAutobackupTimer.Stop();
@@ -543,6 +547,10 @@ namespace Saved_Game_Backup
             _pollAutobackupTimer.Start();
             Debug.WriteLine(@"Finished initializing Poll Autobackup Timer.");
             return new BackupResultHelper(true, true, "Autobackup enabled", DateTime.Now.ToLongTimeString(), "Disable autobackup");
+        }
+
+        private static void ShutdownPollAutobackup() {
+            
         }
 
         /// <summary>

@@ -38,9 +38,10 @@ namespace Saved_Game_Backup {
         public Backup() {}
 
         public static BackupResultHelper StartBackup(List<Game> games, BackupType backupType,
-            bool backupEnabled, int interval = 0) {
+            bool backupEnabled, DirectoryInfo targetDi, int interval = 0) {
             BackupAuto.GamesToBackup = ModifyGamePaths(games);
             var success = false;
+            BackupResultHelper result;
             var message = "";
             
             //Check for problems with parameters
@@ -54,13 +55,13 @@ namespace Saved_Game_Backup {
 
             switch (backupType) {                  
                 case BackupType.ToZip:
-                    success = BackupToZip.BackupAndZip(BackupAuto.GamesToBackup);
+                    result = BackupToZip.BackupAndZip(games, targetDi);
                     break;
                 case BackupType.ToFolder:
-                    success = BackupToFolder.BackupSaves(BackupAuto.GamesToBackup);
+                    success = BackupToFolder.BackupSaves(games, targetDi);
                     break;
                 case BackupType.Autobackup:
-                    return BackupAuto.ToggleAutoBackup(backupEnabled, interval);
+                    return BackupAuto.ToggleAutoBackup(backupEnabled, interval, targetDi);
                 default:
                     success = false;
                     break;

@@ -1,9 +1,11 @@
 
 using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Media;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -34,6 +36,18 @@ namespace Saved_Game_Backup.ViewModel
         private const string _about =
             "I made this program in an attempt to help people keep track of their saved games in case of catastrophe. It should work, but Autobackup can be touchy sometimes. If you have any issues please email me at rob.cornell@gmail.com.";
         public string About { get { return _about; }}
+
+        public FolderBrowserDialog FolderBrowser = new FolderBrowserDialog() {
+            ShowNewFolderButton = true,
+            Description = @"Select a folder"
+        };
+
+        public SaveFileDialog SaveFileDialog = new SaveFileDialog() {
+            InitialDirectory = Environment.SystemDirectory,
+            Filter = "Zip files | *.zip",
+            DefaultExt = "zip"
+            
+        };
 
         private Visibility _autoBackupVisibility;
         public Visibility AutoBackupVisibility {

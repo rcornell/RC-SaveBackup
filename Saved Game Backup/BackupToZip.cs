@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Saved_Game_Backup.Helper;
 
 namespace Saved_Game_Backup { 
 
@@ -15,52 +16,37 @@ namespace Saved_Game_Backup {
         private static string _myDocuments = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         private static readonly string _userPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         private static string _userName = Environment.UserName;
+        private static readonly BackupResultHelper ErrorResultHelper = new BackupResultHelper() { Success = false, AutobackupEnabled = false, Message = "No source files found for game." };
 
-        public static bool BackupAndZip(List<Game> gamesList, string specifiedfolder = null) {
-            DirectoryInfo zipSourceDi;
-            FileInfo zipDestination;
+        public static BackupResultHelper BackupAndZip(List<Game> gamesList, DirectoryInfo targetDi) {
+            var zipSourceDi = new DirectoryInfo(targetDi.FullName + "\\Temp");
+            
+            //Delete existing directory if it exists
+            if (targetDi.Exists)
+                targetDi.Delete();
 
-            var fd = new SaveFileDialog() {
-                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer),
-                FileName = "SaveBackups.zip",
-                Filter = @"Zip files (*.zip) | *.zip",
-                Title = @"Select the location and name of the Zip file.",
-                CheckFileExists = false,
-                OverwritePrompt = true
-            };
-
-            if (fd.ShowDialog() == DialogResult.OK) {
-                zipDestination = new FileInfo(fd.FileName);
-                zipSourceDi = new DirectoryInfo(zipDestination.DirectoryName + "\\Temp");
-            }
-            else {
-                return false;
-            }
-
-            if (!Directory.Exists(zipSourceDi.Parent.FullName))
-                Directory.CreateDirectory(zipSourceDi.Parent.FullName);
+            if (!Directory.Exists(zipSourceDi.FullName))
+                Directory.CreateDirectory(zipSourceDi.FullName);
 
             //Creates temporary directory at ZipSource + the game's name
             //To act as the source folder for the ZipFile class.
             foreach (var game in gamesList) {
                 var dir = new DirectoryInfo(zipSourceDi.FullName + "\\" + game.Name);
-                BackupGame(game, dir.FullName);
+                if (!BackupGame(game, dir.FullName)) return ErrorResultHelper;
             }
 
-            //Delete existing zip file if one exists.
-            if (zipDestination.Exists)
-                zipDestination.Delete();
-
-            ZipFile.CreateFromDirectory(zipSourceDi.FullName, zipDestination.FullName, CompressionLevel.Optimal, false);
+            //Zip files from temp folder
+            ZipFile.CreateFromDirectory(zipSourceDi.FullName, targetDi.FullName, CompressionLevel.Optimal, false);
 
             //Delete temporary folder that held save files.
             Directory.Delete(zipSourceDi.FullName, true);
-
-            return true;
+            var time = DateTime.Now.ToLongTimeString();
+            return new BackupResultHelper(){Success = true, Message = "Backup complete!", BackupDateTime = time};
         }
 
-        private static void BackupGame(Game game, string destDirName) {
+        private static bool BackupGame(Game game, string destDirName) {
             var allFiles = Directory.GetFiles(game.Path, "*.*", SearchOption.AllDirectories);
+            if (!allFiles.Any()) return false;
             foreach (var sourceFile in allFiles) {
                 try {
                     var index = sourceFile.IndexOf(game.RootFolder, StringComparison.CurrentCulture);
@@ -78,6 +64,7 @@ namespace Saved_Game_Backup {
                     SBTErrorLogger.Log(ex.Message);
                 }
             }
+            return true;
         }
     }
 }
