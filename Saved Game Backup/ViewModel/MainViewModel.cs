@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Forms;
@@ -62,6 +63,15 @@ namespace Saved_Game_Backup.ViewModel
                 _span = value;
                 RaisePropertyChanged(() => Span);
                 
+            }
+        }
+
+        private double _percentComplete;
+        public double PercentComplete {
+            get { return _percentComplete; }
+            set {
+                _percentComplete = value;
+                RaisePropertyChanged(() => PercentComplete);
             }
         }
 
@@ -327,6 +337,7 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         public MainViewModel() {
+            PercentComplete = 0;
             NumberOfBackups = 0;
             Interval = 5;
             Countdown = new Timer() { Interval = 1000 }; //Need synchronizing object?
@@ -343,6 +354,15 @@ namespace Saved_Game_Backup.ViewModel
             BackupType = BackupType.ToFolder;
             DirectoryFinder.CheckDirectories();
             SetUpInterface();
+            RegisterAll();
+            
+        }
+
+        private void RegisterAll() {
+            Messenger.Default.Register<ProgressHelper>(this, p => {
+                PercentComplete = (p.FilesComplete/p.TotalFiles);
+                Debug.WriteLine(@"Percent complete is {0}", PercentComplete);
+            });
 
             try {
                 Messenger.Default.Register<int>(this, i => {

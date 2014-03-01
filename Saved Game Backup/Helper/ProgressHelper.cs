@@ -8,8 +8,8 @@ namespace Saved_Game_Backup.Helper
 {
     public class ProgressHelper
     {
-        public int TotalFiles { get; set; }
-        public int FilesComplete { get; set; }
+        public double TotalFiles { get; set; }
+        public double FilesComplete { get; set; }
 
     }
 }
