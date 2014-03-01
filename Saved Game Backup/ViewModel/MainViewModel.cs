@@ -445,6 +445,7 @@ namespace Saved_Game_Backup.ViewModel
 
             if (!result.AutobackupEnabled && BackupType != BackupType.Autobackup) LastBackupTime = result.BackupDateTime;
             if (BackupType != BackupType.Autobackup) MessageBox.Show(@"Backup complete");
+            if (BackupType == BackupType.Autobackup && !BackupEnabled) BackupButtonText = "Enable auto-backup";
         }
 
         private void ExecuteReset() {

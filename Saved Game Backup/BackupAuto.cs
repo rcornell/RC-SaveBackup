@@ -42,10 +42,10 @@ namespace Saved_Game_Backup
         private static readonly BackupResultHelper ErrorResultHelper = new BackupResultHelper() { Success = false, AutobackupEnabled = false, Message = "Error during operation" };
 
         public static BackupResultHelper ToggleAutoBackup(List<Game> gamesToBackup, bool backupEnabled, int interval, DirectoryInfo autobackupDi) {
+            if (backupEnabled) return ShutdownAutobackup();
             GamesToBackup = gamesToBackup;
             BackupEnabled = backupEnabled;
             _autoBackupDirectoryInfo = autobackupDi;
-            if (backupEnabled) return ShutdownAutobackup();
             return InitializeAutobackup(backupEnabled, interval);
         }
 
@@ -257,6 +257,7 @@ namespace Saved_Game_Backup
 
             if (!_watcherCopiedFile) return;
             Messenger.Default.Send(_numberOfBackups++);
+            Messenger.Default.Send(DateTime.Now.ToLongTimeString());
             _watcherCopiedFile = false;
         }
 
@@ -516,16 +517,18 @@ namespace Saved_Game_Backup
                     DateTime.Now.ToLongTimeString(), "Enable auto-backup.");
             }
 
-            Debug.WriteLine(@"Setting up Poll Autobackup");
+            Debug.WriteLine(@"Starting setup for PollAutobackup");
 
             GameTargetDictionary = new Dictionary<Game, List<FileInfo>>();
             GameFileDictionary = new Dictionary<Game, List<FileInfo>>();
             foreach (var game in GamesToBackup) {
+                Debug.WriteLine(@"Getting files in target directory");
                 var targetDirectory = new DirectoryInfo(_autoBackupDirectoryInfo.FullName + "\\" + game.Name);
                 if (!Directory.Exists(targetDirectory.FullName)) Directory.CreateDirectory(targetDirectory.FullName);
                 var targets = targetDirectory.GetFiles("*", SearchOption.AllDirectories).ToList();
                 GameTargetDictionary.Add(game, targets);
 
+                Debug.WriteLine(@"Getting files in source directory");
                 var sourceDirectory = new DirectoryInfo(game.Path);
                 if (!Directory.Exists(sourceDirectory.FullName))
                     return new BackupResultHelper(false, backupEnabled, "Game directory not found.", DateTime.Now.ToLongTimeString(),
@@ -539,9 +542,9 @@ namespace Saved_Game_Backup
                 //        "Error during autobackup hash creation.\r\nPlease email the developer if you encounter this.",
                 //        DateTime.Now.ToLongTimeString(), "Enable autobackup");
             }
-            Debug.WriteLine(@"Setup of Poll Autobackup complete.");
+            Debug.WriteLine(@"Finished setup for PollAutobackup.");
             Debug.WriteLine(@"Initializing Poll Autobackup Timer.");
-            _pollAutobackupTimer = new Timer { Interval = (interval * 60000) }; //Only running once, remove autoreset when done testing
+            _pollAutobackupTimer = new Timer { Interval = (interval * 60000) }; 
             _pollAutobackupTimer.Elapsed += _pollAutobackupTimer_Elapsed;
             _pollAutobackupTimer.Start();
             Debug.WriteLine(@"Finished initializing Poll Autobackup Timer.");
@@ -652,6 +655,7 @@ namespace Saved_Game_Backup
                             await inStream.CopyToAsync(outStream);
                             Debug.WriteLine(@"SUCCESSFUL COPY: {0} copied to {1}", sourceFile.Name, destPath);
                             _numberOfBackups++;
+                            Messenger.Default.Send(DateTime.Now.ToLongTimeString());
                         }
                     }
                 }
