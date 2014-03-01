@@ -51,6 +51,10 @@
                 <MenuItem Command="{Binding Close}" Header="_Exit" />
             </MenuItem>
             <MenuItem Command="{Binding ShowAbout}" Header="_About" />
+            <MenuItem Header="_Options">
+                <MenuItem Header="_Cloud Storage Settings"/>
+                <MenuItem Header="_Auto-backup Settings"/>
+            </MenuItem>
         </Menu>
         <StackPanel Grid.Row="1"
                     Grid.Column="0"
@@ -73,7 +77,7 @@
                         Command="{Binding StartBackup}"
                         Content="{Binding BackupButtonText}"
                         Style="{StaticResource SbtButtonStyle}" />
-                
+
                 <ComboBox Margin="3"
                           HorizontalAlignment="Stretch"
                           VerticalAlignment="Center"
@@ -99,6 +103,8 @@
                                TextWrapping="Wrap" />
                 </StackPanel>
             </StackPanel>
+
+            <!--  CAN'T CURRENTLY ACCOMODATE LONG FOLDER PATHS  -->
             <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
                 <Border Style="{StaticResource AutobackupStyle}" Visibility="{Binding BackupEnabledVisibility}">
                     <StackPanel>
