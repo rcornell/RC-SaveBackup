@@ -15,20 +15,7 @@ namespace Saved_Game_Backup
         private static readonly string _userPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         private static string _userName = Environment.UserName;
 
-        public static bool BackupSaves(List<Game> gamesList) {
-            DirectoryInfo targetDi;
-
-            var fd = new FolderBrowserDialog() {
-                SelectedPath = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer),
-                Description = @"Select the folder where this utility will create the SaveBackups folder.",
-                ShowNewFolderButton = true
-            };
-
-            if (fd.ShowDialog() == DialogResult.OK)
-                targetDi = new DirectoryInfo(fd.SelectedPath);
-            else {
-                return false;
-            }
+        public static bool BackupSaves(List<Game> gamesList, DirectoryInfo targetDi) {
 
             if (!Directory.Exists(targetDi.FullName) && !string.IsNullOrWhiteSpace(targetDi.FullName))
                 Directory.CreateDirectory(targetDi.FullName);

@@ -37,8 +37,7 @@ namespace Saved_Game_Backup {
 
         public Backup() {}
 
-        public static BackupResultHelper StartBackup(List<Game> games, BackupType backupType,
-            bool backupEnabled, DirectoryInfo targetDi, int interval = 0) {
+        public static BackupResultHelper StartBackup(List<Game> games, BackupType backupType, bool backupEnabled, int interval = 0, DirectoryInfo targetDi = null, FileInfo targetFile = null) {
             BackupAuto.GamesToBackup = ModifyGamePaths(games);
             var success = false;
             BackupResultHelper result;
@@ -55,7 +54,7 @@ namespace Saved_Game_Backup {
 
             switch (backupType) {                  
                 case BackupType.ToZip:
-                    result = BackupToZip.BackupAndZip(games, targetDi);
+                    result = BackupToZip.BackupAndZip(games, targetFile);
                     break;
                 case BackupType.ToFolder:
                     success = BackupToFolder.BackupSaves(games, targetDi);

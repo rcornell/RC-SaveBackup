@@ -184,14 +184,16 @@ namespace Saved_Game_Backup.ViewModel
             }
         }
 
-        private string _specifiedFolder;
-        public string SpecifiedFolder {
+        private DirectoryInfo _specifiedFolder;
+        public DirectoryInfo SpecifiedFolder {
             get { return _specifiedFolder; }
             set {
                 _specifiedFolder = value; 
                 RaisePropertyChanged(() => SpecifiedFolder);
             }
         }
+
+        private FileInfo _specifiedFile;
 
         private string _backupButtonText;
         public string BackupButtonText {
@@ -385,7 +387,14 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ExecuteStartBackup() {
-            var result = Backup.StartBackup(GamesToBackup.ToList(), BackupType, BackupEnabled, (Interval * 60000));
+            if (BackupType == BackupType.Autobackup || BackupType == BackupType.ToFolder) {
+                if (FolderBrowser.ShowDialog() == DialogResult.OK)
+                    SpecifiedFolder = new DirectoryInfo(FolderBrowser.SelectedPath);
+            } else if (BackupType == BackupType.ToZip) {
+                if (SaveFileDialog.ShowDialog() == DialogResult.OK)
+                    _specifiedFile = new FileInfo(SaveFileDialog.FileName);
+            }
+            var result = Backup.StartBackup(GamesToBackup.ToList(), BackupType, BackupEnabled,(Interval * 60000), SpecifiedFolder, _specifiedFile);
             HandleBackupResult(result);
         }
 
