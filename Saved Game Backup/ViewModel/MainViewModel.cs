@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -47,6 +48,17 @@ namespace Saved_Game_Backup.ViewModel
             Filter = @"Zip files | *.zip",
             DefaultExt = "zip",
         };
+
+        public Stopwatch Stopwatch { get; set; }
+
+        private TimeSpan _span;
+        public TimeSpan Span {
+            get { return _span; }
+            set {
+                _span = value;
+                RaisePropertyChanged(() => Span);
+            }
+        }
 
         private Visibility _autoBackupVisibility;
         public Visibility AutoBackupVisibility {

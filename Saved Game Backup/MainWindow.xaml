@@ -73,6 +73,7 @@
                         Command="{Binding StartBackup}"
                         Content="{Binding BackupButtonText}"
                         Style="{StaticResource SbtButtonStyle}" />
+                
                 <ComboBox Margin="3"
                           HorizontalAlignment="Stretch"
                           VerticalAlignment="Center"
@@ -84,16 +85,6 @@
                                                  Converter={StaticResource StringConverter},
                                                  Mode=TwoWay}"
                           Text="Backup Method" />
-                <StackPanel Margin="3"
-                            Orientation="Horizontal"
-                            Visibility="Hidden">
-                    <TextBlock VerticalAlignment="Center"
-                               Style="{StaticResource TextStyle}"
-                               Text="Backup Limit"
-                               TextWrapping="Wrap" />
-
-                    <xctk:IntegerUpDown Margin="3" Text="{Binding MaxBackups, UpdateSourceTrigger=PropertyChanged, Delay=100}" />
-                </StackPanel>
                 <StackPanel Margin="3"
                             Orientation="Horizontal"
                             Visibility="{Binding AutoBackupVisibility}">
@@ -135,14 +126,27 @@
                         <StackPanel HorizontalAlignment="Center"
                                     Orientation="Horizontal"
                                     Visibility="{Binding AutoBackupVisibility}">
-                            <TextBlock Margin="3"
+                            <TextBlock Margin="3,3,0,3"
+                                       FontSize="12"
+                                       Style="{StaticResource TextStyle}"
+                                       Text="Time until next backup: " />
+                            <TextBlock Margin="0,3,3,3"
+                                       FontSize="12"
+                                       Style="{StaticResource TextStyle}"
+                                       Text="{Binding SpecifiedFolder}"
+                                       TextWrapping="Wrap" />
+                        </StackPanel>
+                        <StackPanel HorizontalAlignment="Center"
+                                    Orientation="Horizontal"
+                                    Visibility="{Binding AutoBackupVisibility}">
+                            <TextBlock Margin="3,3,0,3"
                                        FontSize="12"
                                        Style="{StaticResource TextStyle}"
                                        Text="Folder: " />
-                            <TextBlock Margin="3"
+                            <TextBlock Margin="0,3,3,3"
                                        FontSize="12"
                                        Style="{StaticResource TextStyle}"
-                                       Text="BACKUP FOLDER"
+                                       Text="{Binding SpecifiedFolder}"
                                        TextWrapping="Wrap" />
                         </StackPanel>
                     </StackPanel>
