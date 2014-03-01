@@ -61,6 +61,7 @@ namespace Saved_Game_Backup.ViewModel
             set {
                 _span = value;
                 RaisePropertyChanged(() => Span);
+                
             }
         }
 
@@ -248,6 +249,8 @@ namespace Saved_Game_Backup.ViewModel
             set {
                 _interval = value;
                 Span = new TimeSpan(0, 0, _interval, 0);
+                if (BackupEnabled)
+                    BackupAuto.ChangeInterval(Interval);
                 RaisePropertyChanged(() => Interval);
                 RaisePropertyChanged(() => Span);
             }
@@ -338,9 +341,7 @@ namespace Saved_Game_Backup.ViewModel
             }
         }
 
-        private void Countdown_Elapsed(object sender, ElapsedEventArgs e) {
-            Span = Span.Subtract(IntervalSpan);
-        }
+
 
         ///Currently crashing designer.
         //~MainViewModel() {
@@ -426,7 +427,7 @@ namespace Saved_Game_Backup.ViewModel
                     else return;
                     break;
             }
-            var result = Backup.StartBackup(GamesToBackup.ToList(), BackupType, BackupEnabled,(Interval * 60000), SpecifiedFolder, _specifiedFile);
+            var result = Backup.StartBackup(GamesToBackup.ToList(), BackupType, BackupEnabled, Interval, SpecifiedFolder, _specifiedFile);
             HandleBackupResult(result);
         }
 
@@ -489,6 +490,10 @@ namespace Saved_Game_Backup.ViewModel
 
         private void ExecuteShowAbout() {
             MessageBox.Show(About, "About SaveMonkey", MessageBoxButton.OK);
+        }
+
+        private void Countdown_Elapsed(object sender, ElapsedEventArgs e) {
+            Span = Span.Subtract(IntervalSpan);
         }
     }
 }

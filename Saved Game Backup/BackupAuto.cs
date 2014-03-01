@@ -147,7 +147,6 @@ namespace Saved_Game_Backup
                 Debug.WriteLine(startMsg);
                 while (true) {
                     if (!_delayTimer.Enabled && !_canBackupTimer.Enabled) {
-                        _delayTimer.Enabled = true;
                         _delayTimer.Start();
                         continue;
                     }
@@ -265,7 +264,6 @@ namespace Saved_Game_Backup
             try {
                 while (true) {
                     if (!_delayTimer.Enabled && !_canBackupTimer.Enabled) {
-                        _delayTimer.Enabled = true;
                         _delayTimer.Start();
                         continue;
                     }
@@ -543,7 +541,7 @@ namespace Saved_Game_Backup
             }
             Debug.WriteLine(@"Setup of Poll Autobackup complete.");
             Debug.WriteLine(@"Initializing Poll Autobackup Timer.");
-            _pollAutobackupTimer = new Timer { Enabled = true, Interval = interval }; //Only running once, remove autoreset when done testing
+            _pollAutobackupTimer = new Timer { Interval = (interval * 60000) }; //Only running once, remove autoreset when done testing
             _pollAutobackupTimer.Elapsed += _pollAutobackupTimer_Elapsed;
             _pollAutobackupTimer.Start();
             Debug.WriteLine(@"Finished initializing Poll Autobackup Timer.");
@@ -774,16 +772,21 @@ namespace Saved_Game_Backup
 
         private static void _delayTimer_Elapsed(object sender, ElapsedEventArgs e) {
             Debug.WriteLine("DelayTimer elapsed");
-            _canBackupTimer.Enabled = true;
             _canBackupTimer.Start();
-            _delayTimer.Enabled = false;
+            _delayTimer.Stop();
         }
 
         private static void _canBackupTimer_Elapsed(object sender, ElapsedEventArgs e) {
             Debug.WriteLine("CanBackup timer elapsed");
             _lastAutoBackupTime = DateTime.Now;
-            _canBackupTimer.Enabled = false;
+            _canBackupTimer.Stop();
         }
         #endregion
+
+        public static void ChangeInterval(int interval) {
+            _pollAutobackupTimer.Stop();
+            _pollAutobackupTimer.Interval = interval * 60000;
+            _pollAutobackupTimer.Start();
+        }
     }
 }
