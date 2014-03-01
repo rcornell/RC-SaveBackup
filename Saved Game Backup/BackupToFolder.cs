@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Saved_Game_Backup.Helper;
 
 namespace Saved_Game_Backup
 {
@@ -15,7 +16,9 @@ namespace Saved_Game_Backup
         private static readonly string _userPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         private static string _userName = Environment.UserName;
 
-        public static bool BackupSaves(List<Game> gamesList, DirectoryInfo targetDi) {
+        
+
+        public static BackupResultHelper BackupSaves(List<Game> gamesList, DirectoryInfo targetDi) {
 
             if (!Directory.Exists(targetDi.FullName) && !string.IsNullOrWhiteSpace(targetDi.FullName))
                 Directory.CreateDirectory(targetDi.FullName);
@@ -24,7 +27,14 @@ namespace Saved_Game_Backup
             foreach (var game in gamesList) {
                 BackupGame(game, targetDi.FullName);
             }
-            return true;
+
+            var time = DateTime.Now.ToShortTimeString();
+            return new BackupResultHelper(){
+                AutobackupEnabled = false, 
+                Message = @"Backup complete", 
+                Success = true, 
+                BackupDateTime = time, 
+                BackupButtonText = "Backup to folder"};
         }
 
         private static void BackupGame(Game game, string destDirName) {

@@ -28,58 +28,36 @@ using Timer = System.Timers.Timer;
 namespace Saved_Game_Backup {
     public class Backup {
         
-        private static readonly string _hardDrive = Path.GetPathRoot(Environment.SystemDirectory);
-        private static string _myDocuments = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        private static readonly string _userPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        private static string _userName = Environment.UserName;
+        private static readonly string HardDrive = Path.GetPathRoot(Environment.SystemDirectory);
+        private static readonly string UserPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         private static readonly CultureInfo Culture = CultureInfo.CurrentCulture;
         private static readonly BackupResultHelper ErrorResultHelper = new BackupResultHelper(){Success = false ,AutobackupEnabled = false, Message="Error during operation"};
 
         public Backup() {}
 
         public static BackupResultHelper StartBackup(List<Game> games, BackupType backupType, bool backupEnabled, int interval = 0, DirectoryInfo targetDi = null, FileInfo targetFile = null) {
+            
             var gamesToBackup = ModifyGamePaths(games);
-            var success = false;
-            BackupResultHelper result;
-            var message = "";
             
             //Check for problems with parameters
             if (!games.Any() && backupType == BackupType.Autobackup && backupEnabled)
                 return HandleBackupResult(true, false, "Autobackup Disabled", backupType,
                     DateTime.Now.ToString(Culture));
             if (!games.Any())
-                return HandleBackupResult(success, false, "No games selected.", backupType,
+                return HandleBackupResult(false, false, "No games selected.", backupType,
                     DateTime.Now.ToString(Culture));
 
 
             switch (backupType) {                  
                 case BackupType.ToZip:
-                    result = BackupToZip.BackupAndZip(gamesToBackup, targetFile);
-                    break;
+                    return BackupToZip.BackupAndZip(gamesToBackup, targetFile);
                 case BackupType.ToFolder:
-                    success = BackupToFolder.BackupSaves(gamesToBackup, targetDi);
-                    break;
+                    return BackupToFolder.BackupSaves(gamesToBackup, targetDi);
                 case BackupType.Autobackup:
                     return BackupAuto.ToggleAutoBackup(gamesToBackup, backupEnabled, interval, targetDi);
-                default:
-                    success = false;
-                    break;
             }
 
-
-            if (backupType == BackupType.Autobackup && success && !backupEnabled) {
-                message = @"Autobackup Enabled!";
-                backupEnabled = true;
-            }
-            else if (backupType == BackupType.Autobackup && success && backupEnabled) {
-                message = @"Autobackup Disabled!";
-                backupEnabled = false;
-            }
-            else {
-                message = @"Backup Complete!";
-            }
-            return HandleBackupResult(success, backupEnabled, message, backupType,
-                DateTime.Now.ToString(CultureInfo.CurrentCulture));
+            return ErrorResultHelper;
         }
 
 
@@ -96,16 +74,16 @@ namespace Saved_Game_Backup {
             try {
                 foreach (var game in gamesToBackup) {
                     if (!game.HasCustomPath && game.Path.Contains("Documents"))
-                        editedList.Add(new Game(game.Name, _userPath + game.Path, game.ID, game.ThumbnailPath,
+                        editedList.Add(new Game(game.Name, UserPath + game.Path, game.ID, game.ThumbnailPath,
                             game.HasCustomPath, game.HasThumb, game.RootFolder));
                     else if (!game.HasCustomPath && game.Path.Contains("Program Files"))
-                        editedList.Add(new Game(game.Name, _hardDrive + game.Path, game.ID, game.ThumbnailPath,
+                        editedList.Add(new Game(game.Name, HardDrive + game.Path, game.ID, game.ThumbnailPath,
                             game.HasCustomPath, game.HasThumb, game.RootFolder));
                     else if (!game.HasCustomPath && game.Path.Contains("AppData"))
-                        editedList.Add(new Game(game.Name, _userPath + game.Path, game.ID, game.ThumbnailPath,
+                        editedList.Add(new Game(game.Name, UserPath + game.Path, game.ID, game.ThumbnailPath,
                             game.HasCustomPath, game.HasThumb, game.RootFolder));
                     else if (!game.HasCustomPath && game.Path.Contains("Desktop"))
-                        editedList.Add(new Game(game.Name, _userPath + game.Path, game.ID, game.ThumbnailPath,
+                        editedList.Add(new Game(game.Name, UserPath + game.Path, game.ID, game.ThumbnailPath,
                             game.HasCustomPath, game.HasThumb, game.RootFolder));
                     else
                         editedList.Add(game);
@@ -118,7 +96,7 @@ namespace Saved_Game_Backup {
         }
 
         public static bool CanBackup(List<Game> gamesToBackup) { 
-            if (_hardDrive == null) {
+            if (HardDrive == null) {
                 MessageBox.Show(
                     "Cannot find OS drive. \r\nPlease add each game using \r\nthe 'Add Game to List' button.");
                 return false;
@@ -141,13 +119,22 @@ namespace Saved_Game_Backup {
 
         private static BackupResultHelper HandleBackupResult(bool success, bool backupEnabled, string messageToShow,
             BackupType backupType, string date) {
-            var backupButtonText = "Backup Saves";
+            var backupButtonText = "";
             if (!success) return new BackupResultHelper(success, backupEnabled, messageToShow, date, backupButtonText);
 
             var message = messageToShow;
-
-            if (backupEnabled && backupType == BackupType.Autobackup) backupButtonText = "Disable auto-backup";
-            if (!backupEnabled && backupType == BackupType.Autobackup) backupButtonText = "Enable auto-backup";
+            switch (backupType) {
+                case BackupType.ToFolder:
+                    backupButtonText = "Backup to folder";
+                    break;
+                case BackupType.ToZip:
+                    backupButtonText = "Backup to zip";
+                    break;
+                default:
+                    if (backupEnabled && backupType == BackupType.Autobackup) backupButtonText = "Disable auto-backup";
+                    else backupButtonText = "Enable auto-backup";
+                    break;
+            }
 
 
             return new BackupResultHelper(success, backupEnabled, message, date, backupButtonText);

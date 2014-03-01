@@ -387,12 +387,18 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ExecuteStartBackup() {
-            if (BackupType == BackupType.Autobackup || BackupType == BackupType.ToFolder) {
-                if (FolderBrowser.ShowDialog() == DialogResult.OK)
-                    SpecifiedFolder = new DirectoryInfo(FolderBrowser.SelectedPath);
-            } else if (BackupType == BackupType.ToZip) {
-                if (SaveFileDialog.ShowDialog() == DialogResult.OK)
-                    _specifiedFile = new FileInfo(SaveFileDialog.FileName);
+            switch (BackupType) {
+                case BackupType.ToFolder:
+                case BackupType.Autobackup:
+                    if (FolderBrowser.ShowDialog() == DialogResult.OK)
+                        SpecifiedFolder = new DirectoryInfo(FolderBrowser.SelectedPath);
+                    else return;
+                    break;
+                case BackupType.ToZip:
+                    if (SaveFileDialog.ShowDialog() == DialogResult.OK)
+                        _specifiedFile = new FileInfo(SaveFileDialog.FileName);
+                    else return;
+                    break;
             }
             var result = Backup.StartBackup(GamesToBackup.ToList(), BackupType, BackupEnabled,(Interval * 60000), SpecifiedFolder, _specifiedFile);
             HandleBackupResult(result);
