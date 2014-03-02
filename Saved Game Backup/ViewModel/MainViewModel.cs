@@ -217,7 +217,7 @@ namespace Saved_Game_Backup.ViewModel
             set {
                 _specifiedFolder = value; 
                 RaisePropertyChanged(() => SpecifiedFolder);
-                if (_specifiedFile == null) return;
+                if (_specifiedFolder == null) return;
                 DisplaySpecifiedFolder = _specifiedFolder.FullName;
             }
         }
