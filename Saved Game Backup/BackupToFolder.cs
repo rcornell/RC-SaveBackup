@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -8,24 +9,23 @@ using System.Windows.Forms;
 using GalaSoft.MvvmLight.Messaging;
 using Saved_Game_Backup.Helper;
 
-namespace Saved_Game_Backup
-{
-    public class BackupToFolder
-    {
-        private static readonly string _hardDrive = Path.GetPathRoot(Environment.SystemDirectory);
-        private static string _myDocuments = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        private static readonly string _userPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        private static string _userName = Environment.UserName;
+namespace Saved_Game_Backup {
+
+    public class BackupToFolder {
+
         private static readonly BackupResultHelper ErrorResultHelper = new BackupResultHelper() { Success = false, AutobackupEnabled = false };
         private static ProgressHelper _progress;
 
-        
-
         public static BackupResultHelper BackupSaves(List<Game> gamesList, DirectoryInfo targetDi) {
             _progress = new ProgressHelper(){FilesComplete=0, TotalFiles = 0};
+            Debug.WriteLine(@"Starting BackupSaves");
+            
+            //Check for and create target directory
             if (!Directory.Exists(targetDi.FullName) && !string.IsNullOrWhiteSpace(targetDi.FullName))
                 Directory.CreateDirectory(targetDi.FullName);
 
+            //Get file count for progress bar
+            Debug.WriteLine(@"Getting file count");
             var totalFiles = 0;
             foreach (var game in gamesList) {
                 var files = Directory.GetFiles(game.Path, "*", SearchOption.AllDirectories);
@@ -36,14 +36,16 @@ namespace Saved_Game_Backup
                     return ErrorResultHelper;
                 }
             }
+            Debug.WriteLine(@"Found {0} files to copy", totalFiles);
             _progress.TotalFiles = totalFiles;
 
-            //This backs up each game using BackupGame()
+            //Copy files for each game to folder.
             foreach (var game in gamesList) {
                 BackupGame(game, targetDi.FullName);
             }
 
-            var time = DateTime.Now.ToShortTimeString();
+            Debug.WriteLine(@"Backup saves complete");
+            var time = DateTime.Now.ToLongTimeString();
             return new BackupResultHelper(){
                 AutobackupEnabled = false, 
                 Message = @"Backup complete", 
@@ -53,6 +55,7 @@ namespace Saved_Game_Backup
         }
 
         private static void BackupGame(Game game, string destDirName) {
+            Debug.WriteLine(@"Starting file copy for " + game.Name);
             var allFiles = Directory.GetFiles(game.Path, "*.*", SearchOption.AllDirectories);
             foreach (var sourceFile in allFiles) {
                 try {
@@ -73,6 +76,7 @@ namespace Saved_Game_Backup
                     SBTErrorLogger.Log(ex.Message);
                 }
             }
+            Debug.WriteLine(@"Finished file copy for " + game.Name);
         }
 
     }
