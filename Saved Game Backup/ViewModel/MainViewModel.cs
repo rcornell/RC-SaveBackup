@@ -356,7 +356,7 @@ namespace Saved_Game_Backup.ViewModel
             SetUpInterface();
             RegisterAll();
             
-        }
+        } //negative timer
 
         private void RegisterAll() {
             Messenger.Default.Register<ProgressHelper>(this, p => {
@@ -527,6 +527,7 @@ namespace Saved_Game_Backup.ViewModel
 
         private void Countdown_Elapsed(object sender, ElapsedEventArgs e) {
             Span = Span.Subtract(IntervalSpan);
+            if (Span.TotalSeconds <= 0) Span = Span.Add(new TimeSpan(0, 0, Interval, 0));
         }
     }
 }
