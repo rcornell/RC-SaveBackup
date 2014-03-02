@@ -40,12 +40,15 @@ namespace Saved_Game_Backup
         private static bool _firstPoll;
         private static bool BackupEnabled;
         private static readonly BackupResultHelper ErrorResultHelper = new BackupResultHelper() { Success = false, AutobackupEnabled = false, Message = "Error during operation" };
+        private static ProgressHelper _progress;
 
         public static BackupResultHelper ToggleAutoBackup(List<Game> gamesToBackup, bool backupEnabled, int interval, DirectoryInfo autobackupDi) {
             if (backupEnabled) return ShutdownAutobackup();
             GamesToBackup = gamesToBackup;
             BackupEnabled = backupEnabled;
             _autoBackupDirectoryInfo = autobackupDi;
+            _progress = new ProgressHelper(){FilesComplete = 0, TotalFiles = 0};
+            SetProgressFileCount();
             return InitializeAutobackup(backupEnabled, interval);
         }
 
@@ -618,6 +621,7 @@ namespace Saved_Game_Backup
                     currentSourceFiles.Add(file);
                 }
             }
+            SetProgressFileCount();
         }
         
         /// <summary>
@@ -655,6 +659,8 @@ namespace Saved_Game_Backup
                             await inStream.CopyToAsync(outStream);
                             Debug.WriteLine(@"SUCCESSFUL COPY: {0} copied to {1}", sourceFile.Name, destPath);
                             _numberOfBackups++;
+                            _progress.FilesComplete++;
+                            Messenger.Default.Send(_progress);
                             Messenger.Default.Send(DateTime.Now.ToLongTimeString());
                         }
                     }
@@ -791,6 +797,20 @@ namespace Saved_Game_Backup
             _pollAutobackupTimer.Stop();
             _pollAutobackupTimer.Interval = interval * 60000;
             _pollAutobackupTimer.Start();
+        }
+
+        private static void SetProgressFileCount() {
+            var totalFiles = 0;
+            foreach (var game in GamesToBackup) {
+                var files = Directory.GetFiles(game.Path, "*", SearchOption.AllDirectories);
+                if (files.Any())
+                    totalFiles += files.Count();
+                else {
+                    ErrorResultHelper.Message = @"No files found for " + game.Name; //Code a way to return this
+                }
+            }
+            _progress.TotalFiles = totalFiles;
+
         }
     }
 }
