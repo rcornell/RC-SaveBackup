@@ -20,6 +20,8 @@
                   UseLayoutRounding="False" />
         </Viewbox>
 
+        
+                    
         <!--  FONT STYLES GO HERE  -->
 
 
@@ -237,44 +239,6 @@
             <Setter Property="Margin" Value="3" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
         </Style>
-
-        <!--
-            <Style x:Key="AutobackupStyle" TargetType="{x:Type Button}">
-            <Setter Property="Background" Value="{StaticResource AutoBackupBrush}" />
-            <Setter Property="Margin" Value="3"/>
-            <Setter Property="HorizontalAlignment" Value="Stretch"/>
-            <Setter Property="Template">
-            <Setter.Value>
-            <ControlTemplate>
-            <Border x:Name="AutobackupBorder"
-            Width="{TemplateBinding Width}"
-            Height="{TemplateBinding Height}"
-            Background="{TemplateBinding Background}"
-            Margin="{TemplateBinding Margin}"
-            HorizontalAlignment="{TemplateBinding HorizontalAlignment}">
-            <Border.RenderTransform>
-            <ScaleTransform/>
-            </Border.RenderTransform>
-            <Border.Triggers>
-            <EventTrigger>
-            <BeginStoryboard>
-            <Storyboard>
-            <DoubleAnimation AutoReverse="True"
-            Duration="0:0:0.5"
-            From="1"
-            Storyboard.TargetProperty="(Border.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)"
-            To="0.9"/>
-            </Storyboard>
-            </BeginStoryboard>
-            </EventTrigger>
-            </Border.Triggers>
-            <ContentPresenter/>
-            </Border>
-            </ControlTemplate>
-            </Setter.Value>
-            </Setter>
-            </Style>
-        -->
 
         <!--  BUTTON STYLE GOES HERE  -->
         <LinearGradientBrush x:Key="MyButtonBrush" StartPoint="0.5,0" EndPoint="0.5,1">
