@@ -104,11 +104,7 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
-                <ProgressBar HorizontalAlignment="Stretch" 
-                             IsIndeterminate="False"
-                             Value="{Binding PercentComplete}"
-                             Height="20"
-                             Maximum="1"/>
+                
                 <Border Style="{StaticResource AutobackupStyle}" Visibility="{Binding BackupEnabledVisibility}">
                     <StackPanel>
                         <TextBlock HorizontalAlignment="Center"
@@ -178,6 +174,14 @@
                         Command="{Binding OpenAddGameWindow}"
                         Content="Add Game to List"
                         Style="{StaticResource SbtButtonStyle}" />
+                <ProgressBar Margin="3" 
+                             Background="{StaticResource MyButtonBrush}"
+                             HorizontalAlignment="Stretch" 
+                             IsIndeterminate="False"
+                             Value="{Binding PercentComplete}"
+                             Height="20"
+                             Maximum="1"
+                             Minimum="0"/>
 
             </StackPanel>
         </DockPanel>

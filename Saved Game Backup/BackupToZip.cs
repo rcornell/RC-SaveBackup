@@ -14,7 +14,7 @@ namespace Saved_Game_Backup {
 
     public class BackupToZip {
 
-        private static readonly BackupResultHelper ErrorResultHelper = new BackupResultHelper() { Success = false, AutobackupEnabled = false, Message = "No source files found for game." };
+        private static readonly BackupResultHelper ErrorResultHelper = new BackupResultHelper() { Success = false, AutobackupEnabled = false };
         private static ProgressHelper _progress;
 
         public static async Task<BackupResultHelper> BackupAndZip(List<Game> gamesList, FileInfo targetFi) {
@@ -27,11 +27,13 @@ namespace Saved_Game_Backup {
 
             //Establish total file count for all games. If no files found for a game, return an error.
             var totalFiles = 0;
-            foreach (var game in gamesList)  {
-                if (Directory.GetFiles(game.Path, "*", SearchOption.AllDirectories).Any())
-                    totalFiles += Directory.GetFiles(game.Path, "*", SearchOption.AllDirectories).Count();
+            foreach (var game in gamesList) {
+                var files = Directory.GetFiles(game.Path, "*", SearchOption.AllDirectories);
+                if (files.Any())
+                    totalFiles += files.Count();
                 else {
                     ErrorResultHelper.Message = @"No files found for " + game.Name;
+                    return ErrorResultHelper;
                 }
             }
             _progress.TotalFiles = totalFiles;
