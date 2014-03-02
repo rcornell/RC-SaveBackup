@@ -96,10 +96,12 @@
                                Style="{StaticResource TextStyle}"
                                Text="Autobackup interval"
                                TextWrapping="Wrap" />
-                    <xctk:IntegerUpDown Margin="3" 
-                                        Text="{Binding Interval, UpdateSourceTrigger=PropertyChanged, Delay=100}"
+                    <xctk:IntegerUpDown Margin="3"
                                         Minimum="5"
-                                        ToolTip="Scanning can be CPU/Hard Drive intensive. A longer interval will have less impact on performance."/>
+                                        Text="{Binding Interval,
+                                                       UpdateSourceTrigger=PropertyChanged,
+                                                       Delay=100}"
+                                        ToolTip="Scanning can be CPU/Hard Drive intensive. A longer interval will have less impact on performance." />
                     <TextBlock VerticalAlignment="Center"
                                Style="{StaticResource TextStyle}"
                                Text="min."
@@ -107,7 +109,7 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
-                
+
                 <Border Style="{StaticResource AutobackupStyle}" Visibility="{Binding BackupEnabledVisibility}">
                     <StackPanel>
                         <TextBlock HorizontalAlignment="Center"
@@ -177,14 +179,23 @@
                         Command="{Binding OpenAddGameWindow}"
                         Content="Add Game to List"
                         Style="{StaticResource SbtButtonStyle}" />
-                <ProgressBar Margin="3" 
-                             Background="{StaticResource MyButtonBrush}"
-                             HorizontalAlignment="Stretch" 
-                             IsIndeterminate="False"
-                             Value="{Binding PercentComplete}"
-                             Height="20"
-                             Maximum="1"
-                             Minimum="0"/>
+                <Grid>
+
+                    <ProgressBar Height="20"
+                                 Margin="3"
+                                 HorizontalAlignment="Stretch"
+                                 Background="{StaticResource MyButtonBrush}"
+                                 IsIndeterminate="False"
+                                 Maximum="1"
+                                 Minimum="0"
+                                 Value="{Binding PercentComplete}" />
+                    <TextBlock Margin="3,3,3,4"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Foreground="Black"
+                               Style="{StaticResource TextStyle}"
+                               Text="Operation Progress" />
+                </Grid>
 
             </StackPanel>
         </DockPanel>
