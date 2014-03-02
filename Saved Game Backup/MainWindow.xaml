@@ -21,25 +21,9 @@
     <Window.Resources>
         <savedGameBackup:BackupTypeToStringConverter x:Key="BackupConverter" />
         <savedGameBackup:StringToBackupTypeConverter x:Key="StringConverter" />
-        
-        <!--Style for Games List ListBoxItems-->
         <Style x:Key="ListBoxStyle" TargetType="ListBox">
             <Setter Property="Background" Value="{Binding Brushes[1]}" />
             <Setter Property="Foreground" Value="{Binding Brushes[2]}" />
-            <Setter Property="VerticalAlignment" Value="Center"></Setter>
-            <Setter Property="ItemContainerStyle">
-                <Setter.Value>
-                    <Style  TargetType="{x:Type ListBoxItem}">
-                        <Setter Property="Margin" Value="3" />
-                        <Setter Property="FontSize" Value="14" />
-                        <Setter Property="FontFamily" Value="Segoe UI Light" />
-                        <Style.Resources>
-                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
-                             Color="#A6404FF4"/>
-                        </Style.Resources>
-                    </Style>
-                </Setter.Value>
-            </Setter>
         </Style>
     </Window.Resources>
     <Grid Background="{Binding Brushes[0]}">
@@ -295,9 +279,14 @@
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  SelectedItem="{Binding SelectedGame}"
                  Style="{StaticResource ListBoxStyle}"
-                 ToolTip="Double click a game to add it to the backup list."
-                 >
-            
+                 ToolTip="Double click a game to add it to the backup list.">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Margin" Value="3" />
+                    <Setter Property="FontSize" Value="14" />
+                    <Setter Property="FontFamily" Value="Segoe UI Light" />
+                </Style>
+            </ListBox.ItemContainerStyle>
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseDoubleClick">
                     <command:EventToCommand Command="{Binding MoveToBackupList, Mode=OneWay, Delay=100}" />
