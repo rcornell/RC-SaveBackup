@@ -96,7 +96,10 @@
                                Style="{StaticResource TextStyle}"
                                Text="Autobackup interval"
                                TextWrapping="Wrap" />
-                    <xctk:IntegerUpDown Margin="3" Text="{Binding Interval, UpdateSourceTrigger=PropertyChanged, Delay=100}" />
+                    <xctk:IntegerUpDown Margin="3" 
+                                        Text="{Binding Interval, UpdateSourceTrigger=PropertyChanged, Delay=100}"
+                                        Minimum="5"
+                                        ToolTip="Scanning can be CPU/Hard Drive intensive. A longer interval will have less impact on performance."/>
                     <TextBlock VerticalAlignment="Center"
                                Style="{StaticResource TextStyle}"
                                Text="min."
@@ -134,7 +137,7 @@
                             <TextBlock Margin="3,3,0,3"
                                        FontSize="12"
                                        Style="{StaticResource TextStyle}"
-                                       Text="Time until next backup: " />
+                                       Text="Time until next file scan: " />
                             <TextBlock Margin="0,3,3,3"
                                        FontSize="12"
                                        Style="{StaticResource TextStyle}"
