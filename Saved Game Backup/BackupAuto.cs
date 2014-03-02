@@ -613,7 +613,7 @@ namespace Saved_Game_Backup
             EnableWatchers();
         }
 
-        private static void AppendSourceFiles() {
+        private static void AppendSourceFiles() { //This needs work.
             foreach (var game in GamesToBackup) {
                 var directory = new DirectoryInfo(game.Path);
                 List<FileInfo> currentSourceFiles;
@@ -624,7 +624,7 @@ namespace Saved_Game_Backup
                     currentSourceFiles.Add(file);
                 }
             }
-            SetProgressFileCount();
+            SetProgressFileCount(0); //THIS NEEDS TO BE SET TO SOMETHING
         }
         
         /// <summary>

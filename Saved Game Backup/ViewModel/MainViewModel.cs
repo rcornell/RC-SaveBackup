@@ -70,6 +70,7 @@ namespace Saved_Game_Backup.ViewModel
         public double PercentComplete {
             get { return _percentComplete; }
             set {
+                if (_percentComplete == 1) _percentComplete = 0.0;
                 _percentComplete = value;
                 RaisePropertyChanged(() => PercentComplete);
             }
@@ -527,7 +528,9 @@ namespace Saved_Game_Backup.ViewModel
 
         private void Countdown_Elapsed(object sender, ElapsedEventArgs e) {
             Span = Span.Subtract(IntervalSpan);
-            if (Span.TotalSeconds <= 0) Span = Span.Add(new TimeSpan(0, 0, Interval, 0));
+            if (Span.TotalSeconds <= 0) {
+                Span = Span.Add(new TimeSpan(0, 0, Interval, 0));
+            }
         }
     }
 }
