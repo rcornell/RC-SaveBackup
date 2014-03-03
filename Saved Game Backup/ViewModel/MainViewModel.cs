@@ -415,6 +415,7 @@ namespace Saved_Game_Backup.ViewModel
             var game = SelectedGame;
             if (GamesToBackup.Contains(game)) return;
             GamesToBackup.Add(game);
+            if (BackupEnabled) Backup.AddToAutobackup(game);
 
             RaisePropertyChanged(() => GamesToBackup);            
 

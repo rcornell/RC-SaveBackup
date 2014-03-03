@@ -55,12 +55,14 @@ namespace Saved_Game_Backup
             if (!GamesToBackup.Any()) return ErrorResultHelper;
             InitializeWatchers();
             var result = SetupPollAutobackup(backupEnabled, interval);
+            BackupEnabled = true;
             return result;
         }
 
         private static BackupResultHelper ShutdownAutobackup() {
             ShutdownWatchers();
             ShutdownPollAutobackup();
+            BackupEnabled = false;
             return new BackupResultHelper(){Success = true, AutobackupEnabled = false, Message = "Auto-backup disabled"};
         }
 
@@ -100,6 +102,13 @@ namespace Saved_Game_Backup
                     Message = message,
                 };
         }        
+
+        public static BackupResultHelper AddToAutobackup(Game game) {
+            GamesToBackup.Add(game);
+            AppendSourceFiles(); //Is this enough
+            //Also need to add watcher.
+            return new BackupResultHelper() { AutobackupEnabled = true, Message = @"Game added", Success = true };
+        }
 
         public static void InitializeWatchers() {
             Debug.WriteLine(@"Initializing Watchers");
@@ -805,5 +814,7 @@ namespace Saved_Game_Backup
         private static void SetProgressFileCount(int count) {
             _progress.TotalFiles = count;
         }
+
+        
     }
 }

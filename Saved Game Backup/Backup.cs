@@ -93,6 +93,34 @@ namespace Saved_Game_Backup {
             return editedList;
         }
 
+        internal static Game ModifyGamePaths(Game game) {
+            var editedGame = new Game();
+            try
+            {
+                
+                    if (!game.HasCustomPath && game.Path.Contains("Documents"))
+                        editedGame = new Game(game.Name, UserPath + game.Path, game.ID, game.ThumbnailPath,
+                            game.HasCustomPath, game.HasThumb, game.RootFolder);
+                    else if (!game.HasCustomPath && game.Path.Contains("Program Files"))
+                        editedGame = new Game(game.Name, HardDrive + game.Path, game.ID, game.ThumbnailPath,
+                            game.HasCustomPath, game.HasThumb, game.RootFolder);
+                    else if (!game.HasCustomPath && game.Path.Contains("AppData"))
+                        editedGame = new Game(game.Name, UserPath + game.Path, game.ID, game.ThumbnailPath,
+                            game.HasCustomPath, game.HasThumb, game.RootFolder);
+                    else if (!game.HasCustomPath && game.Path.Contains("Desktop"))
+                        editedGame = new Game(game.Name, UserPath + game.Path, game.ID, game.ThumbnailPath,
+                            game.HasCustomPath, game.HasThumb, game.RootFolder);
+                    else
+                        editedGame = game;
+                
+            }
+            catch (Exception ex)
+            {
+                SBTErrorLogger.Log(ex.Message);
+            }
+            return editedGame;
+        }
+
         public static bool CanBackup(List<Game> gamesToBackup) { 
             if (HardDrive == null) {
                 MessageBox.Show(
@@ -141,6 +169,12 @@ namespace Saved_Game_Backup {
             return result;
         }
 
-       
+
+        public static BackupResultHelper AddToAutobackup(Game game) {
+            if (game == null) return ErrorResultHelper;
+            var editedGame = ModifyGamePaths(game);
+            var result = BackupAuto.AddToAutobackup(editedGame);
+            return result;
+        }
     }
 }
