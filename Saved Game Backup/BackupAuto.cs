@@ -106,7 +106,7 @@ namespace Saved_Game_Backup
         public static BackupResultHelper AddToAutobackup(Game game) {
             GamesToBackup.Add(game);
             InitializeWatchers(game);
-            AppendSourceFiles(); //Is this enough
+            GetSourceAndTargetFiles(game);
             return new BackupResultHelper() { AutobackupEnabled = true, Message = @"Game added", Success = true };
         }
 
@@ -155,13 +155,13 @@ namespace Saved_Game_Backup
         }
 
         private static bool GetSourceAndTargetFiles(Game game) {
-            Debug.WriteLine(@"Getting files in target directory");
+            Debug.WriteLine(@"Getting files in target directory for " + game.Name);
             var targetDirectory = new DirectoryInfo(_autoBackupDirectoryInfo.FullName + "\\" + game.Name);
             if (!Directory.Exists(targetDirectory.FullName)) Directory.CreateDirectory(targetDirectory.FullName);
             var targets = targetDirectory.GetFiles("*", SearchOption.AllDirectories).ToList();
             GameTargetDictionary.Add(game, targets);
 
-            Debug.WriteLine(@"Getting files in source directory");
+            Debug.WriteLine(@"Getting files in source directory for " + game.Name);
             var sourceDirectory = new DirectoryInfo(game.Path);
             if (!Directory.Exists(sourceDirectory.FullName))
                 return false;
@@ -557,14 +557,19 @@ namespace Saved_Game_Backup
             if (backupEnabled) {
                 _pollAutobackupTimer.Stop();
                 _fileWatcherList.Clear();
-                return new BackupResultHelper(true, !backupEnabled, "Autobackup disabled.",
-                    DateTime.Now.ToLongTimeString(), "Enable auto-backup.");
+                return new BackupResultHelper {
+                    Success = true, 
+                    AutobackupEnabled = false, 
+                    Message = @"Auto-backup disabled", 
+                    BackupDateTime = DateTime.Now.ToLongTimeString(), 
+                    BackupButtonText = "Enable auto-backup"
+                };
             }
-
             Debug.WriteLine(@"Starting setup for PollAutobackup");
 
             GameTargetDictionary = new Dictionary<Game, List<FileInfo>>();
             GameFileDictionary = new Dictionary<Game, List<FileInfo>>();
+
             foreach (var game in GamesToBackup) {
                 if (!GetSourceAndTargetFiles(game))
                     return new BackupResultHelper {
@@ -573,12 +578,11 @@ namespace Saved_Game_Backup
                         Message = @"Game directory not found.", 
                         BackupDateTime = DateTime.Now.ToLongTimeString(), 
                         BackupButtonText = @"Enable auto-backup"
-                    };
-                
+                    };         
             }
             Debug.WriteLine(@"Finished setup for PollAutobackup.");
             Debug.WriteLine(@"Initializing Poll Autobackup Timer.");
-            _pollAutobackupTimer = new Timer { Interval = (interval * 60000) }; 
+            _pollAutobackupTimer = new Timer { Interval = (interval * 60000) }; //Convert front UI interval to minutes.
             _pollAutobackupTimer.Elapsed += _pollAutobackupTimer_Elapsed;
             _pollAutobackupTimer.Start();
             Debug.WriteLine(@"Finished initializing Poll Autobackup Timer.");
@@ -645,18 +649,21 @@ namespace Saved_Game_Backup
             EnableWatchers();
         }
 
-        private static void AppendSourceFiles() { //This needs work.
+        private static void AppendSourceFiles() { 
+            var newTotalFiles = 0;
             foreach (var game in GamesToBackup) {
                 var directory = new DirectoryInfo(game.Path);
                 List<FileInfo> currentSourceFiles;
                 GameFileDictionary.TryGetValue(game, out currentSourceFiles);
-                if (currentSourceFiles == null) continue;
-                foreach (var file in directory.GetFiles("*", SearchOption.AllDirectories).ToList()) {
-                    if (currentSourceFiles.Exists(f => f.FullName == file.FullName && f.Length == file.Length)) continue;
+                if (currentSourceFiles == null) continue; //suggested by resharper
+                var files = directory.GetFiles("*", SearchOption.AllDirectories).ToList();
+                newTotalFiles += files.Count; //Add file count to total file count
+                foreach (var file in files) {
+                    if (currentSourceFiles.Exists(f => f.FullName == file.FullName && f.Length == file.Length)) continue; //!!!!!Might not always detect differences!!!!!
                     currentSourceFiles.Add(file);
                 }
             }
-            SetProgressFileCount(0); //THIS NEEDS TO BE SET TO SOMETHING
+            SetProgressFileCount(newTotalFiles); 
         }
         
         /// <summary>
