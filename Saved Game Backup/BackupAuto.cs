@@ -105,13 +105,13 @@ namespace Saved_Game_Backup
 
         public static BackupResultHelper AddToAutobackup(Game game) {
             GamesToBackup.Add(game);
+            InitializeWatchers(game);
             AppendSourceFiles(); //Is this enough
-            //Also need to add watcher.
             return new BackupResultHelper() { AutobackupEnabled = true, Message = @"Game added", Success = true };
         }
 
-        public static void InitializeWatchers() {
-            Debug.WriteLine(@"Initializing Watchers");
+        public static void InitializeWatchers(Game gameToAdd = null) {
+            
             _delayTimer = new Timer {Interval = 5000, AutoReset = true};
             _delayTimer.Elapsed += _delayTimer_Elapsed;
 
@@ -123,23 +123,35 @@ namespace Saved_Game_Backup
             _fileWatcherList = new List<FileSystemWatcher>();
 
             var watcherNumber = 0;
-            foreach (var game in GamesToBackup.Where(game => Directory.Exists(game.Path))) {
-                var filePath = new FileInfo(game.Path + "\\");
-                _fileWatcherList.Add(new FileSystemWatcher(filePath.FullName));
-                _fileWatcherList[watcherNumber].Changed += OnChanged;
-                _fileWatcherList[watcherNumber].Created += OnChanged;
-                _fileWatcherList[watcherNumber].Deleted += OnChanged;
-                _fileWatcherList[watcherNumber].Renamed += OnRenamed;
-                _fileWatcherList[watcherNumber].Error += OnError;
-                _fileWatcherList[watcherNumber].NotifyFilter = NotifyFilters.CreationTime | NotifyFilters.LastWrite
-                                                               | NotifyFilters.FileName;
-                _fileWatcherList[watcherNumber].IncludeSubdirectories = true;
-                _fileWatcherList[watcherNumber].Filter = "*";
-                _fileWatcherList[watcherNumber].EnableRaisingEvents = true;
-                watcherNumber++;
-                Debug.WriteLine(@"Watcher added to list");
+
+            if (gameToAdd != null) {
+                CreateWatcher(gameToAdd, watcherNumber);
+                Debug.WriteLine(@"Added watcher to list for " + gameToAdd.Name);
+            }
+            else {
+                foreach (var game in GamesToBackup.Where(game => Directory.Exists(game.Path))) {
+                    Debug.WriteLine(@"Initializing Watchers");
+                    CreateWatcher(game, watcherNumber);
+                    watcherNumber++;
+                }
             }
             Debug.WriteLine(@"Finished adding {0} Watchers to list", watcherNumber);
+        }
+
+        public static void CreateWatcher(Game game, int watcherNumber = 0) {
+            var filePath = new FileInfo(game.Path + "\\");
+            _fileWatcherList.Add(new FileSystemWatcher(filePath.FullName));
+            _fileWatcherList[watcherNumber].Changed += OnChanged;
+            _fileWatcherList[watcherNumber].Created += OnChanged;
+            _fileWatcherList[watcherNumber].Deleted += OnChanged;
+            _fileWatcherList[watcherNumber].Renamed += OnRenamed;
+            _fileWatcherList[watcherNumber].Error += OnError;
+            _fileWatcherList[watcherNumber].NotifyFilter = NotifyFilters.CreationTime | NotifyFilters.LastWrite
+                                                           | NotifyFilters.FileName;
+            _fileWatcherList[watcherNumber].IncludeSubdirectories = true;
+            _fileWatcherList[watcherNumber].Filter = "*";
+            _fileWatcherList[watcherNumber].EnableRaisingEvents = true;
+            Debug.WriteLine(@"Watcher added to list for " + game.Name);
         }
 
         public static void ShutdownWatchers() {
