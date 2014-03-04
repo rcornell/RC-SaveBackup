@@ -70,7 +70,6 @@ namespace Saved_Game_Backup.ViewModel
         public double PercentComplete {
             get { return _percentComplete; }
             set {
-                if (_percentComplete == 1) _percentComplete = 0.0;
                 _percentComplete = value;
                 RaisePropertyChanged(() => PercentComplete);
             }
@@ -360,9 +359,15 @@ namespace Saved_Game_Backup.ViewModel
         } //negative timer
 
         private void RegisterAll() {
-            Messenger.Default.Register<ProgressHelper>(this, p => {
-                PercentComplete = (p.FilesComplete/p.TotalFiles);
-                Debug.WriteLine(@"Percent complete is {0}", PercentComplete);
+            //Messenger.Default.Register<ProgressHelper>(this, p => {
+            //    PercentComplete = (p.FilesComplete/p.TotalFiles);
+            //    Debug.WriteLine(@"Percent complete is {0}%", PercentComplete * 100);
+            //});
+
+            Messenger.Default.Register<ProgressHelper>(this, p =>
+            {
+                PercentComplete = p.PercentComplete;
+                Debug.WriteLine(@"Percent complete is {0}%", PercentComplete * 100);
             });
 
             try {

@@ -11,5 +11,9 @@ namespace Saved_Game_Backup.Helper
         public double TotalFiles { get; set; }
         public double FilesComplete { get; set; }
 
+        public double PercentComplete {
+            get { return (FilesComplete/TotalFiles); }
+        }
+
     }
 }

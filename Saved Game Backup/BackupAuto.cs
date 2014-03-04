@@ -111,22 +111,23 @@ namespace Saved_Game_Backup
         }
 
         public static void InitializeWatchers(Game gameToAdd = null) {
-            
-            _delayTimer = new Timer {Interval = 5000, AutoReset = true};
-            _delayTimer.Elapsed += _delayTimer_Elapsed;
+            if (!BackupEnabled) {
+                _delayTimer = new Timer {Interval = 5000, AutoReset = true};
+                _delayTimer.Elapsed += _delayTimer_Elapsed;
 
-            _canBackupTimer = new Timer {Interval = 5000, AutoReset = true};
-            _canBackupTimer.Elapsed += _canBackupTimer_Elapsed;
+                _canBackupTimer = new Timer {Interval = 5000, AutoReset = true};
+                _canBackupTimer.Elapsed += _canBackupTimer_Elapsed;
 
-            _lastAutoBackupTime = DateTime.Now;
+                _lastAutoBackupTime = DateTime.Now;
 
-            _fileWatcherList = new List<FileSystemWatcher>();
+                _fileWatcherList = new List<FileSystemWatcher>();
+            }
 
             var watcherNumber = 0;
 
             if (gameToAdd != null) {
                 CreateWatcher(gameToAdd, watcherNumber);
-                Debug.WriteLine(@"Added watcher to list for " + gameToAdd.Name);
+                watcherNumber++;
             }
             else {
                 foreach (var game in GamesToBackup.Where(game => Directory.Exists(game.Path))) {
@@ -627,6 +628,7 @@ namespace Saved_Game_Backup
 
             //Main backup loop
             foreach (var game in GamesToBackup) {
+                Debug.WriteLine(@"Starting Main Backup Loop for " +game.Name + " at {0}", Watch.Elapsed);
                 List<FileInfo> sourceFiles;
                 List<FileInfo> targetFiles;
                 GameFileDictionary.TryGetValue(game, out sourceFiles);
@@ -639,6 +641,7 @@ namespace Saved_Game_Backup
                 filesToCopy = await Scanner(sourceFiles, targetFiles); //Only called when files exist in the target directory to compare.
                 SetProgressFileCount(filesToCopy.Count);
                 await CopySaves(game, filesToCopy);
+                Debug.WriteLine(@"Finishing Main Backup Loop for " + game.Name + " at {0}", Watch.Elapsed);
             }
 
             var endTime = Watch.Elapsed;
@@ -649,21 +652,27 @@ namespace Saved_Game_Backup
             EnableWatchers();
         }
 
-        private static void AppendSourceFiles() { 
-            var newTotalFiles = 0;
+        private static void AppendSourceFiles() {
+            Debug.WriteLine(@"Starting AppendSourceFiles to check for new files");
+            var filesPerGame = 0;
+            var updatedTotalFiles = 0;
             foreach (var game in GamesToBackup) {
                 var directory = new DirectoryInfo(game.Path);
                 List<FileInfo> currentSourceFiles;
                 GameFileDictionary.TryGetValue(game, out currentSourceFiles);
                 if (currentSourceFiles == null) continue; //suggested by resharper
                 var files = directory.GetFiles("*", SearchOption.AllDirectories).ToList();
-                newTotalFiles += files.Count; //Add file count to total file count
+                updatedTotalFiles += files.Count; //Add file count to total file count
                 foreach (var file in files) {
                     if (currentSourceFiles.Exists(f => f.FullName == file.FullName && f.Length == file.Length)) continue; //!!!!!Might not always detect differences!!!!!
                     currentSourceFiles.Add(file);
                 }
+                if(filesPerGame==0) filesPerGame = currentSourceFiles.Count;    //Debugging code
+                Debug.WriteLine(@"Found {0} " + game.Name +" files", (currentSourceFiles.Count-filesPerGame));
+                filesPerGame = currentSourceFiles.Count;
             }
-            SetProgressFileCount(newTotalFiles); 
+            Debug.WriteLine(@"Finishing AppendSourceFiles. New file total is {0}", updatedTotalFiles);
+            SetProgressFileCount(updatedTotalFiles); 
         }
         
         /// <summary>
@@ -725,6 +734,8 @@ namespace Saved_Game_Backup
             Debug.WriteLine(@"CopySaves finished at {0}", endtime);
             Debug.WriteLine(@"CopySaves finished in {0}.", (endtime - startTime));
             Messenger.Default.Send(_numberOfBackups);
+            _progress.FilesComplete = 0;
+            Messenger.Default.Send(_progress);
         }
 
         /// <summary>
@@ -841,7 +852,7 @@ namespace Saved_Game_Backup
             _pollAutobackupTimer.Start();
         }
 
-        private static void SetProgressFileCount(int count) {
+        private static void SetProgressFileCount(double count) {
             _progress.TotalFiles = count;
         }
 

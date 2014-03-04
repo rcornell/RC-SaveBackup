@@ -97,7 +97,7 @@
                                Text="Autobackup interval"
                                TextWrapping="Wrap" />
                     <xctk:IntegerUpDown Margin="3"
-                                        Minimum="5"
+                                        Minimum="1"
                                         Text="{Binding Interval,
                                                        UpdateSourceTrigger=PropertyChanged,
                                                        Delay=100}"
