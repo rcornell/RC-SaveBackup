@@ -154,6 +154,27 @@ namespace Saved_Game_Backup
             Debug.WriteLine(@"Watcher added to list for " + game.Name);
         }
 
+        private static bool GetSourceAndTargetFiles(Game game) {
+            Debug.WriteLine(@"Getting files in target directory");
+            var targetDirectory = new DirectoryInfo(_autoBackupDirectoryInfo.FullName + "\\" + game.Name);
+            if (!Directory.Exists(targetDirectory.FullName)) Directory.CreateDirectory(targetDirectory.FullName);
+            var targets = targetDirectory.GetFiles("*", SearchOption.AllDirectories).ToList();
+            GameTargetDictionary.Add(game, targets);
+
+            Debug.WriteLine(@"Getting files in source directory");
+            var sourceDirectory = new DirectoryInfo(game.Path);
+            if (!Directory.Exists(sourceDirectory.FullName))
+                return false;
+            var sources = sourceDirectory.GetFiles("*", SearchOption.AllDirectories).ToList();
+            GameFileDictionary.Add(game, sources);
+            return true;
+            //var success = await ComputeSourceHashes();
+            //if (!success)
+            //    return new BackupResultHelper(false, backupEnabled,
+            //        "Error during autobackup hash creation.\r\nPlease email the developer if you encounter this.",
+            //        DateTime.Now.ToLongTimeString(), "Enable autobackup");
+        }
+
         public static void ShutdownWatchers() {
             Debug.WriteLine(@"Shutting down Watchers and timers");
             _fileWatcherList.Clear();
@@ -545,25 +566,15 @@ namespace Saved_Game_Backup
             GameTargetDictionary = new Dictionary<Game, List<FileInfo>>();
             GameFileDictionary = new Dictionary<Game, List<FileInfo>>();
             foreach (var game in GamesToBackup) {
-                Debug.WriteLine(@"Getting files in target directory");
-                var targetDirectory = new DirectoryInfo(_autoBackupDirectoryInfo.FullName + "\\" + game.Name);
-                if (!Directory.Exists(targetDirectory.FullName)) Directory.CreateDirectory(targetDirectory.FullName);
-                var targets = targetDirectory.GetFiles("*", SearchOption.AllDirectories).ToList();
-                GameTargetDictionary.Add(game, targets);
-
-                Debug.WriteLine(@"Getting files in source directory");
-                var sourceDirectory = new DirectoryInfo(game.Path);
-                if (!Directory.Exists(sourceDirectory.FullName))
-                    return new BackupResultHelper(false, backupEnabled, "Game directory not found.", DateTime.Now.ToLongTimeString(),
-                        "Enable Autobackup");
-                var sources = sourceDirectory.GetFiles("*", SearchOption.AllDirectories).ToList();
-                GameFileDictionary.Add(game, sources);
-
-                //var success = await ComputeSourceHashes();
-                //if (!success)
-                //    return new BackupResultHelper(false, backupEnabled,
-                //        "Error during autobackup hash creation.\r\nPlease email the developer if you encounter this.",
-                //        DateTime.Now.ToLongTimeString(), "Enable autobackup");
+                if (!GetSourceAndTargetFiles(game))
+                    return new BackupResultHelper {
+                        Success = false, 
+                        AutobackupEnabled= BackupEnabled, 
+                        Message = @"Game directory not found.", 
+                        BackupDateTime = DateTime.Now.ToLongTimeString(), 
+                        BackupButtonText = @"Enable auto-backup"
+                    };
+                
             }
             Debug.WriteLine(@"Finished setup for PollAutobackup.");
             Debug.WriteLine(@"Initializing Poll Autobackup Timer.");
