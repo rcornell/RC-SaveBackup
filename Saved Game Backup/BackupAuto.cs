@@ -104,10 +104,13 @@ namespace Saved_Game_Backup
         }        
 
         public static BackupResultHelper AddToAutobackup(Game game) {
-            GamesToBackup.Add(game);
-            InitializeWatchers(game);
-            GetSourceFiles(game);
+            if (!GetSourceFiles(game)) {
+                ErrorResultHelper.Message = string.Format("No files found for " + game.Name + ". Game not added.");
+                return ErrorResultHelper;
+            }
             GetTargetFiles(game);
+            InitializeWatchers(game);
+            GamesToBackup.Add(game);                      
             return new BackupResultHelper() { AutobackupEnabled = true, Message = @"Game added", Success = true };
         }
 
