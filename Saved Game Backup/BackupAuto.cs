@@ -40,6 +40,7 @@ namespace Saved_Game_Backup
         private static bool _firstPoll;
         private static bool BackupEnabled;
         private static readonly BackupResultHelper ErrorResultHelper = new BackupResultHelper() { Success = false, AutobackupEnabled = false, Message = "Error during operation" };
+        private static readonly BackupResultHelper FilesNotFoundHelper = new BackupResultHelper() {Success = false };
         private static ProgressHelper _progress;
 
         public static BackupResultHelper ToggleAutoBackup(List<Game> gamesToBackup, bool backupEnabled, int interval, DirectoryInfo autobackupDi) {
@@ -105,13 +106,15 @@ namespace Saved_Game_Backup
 
         public static BackupResultHelper AddToAutobackup(Game game) {
             if (!GetSourceFiles(game)) {
-                ErrorResultHelper.Message = string.Format("No files found for " + game.Name + ". Game not added.");
-                return ErrorResultHelper;
+                FilesNotFoundHelper.Message = string.Format("No files found for " + game.Name + ". Game not added.");
+                FilesNotFoundHelper.RemoveFromAutobackup = true;
+                FilesNotFoundHelper.AutobackupEnabled = BackupEnabled;
+                return FilesNotFoundHelper;
             }
             GetTargetFiles(game);
             InitializeWatchers(game);
             GamesToBackup.Add(game);                      
-            return new BackupResultHelper() { AutobackupEnabled = true, Message = @"Game added", Success = true };
+            return new BackupResultHelper() { AutobackupEnabled = true, Message = string.Format(game.Name + @" added"), Success = true };
         }
 
         public static void InitializeWatchers(Game gameToAdd = null) {
