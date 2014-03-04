@@ -14,6 +14,7 @@ namespace Saved_Game_Backup.Helper
         public string BackupDateTime { get; set; }
         public string BackupButtonText { get; set; }
         public bool RemoveFromAutobackup { get; set; }
+        public Game Game { get; set; }
         
         public BackupResultHelper(){}
 

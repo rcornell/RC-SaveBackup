@@ -420,7 +420,10 @@ namespace Saved_Game_Backup.ViewModel
             var game = SelectedGame;
             if (GamesToBackup.Contains(game)) return;
             GamesToBackup.Add(game);
-            if (BackupEnabled) Backup.AddToAutobackup(game);
+            if (BackupEnabled) { //Adding game to autobackup while it is running
+                var helper = Backup.AddToAutobackup(game);
+                HandleBackupResult(helper);
+            }
 
             RaisePropertyChanged(() => GamesToBackup);            
 
@@ -473,7 +476,12 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void HandleBackupResult(BackupResultHelper result) {
-            if (!result.Success) { 
+            if (!result.Success && result.RemoveFromAutobackup) { //If no source files found for a game added to autobackup
+                GamesToBackup.Remove(result.Game);
+                MessageBox.Show(result.Message, @"Operation failed", MessageBoxButton.OK, MessageBoxImage.Hand);
+                return;
+            } 
+            if(!result.Success) {
                 MessageBox.Show(result.Message, @"Operation failed", MessageBoxButton.OK, MessageBoxImage.Hand);
                 return;
             }
