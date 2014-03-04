@@ -364,8 +364,8 @@ namespace Saved_Game_Backup.ViewModel
             //    Debug.WriteLine(@"Percent complete is {0}%", PercentComplete * 100);
             //});
 
-            Messenger.Default.Register<ProgressHelper>(this, p =>
-            {
+            Messenger.Default.Register<ProgressHelper>(this, p => {
+                if (double.IsNaN(p.PercentComplete)) PercentComplete = 0;
                 PercentComplete = p.PercentComplete;
                 Debug.WriteLine(@"Percent complete is {0}%", PercentComplete * 100);
             });

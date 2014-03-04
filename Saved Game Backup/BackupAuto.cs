@@ -106,7 +106,8 @@ namespace Saved_Game_Backup
         public static BackupResultHelper AddToAutobackup(Game game) {
             GamesToBackup.Add(game);
             InitializeWatchers(game);
-            GetSourceAndTargetFiles(game);
+            GetSourceFiles(game);
+            GetTargetFiles(game);
             return new BackupResultHelper() { AutobackupEnabled = true, Message = @"Game added", Success = true };
         }
 
@@ -155,13 +156,12 @@ namespace Saved_Game_Backup
             Debug.WriteLine(@"Watcher added to list for " + game.Name);
         }
 
-        private static bool GetSourceAndTargetFiles(Game game) {
-            Debug.WriteLine(@"Getting files in target directory for " + game.Name);
-            var targetDirectory = new DirectoryInfo(_autoBackupDirectoryInfo.FullName + "\\" + game.Name);
-            if (!Directory.Exists(targetDirectory.FullName)) Directory.CreateDirectory(targetDirectory.FullName);
-            var targets = targetDirectory.GetFiles("*", SearchOption.AllDirectories).ToList();
-            GameTargetDictionary.Add(game, targets);
-
+        /// <summary>
+        /// Returns false if no game files are found
+        /// </summary>
+        /// <param name="game"></param>
+        /// <returns></returns>
+        private static bool GetSourceFiles(Game game) {           
             Debug.WriteLine(@"Getting files in source directory for " + game.Name);
             var sourceDirectory = new DirectoryInfo(game.Path);
             if (!Directory.Exists(sourceDirectory.FullName))
@@ -169,11 +169,14 @@ namespace Saved_Game_Backup
             var sources = sourceDirectory.GetFiles("*", SearchOption.AllDirectories).ToList();
             GameFileDictionary.Add(game, sources);
             return true;
-            //var success = await ComputeSourceHashes();
-            //if (!success)
-            //    return new BackupResultHelper(false, backupEnabled,
-            //        "Error during autobackup hash creation.\r\nPlease email the developer if you encounter this.",
-            //        DateTime.Now.ToLongTimeString(), "Enable autobackup");
+        }
+
+        private static void GetTargetFiles(Game game) {
+            Debug.WriteLine(@"Getting files in target directory for " + game.Name);
+            var targetDirectory = new DirectoryInfo(_autoBackupDirectoryInfo.FullName + "\\" + game.Name);
+            if (!Directory.Exists(targetDirectory.FullName)) Directory.CreateDirectory(targetDirectory.FullName);
+            var targets = targetDirectory.GetFiles("*", SearchOption.AllDirectories).ToList();
+            GameTargetDictionary.Add(game, targets);
         }
 
         public static void ShutdownWatchers() {
@@ -572,14 +575,15 @@ namespace Saved_Game_Backup
             GameFileDictionary = new Dictionary<Game, List<FileInfo>>();
 
             foreach (var game in GamesToBackup) {
-                if (!GetSourceAndTargetFiles(game))
+                if (!GetSourceFiles(game)) //Returns false and stops the startup process if no source files are found.
                     return new BackupResultHelper {
                         Success = false, 
                         AutobackupEnabled= BackupEnabled, 
                         Message = @"Game directory not found.", 
                         BackupDateTime = DateTime.Now.ToLongTimeString(), 
                         BackupButtonText = @"Enable auto-backup"
-                    };         
+                    };
+                GetTargetFiles(game);
             }
             Debug.WriteLine(@"Finished setup for PollAutobackup.");
             Debug.WriteLine(@"Initializing Poll Autobackup Timer.");
@@ -592,28 +596,6 @@ namespace Saved_Game_Backup
 
         private static void ShutdownPollAutobackup() {
             
-        }
-
-        /// <summary>
-        /// During SetupPollAutobackup, this makes hashes of all source files for comparison later.
-        /// </summary>
-        /// <returns></returns>
-        private async static Task ComputeSourceHashes(List<FileInfo> appendedFiles = null) {
-            Debug.WriteLine(@"Starting ComputeSourceHashes");
-            var hashNumber = 0;
-            HashDictionary = new Dictionary<FileInfo, string>();
-            foreach (var game in GamesToBackup) {
-                List<FileInfo> sourceFiles;
-                GameFileDictionary.TryGetValue(game, out sourceFiles);
-                if (sourceFiles == null) continue;
-                foreach (var file in sourceFiles) {
-                    var hash = await Task.Run(() => MD5.Create().ComputeHash(File.ReadAllBytes(file.FullName)));
-                    var hashString = BitConverter.ToString(hash).Replace("-", "");
-                    HashDictionary.Add(file, hashString);
-                    hashNumber++;
-                }
-            }
-            Debug.WriteLine(@"Finished ComputeSourceHashes. Created {0} hashes.", hashNumber);
         }
 
         private static async void PollAutobackup() {
@@ -642,7 +624,11 @@ namespace Saved_Game_Backup
                 SetProgressFileCount(filesToCopy.Count);
                 await CopySaves(game, filesToCopy);
                 Debug.WriteLine(@"Finishing Main Backup Loop for " + game.Name + " at {0}", Watch.Elapsed);
+                if (_firstPoll)
+                    GetTargetFiles(game);
             }
+
+            
 
             var endTime = Watch.Elapsed;
             Debug.WriteLine(@"PollAutobackup ended at {0}", endTime);
