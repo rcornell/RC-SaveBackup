@@ -727,6 +727,7 @@ namespace Saved_Game_Backup
         private static async Task<bool> CopySaves(Game game, IEnumerable<FileInfo> filesToCopy) {
             var startTime = Watch.Elapsed;
             var fileCopied = false;
+            _progress.TotalFiles = filesToCopy.Count();
             Debug.WriteLine(@"CopySaves starting at {0}", startTime);
             try {
                 foreach (var sourceFile in filesToCopy) {
@@ -744,6 +745,8 @@ namespace Saved_Game_Backup
                             Debug.WriteLine(@"SUCCESSFUL COPY: {0} copied to {1}", sourceFile.Name, destPath);
                             fileCopied = true;
                             _numberOfBackups++;
+                            _progress.FilesComplete++;
+                            Messenger.Default.Send(_progress);
                             Messenger.Default.Send(DateTime.Now.ToLongTimeString());
                         }
                     }
@@ -766,6 +769,8 @@ namespace Saved_Game_Backup
             Debug.WriteLine(@"CopySaves finished at {0}", endtime);
             Debug.WriteLine(@"CopySaves finished in {0}.", (endtime - startTime));
             Messenger.Default.Send(_numberOfBackups);
+            _progress.FilesComplete = 0;
+            Messenger.Default.Send(_progress);
             return fileCopied;
         }
 
@@ -846,7 +851,7 @@ namespace Saved_Game_Backup
         }
 
         private static void SetProgressFileCount(double count) {
-            //_progress.TotalFiles = count;
+            _progress.TotalFiles = count;
         }
 
         

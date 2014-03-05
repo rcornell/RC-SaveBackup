@@ -356,16 +356,11 @@ namespace Saved_Game_Backup.ViewModel
             SetUpInterface();
             RegisterAll();
             
-        } //negative timer
+        }
 
         private void RegisterAll() {
-            //Messenger.Default.Register<ProgressHelper>(this, p => {
-            //    PercentComplete = (p.FilesComplete/p.TotalFiles);
-            //    Debug.WriteLine(@"Percent complete is {0}%", PercentComplete * 100);
-            //});
 
             Messenger.Default.Register<ProgressHelper>(this, p => {
-                if (double.IsNaN(p.PercentComplete)) PercentComplete = 0;
                 PercentComplete = p.PercentComplete;
                 Debug.WriteLine(@"Percent complete is {0}%", PercentComplete * 100);
             });

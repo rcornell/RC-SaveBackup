@@ -12,7 +12,10 @@ namespace Saved_Game_Backup.Helper
         public double FilesComplete { get; set; }
 
         public double PercentComplete {
-            get { return (FilesComplete/TotalFiles); }
+            get {
+                if (Double.IsNaN(FilesComplete/TotalFiles)) return 0.0;
+                return (FilesComplete/TotalFiles);
+            }
         }
 
     }
