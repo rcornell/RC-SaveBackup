@@ -485,6 +485,7 @@ namespace Saved_Game_Backup.ViewModel
                 MessageBox.Show(result.Message, @"Operation failed", MessageBoxButton.OK, MessageBoxImage.Hand);
                 return;
             }
+
             BackupEnabled = result.AutobackupEnabled;
             if (!string.IsNullOrWhiteSpace(result.BackupButtonText))
                 BackupButtonText = result.BackupButtonText;

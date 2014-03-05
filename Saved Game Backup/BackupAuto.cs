@@ -55,7 +55,7 @@ namespace Saved_Game_Backup
         private static BackupResultHelper InitializeAutobackup(bool backupEnabled, int interval) {
             if (!GamesToBackup.Any()) return ErrorResultHelper;
             InitializeWatchers();
-            var result = SetupPollAutobackup(backupEnabled, interval);
+            var result = InitializePollAutobackup(backupEnabled, interval);
             BackupEnabled = true;
             return result;
         }
@@ -64,7 +64,7 @@ namespace Saved_Game_Backup
             ShutdownWatchers();
             ShutdownPollAutobackup();
             BackupEnabled = false;
-            return new BackupResultHelper(){Success = true, AutobackupEnabled = false, Message = "Auto-backup disabled"};
+            return new BackupResultHelper(){Success = true, AutobackupEnabled = false, ShuttingDownAutobackup = true, Message = @"Auto-backup disabled"};
         }
 
         public static BackupResultHelper RemoveFromAutobackup(Game game) {
@@ -72,36 +72,36 @@ namespace Saved_Game_Backup
                 return new BackupResultHelper(){ Success = true, AutobackupEnabled = false, BackupDateTime = DateTime.Now.ToLongTimeString(),Message = "No games to remove."};
 
             for (var i = 0; i < _fileWatcherList.Count; i++) {
-                if (_fileWatcherList[i].Path == game.Path) {
+                if (_fileWatcherList[i].Path.Contains(game.Path)) { //Remove watcher from watcher list
                     _fileWatcherList.RemoveAt(i);
                 }
             }
             for (var i = 0; i < GamesToBackup.Count; i++) {
-                if (GamesToBackup[i].Name == game.Name)
+                if (GamesToBackup[i].Name == game.Name) //Remove game from GamesToBackup
                     GamesToBackup.RemoveAt(i);
             }
 
             //If there is a difference between lists, shut down all operations.
             if ((!_fileWatcherList.Any() && GamesToBackup.Any()) || (_fileWatcherList.Any() && !GamesToBackup.Any())) {
-                ShutdownWatchers(); //If you hit this, there is a problem.
-                _pollAutobackupTimer.Enabled = false;
+                return ShutdownAutobackup(); //If you hit this, there is a problem.
             }
 
+
+            var message = "";
             var time = DateTime.Now.ToLongTimeString();
-            var message = _fileWatcherList.Any() ? string.Format("{0} removed from auto-backup", game.Name) : "Last game removed from Autobackup.\r\nAutobackup disabled.";
-            return (_fileWatcherList.Any() && GamesToBackup.Any())
-                ? new BackupResultHelper() {
-                    Success = true,
-                    AutobackupEnabled = true,
-                    BackupDateTime = time,
-                    Message = message
-                }
-                : new BackupResultHelper() {
-                    Success = true,
-                    AutobackupEnabled = false,
-                    BackupDateTime = time,
-                    Message = message,
-                };
+            if (_fileWatcherList.Any()) //Games remaining
+                message = string.Format("{0} removed from auto-backup", game.Name);
+            else {
+                return ShutdownAutobackup();
+            }
+
+            return new BackupResultHelper() { //Only reachable if games remain in GamesToBackup
+                Success = true,
+                AutobackupEnabled = true,
+                BackupDateTime = time,
+                Message = message
+            };
+
         }        
 
         public static BackupResultHelper AddToAutobackup(Game game) {
@@ -578,7 +578,7 @@ namespace Saved_Game_Backup
             Debug.WriteLine(@"Enabled Watchers after PollAutobackup");
         }
 
-        private static BackupResultHelper SetupPollAutobackup(bool backupEnabled, int interval) {
+        private static BackupResultHelper InitializePollAutobackup(bool backupEnabled, int interval) {
             _firstPoll = true;
             if (backupEnabled) {
                 _pollAutobackupTimer.Stop();
@@ -609,21 +609,25 @@ namespace Saved_Game_Backup
             }
             Debug.WriteLine(@"Finished setup for PollAutobackup.");
             Debug.WriteLine(@"Initializing Poll Autobackup Timer.");
+            Watch = new Stopwatch();
             _pollAutobackupTimer = new Timer { Interval = (interval * 60000) }; //Convert front UI interval to minutes.
             _pollAutobackupTimer.Elapsed += _pollAutobackupTimer_Elapsed;
             _pollAutobackupTimer.Start();
+            
             Debug.WriteLine(@"Finished initializing Poll Autobackup Timer.");
             PollAutobackup(); //FOR TESTING
             return new BackupResultHelper(true, true, "Autobackup enabled", DateTime.Now.ToLongTimeString(), "Disable autobackup");
         }
 
         private static void ShutdownPollAutobackup() {
-            
+            _pollAutobackupTimer.Stop();
+            GameFileDictionary.Clear();
+            GameTargetDictionary.Clear();
+            GamesToBackup.Clear();
         }
 
         private static async void PollAutobackup() {
-
-            Watch = new Stopwatch();
+            if(Watch.IsRunning) Watch.Stop();
             Watch.Start();
             var startTime = Watch.Elapsed;
             Debug.WriteLine(@"Starting PollAutobackup at {0}", startTime);
@@ -646,12 +650,11 @@ namespace Saved_Game_Backup
                 fileCompareFilesCopied = await CopySaves(game, filesToCopy);
                 if (fileCompareFilesCopied) GetTargetFiles(game, true); //Update target files if copy occurred.
 
-                filesToCopy.AddRange(await FileScanner(sourceFiles, targetFiles)); //Only called when files exist in the target directory to compare.
+                filesToCopy = await FileScanner(sourceFiles, targetFiles); //Only called when files exist in the target directory to compare.
                 scannerFilesCopied = await CopySaves(game, filesToCopy);
                 if (scannerFilesCopied) GetTargetFiles(game, true); //Update target files if copy occurred.
 
-                Debug.WriteLine(@"Finishing Main Backup Loop for " + game.Name + " at {0}", Watch.Elapsed);
-                   
+                Debug.WriteLine(@"Finishing Main Backup Loop for " + game.Name + " at {0}", Watch.Elapsed);                
             }
 
             
@@ -673,12 +676,52 @@ namespace Saved_Game_Backup
         /// <param name="targetFiles"></param>
         /// <returns></returns>
         private static List<FileInfo> CheckForMissingTargetFiles(List<FileInfo> sourceFiles, List<FileInfo> targetFiles) {
+            Debug.WriteLine(@"Checking for source files NOT present in target directory");
             var sourceFilesToCopy = new List<FileInfo>();
             foreach (var source in sourceFiles) {
                 if (targetFiles.Exists(a => a.ToString().Contains(source.Name))) continue;
                 sourceFilesToCopy.Add(source);
             }
+            Debug.WriteLine(@"Finished checking for source files NOT present in target directory. Found {0} files.", sourceFilesToCopy.Count);
             return sourceFilesToCopy;
+        }
+
+        /// <summary>
+        /// Scans files in-depth to check for matching files
+        /// </summary>
+        /// <param name="sourceFiles"></param>
+        /// <param name="targetFiles"></param>
+        /// <returns></returns>
+        private async static Task<List<FileInfo>> FileScanner(IEnumerable<FileInfo> sourceFiles, List<FileInfo> targetFiles) {
+            var startTime = Watch.Elapsed;
+            Debug.WriteLine(@"Scanner started at {0}", startTime);
+            var filesToCopy = new List<FileInfo>();
+            foreach (var source in sourceFiles) {
+                var source1 = source; //suggested by resharper
+                foreach (var target in targetFiles) {
+                    var fileAdded = false;
+                    var matchedFileFound = false;
+                    if (source1.Length != target.Length && source1.Name == target.Name) { //Same name, different Length. Copy.
+                        filesToCopy.Add(source1);
+                        fileAdded = true;
+                    } else if (source.Length == target.Length && source1.Name == target.Name) { //Same name, same length. Compare bytes.
+                        if (await Task.Run(() => !FileCompare(source.FullName, target.FullName))) {
+                            filesToCopy.Add(source1); //Bytes are different. Copy.
+                            fileAdded = true;
+                        }
+                    } 
+                    if (source.Name == target.Name) { //If length are the same, FileCompare is the same, but names match. Skip the rest of targetFiles loop.
+                        matchedFileFound = true;
+                    }
+                    if (fileAdded || matchedFileFound) break;
+                }
+            }
+            var endTime = Watch.Elapsed;
+            Debug.WriteLine(@"Scanner complete after {0}", endTime);
+            Debug.WriteLine(@"Scanner has {0} files to copy", filesToCopy.Count);
+            Debug.WriteLine(@"Scanner completed in {0}", (endTime - startTime));
+            
+            return filesToCopy;
         }
 
         private static async Task<bool> CopySaves(Game game, IEnumerable<FileInfo> filesToCopy) {
@@ -724,44 +767,6 @@ namespace Saved_Game_Backup
             Debug.WriteLine(@"CopySaves finished in {0}.", (endtime - startTime));
             Messenger.Default.Send(_numberOfBackups);
             return fileCopied;
-        }
-
-        /// <summary>
-        /// Scans files in-depth to check for matching files
-        /// </summary>
-        /// <param name="sourceFiles"></param>
-        /// <param name="targetFiles"></param>
-        /// <returns></returns>
-        private async static Task<List<FileInfo>> FileScanner(IEnumerable<FileInfo> sourceFiles, List<FileInfo> targetFiles) {
-            var startTime = Watch.Elapsed;
-            Debug.WriteLine(@"Scanner started at {0}", startTime);
-            var filesToCopy = new List<FileInfo>();
-            foreach (var source in sourceFiles) {
-                var source1 = source; //suggested by resharper
-                foreach (var target in targetFiles) {
-                    var fileAdded = false;
-                    var matchedFileFound = false;
-                    if (source1.Length != target.Length && source1.Name == target.Name) { //Same name, different Length. Copy.
-                        filesToCopy.Add(source1);
-                        fileAdded = true;
-                    } else if (source.Length == target.Length && source1.Name == target.Name) { //Same name, same length. Compare bytes.
-                        if (await Task.Run(() => !FileCompare(source.FullName, target.FullName))) {
-                            filesToCopy.Add(source1); //Bytes are different. Copy.
-                            fileAdded = true;
-                        }
-                    } 
-                    if (source.Name == target.Name) { //If length are the same, FileCompare is the same, but names match. Skip the rest of targetFiles loop.
-                        matchedFileFound = true;
-                    }
-                    if (fileAdded || matchedFileFound) break;
-                }
-            }
-            var endTime = Watch.Elapsed;
-            Debug.WriteLine(@"Scanner complete after {0}", endTime);
-            Debug.WriteLine(@"Scanner has {0} files to copy", filesToCopy.Count);
-            Debug.WriteLine(@"Scanner completed in {0}", (endTime - startTime));
-            
-            return filesToCopy;
         }
 
          // This method accepts two strings the represent two files to 
