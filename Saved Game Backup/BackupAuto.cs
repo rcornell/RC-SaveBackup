@@ -634,6 +634,8 @@ namespace Saved_Game_Backup
 
             //Main backup loop
             foreach (var game in GamesToBackup) {
+                var compareFilesCopied = false;
+                var scannerFilesCopied = false;
                 Debug.WriteLine(@"Starting Main Backup Loop for " + game.Name + " at {0}", Watch.Elapsed);
                 List<FileInfo> sourceFiles;
                 List<FileInfo> targetFiles;
@@ -641,15 +643,16 @@ namespace Saved_Game_Backup
                 GameTargetDictionary.TryGetValue(game, out targetFiles);
                 var filesToCopy = CompareFiles(sourceFiles, targetFiles); //Look for source files NOT in target directory & copy them.
                 SetProgressFileCount(filesToCopy.Count);
-                await CopySaves(game, filesToCopy);
+                compareFilesCopied = await CopySaves(game, filesToCopy);
 
                 if (targetFiles == null || !targetFiles.Any()) continue;
                 filesToCopy = await Scanner(sourceFiles, targetFiles); //Only called when files exist in the target directory to compare.
                 SetProgressFileCount(filesToCopy.Count);
-                await CopySaves(game, filesToCopy);
+                scannerFilesCopied = await CopySaves(game, filesToCopy);
+
+                if (!_firstPoll && (compareFilesCopied || scannerFilesCopied)) GetTargetFiles(game, true); //If either CopySaves call copied files, update target files.
                 Debug.WriteLine(@"Finishing Main Backup Loop for " + game.Name + " at {0}", Watch.Elapsed);
-                if (_firstPoll)
-                    GetTargetFiles(game, true);
+                   
             }
 
             
@@ -702,8 +705,9 @@ namespace Saved_Game_Backup
             return sourceFilesToCopy;
         }
 
-        private static async Task CopySaves(Game game, IEnumerable<FileInfo> filesToCopy) {
+        private static async Task<bool> CopySaves(Game game, IEnumerable<FileInfo> filesToCopy) {
             var startTime = Watch.Elapsed;
+            var fileCopied = false;
             Debug.WriteLine(@"CopySaves starting at {0}", startTime);
             try {
                 foreach (var sourceFile in filesToCopy) {
@@ -719,6 +723,7 @@ namespace Saved_Game_Backup
                         using (var outStream = new FileStream(destPath, FileMode.Create)) {
                             await inStream.CopyToAsync(outStream);
                             Debug.WriteLine(@"SUCCESSFUL COPY: {0} copied to {1}", sourceFile.Name, destPath);
+                            fileCopied = true;
                             _numberOfBackups++;
                             Messenger.Default.Send(DateTime.Now.ToLongTimeString());
                         }
@@ -742,6 +747,7 @@ namespace Saved_Game_Backup
             Debug.WriteLine(@"CopySaves finished at {0}", endtime);
             Debug.WriteLine(@"CopySaves finished in {0}.", (endtime - startTime));
             Messenger.Default.Send(_numberOfBackups);
+            return fileCopied;
         }
 
         /// <summary>
