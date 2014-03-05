@@ -111,7 +111,7 @@ namespace Saved_Game_Backup
                 FilesNotFoundHelper.AutobackupEnabled = BackupEnabled;
                 return FilesNotFoundHelper;
             }
-            GetTargetFiles(game);
+            GetTargetFiles(game, false);
             InitializeWatchers(game);
             GamesToBackup.Add(game);                      
             return new BackupResultHelper() { AutobackupEnabled = true, Message = string.Format(game.Name + @" added"), Success = true };
@@ -185,11 +185,19 @@ namespace Saved_Game_Backup
             return true;
         }
 
-        private static void GetTargetFiles(Game game) {
+        private static void GetTargetFiles(Game game, bool updatingDictionary) {
             Debug.WriteLine(@"Getting files in target directory for " + game.Name);
             var targetDirectory = new DirectoryInfo(_autoBackupDirectoryInfo.FullName + "\\" + game.Name);
             if (!Directory.Exists(targetDirectory.FullName)) Directory.CreateDirectory(targetDirectory.FullName);
             var targets = targetDirectory.GetFiles("*", SearchOption.AllDirectories).ToList();
+
+            if (!updatingDictionary) { //First adding to dictionary
+                GameTargetDictionary.Add(game, targets);
+                return;
+            }
+            
+            if (GameTargetDictionary.ContainsKey(game)) //Updating dictionary. Remove entry for game, then re-add with updated source.
+                GameTargetDictionary.Remove(game);
             GameTargetDictionary.Add(game, targets);
         }
 
@@ -597,7 +605,7 @@ namespace Saved_Game_Backup
                         BackupDateTime = DateTime.Now.ToLongTimeString(), 
                         BackupButtonText = @"Enable auto-backup"
                     };
-                GetTargetFiles(game);
+                GetTargetFiles(game, false);
             }
             Debug.WriteLine(@"Finished setup for PollAutobackup.");
             Debug.WriteLine(@"Initializing Poll Autobackup Timer.");
@@ -605,6 +613,7 @@ namespace Saved_Game_Backup
             _pollAutobackupTimer.Elapsed += _pollAutobackupTimer_Elapsed;
             _pollAutobackupTimer.Start();
             Debug.WriteLine(@"Finished initializing Poll Autobackup Timer.");
+            PollAutobackup(); //FOR TESTING
             return new BackupResultHelper(true, true, "Autobackup enabled", DateTime.Now.ToLongTimeString(), "Disable autobackup");
         }
 
@@ -625,7 +634,7 @@ namespace Saved_Game_Backup
 
             //Main backup loop
             foreach (var game in GamesToBackup) {
-                Debug.WriteLine(@"Starting Main Backup Loop for " +game.Name + " at {0}", Watch.Elapsed);
+                Debug.WriteLine(@"Starting Main Backup Loop for " + game.Name + " at {0}", Watch.Elapsed);
                 List<FileInfo> sourceFiles;
                 List<FileInfo> targetFiles;
                 GameFileDictionary.TryGetValue(game, out sourceFiles);
@@ -640,7 +649,7 @@ namespace Saved_Game_Backup
                 await CopySaves(game, filesToCopy);
                 Debug.WriteLine(@"Finishing Main Backup Loop for " + game.Name + " at {0}", Watch.Elapsed);
                 if (_firstPoll)
-                    GetTargetFiles(game);
+                    GetTargetFiles(game, true);
             }
 
             
