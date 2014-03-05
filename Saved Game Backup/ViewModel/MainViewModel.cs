@@ -340,8 +340,6 @@ namespace Saved_Game_Backup.ViewModel
             PercentComplete = 0;
             NumberOfBackups = 0;
             Interval = 5;
-            Countdown = new Timer() { Interval = 1000 }; //Need synchronizing object?
-            Countdown.Elapsed += Countdown_Elapsed;
             Span = new TimeSpan(0,0,Interval,0); //Must always be initialized after Interval
             BackupEnabledVisibility = Visibility.Hidden;
             GamesList = DirectoryFinder.ReturnGamesList();
@@ -363,6 +361,10 @@ namespace Saved_Game_Backup.ViewModel
             Messenger.Default.Register<ProgressHelper>(this, p => {
                 PercentComplete = p.PercentComplete;
                 Debug.WriteLine(@"Percent complete is {0}%", PercentComplete * 100);
+            });
+
+            Messenger.Default.Register<TimeSpan>(this, s => {
+                Span = Span.Subtract(s);
             });
 
             try {
@@ -485,9 +487,6 @@ namespace Saved_Game_Backup.ViewModel
             if (!string.IsNullOrWhiteSpace(result.BackupButtonText))
                 BackupButtonText = result.BackupButtonText;
 
-            if (BackupEnabled) Countdown.Start(); 
-            else Countdown.Stop();
-
             if (!result.AutobackupEnabled && BackupType != BackupType.Autobackup) LastBackupTime = result.BackupDateTime;
             if (BackupType != BackupType.Autobackup) MessageBox.Show(@"Backup complete");
             if (BackupType == BackupType.Autobackup && !BackupEnabled) BackupButtonText = "Enable auto-backup";
@@ -536,11 +535,5 @@ namespace Saved_Game_Backup.ViewModel
             MessageBox.Show(About, "About SaveMonkey", MessageBoxButton.OK);
         }
 
-        private void Countdown_Elapsed(object sender, ElapsedEventArgs e) {
-            Span = Span.Subtract(IntervalSpan);
-            if (Span.TotalSeconds <= 0) {
-                Span = Span.Add(new TimeSpan(0, 0, Interval, 0));
-            }
-        }
     }
 }
