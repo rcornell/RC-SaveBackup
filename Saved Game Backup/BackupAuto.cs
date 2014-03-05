@@ -630,27 +630,26 @@ namespace Saved_Game_Backup
 
             if (!_firstPoll)
                 foreach (var game in GamesToBackup)
-                    GetSourceFiles(game, true); //Check for new source files since last backup.
+                    GetSourceFiles(game, true); //Check for new source files since last poll.
 
             //Main backup loop
             foreach (var game in GamesToBackup) {
-                var compareFilesCopied = false;
+                var fileCompareFilesCopied = false;
                 var scannerFilesCopied = false;
                 Debug.WriteLine(@"Starting Main Backup Loop for " + game.Name + " at {0}", Watch.Elapsed);
                 List<FileInfo> sourceFiles;
                 List<FileInfo> targetFiles;
                 GameFileDictionary.TryGetValue(game, out sourceFiles);
                 GameTargetDictionary.TryGetValue(game, out targetFiles);
-                var filesToCopy = CompareFiles(sourceFiles, targetFiles); //Look for source files NOT in target directory & copy them.
-                SetProgressFileCount(filesToCopy.Count);
-                compareFilesCopied = await CopySaves(game, filesToCopy);
 
-                if (targetFiles == null || !targetFiles.Any()) continue;
-                filesToCopy = await Scanner(sourceFiles, targetFiles); //Only called when files exist in the target directory to compare.
-                SetProgressFileCount(filesToCopy.Count);
+                var filesToCopy = CheckForMissingTargetFiles(sourceFiles, targetFiles); //Look for source files NOT in target directory & copy them.
+                fileCompareFilesCopied = await CopySaves(game, filesToCopy);
+                if (fileCompareFilesCopied) GetTargetFiles(game, true); //Update target files if copy occurred.
+
+                filesToCopy.AddRange(await FileScanner(sourceFiles, targetFiles)); //Only called when files exist in the target directory to compare.
                 scannerFilesCopied = await CopySaves(game, filesToCopy);
+                if (scannerFilesCopied) GetTargetFiles(game, true); //Update target files if copy occurred.
 
-                if (!_firstPoll && (compareFilesCopied || scannerFilesCopied)) GetTargetFiles(game, true); //If either CopySaves call copied files, update target files.
                 Debug.WriteLine(@"Finishing Main Backup Loop for " + game.Name + " at {0}", Watch.Elapsed);
                    
             }
@@ -664,29 +663,6 @@ namespace Saved_Game_Backup
             _firstPoll = false;
             EnableWatchers();
         }
-
-        private static void AppendSourceFiles() {
-            Debug.WriteLine(@"Starting AppendSourceFiles to check for new files");
-            var filesPerGame = 0;
-            var updatedTotalFiles = 0;
-            foreach (var game in GamesToBackup) {
-                var directory = new DirectoryInfo(game.Path);
-                List<FileInfo> currentSourceFiles;
-                GameFileDictionary.TryGetValue(game, out currentSourceFiles);
-                if (currentSourceFiles == null) continue; //suggested by resharper
-                var files = directory.GetFiles("*", SearchOption.AllDirectories).ToList();
-                updatedTotalFiles += files.Count; //Add file count to total file count
-                foreach (var file in files) {
-                    if (currentSourceFiles.Exists(f => f.FullName == file.FullName && f.Length == file.Length)) continue; //!!!!!Might not always detect differences!!!!!
-                    currentSourceFiles.Add(file);
-                }
-                if(filesPerGame==0) filesPerGame = currentSourceFiles.Count;    //Debugging code
-                Debug.WriteLine(@"Found {0} " + game.Name +" files", (currentSourceFiles.Count-filesPerGame));
-                filesPerGame = currentSourceFiles.Count;
-            }
-            Debug.WriteLine(@"Finishing AppendSourceFiles. New file total is {0}", updatedTotalFiles);
-            SetProgressFileCount(updatedTotalFiles); 
-        }
         
         /// <summary>
         /// Finds files that don't exist in target directory and calls CopySaves to copy them.
@@ -696,7 +672,7 @@ namespace Saved_Game_Backup
         /// <param name="sourceFiles"></param>
         /// <param name="targetFiles"></param>
         /// <returns></returns>
-        private static List<FileInfo> CompareFiles(List<FileInfo> sourceFiles, List<FileInfo> targetFiles) {
+        private static List<FileInfo> CheckForMissingTargetFiles(List<FileInfo> sourceFiles, List<FileInfo> targetFiles) {
             var sourceFilesToCopy = new List<FileInfo>();
             foreach (var source in sourceFiles) {
                 if (targetFiles.Exists(a => a.ToString().Contains(source.Name))) continue;
@@ -756,7 +732,7 @@ namespace Saved_Game_Backup
         /// <param name="sourceFiles"></param>
         /// <param name="targetFiles"></param>
         /// <returns></returns>
-        private async static Task<List<FileInfo>> Scanner(IEnumerable<FileInfo> sourceFiles, List<FileInfo> targetFiles) {
+        private async static Task<List<FileInfo>> FileScanner(IEnumerable<FileInfo> sourceFiles, List<FileInfo> targetFiles) {
             var startTime = Watch.Elapsed;
             Debug.WriteLine(@"Scanner started at {0}", startTime);
             var filesToCopy = new List<FileInfo>();
