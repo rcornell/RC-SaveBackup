@@ -105,7 +105,7 @@ namespace Saved_Game_Backup
         }        
 
         public static BackupResultHelper AddToAutobackup(Game game) {
-            if (!GetSourceFiles(game)) {
+            if (!GetSourceFiles(game, false)) {
                 FilesNotFoundHelper.Message = string.Format("No files found for " + game.Name + ". Game not added.");
                 FilesNotFoundHelper.RemoveFromAutobackup = true;
                 FilesNotFoundHelper.AutobackupEnabled = BackupEnabled;
@@ -167,12 +167,20 @@ namespace Saved_Game_Backup
         /// </summary>
         /// <param name="game"></param>
         /// <returns></returns>
-        private static bool GetSourceFiles(Game game) {           
+        private static bool GetSourceFiles(Game game, bool updatingDictionary) {           
             Debug.WriteLine(@"Getting files in source directory for " + game.Name);
             var sourceDirectory = new DirectoryInfo(game.Path);
             if (!Directory.Exists(sourceDirectory.FullName))
                 return false;
             var sources = sourceDirectory.GetFiles("*", SearchOption.AllDirectories).ToList();
+
+            if (!updatingDictionary) { //First adding to dictionary
+                GameFileDictionary.Add(game, sources);
+                return true;    
+            }
+            
+            if (GameFileDictionary.ContainsKey(game)) //Updating dictionary. Remove entry for game, then re-add with updated source.
+                GameFileDictionary.Remove(game);
             GameFileDictionary.Add(game, sources);
             return true;
         }
@@ -581,7 +589,7 @@ namespace Saved_Game_Backup
             GameFileDictionary = new Dictionary<Game, List<FileInfo>>();
 
             foreach (var game in GamesToBackup) {
-                if (!GetSourceFiles(game)) //Returns false and stops the startup process if no source files are found.
+                if (!GetSourceFiles(game, false)) //Returns false and stops the startup process if no source files are found.
                     return new BackupResultHelper {
                         Success = false, 
                         AutobackupEnabled= BackupEnabled, 
@@ -612,7 +620,8 @@ namespace Saved_Game_Backup
             Debug.WriteLine(@"Starting PollAutobackup at {0}", startTime);
 
             if (!_firstPoll)
-                AppendSourceFiles();
+                foreach (var game in GamesToBackup)
+                    GetSourceFiles(game, true); //Check for new source files since last backup.
 
             //Main backup loop
             foreach (var game in GamesToBackup) {
