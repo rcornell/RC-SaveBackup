@@ -106,6 +106,7 @@
                                Style="{StaticResource TextStyle}"
                                Text="min."
                                TextWrapping="Wrap" />
+                    
                 </StackPanel>
             </StackPanel>
             <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
@@ -195,7 +196,7 @@
                                VerticalAlignment="Center"
                                Foreground="Black"
                                Style="{StaticResource TextStyle}"
-                               Text="Operation progress" />
+                               Text="Backup progress" />
                 </Grid>
 
             </StackPanel>
