@@ -14,16 +14,14 @@ namespace Saved_Game_Backup.Preferences {
     [Serializable]
     public class UserPrefs {
 
-        //private BackupSyncOptions _backupSyncOptions;
-        //public BackupSyncOptions BackupSyncOptions {
-        //    get { return _backupSyncOptions; }
-        //    set {
-        //        _backupSyncOptions = value;
-        //    }
-        //}
-        public bool SyncToDropbox { get; set; }
-        public bool SyncToFolder { get; set; }
-        public bool SyncToZip { get; set; }
+        private BackupSyncOptions _backupSyncOptions;
+        public BackupSyncOptions BackupSyncOptions {
+            get { return _backupSyncOptions; }
+            set {
+                _backupSyncOptions = value;
+            }
+        }
+
 
         private ObservableCollection<Game> _selectedGames;
         public ObservableCollection<Game> SelectedGames {

@@ -473,9 +473,7 @@ namespace Saved_Game_Backup.ViewModel
                 _maxBackups = prefs.MaxBackups;
                 _themeInt = prefs.Theme;
                 LastBackupTime = prefs.LastBackupTime;
-                BackupSyncOptions.SyncToDropbox = prefs.SyncToDropbox;
-                BackupSyncOptions.SyncToFolder = prefs.SyncToFolder;
-                BackupSyncOptions.SyncToZip = prefs.SyncToZip;
+                BackupSyncOptions = prefs.BackupSyncOptions;
                 if (prefs.SelectedGames != null) GamesToBackup = prefs.SelectedGames;
             }
             Brushes = Theme.ToggleTheme(_themeInt);
@@ -490,16 +488,12 @@ namespace Saved_Game_Backup.ViewModel
                 prefs.Theme = ThemeInt;
                 prefs.SelectedGames = GamesToBackup;
                 prefs.LastBackupTime = LastBackupTime;
-                prefs.SyncToFolder = BackupSyncOptions.SyncToFolder;
-                prefs.SyncToZip = BackupSyncOptions.SyncToZip;
-                prefs.SyncToDropbox = BackupSyncOptions.SyncToDropbox;
+                prefs.BackupSyncOptions = BackupSyncOptions;
                 p.SavePrefs(prefs);
                 return;
             }
             var newPrefs = new UserPrefs() {
-                SyncToDropbox = BackupSyncOptions.SyncToDropbox,
-                SyncToFolder = BackupSyncOptions.SyncToFolder,
-                SyncToZip = BackupSyncOptions.SyncToZip,
+                BackupSyncOptions = BackupSyncOptions,
                 LastBackupTime = LastBackupTime,
                 MaxBackups = MaxBackups,
                 SelectedGames = GamesToBackup,
