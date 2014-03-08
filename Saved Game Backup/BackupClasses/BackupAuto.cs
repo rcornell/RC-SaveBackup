@@ -685,8 +685,8 @@ namespace Saved_Game_Backup
             await drop.Initialize();
             if (_backupSyncOptions.SyncToZip) {
                 Debug.WriteLine(@"Creating and uploading zip file");
-                //var zipPath = _autoBackupDirectoryInfo.FullName + @"\SaveGame.zip";
-                //if (File.Exists(zipPath)) File.Delete(zipPath);
+                var zipPath = _autoBackupDirectoryInfo.FullName + @"\SaveGame.zip";
+                if (File.Exists(zipPath)) File.Delete(zipPath);
                 await Task.Run(() => ZipFile.CreateFromDirectory(_autoBackupDirectoryInfo.FullName, @"C:\Users\Rob\Desktop\Saves.zip"));
                 var file = new FileInfo(@"C:\Users\Rob\Desktop\Saves.zip");
                 await drop.Upload("/", file);

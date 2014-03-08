@@ -56,10 +56,6 @@ namespace Saved_Game_Backup.ViewModel
             DefaultExt = "zip",
         };
 
-        private static readonly TimeSpan IntervalSpan = new TimeSpan(0,0,0,1);
-
-        public System.Timers.Timer Countdown { get; set; }
-
         private TimeSpan _span;
         public TimeSpan Span {
             get { return _span; }
