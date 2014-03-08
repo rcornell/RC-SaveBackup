@@ -31,6 +31,9 @@ namespace Saved_Game_Backup {
             set { _maxBackups = value; }
         }
 
+        public string UserSecret { get; set; }
+        public string UserToken { get; set; }
+
         public string LastBackupTime;
 
         public UserPrefs(){}

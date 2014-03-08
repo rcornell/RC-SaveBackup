@@ -8,7 +8,9 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using DropNet.Models;
 using Saved_Game_Backup.ViewModel;
+using ThicknessConverter = Xceed.Wpf.DataGrid.Converters.ThicknessConverter;
 
 namespace Saved_Game_Backup
 {
@@ -18,7 +20,7 @@ namespace Saved_Game_Backup
 
         public UserPrefs LoadPrefs() {
             UserPrefs prefs;
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Save Backup Tool\\";
+            var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Save Backup Tool\\";
             if (Directory.Exists(path))
             {
                 try {
@@ -53,6 +55,16 @@ namespace Saved_Game_Backup
         public static bool CheckForPrefs() {
             var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Save Backup Tool\\UserPrefs.dat";
             return File.Exists(path);
+        }
+
+        public static bool SaveDropBoxToken(UserLogin userLogin) {
+            if (!CheckForPrefs()) return false;
+            var saver = new PrefSaver();
+            var prefs = saver.LoadPrefs();
+            prefs.UserSecret = userLogin.Secret;
+            prefs.UserToken = userLogin.Token;
+            saver.SavePrefs(prefs);
+            return true;
         }
 
     }
