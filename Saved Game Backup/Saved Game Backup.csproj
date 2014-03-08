@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DropNet">
+      <HintPath>..\packages\DropNet.1.9.6\lib\net40\DropNet.dll</HintPath>
+    </Reference>
     <Reference Include="GalaSoft.MvvmLight.Extras.WPF45">
       <HintPath>..\packages\MvvmLightLibs.4.2.30.0\lib\net45\GalaSoft.MvvmLight.Extras.WPF45.dll</HintPath>
     </Reference>
@@ -45,6 +48,9 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp">
+      <HintPath>..\packages\RestSharp.104.1\lib\net4\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -96,17 +102,18 @@
     <Compile Include="AddGameWindow.xaml.cs">
       <DependentUpon>AddGameWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Backup.cs" />
-    <Compile Include="BackupAuto.cs" />
-    <Compile Include="BackupToFolder.cs" />
-    <Compile Include="BackupToZip.cs" />
-    <Compile Include="BackupType.cs" />
+    <Compile Include="Backup\Backup.cs" />
+    <Compile Include="Backup\BackupAuto.cs" />
+    <Compile Include="Backup\BackupToFolder.cs" />
+    <Compile Include="Backup\BackupToZip.cs" />
+    <Compile Include="Backup\BackupType.cs" />
     <Compile Include="DirectoryFinder.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameListHandler.cs" />
-    <Compile Include="GamesDBAPI.cs" />
-    <Compile Include="GamesDBThumbResult.cs" />
-    <Compile Include="GiantBombAPI.cs" />
+    <Compile Include="OnlineStorage\DropBoxAPI.cs" />
+    <Compile Include="ThumbnailAPI\GamesDBAPI.cs" />
+    <Compile Include="Helper\GamesDBThumbResult.cs" />
+    <Compile Include="ThumbnailAPI\GiantBombAPI.cs" />
     <Compile Include="Helper\AddGameMessage.cs" />
     <Compile Include="Helper\BackupResultHelper.cs" />
     <Compile Include="Helper\OptionMessage.cs" />
@@ -115,11 +122,10 @@
     <Compile Include="OptionsWindow.xaml.cs">
       <DependentUpon>OptionsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PathCompare.cs" />
-    <Compile Include="PrefSaver.cs" />
+    <Compile Include="Preferences\PrefSaver.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="SBTErrorLogger.cs" />
-    <Compile Include="UserPrefs.cs" />
+    <Compile Include="Preferences\UserPrefs.cs" />
     <Compile Include="ViewModel\AddGameViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\OptionsViewModel.cs" />
