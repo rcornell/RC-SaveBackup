@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using DropNet.Models;
+using Newtonsoft.Json;
 using Saved_Game_Backup.Preferences;
 using Saved_Game_Backup.ViewModel;
 using ThicknessConverter = Xceed.Wpf.DataGrid.Converters.ThicknessConverter;
@@ -25,11 +26,8 @@ namespace Saved_Game_Backup
             if (Directory.Exists(path))
             {
                 try {
-                    using (Stream input = File.OpenRead(path + "UserPrefs.dat")) {
-                        var bf = new BinaryFormatter();
-                        prefs = (UserPrefs) bf.Deserialize(input);
-                    }
-
+                    var fullPath = path + @"UserPrefs.dat";
+                    prefs = JsonConvert.DeserializeObject<UserPrefs>(File.ReadAllText(fullPath));
                     return prefs;
                 }
                 catch (SerializationException ex) {
@@ -46,11 +44,10 @@ namespace Saved_Game_Backup
             var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Save Backup Tool\\";
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
+            var fullPath = path + @"UserPrefs.dat";
+            var text = JsonConvert.SerializeObject(prefs);
+            File.WriteAllText(fullPath, text);
 
-            using (Stream output = File.Create(path + "UserPrefs.dat")) {
-                var bf = new BinaryFormatter();
-                bf.Serialize(output, prefs);
-            }
         }
 
         public static bool CheckForPrefs() {
