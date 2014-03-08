@@ -57,6 +57,15 @@
                         <CheckBox Margin="3"  VerticalAlignment="Center" IsChecked="{Binding SyncToDropbox}"/>
                         <TextBlock Text="Sync to Dropbox" Margin="3" VerticalAlignment="Center"/>
                     </StackPanel>
+                    <Separator/>
+                    <StackPanel Orientation="Horizontal" IsEnabled="{Binding SyncEnabled}">
+                        <CheckBox Margin="3"  VerticalAlignment="Center" IsChecked="{Binding SyncToFolder}"/>
+                        <TextBlock Text="Sync to Folder" Margin="3" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" IsEnabled="{Binding SyncEnabled}">
+                        <CheckBox Margin="3"  VerticalAlignment="Center" IsChecked="{Binding SyncToZip}"/>
+                        <TextBlock Text="Sync to Zip" Margin="3" VerticalAlignment="Center"/>
+                    </StackPanel>
                     
                 </MenuItem>
             </MenuItem>

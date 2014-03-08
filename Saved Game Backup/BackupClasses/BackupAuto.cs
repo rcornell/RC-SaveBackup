@@ -54,6 +54,7 @@ namespace Saved_Game_Backup
             if (backupEnabled) return ShutdownAutobackup();
             GamesToBackup = gamesToBackup;
             BackupEnabled = backupEnabled;
+            _backupSyncOptions = backupSyncOptions;
             _autoBackupDirectoryInfo = autobackupDi;
             _progress = new ProgressHelper(){FilesComplete = 0, TotalFiles = 0};
             return InitializeAutobackup(backupEnabled, interval);
@@ -679,6 +680,12 @@ namespace Saved_Game_Backup
         private async static Task SyncToDropbox() {
             var drop = new DropBoxAPI();
             await drop.Initialize();
+            if (_backupSyncOptions.ToZip) {
+                
+            }
+            else {
+                
+            }
 
         }
         

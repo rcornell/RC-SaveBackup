@@ -280,14 +280,50 @@ namespace Saved_Game_Backup.ViewModel
             }
         }
 
+        private bool _syncEnabled;
+        public bool SyncEnabled {
+            get { return _syncEnabled; }
+            set {
+                _syncEnabled = value; 
+                RaisePropertyChanged(() => SyncEnabled);
+            }
+        }
+
         private bool _syncToDropbox;
         public bool SyncToDropbox {
             get { return _syncToDropbox; }
             set {
                 _syncToDropbox = value;
+                BackupSyncOptions.SyncToDropbox = value;
                 RaisePropertyChanged(() => SyncToDropbox);
+                SyncEnabled = value;
             }
         }
+
+        private bool _syncToZip;
+        public bool SyncToZip {
+            get { return _syncToZip; }
+            set { 
+                _syncToZip = value;
+                BackupSyncOptions.ToZip = value;
+                _syncToFolder = !value;
+                RaisePropertyChanged(() => SyncToZip);
+                RaisePropertyChanged(() => SyncToFolder);
+            }
+        }
+
+        private bool _syncToFolder;
+        public bool SyncToFolder {
+            get { return _syncToFolder; }
+            set {
+                _syncToFolder = value;
+                BackupSyncOptions.ToFolder = value;
+                _syncToZip = !value;
+                RaisePropertyChanged(() => SyncToFolder);
+                RaisePropertyChanged(() => SyncToZip);
+            }
+        }
+
 
         private int _themeInt;
         public int ThemeInt {
