@@ -195,7 +195,7 @@
                 <Button Margin="3"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Center"
-                        Command="{Binding}"
+                        Command="{Binding DropBoxTest}"
                         Content="Upload to Dropbox"
                         Style="{StaticResource SbtButtonStyle}" />
                 <Grid>

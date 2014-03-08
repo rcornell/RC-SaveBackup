@@ -39,8 +39,8 @@ namespace Saved_Game_Backup.OnlineStorage
         }
 
         public async Task Initialize() { //Use async methods
-            if (!LoadUserLogin()) return;
             var login = _client.GetToken(); //Gets oauth token
+            if (LoadUserLogin()) return; //True if user secret and token exist and were loaded
             var authUrl = _client.BuildAuthorizeUrl();
             Process.Start(authUrl);
             var result = MessageBox.Show(@"Please log in to DropBox and authorize SaveMonkey", "Authorize App",
@@ -57,7 +57,7 @@ namespace Saved_Game_Backup.OnlineStorage
         public async Task Upload(string folderPath, FileInfo file) {
             var bytes = File.ReadAllBytes(file.FullName);
             //await _client.UploadFileAsync(folderPath, file.Name, bytes);
-            _client.UploadFileAsync("/", "test.txt", bytes, (response) => { }, (error) => SBTErrorLogger.Log(error.Message));
+            _client.UploadFileAsync("/", file.Name, bytes, (response) => File.WriteAllText(@"C:\Users\Rob\Desktop\response.txt", response.ToString()), (error) => SBTErrorLogger.Log(error.Message));
         }
 
         public async Task Download(string filePath, string targetFile) {

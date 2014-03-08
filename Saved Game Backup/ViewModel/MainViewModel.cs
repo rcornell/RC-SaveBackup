@@ -14,6 +14,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Saved_Game_Backup.Helper;
+using Saved_Game_Backup.OnlineStorage;
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
 using Timer = System.Timers.Timer;
@@ -334,6 +335,21 @@ namespace Saved_Game_Backup.ViewModel
         }
         public RelayCommand Close {
             get { return new RelayCommand(CloseApplication); }
+        }
+
+        public RelayCommand DropBoxTest {
+            get { return new RelayCommand(ExecuteDropBoxTest);}
+        }
+
+        public async void ExecuteDropBoxTest() {
+            string testfile ="";
+            var d = new OpenFileDialog();
+            if (d.ShowDialog() == DialogResult.OK)
+                testfile = d.FileName;
+            var drop = new DropBoxAPI();
+            await drop.Initialize();
+            var fi = new FileInfo(testfile);
+            drop.Upload("/", fi);
         }
 
         public MainViewModel() {
