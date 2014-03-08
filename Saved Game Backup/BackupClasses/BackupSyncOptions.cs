@@ -5,17 +5,21 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using GalaSoft.MvvmLight;
 using Saved_Game_Backup.Annotations;
 
 namespace Saved_Game_Backup.BackupClasses {
+
     [Serializable]
-    public class BackupSyncOptions : INotifyPropertyChanged {
+    public class BackupSyncOptions : ObservableObject {
+
+
         private bool _syncToDropbox;
         public bool SyncToDropbox {
             get { return _syncToDropbox; }
             set {
                 _syncToDropbox = value;
-                OnPropertyChanged(@"SyncToDropbox");
+                RaisePropertyChanged(() => SyncToDropbox);
                 SyncEnabled = value;
             }
         }
@@ -24,21 +28,19 @@ namespace Saved_Game_Backup.BackupClasses {
             get { return _syncEnabled; }
             set {
                 _syncEnabled = value;
-                OnPropertyChanged(@"SyncEnabled");
+                RaisePropertyChanged(() => SyncEnabled);
             }
         }
-
-        public bool SyncToGoogleDrive { get; set; }
-        public bool SyncToSkydrive { get; set; }
 
         private bool _syncToZip;
         public bool SyncToZip {
             get { return _syncToZip; }
             set {
                 _syncToZip = value;
-                _syncToFolder = !value;
-                OnPropertyChanged(@"SyncToZip");
-                OnPropertyChanged(@"SyncToFolder");
+                if (value)
+                    _syncToFolder = false;
+                RaisePropertyChanged(() => SyncToZip);
+                RaisePropertyChanged(() => SyncToFolder);
             }
         }
         private bool _syncToFolder;
@@ -46,24 +48,16 @@ namespace Saved_Game_Backup.BackupClasses {
             get { return _syncToFolder; }
             set {
                 _syncToFolder = value;
-                _syncToZip = !value;
-                OnPropertyChanged(@"SyncToZip");
-                OnPropertyChanged(@"SyncToFolder");
+                if (value)
+                    _syncToZip = false;
+                RaisePropertyChanged(() => SyncToZip);
+                RaisePropertyChanged(() => SyncToFolder);
             }
         }
 
         public BackupSyncOptions() {
             SyncToDropbox = false;
-            SyncToGoogleDrive = false;
-            SyncToSkydrive = false;
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

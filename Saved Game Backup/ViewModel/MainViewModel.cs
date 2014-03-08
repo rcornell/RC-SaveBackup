@@ -17,6 +17,7 @@ using GalaSoft.MvvmLight.Messaging;
 using Saved_Game_Backup.BackupClasses;
 using Saved_Game_Backup.Helper;
 using Saved_Game_Backup.OnlineStorage;
+using Saved_Game_Backup.Preferences;
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
 using Timer = System.Timers.Timer;
@@ -472,6 +473,9 @@ namespace Saved_Game_Backup.ViewModel
                 _maxBackups = prefs.MaxBackups;
                 _themeInt = prefs.Theme;
                 LastBackupTime = prefs.LastBackupTime;
+                BackupSyncOptions.SyncToDropbox = prefs.SyncToDropbox;
+                BackupSyncOptions.SyncToFolder = prefs.SyncToFolder;
+                BackupSyncOptions.SyncToZip = prefs.SyncToZip;
                 if (prefs.SelectedGames != null) GamesToBackup = prefs.SelectedGames;
             }
             Brushes = Theme.ToggleTheme(_themeInt);
@@ -486,10 +490,22 @@ namespace Saved_Game_Backup.ViewModel
                 prefs.Theme = ThemeInt;
                 prefs.SelectedGames = GamesToBackup;
                 prefs.LastBackupTime = LastBackupTime;
+                prefs.SyncToFolder = BackupSyncOptions.SyncToFolder;
+                prefs.SyncToZip = BackupSyncOptions.SyncToZip;
+                prefs.SyncToDropbox = BackupSyncOptions.SyncToDropbox;
                 p.SavePrefs(prefs);
                 return;
             }
-            p.SavePrefs(new UserPrefs(_themeInt, _maxBackups, GamesToBackup, LastBackupTime));
+            var newPrefs = new UserPrefs() {
+                SyncToDropbox = BackupSyncOptions.SyncToDropbox,
+                SyncToFolder = BackupSyncOptions.SyncToFolder,
+                SyncToZip = BackupSyncOptions.SyncToZip,
+                LastBackupTime = LastBackupTime,
+                MaxBackups = MaxBackups,
+                SelectedGames = GamesToBackup,
+                Theme = ThemeInt
+            };
+            p.SavePrefs(newPrefs);
         }
 
         private void ExecuteDetectGames() {
