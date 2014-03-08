@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
@@ -678,15 +679,23 @@ namespace Saved_Game_Backup
         }
 
         private async static Task SyncToDropbox() {
+            var startTime = Watch.Elapsed;
+            Debug.WriteLine(@"Starting SyncToDropbox at {0}", startTime);
             var drop = new DropBoxAPI();
             await drop.Initialize();
             if (_backupSyncOptions.ToZip) {
-                
+                Debug.WriteLine(@"Creating and uploading zip file");
+                var zipPath = new FileInfo(_autoBackupDirectoryInfo.FullName + @"\SaveGame.zip");
+                await Task.Run(() => ZipFile.CreateFromDirectory(_autoBackupDirectoryInfo.FullName, zipPath.FullName));
+                await drop.Upload("/", zipPath);
             }
             else {
-                
+                Debug.WriteLine(@"Creating and uploading directories and files");
+                //upload to directories
             }
-
+            var endtime = Watch.Elapsed;
+            Debug.WriteLine(@"Finishing SyncToDropbox at {0}", endtime);
+            Debug.WriteLine(@"SyncToDropbox finished in {0}", (endtime - startTime));
         }
         
         /// <summary>
