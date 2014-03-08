@@ -82,8 +82,6 @@ namespace Saved_Game_Backup.OnlineStorage
             var bytes = File.ReadAllBytes(file.FullName);
             var uploadPath = @"/SaveMonkey" + folderPath;
             await CheckFolderPath(uploadPath);
-
-            //_client.UploadFile("/", file.Name.ToString(), bytes);
             _client.UploadFileAsync(uploadPath, file.Name, bytes, (response) => {
                 var sb = new StringBuilder();
                 sb.AppendLine(response.Contents.ToString());
@@ -93,9 +91,7 @@ namespace Saved_Game_Backup.OnlineStorage
                 Console.WriteLine(error.Response.StatusCode.ToString());
                 MessageBox.Show(@"Look for error in output"); //Remove after testing
                 SBTErrorLogger.Log(error.Response.StatusCode.ToString());
-            }
-
-    );
+            });
         }
 
         public async Task Upload(string folderPath, string file) {
