@@ -13,6 +13,7 @@ using System.Timers;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
+using Saved_Game_Backup.BackupClasses;
 using Saved_Game_Backup.Helper;
 using Saved_Game_Backup.OnlineStorage;
 using Application = System.Windows.Application;
@@ -306,6 +307,8 @@ namespace Saved_Game_Backup.ViewModel
             }
         }
 
+        public BackupSyncOptions BackupSyncOptions = new BackupSyncOptions();
+
         public RelayCommand ShowAbout {
             get { return new RelayCommand(ExecuteShowAbout);}
         }
@@ -493,7 +496,7 @@ namespace Saved_Game_Backup.ViewModel
                     else return;
                     break;
             }
-            var result = await Backup.StartBackup(GamesToBackup.ToList(), BackupType, BackupEnabled, Interval, SpecifiedFolder, _specifiedFile);
+            var result = await Backup.StartBackup(GamesToBackup.ToList(), BackupType, BackupEnabled, BackupSyncOptions, Interval, SpecifiedFolder, _specifiedFile);
             HandleBackupResult(result);
         }
 

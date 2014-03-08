@@ -102,11 +102,12 @@
     <Compile Include="AddGameWindow.xaml.cs">
       <DependentUpon>AddGameWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Backup\Backup.cs" />
-    <Compile Include="Backup\BackupAuto.cs" />
-    <Compile Include="Backup\BackupToFolder.cs" />
-    <Compile Include="Backup\BackupToZip.cs" />
-    <Compile Include="Backup\BackupType.cs" />
+    <Compile Include="BackupClasses\Backup.cs" />
+    <Compile Include="BackupClasses\BackupAuto.cs" />
+    <Compile Include="BackupClasses\BackupSyncOptions.cs" />
+    <Compile Include="BackupClasses\BackupToFolder.cs" />
+    <Compile Include="BackupClasses\BackupToZip.cs" />
+    <Compile Include="BackupClasses\BackupType.cs" />
     <Compile Include="DirectoryFinder.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameListHandler.cs" />
