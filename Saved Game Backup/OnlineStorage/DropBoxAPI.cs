@@ -37,7 +37,11 @@ namespace Saved_Game_Backup.OnlineStorage
             return true;
         }
 
-        public static async Task DropLogin() {
+        private static void SaveUserLogin(UserLogin userLogin) {
+            PrefSaver.SaveDropBoxToken(userLogin);
+        }
+
+        public static async Task DropLogin() { //Use async methods
             if (!LoadUserLogin()) return;
             var login = _client.GetToken(); //Gets oauth token
             var authUrl = _client.BuildAuthorizeUrl();
@@ -46,6 +50,7 @@ namespace Saved_Game_Backup.OnlineStorage
                 MessageBoxButton.OKCancel, MessageBoxImage.Information);
             if (result == MessageBoxResult.Cancel) return;
             var accessToken = _client.GetAccessToken(); //Store this token for "remember me" function
+            SaveUserLogin(accessToken);
         }
 
         public static void GetPermission(string url) {
@@ -53,10 +58,18 @@ namespace Saved_Game_Backup.OnlineStorage
         }
 
         public async Task Upload(string folderPath, FileInfo file) {
-            
+            var bytes = File.ReadAllBytes(file.FullName);
+            //await _client.UploadFileAsync(folderPath, file.Name, bytes);
+            _client.UploadFileAsync("/", "test.txt", bytes, (response) => { }, (error) => SBTErrorLogger.Log(error.Message));
         }
 
         public async Task Download(string filePath, string targetFile) {
+            _client.GetFileAsync("/Getting Started.rtf",
+            (response) => File.WriteAllBytes(targetFile, response.RawBytes),
+            (error) =>
+            {
+                //Do something on error
+            });
             
         }
 

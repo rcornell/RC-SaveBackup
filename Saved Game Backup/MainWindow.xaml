@@ -90,22 +90,34 @@
                                                  Mode=TwoWay}"
                           Text="Backup Method" />
                 <StackPanel Margin="3"
-                            Orientation="Horizontal"
+                            Orientation="Vertical"
+                            HorizontalAlignment="Center"
                             Visibility="{Binding AutoBackupVisibility}">
                     <TextBlock VerticalAlignment="Center"
+                               HorizontalAlignment="Center"
                                Style="{StaticResource TextStyle}"
                                Text="Autobackup interval"
                                TextWrapping="Wrap" />
-                    <xctk:IntegerUpDown Margin="3"
-                                        Minimum="1"
-                                        Text="{Binding Interval,
-                                                       UpdateSourceTrigger=PropertyChanged,
-                                                       Delay=100}"
-                                        ToolTip="Scanning can be CPU/Hard Drive intensive. A longer interval will have less impact on performance." />
-                    <TextBlock VerticalAlignment="Center"
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <xctk:IntegerUpDown Margin="3"
+                                            Minimum="0"
+                                            DefaultValue="6"
+                                            ToolTip="Scanning can be CPU/Hard Drive intensive. A longer interval will have less impact on performance." />
+                        <TextBlock VerticalAlignment="Center"
                                Style="{StaticResource TextStyle}"
-                               Text="min."
+                               Text="Hours"
                                TextWrapping="Wrap" />
+                        <xctk:IntegerUpDown Margin="3"
+                                            DefaultValue="30"
+                                            Minimum="1"
+                                            Text="{Binding Interval, UpdateSourceTrigger=PropertyChanged, Delay=100}"
+                                            ToolTip="Scanning can be CPU/Hard Drive intensive. A longer interval will have less impact on performance." />
+                        <TextBlock VerticalAlignment="Center"
+                               Style="{StaticResource TextStyle}"
+                               Text="Minutes"
+                               TextWrapping="Wrap" />
+                    </StackPanel>
+                    
                     
                 </StackPanel>
             </StackPanel>
@@ -179,6 +191,12 @@
                         VerticalAlignment="Center"
                         Command="{Binding OpenAddGameWindow}"
                         Content="Add Game to List"
+                        Style="{StaticResource SbtButtonStyle}" />
+                <Button Margin="3"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
+                        Command="{Binding}"
+                        Content="Upload to Dropbox"
                         Style="{StaticResource SbtButtonStyle}" />
                 <Grid>
 
