@@ -279,6 +279,15 @@ namespace Saved_Game_Backup.ViewModel
             }
         }
 
+        private bool _syncToDropbox;
+        public bool SyncToDropbox {
+            get { return _syncToDropbox; }
+            set {
+                _syncToDropbox = value;
+                RaisePropertyChanged(() => SyncToDropbox);
+            }
+        }
+
         private int _themeInt;
         public int ThemeInt {
             get { return _themeInt; }

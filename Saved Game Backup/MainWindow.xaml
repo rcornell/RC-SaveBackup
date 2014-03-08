@@ -52,7 +52,13 @@
             </MenuItem>
             <MenuItem Header="_Options">
                 <MenuItem Header="_Cloud Storage Settings" />
-                <MenuItem Header="_Auto-backup Settings" />
+                <MenuItem Header="_Auto-backup Settings" >
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox Margin="3"  VerticalAlignment="Center" IsChecked="{Binding SyncToDropbox}"/>
+                        <TextBlock Text="Sync to Dropbox" Margin="3" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    
+                </MenuItem>
             </MenuItem>
             <MenuItem Command="{Binding ShowAbout}" Header="_About" />
         </Menu>

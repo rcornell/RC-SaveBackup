@@ -8,10 +8,12 @@ using System.Security.RightsManagement;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using DropNet;
 using DropNet.Exceptions;
 using DropNet.Models;
 using Xceed.Wpf.DataGrid.FilterCriteria;
+using MessageBox = System.Windows.MessageBox;
 
 namespace Saved_Game_Backup.OnlineStorage
 {
@@ -59,14 +61,27 @@ namespace Saved_Game_Backup.OnlineStorage
             }
         }
 
-        public void GetPermission(string url) {
+        public void GetMetadata() {
+            var meta = _client.GetMetaData();
+            DirectoryInfo dirs = null;
+            foreach (var content in meta.Contents) {
+                if (content.Is_Dir && dirs == null) {
+
+                    dirs = new DirectoryInfo(content.Path);
+                    continue;
+                }
+                if (!content.Is_Dir || dirs == null) continue;
+                dirs.CreateSubdirectory(content.Name);
+                continue;
+            }
+
             
         }
 
         //Not awaited
         public async Task Upload(string folderPath, FileInfo file) {
             var bytes = File.ReadAllBytes(file.FullName);
-            _client.UploadFileAsync("/", file.Name, bytes, (response) => {
+            _client.UploadFileAsync("/SaveMonkey", file.Name, bytes, (response) => {
                 var sb = new StringBuilder();
                 sb.AppendLine(response.Contents.ToString());
                 sb.AppendLine(response.Extension.ToString(CultureInfo.InvariantCulture));
