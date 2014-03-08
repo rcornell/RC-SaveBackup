@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.RightsManagement;
@@ -8,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using DropNet;
+using DropNet.Exceptions;
 using DropNet.Models;
 using Xceed.Wpf.DataGrid.FilterCriteria;
 
@@ -15,13 +17,12 @@ namespace Saved_Game_Backup.OnlineStorage
 {
     public class DropBoxAPI {
 
-        private const string apiKey = @"zv4hgyhmkkr90xz";
-        private const string apiSecret = @"1h4y0lb43hiu8ci";
+        private const string ApiKey = @"zv4hgyhmkkr90xz";
+        private const string ApiSecret = @"1h4y0lb43hiu8ci";
         private DropNetClient _client;
-        private UserLogin userLogin;
 
         public DropBoxAPI() {
-            _client = new DropNetClient(apiKey, apiSecret);
+            _client = new DropNetClient(ApiKey, ApiSecret);
         }
 
         private bool LoadUserLogin() {
@@ -38,7 +39,8 @@ namespace Saved_Game_Backup.OnlineStorage
             PrefSaver.SaveDropBoxToken(userLogin);
         }
 
-        public async Task Initialize() { //Use async methods
+        //Use async methods
+        public async Task Initialize() { 
             var login = _client.GetToken(); //Gets oauth token
             if (LoadUserLogin()) return; //True if user secret and token exist and were loaded
             var authUrl = _client.BuildAuthorizeUrl();
@@ -46,28 +48,36 @@ namespace Saved_Game_Backup.OnlineStorage
             var result = MessageBox.Show(@"Please log in to DropBox and authorize SaveMonkey", "Authorize App",
                 MessageBoxButton.OKCancel, MessageBoxImage.Information);
             if (result == MessageBoxResult.Cancel) return;
-            var accessToken = _client.GetAccessToken(); //Store this token for "remember me" function
-            SaveUserLogin(accessToken);
+            UserLogin accessToken = null;
+            try {
+                accessToken = _client.GetAccessToken(); //Store this token for "remember me" function
+                SaveUserLogin(accessToken);
+            }
+            catch (DropboxException ex) { //Fails if user doesn't authorize the app
+                SBTErrorLogger.Log(ex.Message);
+                MessageBox.Show(@"SaveMonkey not authorized by user");
+            }
         }
 
         public void GetPermission(string url) {
             
         }
 
+        //Not awaited
         public async Task Upload(string folderPath, FileInfo file) {
             var bytes = File.ReadAllBytes(file.FullName);
-            //await _client.UploadFileAsync(folderPath, file.Name, bytes);
-            _client.UploadFileAsync("/", file.Name, bytes, (response) => File.WriteAllText(@"C:\Users\Rob\Desktop\response.txt", response.ToString()), (error) => SBTErrorLogger.Log(error.Message));
+            _client.UploadFileAsync("/", file.Name, bytes, (response) => {
+                var sb = new StringBuilder();
+                sb.AppendLine(response.Contents.ToString());
+                sb.AppendLine(response.Extension.ToString(CultureInfo.InvariantCulture));
+                File.WriteAllText(@"C:\Users\Rob\Desktop\response.txt", sb.ToString()); //Remove after testing
+            }, (error) => SBTErrorLogger.Log(error.Message));
         }
 
         public async Task Download(string filePath, string targetFile) {
-            _client.GetFileAsync("/Getting Started.rtf",
+            _client.GetFileAsync(filePath,
             (response) => File.WriteAllBytes(targetFile, response.RawBytes),
-            (error) =>
-            {
-                //Do something on error
-            });
-            
+            (error) => SBTErrorLogger.Log(error.Message) );
         }
 
 
