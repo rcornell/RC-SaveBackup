@@ -17,17 +17,14 @@ namespace Saved_Game_Backup.OnlineStorage
 
         private const string apiKey = @"zv4hgyhmkkr90xz";
         private const string apiSecret = @"1h4y0lb43hiu8ci";
-        private static FileInfo testfile = new FileInfo(@"C:\Users\Rob\Desktop\testimage.png");
-        private static string userToken;
-        private static string userSecret;
-        private static DropNetClient _client;
-        private static UserLogin userLogin;
+        private DropNetClient _client;
+        private UserLogin userLogin;
 
-        static DropBoxAPI() {
+        public DropBoxAPI() {
             _client = new DropNetClient(apiKey, apiSecret);
         }
 
-        private static bool LoadUserLogin() {
+        private bool LoadUserLogin() {
             if (!PrefSaver.CheckForPrefs()) return false;
             var prefSaver = new PrefSaver();
             var prefs = prefSaver.LoadPrefs();
@@ -37,11 +34,11 @@ namespace Saved_Game_Backup.OnlineStorage
             return true;
         }
 
-        private static void SaveUserLogin(UserLogin userLogin) {
+        private void SaveUserLogin(UserLogin userLogin) {
             PrefSaver.SaveDropBoxToken(userLogin);
         }
 
-        public static async Task DropLogin() { //Use async methods
+        public async Task Initialize() { //Use async methods
             if (!LoadUserLogin()) return;
             var login = _client.GetToken(); //Gets oauth token
             var authUrl = _client.BuildAuthorizeUrl();
@@ -53,7 +50,7 @@ namespace Saved_Game_Backup.OnlineStorage
             SaveUserLogin(accessToken);
         }
 
-        public static void GetPermission(string url) {
+        public void GetPermission(string url) {
             
         }
 
