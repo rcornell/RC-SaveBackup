@@ -54,16 +54,16 @@
                 <MenuItem Header="_Cloud Storage Settings" />
                 <MenuItem Header="_Auto-backup Settings" >
                     <StackPanel Orientation="Horizontal">
-                        <CheckBox Margin="3"  VerticalAlignment="Center" IsChecked="{Binding SyncToDropbox}"/>
+                        <CheckBox Margin="3"  VerticalAlignment="Center" IsChecked="{Binding BackupSyncOptions.SyncToDropbox}"/>
                         <TextBlock Text="Sync to Dropbox" Margin="3" VerticalAlignment="Center"/>
                     </StackPanel>
                     <Separator/>
-                    <StackPanel Orientation="Horizontal" IsEnabled="{Binding SyncEnabled}">
-                        <CheckBox Margin="3"  VerticalAlignment="Center" IsChecked="{Binding SyncToFolder}"/>
+                    <StackPanel Orientation="Horizontal" IsEnabled="{Binding BackupSyncOptions.SyncEnabled}">
+                        <CheckBox Margin="3"  VerticalAlignment="Center" IsChecked="{Binding BackupSyncOptions.SyncToFolder}"/>
                         <TextBlock Text="Sync to Folder" Margin="3" VerticalAlignment="Center"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" IsEnabled="{Binding SyncEnabled}">
-                        <CheckBox Margin="3"  VerticalAlignment="Center" IsChecked="{Binding SyncToZip}"/>
+                    <StackPanel Orientation="Horizontal" IsEnabled="{Binding BackupSyncOptions.SyncEnabled}">
+                        <CheckBox Margin="3"  VerticalAlignment="Center" IsChecked="{Binding BackupSyncOptions.SyncToZip}"/>
                         <TextBlock Text="Sync to Zip" Margin="3" VerticalAlignment="Center"/>
                     </StackPanel>
                     

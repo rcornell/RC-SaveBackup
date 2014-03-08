@@ -3,6 +3,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -280,47 +281,56 @@ namespace Saved_Game_Backup.ViewModel
             }
         }
 
-        private bool _syncEnabled;
-        public bool SyncEnabled {
-            get { return _syncEnabled; }
-            set {
-                _syncEnabled = value; 
-                RaisePropertyChanged(() => SyncEnabled);
-            }
-        }
+        //private bool _syncEnabled;
+        //public bool SyncEnabled {
+        //    get { return _syncEnabled; }
+        //    set {
+        //        _syncEnabled = value; 
+        //        RaisePropertyChanged(() => SyncEnabled);
+        //    }
+        //}
 
-        private bool _syncToDropbox;
-        public bool SyncToDropbox {
-            get { return _syncToDropbox; }
-            set {
-                _syncToDropbox = value;
-                BackupSyncOptions.SyncToDropbox = value;
-                RaisePropertyChanged(() => SyncToDropbox);
-                SyncEnabled = value;
-            }
-        }
+        //private bool _syncToDropbox;
+        //public bool SyncToDropbox {
+        //    get { return _syncToDropbox; }
+        //    set {
+        //        _syncToDropbox = value;
+        //        BackupSyncOptions.SyncToDropbox = value;
+        //        RaisePropertyChanged(() => SyncToDropbox);
+        //        SyncEnabled = value;
+        //    }
+        //}
 
-        private bool _syncToZip;
-        public bool SyncToZip {
-            get { return _syncToZip; }
-            set { 
-                _syncToZip = value;
-                BackupSyncOptions.ToZip = value;
-                _syncToFolder = !value;
-                RaisePropertyChanged(() => SyncToZip);
-                RaisePropertyChanged(() => SyncToFolder);
-            }
-        }
+        //private bool _syncToZip;
+        //public bool SyncToZip {
+        //    get { return _syncToZip; }
+        //    set { 
+        //        _syncToZip = value;
+        //        BackupSyncOptions.ToZip = value;
+        //        _syncToFolder = !value;
+        //        RaisePropertyChanged(() => SyncToZip);
+        //        RaisePropertyChanged(() => SyncToFolder);
+        //    }
+        //}
 
-        private bool _syncToFolder;
-        public bool SyncToFolder {
-            get { return _syncToFolder; }
+        //private bool _syncToFolder;
+        //public bool SyncToFolder {
+        //    get { return _syncToFolder; }
+        //    set {
+        //        _syncToFolder = value;
+        //        BackupSyncOptions.ToFolder = value;
+        //        _syncToZip = !value;
+        //        RaisePropertyChanged(() => SyncToFolder);
+        //        RaisePropertyChanged(() => SyncToZip);
+        //    }
+        //}
+
+        private BackupSyncOptions _backupSyncOptions;
+        public BackupSyncOptions BackupSyncOptions {
+            get { return _backupSyncOptions; }
             set {
-                _syncToFolder = value;
-                BackupSyncOptions.ToFolder = value;
-                _syncToZip = !value;
-                RaisePropertyChanged(() => SyncToFolder);
-                RaisePropertyChanged(() => SyncToZip);
+                _backupSyncOptions = value;
+                RaisePropertyChanged(() => BackupSyncOptions);
             }
         }
 
@@ -343,7 +353,7 @@ namespace Saved_Game_Backup.ViewModel
             }
         }
 
-        public BackupSyncOptions BackupSyncOptions = new BackupSyncOptions();
+        
 
         public RelayCommand ShowAbout {
             get { return new RelayCommand(ExecuteShowAbout);}
@@ -389,18 +399,20 @@ namespace Saved_Game_Backup.ViewModel
             get { return new RelayCommand(ExecuteDropBoxTest);}
         }
 
-        public async void ExecuteDropBoxTest() {
-            string testfile ="";
-            var d = new OpenFileDialog();
-            if (d.ShowDialog() == DialogResult.OK)
-                testfile = d.FileName;
+        public async void ExecuteDropBoxTest() { //BIND CHECKBOXES TO BACKUPSYNCOPTIONS PROPERTIES DIRECTLY
             var drop = new DropBoxAPI();
             await drop.Initialize();
-            var fi = new FileInfo(testfile);
-            drop.Upload("/", fi);
+                Debug.WriteLine(@"Creating and uploading zip file");
+                //var zipPath = _autoBackupDirectoryInfo.FullName + @"\SaveGame.zip";
+                if (File.Exists(@"C:\Users\Rob\Desktop\Saves.zip")) File.Delete(@"C:\Users\Rob\Desktop\Saves.zip");
+                ZipFile.CreateFromDirectory(@"C:\Users\Rob\Desktop\SBTTest", @"C:\Users\Rob\Desktop\Saves.zip");
+                var file = new FileInfo(@"C:\Users\Rob\Desktop\Saves.zip");
+                await drop.Upload("/", file);
+                Debug.WriteLine(@"Zip uploaded");
         }
 
         public MainViewModel() {
+            BackupSyncOptions = new BackupSyncOptions();
             PercentComplete = 0;
             NumberOfBackups = 0;
             Interval = 5;
@@ -466,8 +478,17 @@ namespace Saved_Game_Backup.ViewModel
             AutoBackupVisibility = Visibility.Hidden;
         }
 
-        private void SaveUserPrefs() {
+        private void SaveUserPrefs() {         
             var p = new PrefSaver();
+            if (PrefSaver.CheckForPrefs()) {
+                var prefs = p.LoadPrefs();
+                prefs.MaxBackups = MaxBackups;
+                prefs.Theme = ThemeInt;
+                prefs.SelectedGames = GamesToBackup;
+                prefs.LastBackupTime = LastBackupTime;
+                p.SavePrefs(prefs);
+                return;
+            }
             p.SavePrefs(new UserPrefs(_themeInt, _maxBackups, GamesToBackup, LastBackupTime));
         }
 

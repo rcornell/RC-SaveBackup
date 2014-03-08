@@ -683,11 +683,13 @@ namespace Saved_Game_Backup
             Debug.WriteLine(@"Starting SyncToDropbox at {0}", startTime);
             var drop = new DropBoxAPI();
             await drop.Initialize();
-            if (_backupSyncOptions.ToZip) {
+            if (_backupSyncOptions.SyncToZip) {
                 Debug.WriteLine(@"Creating and uploading zip file");
-                var zipPath = new FileInfo(_autoBackupDirectoryInfo.FullName + @"\SaveGame.zip");
-                await Task.Run(() => ZipFile.CreateFromDirectory(_autoBackupDirectoryInfo.FullName, zipPath.FullName));
-                await drop.Upload("/", zipPath);
+                //var zipPath = _autoBackupDirectoryInfo.FullName + @"\SaveGame.zip";
+                //if (File.Exists(zipPath)) File.Delete(zipPath);
+                await Task.Run(() => ZipFile.CreateFromDirectory(_autoBackupDirectoryInfo.FullName, @"C:\Users\Rob\Desktop\Saves.zip"));
+                var file = new FileInfo(@"C:\Users\Rob\Desktop\Saves.zip");
+                await drop.Upload("/", file);
                 Debug.WriteLine(@"Zip uploaded");
             }
             else {
@@ -703,15 +705,13 @@ namespace Saved_Game_Backup
                             var parentSub = parent.Substring(parentIndex);
                             parentSub = @"/" + parentSub.Replace(@"\", @"/");
 
-                            //var index = allFiles[i].IndexOf(game.RootFolder);
-                            //var substring = allFiles[i].Substring(index - 1);
-                            var fileName = new FileInfo(allFiles[i]);
+                            var fileName = new FileInfo(allFiles[i].ToString());
                             parentFileNameDictionary.Add(fileName,parentSub);
                         }
                     }
                 }
                 foreach (var pair in parentFileNameDictionary) {
-                    await drop.Upload(pair.Value, pair.Key.Name); //Value is parent directory, Key is FileInfo
+                    await drop.Upload(pair.Value, pair.Key); //Value is parent directory, Key is FileInfo
                     Debug.WriteLine(@"File uploaded");
                 }
             }

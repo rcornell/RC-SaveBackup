@@ -57,14 +57,24 @@ namespace Saved_Game_Backup
             return File.Exists(path);
         }
 
-        public static bool SaveDropBoxToken(UserLogin userLogin) {
-            if (!CheckForPrefs()) return false;
+        public bool SaveDropBoxToken(UserLogin userLogin) {
+            if (!CheckForPrefs()) 
+                return CreatePrefs(userLogin);
             var saver = new PrefSaver();
             var prefs = saver.LoadPrefs();
             prefs.UserSecret = userLogin.Secret;
             prefs.UserToken = userLogin.Token;
             saver.SavePrefs(prefs);
             return true;
+        }
+
+        private bool CreatePrefs(UserLogin userLogin = null) {
+            if (userLogin != null) {
+                var prefs = new UserPrefs {UserSecret = userLogin.Secret, UserToken = userLogin.Token};
+                SavePrefs(prefs);
+                return true;
+            }
+            return false;
         }
 
     }

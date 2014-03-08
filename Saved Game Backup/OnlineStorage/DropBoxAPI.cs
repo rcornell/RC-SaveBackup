@@ -38,7 +38,8 @@ namespace Saved_Game_Backup.OnlineStorage
         }
 
         private void SaveUserLogin(UserLogin userLogin) {
-            PrefSaver.SaveDropBoxToken(userLogin);
+            var saver = new PrefSaver();
+            saver.SaveDropBoxToken(userLogin);
         }
 
         //Use async methods
@@ -73,25 +74,36 @@ namespace Saved_Game_Backup.OnlineStorage
                 if (!content.Is_Dir || dirs == null) continue;
                 dirs.CreateSubdirectory(content.Name);
                 continue;
-            }
-
-            
+            }      
         }
 
         //Not awaited
         public async Task Upload(string folderPath, FileInfo file) {
             var bytes = File.ReadAllBytes(file.FullName);
-            _client.UploadFileAsync("/SaveMonkey", file.Name, bytes, (response) => {
+            var uploadPath = @"/SaveMonkey" + folderPath;
+            await CheckFolderPath(uploadPath);
+
+            //_client.UploadFile("/", file.Name.ToString(), bytes);
+            _client.UploadFileAsync(uploadPath, file.Name, bytes, (response) => {
                 var sb = new StringBuilder();
                 sb.AppendLine(response.Contents.ToString());
                 sb.AppendLine(response.Extension.ToString(CultureInfo.InvariantCulture));
                 File.WriteAllText(@"C:\Users\Rob\Desktop\response.txt", sb.ToString()); //Remove after testing
-            }, (error) => SBTErrorLogger.Log(error.Message));
+            }, (error) => {
+                Console.WriteLine(error.Response.StatusCode.ToString());
+                MessageBox.Show(@"Look for error in output"); //Remove after testing
+                SBTErrorLogger.Log(error.Response.StatusCode.ToString());
+            }
+
+    );
         }
 
         public async Task Upload(string folderPath, string file) {
-            var bytes = File.ReadAllBytes(file);
-            _client.UploadFileAsync("/SaveMonkey", file, bytes, (response) => {
+            var bytes = File.ReadAllBytes(file); //This fails because it's not a full path
+            var uploadPath = @"/SaveMonkey" + folderPath;
+            await CheckFolderPath(uploadPath);
+
+            _client.UploadFileAsync(uploadPath, file, bytes, (response) => {
                 var sb = new StringBuilder();
                 sb.AppendLine(response.Contents.ToString());
                 sb.AppendLine(response.Extension.ToString(CultureInfo.InvariantCulture));
@@ -103,6 +115,10 @@ namespace Saved_Game_Backup.OnlineStorage
             _client.GetFileAsync(filePath,
             (response) => File.WriteAllBytes(targetFile, response.RawBytes),
             (error) => SBTErrorLogger.Log(error.Message) );
+        }
+
+        private async Task CheckFolderPath(string path) { //NOT AUTHORIZED
+            //var metaData = _client.CreateFolder(path);
         }
 
 

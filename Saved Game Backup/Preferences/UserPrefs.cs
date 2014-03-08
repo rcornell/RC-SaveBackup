@@ -8,10 +8,19 @@ using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
+using Saved_Game_Backup.BackupClasses;
 
 namespace Saved_Game_Backup {   
     [Serializable]
     public class UserPrefs {
+
+        private BackupSyncOptions _backupSyncOptions;
+        public BackupSyncOptions BackupSyncOptions {
+            get { return _backupSyncOptions; }
+            set {
+                _backupSyncOptions = value;
+            }
+        }
 
         private ObservableCollection<Game> _selectedGames;
         public ObservableCollection<Game> SelectedGames {
