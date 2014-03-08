@@ -89,6 +89,16 @@ namespace Saved_Game_Backup.OnlineStorage
             }, (error) => SBTErrorLogger.Log(error.Message));
         }
 
+        public async Task Upload(string folderPath, string file) {
+            var bytes = File.ReadAllBytes(file);
+            _client.UploadFileAsync("/SaveMonkey", file, bytes, (response) => {
+                var sb = new StringBuilder();
+                sb.AppendLine(response.Contents.ToString());
+                sb.AppendLine(response.Extension.ToString(CultureInfo.InvariantCulture));
+                File.WriteAllText(@"C:\Users\Rob\Desktop\response.txt", sb.ToString()); //Remove after testing
+            }, (error) => SBTErrorLogger.Log(error.Message));
+        }
+
         public async Task Download(string filePath, string targetFile) {
             _client.GetFileAsync(filePath,
             (response) => File.WriteAllBytes(targetFile, response.RawBytes),

@@ -688,10 +688,32 @@ namespace Saved_Game_Backup
                 var zipPath = new FileInfo(_autoBackupDirectoryInfo.FullName + @"\SaveGame.zip");
                 await Task.Run(() => ZipFile.CreateFromDirectory(_autoBackupDirectoryInfo.FullName, zipPath.FullName));
                 await drop.Upload("/", zipPath);
+                Debug.WriteLine(@"Zip uploaded");
             }
             else {
                 Debug.WriteLine(@"Creating and uploading directories and files");
-                //upload to directories
+                var parentFileNameDictionary = new Dictionary<FileInfo, string>();
+                var allFiles = Directory.GetFiles(_autoBackupDirectoryInfo.FullName, "*", SearchOption.AllDirectories);
+                var truncatedFiles = new List<string>();
+                foreach (var game in GamesToBackup) {
+                    for (var i = 0; i < allFiles.Count(); i++) {
+                        if (allFiles[i].Contains(game.RootFolder)){
+                            var parent = Directory.GetParent(allFiles[i]).ToString();
+                            var parentIndex = parent.IndexOf(game.RootFolder);
+                            var parentSub = parent.Substring(parentIndex);
+                            parentSub = @"/" + parentSub.Replace(@"\", @"/");
+
+                            //var index = allFiles[i].IndexOf(game.RootFolder);
+                            //var substring = allFiles[i].Substring(index - 1);
+                            var fileName = new FileInfo(allFiles[i]);
+                            parentFileNameDictionary.Add(fileName,parentSub);
+                        }
+                    }
+                }
+                foreach (var pair in parentFileNameDictionary) {
+                    await drop.Upload(pair.Value, pair.Key.Name); //Value is parent directory, Key is FileInfo
+                    Debug.WriteLine(@"File uploaded");
+                }
             }
             var endtime = Watch.Elapsed;
             Debug.WriteLine(@"Finishing SyncToDropbox at {0}", endtime);
