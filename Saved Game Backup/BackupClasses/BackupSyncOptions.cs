@@ -38,7 +38,7 @@ namespace Saved_Game_Backup.BackupClasses {
             set {
                 _syncToZip = value;
                 if (value)
-                    _syncToFolder = false;
+                    SyncToFolder = false;
                 RaisePropertyChanged(() => SyncToZip);
                 RaisePropertyChanged(() => SyncToFolder);
             }
@@ -49,11 +49,37 @@ namespace Saved_Game_Backup.BackupClasses {
             set {
                 _syncToFolder = value;
                 if (value)
-                    _syncToZip = false;
+                    SyncToZip = false;
                 RaisePropertyChanged(() => SyncToZip);
                 RaisePropertyChanged(() => SyncToFolder);
             }
         }
+
+        private bool _backupOnInterval;
+        public bool BackupOnInterval
+        {
+            get { return _backupOnInterval; }
+            set
+            {
+                _backupOnInterval = value;
+                if (value)
+                    BackupAtTime = false;
+                RaisePropertyChanged(() => BackupOnInterval);
+                
+            }
+        }
+
+        private bool _backupAtTime;
+        public bool BackupAtTime {
+            get { return _backupAtTime; }
+            set {
+                _backupAtTime = value;
+                if (value)
+                    BackupOnInterval = false;
+                RaisePropertyChanged(() => BackupAtTime);
+            }
+        }
+
 
         public BackupSyncOptions() {
             SyncToDropbox = false;

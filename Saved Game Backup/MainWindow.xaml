@@ -51,8 +51,7 @@
                 <MenuItem Command="{Binding Close}" Header="_Exit" />
             </MenuItem>
             <MenuItem Header="_Options">
-                <MenuItem Header="_Cloud Storage Settings" />
-                <MenuItem Header="_Auto-backup Settings" >
+                <MenuItem Header="_Cloud storage settings" >
                     <StackPanel Orientation="Horizontal">
                         <CheckBox Margin="3"  VerticalAlignment="Center" IsChecked="{Binding BackupSyncOptions.SyncToDropbox}"/>
                         <TextBlock Text="Sync to Dropbox" Margin="3" VerticalAlignment="Center"/>
@@ -66,7 +65,16 @@
                         <CheckBox Margin="3"  VerticalAlignment="Center" IsChecked="{Binding BackupSyncOptions.SyncToZip}"/>
                         <TextBlock Text="Sync to Zip" Margin="3" VerticalAlignment="Center"/>
                     </StackPanel>
-                    
+                </MenuItem>
+                <MenuItem Header="_Auto-backup settings" >
+                    <StackPanel Orientation="Horizontal" >
+                        <CheckBox Margin="3"  VerticalAlignment="Center" IsChecked="{Binding BackupSyncOptions.BackupOnInterval}"/>
+                        <TextBlock Text="Backup on interval" Margin="3" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox Margin="3"  VerticalAlignment="Center" IsChecked="{Binding BackupSyncOptions.BackupAtTime}"/>
+                        <TextBlock Text="Backup at specified time" Margin="3" VerticalAlignment="Center"/>
+                    </StackPanel>
                 </MenuItem>
             </MenuItem>
             <MenuItem Command="{Binding ShowAbout}" Header="_About" />
@@ -111,7 +119,7 @@
                     <TextBlock VerticalAlignment="Center"
                                HorizontalAlignment="Center"
                                Style="{StaticResource TextStyle}"
-                               Text="Autobackup interval"
+                               Text="Auto-backup interval"
                                TextWrapping="Wrap" />
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <xctk:IntegerUpDown Margin="3"
@@ -131,9 +139,7 @@
                                Style="{StaticResource TextStyle}"
                                Text="Minutes"
                                TextWrapping="Wrap" />
-                    </StackPanel>
-                    
-                    
+                    </StackPanel>                                      
                 </StackPanel>
             </StackPanel>
             <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
@@ -145,7 +151,7 @@
                                    FontSize="18"
                                    IsEnabled="{Binding BackupEnabled}"
                                    Style="{StaticResource TextStyle}"
-                                   Text="Autobackup Enabled"
+                                   Text="Auto-backup Enabled"
                                    Visibility="{Binding AutoBackupVisibility,
                                                         UpdateSourceTrigger=PropertyChanged}" />
                         <StackPanel HorizontalAlignment="Center"
@@ -154,7 +160,7 @@
                             <TextBlock Margin="3"
                                        FontSize="12"
                                        Style="{StaticResource TextStyle}"
-                                       Text="Number of Autobackups:" />
+                                       Text="Number of Auto-backups:" />
                             <TextBlock Margin="3"
                                        FontSize="12"
                                        Style="{StaticResource TextStyle}"
