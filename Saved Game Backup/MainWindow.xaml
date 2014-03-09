@@ -141,6 +141,18 @@
                                TextWrapping="Wrap" />
                     </StackPanel>                                      
                 </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="3" HorizontalAlignment="Center">
+                    <TextBlock Text="Backup time" 
+                               Margin="3"
+                               Style="{StaticResource TextStyle}"></TextBlock>
+                    <xctk:TimePicker Margin="3" 
+                                 Visibility="Visible"
+                                 Value="{Binding BackupSyncOptions.BackupTime}"
+                                 Background="{StaticResource MyButtonBrush}"
+                                 FontFamily="Segoe UI"
+                                 Foreground="White"
+                                 Width="100"/>
+                </StackPanel>
             </StackPanel>
             <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
 

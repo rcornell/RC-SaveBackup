@@ -80,6 +80,15 @@ namespace Saved_Game_Backup.BackupClasses {
             }
         }
 
+        private DateTime _backupTime;
+        public DateTime BackupTime {
+            get { return _backupTime; }
+            set {
+                _backupTime = value;
+                RaisePropertyChanged(() => BackupTime);
+            }
+        }
+
 
         public BackupSyncOptions() {
             SyncToDropbox = false;
