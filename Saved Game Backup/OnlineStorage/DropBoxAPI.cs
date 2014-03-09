@@ -44,20 +44,20 @@ namespace Saved_Game_Backup.OnlineStorage
 
         //Use async methods
         public async Task Initialize() { 
-            var login = _client.GetToken(); //Gets oauth token
+            var oauthLogin = _client.GetToken(); //Gets oauth token
             if (LoadUserLogin()) return; //True if user secret and token exist and were loaded
             var authUrl = _client.BuildAuthorizeUrl();
             Process.Start(authUrl);
             var result = MessageBox.Show(@"Please log in to DropBox and authorize SaveMonkey", "Authorize App",
                 MessageBoxButton.OKCancel, MessageBoxImage.Information);
             if (result == MessageBoxResult.Cancel) return;
-            UserLogin accessToken = null;
             try {
-                accessToken = _client.GetAccessToken(); //Store this token for "remember me" function
+                var accessToken = _client.GetAccessToken();
                 SaveUserLogin(accessToken);
             }
             catch (DropboxException ex) { //Fails if user doesn't authorize the app
                 SBTErrorLogger.Log(ex.Message);
+                PrefSaver.DeleteDropboxLogin();
                 MessageBox.Show(@"SaveMonkey not authorized by user");
             }
         }
@@ -88,9 +88,15 @@ namespace Saved_Game_Backup.OnlineStorage
                 sb.AppendLine(response.Extension.ToString(CultureInfo.InvariantCulture));
                 File.WriteAllText(@"C:\Users\Rob\Desktop\response.txt", sb.ToString()); //Remove after testing
             }, (error) => {
+                if (error.Response.StatusCode.ToString() == @"Forbidden") {//Error with access/authorization. erase auth info and reinitialize.
+                    PrefSaver.DeleteDropboxLogin();
+                    Initialize();
+                }
                 Console.WriteLine(error.Response.StatusCode.ToString());
                 MessageBox.Show(@"Look for error in output"); //Remove after testing
                 SBTErrorLogger.Log(error.Response.StatusCode.ToString());
+
+                //IF ERROR GET NEW AUTH
             });
         }
 

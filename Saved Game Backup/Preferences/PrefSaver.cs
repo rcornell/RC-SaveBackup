@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -73,6 +74,16 @@ namespace Saved_Game_Backup
                 return true;
             }
             return false;
+        }
+
+        public static void DeleteDropboxLogin() {
+            Debug.WriteLine(@"Deleting dropbox key/token");
+            var saver = new PrefSaver();
+            var prefs = saver.LoadPrefs();
+            prefs.UserSecret = null;
+            prefs.UserToken = null;
+            saver.SavePrefs(prefs);
+            Debug.WriteLine(@"Dropbox key/token deleted");
         }
 
     }
