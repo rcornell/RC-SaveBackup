@@ -67,7 +67,6 @@ namespace Saved_Game_Backup.OnlineStorage
             DirectoryInfo dirs = null;
             foreach (var content in meta.Contents) {
                 if (content.Is_Dir && dirs == null) {
-
                     dirs = new DirectoryInfo(content.Path);
                     continue;
                 }
@@ -75,6 +74,18 @@ namespace Saved_Game_Backup.OnlineStorage
                 dirs.CreateSubdirectory(content.Name);
                 continue;
             }      
+        }
+
+        public async void CheckForSaveFile() {
+            var meta = _client.GetMetaData();
+            foreach (var content in meta.Contents) {
+                if (content.Is_Dir && (content.Name == @"SaveMonkey")) {
+                    var smContents = content;
+                    var files = smContents.Contents;
+                }
+            }
+
+            //Delete save file if found.
         }
 
         //Not awaited
