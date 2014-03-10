@@ -683,7 +683,7 @@ namespace Saved_Game_Backup
             Debug.WriteLine(@"Starting SyncToDropbox at {0}", startTime);
             var drop = new DropBoxAPI();
             await drop.Initialize();
-            if (_backupSyncOptions.SyncToZip) {
+            if (_backupSyncOptions.SyncToZip) { //File in use error during Zip
                 Debug.WriteLine(@"Creating and uploading zip file");
                 var zipDestPath = _autoBackupDirectoryInfo.FullName + @"\Saves.zip";
                 if (File.Exists(zipDestPath)) File.Delete(zipDestPath);
@@ -894,7 +894,8 @@ namespace Saved_Game_Backup
                 _pollAutobackupTimer.Start();
                 return;
             }
-            if (DateTime.Now == _backupSyncOptions.BackupTime) {
+            if (DateTime.Now.Hour == _backupSyncOptions.BackupTime.Hour &&
+                DateTime.Now.Minute == _backupSyncOptions.BackupTime.Minute) {
                 Debug.WriteLine(@"Current time is Backup Time");
                 DisableWatchers();
                 PollAutobackup();
