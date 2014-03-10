@@ -621,7 +621,7 @@ namespace Saved_Game_Backup
             Debug.WriteLine(@"Finished setup for PollAutobackup.");
             Debug.WriteLine(@"Initializing Poll Autobackup Timer.");
             Watch = new Stopwatch();
-            _pollAutobackupTimer = new Timer { Interval = 1000 }; //Timer interval is one second
+            _pollAutobackupTimer = new Timer { Interval = _backupSyncOptions.BackupOnInterval ? 1000 : 60000 }; //Timer interval is one second if interval, 45sec if time.
             _pollAutobackupTimer.Elapsed += _pollAutobackupTimer_Elapsed;
             _pollAutobackupTimer.Start();
             
@@ -880,17 +880,25 @@ namespace Saved_Game_Backup
     
         #region Timers
         private static void _pollAutobackupTimer_Elapsed(object sender, ElapsedEventArgs e) {
-            _elapsed++;
-            Debug.WriteLine(@"Seconds elapsed {0}", _elapsed);
-            Messenger.Default.Send(new TimeSpan(0,0,0,1)); //Send to UI to update timer
-            if(_elapsed/60 < _interval) return; //If false, poll autobackup
-            _pollAutobackupTimer.Stop();
-            Debug.WriteLine(@"Poll Autobackup timer elapsed.");
-            DisableWatchers();
-            PollAutobackup();
-            _elapsed = 0;
-            Messenger.Default.Send(new TimeSpan(0, 0, -_interval, 0));
-            _pollAutobackupTimer.Start();
+            if (_backupSyncOptions.BackupOnInterval) {
+                _elapsed++;
+                Debug.WriteLine(@"Seconds elapsed {0}", _elapsed);
+                Messenger.Default.Send(new TimeSpan(0, 0, 0, 1)); //Send to UI to update timer
+                if (_elapsed/60 < _interval) return; //If false, poll autobackup
+                _pollAutobackupTimer.Stop();
+                Debug.WriteLine(@"Poll Autobackup timer elapsed.");
+                DisableWatchers();
+                PollAutobackup();
+                _elapsed = 0;
+                Messenger.Default.Send(new TimeSpan(0, 0, -_interval, 0));
+                _pollAutobackupTimer.Start();
+                return;
+            }
+            if (DateTime.Now == _backupSyncOptions.BackupTime) {
+                Debug.WriteLine(@"Current time is Backup Time");
+                DisableWatchers();
+                PollAutobackup();
+            }
         }
 
         private static void _delayTimer_Elapsed(object sender, ElapsedEventArgs e) {

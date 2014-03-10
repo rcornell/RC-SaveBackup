@@ -179,6 +179,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\Autobackup.GIF" />
+    <Resource Include="Assets\DropboxIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Content Include="Assets\Games.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
