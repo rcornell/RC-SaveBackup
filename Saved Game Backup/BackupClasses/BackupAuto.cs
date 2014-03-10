@@ -24,6 +24,7 @@ namespace Saved_Game_Backup
     public class BackupAuto
     {
         private static readonly string HardDrive = Path.GetPathRoot(Environment.SystemDirectory);
+        private static readonly string MyDocuments = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         private static DirectoryInfo _autoBackupDirectoryInfo;
         private static Timer _delayTimer;
         private static Timer _canBackupTimer;
@@ -685,7 +686,7 @@ namespace Saved_Game_Backup
             await drop.Initialize();
             if (_backupSyncOptions.SyncToZip) { //File in use error during Zip
                 Debug.WriteLine(@"Creating and uploading zip file");
-                var zipDestPath = _autoBackupDirectoryInfo.FullName + @"\Saves.zip";
+                var zipDestPath = MyDocuments + @"\Save Backup Tool\Saves.zip";
                 if (File.Exists(zipDestPath)) File.Delete(zipDestPath);
                 await Task.Run(() => ZipFile.CreateFromDirectory(_autoBackupDirectoryInfo.FullName, zipDestPath)); 
                 var file = new FileInfo(@"C:\Users\Rob\Desktop\Saves.zip");
