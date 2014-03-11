@@ -402,26 +402,25 @@ namespace Saved_Game_Backup.ViewModel
         private void SetUpInterface() {
             var prefSaver = new PrefSaver();
             var prefs = prefSaver.CheckForPrefs() ? prefSaver.LoadPrefs() : UserPrefs.GetDefaultPrefs();
-            _maxBackups = prefs.MaxBackups;
-            _themeInt = prefs.Theme;
+            MaxBackups = prefs.MaxBackups;
+            ThemeInt = prefs.Theme;
             LastBackupTime = prefs.LastBackupTime;
-            BackupSyncOptions = prefs.BackupSyncOptions;
-            if (prefs.SelectedGames != null) GamesToBackup = prefs.SelectedGames;
-
-            Brushes = Theme.ToggleTheme(_themeInt);
+            BackupSyncOptions = prefs.BackupSyncOptions ?? new BackupSyncOptions();
+            GamesToBackup = prefs.SelectedGames ?? new ObservableCollection<Game>();
+            Brushes = Theme.ToggleTheme(ThemeInt);
             AutoBackupVisibility = Visibility.Hidden;
         }
 
         private void SaveUserPrefs() {         
-            var p = new PrefSaver();
-            if (PrefSaver.CheckForPrefs()) {
-                var prefs = p.LoadPrefs();
+            var prefSaver = new PrefSaver();
+            if (prefSaver.CheckForPrefs()) {
+                var prefs = prefSaver.LoadPrefs();
                 prefs.MaxBackups = MaxBackups;
                 prefs.Theme = ThemeInt;
                 prefs.SelectedGames = GamesToBackup;
                 prefs.LastBackupTime = LastBackupTime;
                 prefs.BackupSyncOptions = BackupSyncOptions;
-                p.SavePrefs(prefs);
+                prefSaver.SavePrefs(prefs);
                 return;
             }
             var newPrefs = new UserPrefs() {
@@ -431,7 +430,7 @@ namespace Saved_Game_Backup.ViewModel
                 SelectedGames = GamesToBackup,
                 Theme = ThemeInt
             };
-            p.SavePrefs(newPrefs);
+            prefSaver.SavePrefs(newPrefs);
         }
 
         private void ExecuteDetectGames() {

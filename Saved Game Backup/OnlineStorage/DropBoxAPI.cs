@@ -28,8 +28,8 @@ namespace Saved_Game_Backup.OnlineStorage
         }
 
         private bool LoadUserLogin() {
-            if (!PrefSaver.CheckForPrefs()) return false;
             var prefSaver = new PrefSaver();
+            if (!prefSaver.CheckForPrefs()) return false;
             var prefs = prefSaver.LoadPrefs();
             if (!string.IsNullOrEmpty(prefs.UserSecret) && 
                 !string.IsNullOrEmpty(prefs.UserToken))

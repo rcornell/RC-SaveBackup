@@ -33,11 +33,11 @@ namespace Saved_Game_Backup
                 catch (SerializationException ex) {
                     SBTErrorLogger.Log(ex.Message);
                 }
-                return prefs.GetDefaultPrefs();
+                return UserPrefs.GetDefaultPrefs();
             }
 
             MessageBox.Show("If you see this, something went wrong \r\nloading user preferences.\r\nTry deleting the UserPrefs.dat file\r\ninDocuments\\Save Backup Tool\\");
-            return prefs.GetDefaultPrefs();
+            return UserPrefs.GetDefaultPrefs();
         }
 
         public void SavePrefs(UserPrefs prefs) {
