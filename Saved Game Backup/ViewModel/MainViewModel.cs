@@ -66,15 +66,6 @@ namespace Saved_Game_Backup.ViewModel
             }
         }
 
-        private double _percentComplete;
-        public double PercentComplete {
-            get { return _percentComplete; }
-            set {
-                _percentComplete = value;
-                RaisePropertyChanged(() => PercentComplete);
-            }
-        }
-
         private Visibility _autoBackupVisibility;
         public Visibility AutoBackupVisibility {
             get { return _autoBackupVisibility; }
@@ -104,7 +95,6 @@ namespace Saved_Game_Backup.ViewModel
                 RaisePropertyChanged(() => GamesList);
             }
         }
-
         private ObservableCollection<Game> _gamesToBackup;
         public ObservableCollection<Game> GamesToBackup {
             get {
@@ -115,7 +105,23 @@ namespace Saved_Game_Backup.ViewModel
                 RaisePropertyChanged(() => GamesToBackup);
             }
         }
-
+        private ObservableCollection<object> _brushes;
+        public ObservableCollection<object> Brushes {
+            get { return _brushes; }
+            set {
+                _brushes = value;
+                RaisePropertyChanged(() => Brushes);
+            }
+            
+        }
+        private ObservableCollection<BackupType> _backupTypes;
+        public ObservableCollection<BackupType> BackupTypes {
+            get { return _backupTypes; }
+            set {
+                _backupTypes = value;
+                RaisePropertyChanged(() => BackupTypes);
+            }
+        }
         private ObservableCollection<string> _gameNames;
         public ObservableCollection<string> GameNames {
             get {
@@ -135,33 +141,12 @@ namespace Saved_Game_Backup.ViewModel
                 RaisePropertyChanged(() => Background);
             }
         }
-
         private Brush _listBoxBackground;
         public Brush ListBoxBackground {
             get { return _listBoxBackground; }
             set {
                 _listBoxBackground = value;
                 RaisePropertyChanged(() => ListBoxBackground);
-            }
-        }
-
-        private ObservableCollection<object> _brushes;
-        public ObservableCollection<object> Brushes {
-            get { return _brushes; }
-            set {
-                _brushes = value;
-                RaisePropertyChanged(() => Brushes);
-            }
-            
-        }
-
-        private ObservableCollection<BackupType> _backupTypes;
-        public ObservableCollection<BackupType> BackupTypes
-        {
-            get { return _backupTypes; }
-            set {
-                _backupTypes = value;
-                RaisePropertyChanged(() => BackupTypes);
             }
         }
 
@@ -181,17 +166,6 @@ namespace Saved_Game_Backup.ViewModel
             }
         }
 
-        private string _lastBackupTime;
-        public string LastBackupTime {
-            get {
-                return _lastBackupTime;
-            }
-            set {
-                _lastBackupTime = value;
-                RaisePropertyChanged(() => LastBackupTime);
-            }
-        }
-
         private Game _selectedGame;
         public Game SelectedGame {
             get { return _selectedGame; }
@@ -200,7 +174,6 @@ namespace Saved_Game_Backup.ViewModel
                 RaisePropertyChanged(() => SelectedGame);
             }
         }
-
         private Game _selectedBackupGame;
         public Game SelectedBackupGame
         {
@@ -222,6 +195,16 @@ namespace Saved_Game_Backup.ViewModel
             }
         }
 
+        private string _lastBackupTime;
+        public string LastBackupTime {
+            get {
+                return _lastBackupTime;
+            }
+            set {
+                _lastBackupTime = value;
+                RaisePropertyChanged(() => LastBackupTime);
+            }
+        }
         private string _displaySpecifiedFolder;
         public string DisplaySpecifiedFolder {
             get { return _displaySpecifiedFolder; }
@@ -231,9 +214,6 @@ namespace Saved_Game_Backup.ViewModel
                 RaisePropertyChanged(() => DisplaySpecifiedFolder);
             }
         }
-
-        private FileInfo _specifiedFile;
-
         private string _backupButtonText;
         public string BackupButtonText {
             get {
@@ -245,6 +225,8 @@ namespace Saved_Game_Backup.ViewModel
             }
         }
 
+        private FileInfo _specifiedFile;     
+
         private bool _backupEnabled;
         public bool BackupEnabled {
             get { return _backupEnabled; }
@@ -254,8 +236,41 @@ namespace Saved_Game_Backup.ViewModel
                 RaisePropertyChanged(() => BackupEnabled);
                 RaisePropertyChanged(() => BackupEnabledVisibility);
             } 
+        }    
+
+        private BackupSyncOptions _backupSyncOptions;
+        public BackupSyncOptions BackupSyncOptions {
+            get { return _backupSyncOptions; }
+            set {
+                _backupSyncOptions = value;
+                RaisePropertyChanged(() => BackupSyncOptions);
+            }
         }
 
+        private double _percentComplete;
+        public double PercentComplete {
+            get { return _percentComplete; }
+            set {
+                _percentComplete = value;
+                RaisePropertyChanged(() => PercentComplete);
+            }
+        }
+        private int _themeInt;
+        public int ThemeInt {
+            get { return _themeInt; }
+            set {
+                _themeInt = value; 
+                RaisePropertyChanged(() => ThemeInt);
+            }
+        }
+        private int _numberOfBackups;
+        public int NumberOfBackups {
+            get { return _numberOfBackups; }
+            set {
+                _numberOfBackups = value; 
+                RaisePropertyChanged(() => NumberOfBackups);
+            }
+        }       
         private int _maxBackups;
         public int MaxBackups {
             get { return _maxBackups; }
@@ -264,7 +279,6 @@ namespace Saved_Game_Backup.ViewModel
                 RaisePropertyChanged(() => MaxBackups);
             }
         }
-
         private int _interval;
         public int Interval {
             get { return _interval; }
@@ -276,81 +290,7 @@ namespace Saved_Game_Backup.ViewModel
                 RaisePropertyChanged(() => Interval);
                 RaisePropertyChanged(() => Span);
             }
-        }
-
-        //private bool _syncEnabled;
-        //public bool SyncEnabled {
-        //    get { return _syncEnabled; }
-        //    set {
-        //        _syncEnabled = value; 
-        //        RaisePropertyChanged(() => SyncEnabled);
-        //    }
-        //}
-
-        //private bool _syncToDropbox;
-        //public bool SyncToDropbox {
-        //    get { return _syncToDropbox; }
-        //    set {
-        //        _syncToDropbox = value;
-        //        BackupSyncOptions.SyncToDropbox = value;
-        //        RaisePropertyChanged(() => SyncToDropbox);
-        //        SyncEnabled = value;
-        //    }
-        //}
-
-        //private bool _syncToZip;
-        //public bool SyncToZip {
-        //    get { return _syncToZip; }
-        //    set { 
-        //        _syncToZip = value;
-        //        BackupSyncOptions.ToZip = value;
-        //        _syncToFolder = !value;
-        //        RaisePropertyChanged(() => SyncToZip);
-        //        RaisePropertyChanged(() => SyncToFolder);
-        //    }
-        //}
-
-        //private bool _syncToFolder;
-        //public bool SyncToFolder {
-        //    get { return _syncToFolder; }
-        //    set {
-        //        _syncToFolder = value;
-        //        BackupSyncOptions.ToFolder = value;
-        //        _syncToZip = !value;
-        //        RaisePropertyChanged(() => SyncToFolder);
-        //        RaisePropertyChanged(() => SyncToZip);
-        //    }
-        //}
-
-        private BackupSyncOptions _backupSyncOptions;
-        public BackupSyncOptions BackupSyncOptions {
-            get { return _backupSyncOptions; }
-            set {
-                _backupSyncOptions = value;
-                RaisePropertyChanged(() => BackupSyncOptions);
-            }
-        }
-
-
-        private int _themeInt;
-        public int ThemeInt {
-            get { return _themeInt; }
-            set {
-                _themeInt = value; 
-                RaisePropertyChanged(() => ThemeInt);
-            }
-        }
-
-        private int _numberOfBackups;
-        public int NumberOfBackups {
-            get { return _numberOfBackups; }
-            set {
-                _numberOfBackups = value; 
-                RaisePropertyChanged(() => NumberOfBackups);
-            }
-        }
-
-        
+        }      
 
         public RelayCommand ShowAbout {
             get { return new RelayCommand(ExecuteShowAbout);}
@@ -416,7 +356,7 @@ namespace Saved_Game_Backup.ViewModel
             Interval = 5;
             Span = new TimeSpan(0,0,Interval,0); //Must always be initialized after Interval
             BackupEnabledVisibility = Visibility.Hidden;
-            GamesList = DirectoryFinder.ReturnGamesList();
+            GamesList = DirectoryFinder.GetGamesList();
             GamesToBackup = new ObservableCollection<Game>();
             BackupTypes = new ObservableCollection<BackupType>() {
                 BackupType.Autobackup,
@@ -537,7 +477,7 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void UpdateGamesList() {
-            GamesList = DirectoryFinder.ReturnGamesList();
+            GamesList = DirectoryFinder.GetGamesList();
             foreach (var game in GamesToBackup) {
                 SelectedGame = game;
                 ToGamesList(SelectedGame);

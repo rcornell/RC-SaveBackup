@@ -41,14 +41,8 @@ namespace Saved_Game_Backup
             return HardDrives;
         }
 
-        public static ObservableCollection<Game> ReturnGamesList() {
+        public static ObservableCollection<Game> GetGamesList() {
             var jsonFi = new FileInfo(@"Assets\Games.json");
-            //var uneditedJsonList = jsonFi.Exists 
-            //    ? 
-            //    JsonConvert.DeserializeObject<ObservableCollection<Game>>(File.ReadAllText(jsonFi.FullName)) 
-            //    : null;
-            //return Backup.ModifyGamePaths(uneditedJsonList);
-
             return jsonFi.Exists
                 ? 
                 JsonConvert.DeserializeObject<ObservableCollection<Game>>(File.ReadAllText(jsonFi.FullName)) 
@@ -76,7 +70,6 @@ namespace Saved_Game_Backup
 
         public static string FormatDisplayPath(string directory) {
             if (directory.Length <= 30) return directory;
-
             var dir = new DirectoryInfo(directory);
             var parent = dir.Name;
             var root = dir.Root;
