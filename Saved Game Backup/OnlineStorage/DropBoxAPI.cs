@@ -62,8 +62,8 @@ namespace Saved_Game_Backup.OnlineStorage
             }
         }
 
-        public void GetMetadata() {
-            var meta = _client.GetMetaData();
+        public MetaData GetMetadata() {
+            var meta = _client.GetMetaData("/");
             DirectoryInfo dirs = null;
             foreach (var content in meta.Contents) {
                 if (content.Is_Dir && dirs == null) {
@@ -73,11 +73,12 @@ namespace Saved_Game_Backup.OnlineStorage
                 if (!content.Is_Dir || dirs == null) continue;
                 dirs.CreateSubdirectory(content.Name);
                 continue;
-            }      
+            }
+            return meta;
         }
 
         public async void CheckForSaveFile() {
-            var meta = _client.GetMetaData();
+            var meta = _client.GetMetaData("/");
             foreach (var content in meta.Contents) {
                 if (content.Is_Dir && (content.Name == @"SaveMonkey")) {
                     var smContents = content;
@@ -134,6 +135,19 @@ namespace Saved_Game_Backup.OnlineStorage
             //var metaData = _client.CreateFolder(path);
         }
 
+        public async Task<bool> DeleteFile(string path) {
+            try {
+                _client.Delete(path);
+                return true;
+            }
+            catch (DropboxException ex) {
+                if (ex.StatusCode.ToString().Equals(@"NotFound")) {
+                    Debug.WriteLine(@"File not found in Dropbox path.");
+                    return false;
+                }
+            }
+            return false;
+        }
 
     }
 }

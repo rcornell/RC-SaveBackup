@@ -396,16 +396,16 @@ namespace Saved_Game_Backup.ViewModel
             get { return new RelayCommand(ExecuteDropBoxTest);}
         }
 
-        public async void ExecuteDropBoxTest() { //BIND CHECKBOXES TO BACKUPSYNCOPTIONS PROPERTIES DIRECTLY
+        public async void ExecuteDropBoxTest()  { 
             var drop = new DropBoxAPI();
             await drop.Initialize();
-                Debug.WriteLine(@"Creating and uploading zip file");
-                //var zipPath = _autoBackupDirectoryInfo.FullName + @"\SaveGame.zip";
+                Debug.WriteLine(@"Creating and uploading zip file");     
                 if (File.Exists(@"C:\Users\Rob\Desktop\Saves.zip")) File.Delete(@"C:\Users\Rob\Desktop\Saves.zip");
                 ZipFile.CreateFromDirectory(@"C:\Users\Rob\Desktop\SBTTest", @"C:\Users\Rob\Desktop\Saves.zip");
                 var file = new FileInfo(@"C:\Users\Rob\Desktop\Saves.zip");
                 //await drop.Upload("/", file);
-            drop.CheckForSaveFile();
+            //drop.CheckForSaveFile();
+                await drop.DeleteFile(@"/SaveMonkey/Saves.zip"); //When this fails: System.Net.HttpStatusCode.NotFound
                 Debug.WriteLine(@"Zip uploaded");
         }
 

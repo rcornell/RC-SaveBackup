@@ -684,7 +684,7 @@ namespace Saved_Game_Backup
             Debug.WriteLine(@"Starting SyncToDropbox at {0}", startTime);
             var drop = new DropBoxAPI();
             await drop.Initialize();
-            if (_backupSyncOptions.SyncToZip) { //File in use error during Zip
+            if (_backupSyncOptions.SyncToZip) { //Find a way to check for existing file
                 Debug.WriteLine(@"Creating and uploading zip file");
                 var zipDestPath = MyDocuments + @"\Save Backup Tool\Saves.zip";
                 if (File.Exists(zipDestPath)) File.Delete(zipDestPath);
