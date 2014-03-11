@@ -50,7 +50,7 @@ namespace Saved_Game_Backup {
 
         public Backup() {}
 
-        public static async Task<BackupResultHelper> StartBackup(List<Game> games, BackupType backupType, bool backupEnabled, BackupSyncOptions backupSyncOptions, int interval = 0, DirectoryInfo targetDi = null, FileInfo targetFile = null) {
+        public static async Task<BackupResultHelper> StartBackup(List<Game> games, BackupType backupType, bool backupEnabled, BackupSyncOptions backupSyncOptions, int interval = 0) {
             if(!GetDirectoryOrFile(backupType, backupEnabled)) return ErrorResultHelper;
 
             //Check for problems with parameters
@@ -65,11 +65,11 @@ namespace Saved_Game_Backup {
             
             switch (backupType) {                  
                 case BackupType.ToZip:
-                   return await BackupToZip.BackupAndZip(gamesToBackup, targetFile);
+                   return await BackupToZip.BackupAndZip(gamesToBackup, _specifiedFile);
                 case BackupType.ToFolder:
-                    return BackupToFolder.BackupSaves(gamesToBackup, targetDi);
+                    return BackupToFolder.BackupSaves(gamesToBackup, _specifiedFolder);
                 case BackupType.Autobackup:
-                    return BackupAuto.ToggleAutoBackup(gamesToBackup, backupEnabled, backupSyncOptions, interval, targetDi);
+                    return BackupAuto.ToggleAutoBackup(gamesToBackup, backupEnabled, backupSyncOptions, interval, _specifiedFolder);
             }
 
             return ErrorResultHelper;
