@@ -299,12 +299,12 @@ namespace Saved_Game_Backup.ViewModel
         {
             get
             {
-                return new RelayCommand(ToBackupList);
+                return new RelayCommand(AddGameToBackupList);
             }
         }
         public RelayCommand<Game> MoveToGamesList {
             get {
-                return new RelayCommand<Game>(ToGamesList);
+                return new RelayCommand<Game>(RemoveGameFromBackupList);
             }
         }    
         public RelayCommand StartBackup {
@@ -437,7 +437,7 @@ namespace Saved_Game_Backup.ViewModel
             GamesToBackup = DirectoryFinder.GetInstalledGames(GamesList);
         }
 
-        private async void ToBackupList() {
+        private async void AddGameToBackupList() {
             if (_selectedGame == null)
                 return;
             var game = SelectedGame;
@@ -454,27 +454,25 @@ namespace Saved_Game_Backup.ViewModel
             await GamesDBAPI.GetThumb(game);
         }
 
-        private void ToGamesList(Game game) {
+        private void RemoveGameFromBackupList(Game game) {
             if (game == null || !GamesToBackup.Contains(game))
                 return;
-            var gameToMove = game;
+            var gameToRemove = game;
     
             if (BackupEnabled) {
-                var result = Backup.RemoveFromAutobackup(gameToMove);
-                GamesToBackup.Remove(gameToMove);
-                RaisePropertyChanged(() => GamesToBackup);
-                HandleBackupResult(result);
+                var backupResult = Backup.RemoveFromAutobackup(gameToRemove);
+                GamesToBackup.Remove(gameToRemove);
+                HandleBackupResult(backupResult);
+                return;
             }
-            if (!GamesToBackup.Contains(gameToMove)) return;
-            GamesToBackup.Remove(gameToMove);
-            RaisePropertyChanged(() => GamesToBackup);
+            GamesToBackup.Remove(gameToRemove);
         }
 
         private void UpdateGamesList() {
             GamesList = DirectoryFinder.GetGamesList();
             foreach (var game in GamesToBackup) {
                 SelectedGame = game;
-                ToGamesList(SelectedGame);
+                RemoveGameFromBackupList(SelectedGame);
             }
             RaisePropertyChanged(() => GamesList);
         }

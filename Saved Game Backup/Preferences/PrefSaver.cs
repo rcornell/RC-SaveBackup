@@ -22,16 +22,17 @@ namespace Saved_Game_Backup
         public PrefSaver(){}
 
         public UserPrefs LoadPrefs() {
-            var prefs = new UserPrefs();
+
             var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Save Backup Tool\\";
             if (Directory.Exists(path)) {
                 try {
                     var fullPath = path + @"UserPrefs.dat";
-                    prefs = JsonConvert.DeserializeObject<UserPrefs>(File.ReadAllText(fullPath));
+                    var prefs = JsonConvert.DeserializeObject<UserPrefs>(File.ReadAllText(fullPath));
                     return prefs;
                 }
                 catch (SerializationException ex) {
                     SBTErrorLogger.Log(ex.Message);
+                    MessageBox.Show("If you see this, something went wrong \r\nloading user preferences.\r\nTry deleting the UserPrefs.dat file\r\ninDocuments\\Save Backup Tool\\");
                 }
                 return UserPrefs.GetDefaultPrefs();
             }
