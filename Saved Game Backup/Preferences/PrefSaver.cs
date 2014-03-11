@@ -50,7 +50,7 @@ namespace Saved_Game_Backup
 
         }
 
-        public static bool CheckForPrefs() {
+        public bool CheckForPrefs() {
             var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Save Backup Tool\\UserPrefs.dat";
             return File.Exists(path);
         }

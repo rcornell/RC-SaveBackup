@@ -43,7 +43,7 @@ namespace Saved_Game_Backup.Preferences {
         public string UserToken { get; set; }
         public string LastBackupTime;
 
-        public UserPrefs GetDefaultPrefs() {
+        public static UserPrefs GetDefaultPrefs() {
             var prefs = new UserPrefs() {
                 SelectedGames = new ObservableCollection<Game>(),
                 Theme = 0,

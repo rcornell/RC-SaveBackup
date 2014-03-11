@@ -400,19 +400,14 @@ namespace Saved_Game_Backup.ViewModel
         //}
 
         private void SetUpInterface() {
-            if (!PrefSaver.CheckForPrefs()) {
-                _maxBackups = 5;
-                _themeInt = 0;
-            }
-            else {
-                var p = new PrefSaver();
-                var prefs = p.LoadPrefs();
-                _maxBackups = prefs.MaxBackups;
-                _themeInt = prefs.Theme;
-                LastBackupTime = prefs.LastBackupTime;
-                BackupSyncOptions = prefs.BackupSyncOptions;
-                if (prefs.SelectedGames != null) GamesToBackup = prefs.SelectedGames;
-            }
+            var prefSaver = new PrefSaver();
+            var prefs = prefSaver.CheckForPrefs() ? prefSaver.LoadPrefs() : UserPrefs.GetDefaultPrefs();
+            _maxBackups = prefs.MaxBackups;
+            _themeInt = prefs.Theme;
+            LastBackupTime = prefs.LastBackupTime;
+            BackupSyncOptions = prefs.BackupSyncOptions;
+            if (prefs.SelectedGames != null) GamesToBackup = prefs.SelectedGames;
+
             Brushes = Theme.ToggleTheme(_themeInt);
             AutoBackupVisibility = Visibility.Hidden;
         }
