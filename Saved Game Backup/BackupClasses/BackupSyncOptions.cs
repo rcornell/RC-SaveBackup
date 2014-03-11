@@ -13,7 +13,6 @@ namespace Saved_Game_Backup.BackupClasses {
     [Serializable]
     public class BackupSyncOptions : ObservableObject {
 
-
         private bool _syncToDropbox;
         public bool SyncToDropbox {
             get { return _syncToDropbox; }
@@ -31,7 +30,6 @@ namespace Saved_Game_Backup.BackupClasses {
                 RaisePropertyChanged(() => SyncEnabled);
             }
         }
-
         private bool _syncToZip;
         public bool SyncToZip {
             get { return _syncToZip; }
@@ -54,7 +52,6 @@ namespace Saved_Game_Backup.BackupClasses {
                 RaisePropertyChanged(() => SyncToFolder);
             }
         }
-
         private bool _backupOnInterval;
         public bool BackupOnInterval
         {
@@ -68,7 +65,6 @@ namespace Saved_Game_Backup.BackupClasses {
                 
             }
         }
-
         private bool _backupAtTime;
         public bool BackupAtTime {
             get { return _backupAtTime; }
@@ -88,7 +84,6 @@ namespace Saved_Game_Backup.BackupClasses {
                 RaisePropertyChanged(() => BackupTime);
             }
         }
-
 
         public BackupSyncOptions() {
             SyncToDropbox = false;

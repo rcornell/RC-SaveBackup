@@ -21,7 +21,7 @@ namespace Saved_Game_Backup.OnlineStorage
 
         private const string ApiKey = @"zv4hgyhmkkr90xz";
         private const string ApiSecret = @"1h4y0lb43hiu8ci";
-        private DropNetClient _client;
+        private readonly DropNetClient _client;
 
         public DropBoxAPI() {
             _client = new DropNetClient(ApiKey, ApiSecret);
@@ -42,9 +42,8 @@ namespace Saved_Game_Backup.OnlineStorage
             saver.SaveDropBoxToken(userLogin);
         }
 
-        //Use async methods
         public async Task Initialize() { 
-            var oauthLogin = _client.GetToken(); //Gets oauth token
+            var oauthLogin = await Task.Run(() =>_client.GetToken()); //Gets oauth token
             if (LoadUserLogin()) return; //True if user secret and token exist and were loaded
             var authUrl = _client.BuildAuthorizeUrl();
             Process.Start(authUrl);
@@ -62,6 +61,8 @@ namespace Saved_Game_Backup.OnlineStorage
             }
         }
 
+        //Does not currently return file metadata
+        //just directories
         public MetaData GetMetadata() {
             var meta = _client.GetMetaData("/");
             DirectoryInfo dirs = null;
@@ -77,7 +78,9 @@ namespace Saved_Game_Backup.OnlineStorage
             return meta;
         }
 
-        public async void CheckForSaveFile() {
+        //Does not currently return file metadata
+        //just directories
+        public void CheckForSaveFile() {
             var meta = _client.GetMetaData("/");
             foreach (var content in meta.Contents) {
                 if (content.Is_Dir && (content.Name == @"SaveMonkey")) {
@@ -93,13 +96,8 @@ namespace Saved_Game_Backup.OnlineStorage
         public async Task Upload(string folderPath, FileInfo file) {
             var bytes = File.ReadAllBytes(file.FullName);
             var uploadPath = @"/SaveMonkey" + folderPath;
-            await CheckFolderPath(uploadPath);
-            _client.UploadFileAsync(uploadPath, file.Name, bytes, (response) => {
-                var sb = new StringBuilder();
-                sb.AppendLine(response.Contents.ToString());
-                sb.AppendLine(response.Extension.ToString(CultureInfo.InvariantCulture));
-                File.WriteAllText(@"C:\Users\Rob\Desktop\response.txt", sb.ToString()); //Remove after testing
-            }, (error) => {
+            _client.UploadFileAsync(uploadPath, file.Name, bytes, response => Debug.WriteLine(@"File uploaded successfully"), 
+                error => {
                 if (error.Response.StatusCode.ToString() == @"Forbidden") {//Error with access/authorization. erase auth info and reinitialize.
                     PrefSaver.DeleteDropboxLogin();
                     Initialize();
@@ -107,22 +105,7 @@ namespace Saved_Game_Backup.OnlineStorage
                 Console.WriteLine(error.Response.StatusCode.ToString());
                 MessageBox.Show(@"Look for error in output"); //Remove after testing
                 SBTErrorLogger.Log(error.Response.StatusCode.ToString());
-
-                //IF ERROR GET NEW AUTH
             });
-        }
-
-        public async Task Upload(string folderPath, string file) {
-            var bytes = File.ReadAllBytes(file); //This fails because it's not a full path
-            var uploadPath = @"/SaveMonkey" + folderPath;
-            await CheckFolderPath(uploadPath);
-
-            _client.UploadFileAsync(uploadPath, file, bytes, (response) => {
-                var sb = new StringBuilder();
-                sb.AppendLine(response.Contents.ToString());
-                sb.AppendLine(response.Extension.ToString(CultureInfo.InvariantCulture));
-                File.WriteAllText(@"C:\Users\Rob\Desktop\response.txt", sb.ToString()); //Remove after testing
-            }, (error) => SBTErrorLogger.Log(error.Message));
         }
 
         public async Task Download(string filePath, string targetFile) {
@@ -131,13 +114,9 @@ namespace Saved_Game_Backup.OnlineStorage
             (error) => SBTErrorLogger.Log(error.Message) );
         }
 
-        private async Task CheckFolderPath(string path) { //NOT AUTHORIZED
-            //var metaData = _client.CreateFolder(path);
-        }
-
         public async Task<bool> DeleteFile(string path) {
             try {
-                _client.Delete(path);
+                await Task.Run(()=>_client.Delete(path));
                 return true;
             }
             catch (DropboxException ex) {
