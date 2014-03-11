@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing.Text;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
@@ -28,16 +29,30 @@ using Timer = System.Timers.Timer;
 
 namespace Saved_Game_Backup {
     public class Backup {
-        
+
+        private static DirectoryInfo _specifiedFolder;
+        private static FileInfo _specifiedFile;  
+
         private static readonly string HardDrive = Path.GetPathRoot(Environment.SystemDirectory);
         private static readonly string UserPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         private static readonly CultureInfo Culture = CultureInfo.CurrentCulture;
         private static readonly BackupResultHelper ErrorResultHelper = new BackupResultHelper(){Success = false ,AutobackupEnabled = false, Message=@"Error during operation"};
+        public static FolderBrowserDialog FolderBrowser = new FolderBrowserDialog() {
+            ShowNewFolderButton = true,
+            Description = @"Select a target folder for auto-backup to copy to."
+        };
+
+        public static SaveFileDialog SaveFileDialog = new SaveFileDialog() {
+            InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer),
+            Filter = @"Zip files | *.zip",
+            DefaultExt = "zip",
+        };
 
         public Backup() {}
 
-        public static async Task<BackupResultHelper> StartBackup(List<Game> games, BackupType backupType, bool backupEnabled, BackupSyncOptions backupSyncOptions, int interval = 0, DirectoryInfo targetDi = null, FileInfo targetFile = null)
-        {
+        public static async Task<BackupResultHelper> StartBackup(List<Game> games, BackupType backupType, bool backupEnabled, BackupSyncOptions backupSyncOptions, int interval = 0, DirectoryInfo targetDi = null, FileInfo targetFile = null) {
+            if(!GetDirectoryOrFile(backupType, backupEnabled)) return ErrorResultHelper;
+
             //Check for problems with parameters
             if (!games.Any() && backupType == BackupType.Autobackup && backupEnabled)
                 return HandleBackupResult(true, false, @"Autobackup Disabled", backupType,
@@ -60,6 +75,25 @@ namespace Saved_Game_Backup {
             return ErrorResultHelper;
         }
 
+        private static bool GetDirectoryOrFile(BackupType backupType, bool backupEnabled) {
+                switch (backupType)
+                {
+                    case BackupType.ToFolder:
+                    case BackupType.Autobackup:
+                        if (FolderBrowser.ShowDialog() == DialogResult.OK) {
+                            _specifiedFolder = new DirectoryInfo(FolderBrowser.SelectedPath);
+                            return true;
+                        }
+                        break;
+                    case BackupType.ToZip:
+                        if (SaveFileDialog.ShowDialog() == DialogResult.OK) {
+                            _specifiedFile = new FileInfo(SaveFileDialog.FileName);
+                            return true;
+                        }
+                        break;
+                }
+            return false;
+        }
 
         /// <summary>
         /// Edits the truncated paths in the Games.json file and inserts the 

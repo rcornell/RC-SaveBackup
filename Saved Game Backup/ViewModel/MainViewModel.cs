@@ -45,17 +45,6 @@ namespace Saved_Game_Backup.ViewModel
             "I made this program in an attempt to help people keep track of their saved games in case of catastrophe. It should work, but Autobackup can be touchy sometimes. If you have any issues please email me at rob.cornell@gmail.com.";
         public string About { get { return _about; }}
 
-        public FolderBrowserDialog FolderBrowser = new FolderBrowserDialog() {
-            ShowNewFolderButton = true,
-            Description = @"Select a target folder for auto-backup to copy to."
-        };
-
-        public SaveFileDialog SaveFileDialog = new SaveFileDialog() {
-            InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer),
-            Filter = @"Zip files | *.zip",
-            DefaultExt = "zip",
-        };
-
         private TimeSpan _span;
         public TimeSpan Span {
             get { return _span; }
@@ -183,18 +172,7 @@ namespace Saved_Game_Backup.ViewModel
                 RaisePropertyChanged(() => SelectedBackupGame);
             }
         }
-
-        private DirectoryInfo _specifiedFolder;
-        public DirectoryInfo SpecifiedFolder {
-            get { return _specifiedFolder; }
-            set {
-                _specifiedFolder = value; 
-                RaisePropertyChanged(() => SpecifiedFolder);
-                if (_specifiedFolder == null) return;
-                DisplaySpecifiedFolder = _specifiedFolder.FullName;
-            }
-        }
-
+ 
         private string _lastBackupTime;
         public string LastBackupTime {
             get {
@@ -224,8 +202,6 @@ namespace Saved_Game_Backup.ViewModel
                 RaisePropertyChanged(() => BackupButtonText);
             }
         }
-
-        private FileInfo _specifiedFile;     
 
         private bool _backupEnabled;
         public bool BackupEnabled {
@@ -474,21 +450,7 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private async void ExecuteStartBackup() {
-            if (!BackupEnabled)
-                switch (BackupType) {
-                    case BackupType.ToFolder:
-                    case BackupType.Autobackup:
-                        if (FolderBrowser.ShowDialog() == DialogResult.OK)
-                            SpecifiedFolder = new DirectoryInfo(FolderBrowser.SelectedPath);
-                        else return;
-                        break;
-                    case BackupType.ToZip:
-                        if (SaveFileDialog.ShowDialog() == DialogResult.OK)
-                            _specifiedFile = new FileInfo(SaveFileDialog.FileName);
-                        else return;
-                        break;
-                }
-            var result = await Backup.StartBackup(GamesToBackup.ToList(), BackupType, BackupEnabled, BackupSyncOptions, Interval, SpecifiedFolder, _specifiedFile);
+            var result = await Backup.StartBackup(GamesToBackup.ToList(), BackupType, BackupEnabled, BackupSyncOptions, Interval);
             HandleBackupResult(result);
         }
 
@@ -515,7 +477,7 @@ namespace Saved_Game_Backup.ViewModel
         private void ExecuteReset() {
             Backup.Reset(GamesToBackup.ToList(), BackupType, BackupEnabled);
             GamesToBackup.Clear();
-            SpecifiedFolder = null;
+            DisplaySpecifiedFolder = "";
             SelectedGame = null;
             SelectedBackupGame = null;
         }
