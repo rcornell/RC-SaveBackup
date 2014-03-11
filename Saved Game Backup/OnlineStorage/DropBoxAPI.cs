@@ -38,8 +38,9 @@ namespace Saved_Game_Backup.OnlineStorage
         }
 
         private void SaveUserLogin(UserLogin userLogin) {
-            var saver = new PrefSaver();
-            saver.SaveDropboxToken(userLogin);
+            var prefs = new PrefSaver();
+            var result = prefs.SaveDropboxToken(userLogin);
+            if (!result) MessageBox.Show(@"Failed to save Dropbox Token. Contact the app designer.");
         }
 
         public async Task Initialize() { 

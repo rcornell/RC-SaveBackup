@@ -56,8 +56,8 @@ namespace Saved_Game_Backup
         }
 
         public bool SaveDropboxToken(UserLogin userLogin) {
-            if (!CheckForPrefs()) 
-                return GetDropboxOnlyPrefs(userLogin);
+            if (!CheckForPrefs()) //true if no prefs exist
+                return CreateDropboxOnlyPrefs(userLogin);
             var saver = new PrefSaver();
             var prefs = saver.LoadPrefs();
             prefs.UserSecret = userLogin.Secret;
@@ -66,7 +66,7 @@ namespace Saved_Game_Backup
             return true;
         }
 
-        private bool GetDropboxOnlyPrefs(UserLogin userLogin = null) {
+        private bool CreateDropboxOnlyPrefs(UserLogin userLogin) {
             if (userLogin != null) {
                 var prefs = new UserPrefs {UserSecret = userLogin.Secret, UserToken = userLogin.Token};
                 SavePrefs(prefs);
