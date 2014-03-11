@@ -469,29 +469,25 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void UpdateGamesList() {
+            //Called when a game is added to the games list by user.
             GamesList = DirectoryFinder.GetGamesList();
-            foreach (var game in GamesToBackup) {
-                SelectedGame = game;
-                RemoveGameFromBackupList(SelectedGame);
-            }
-            RaisePropertyChanged(() => GamesList);
         }
 
         private async void ExecuteStartBackup() {
             if (!BackupEnabled)
-            switch (BackupType) {
-                case BackupType.ToFolder:
-                case BackupType.Autobackup:
-                    if (FolderBrowser.ShowDialog() == DialogResult.OK)
-                        SpecifiedFolder = new DirectoryInfo(FolderBrowser.SelectedPath);
-                    else return;
-                    break;
-                case BackupType.ToZip:
-                    if (SaveFileDialog.ShowDialog() == DialogResult.OK)
-                        _specifiedFile = new FileInfo(SaveFileDialog.FileName);
-                    else return;
-                    break;
-            }
+                switch (BackupType) {
+                    case BackupType.ToFolder:
+                    case BackupType.Autobackup:
+                        if (FolderBrowser.ShowDialog() == DialogResult.OK)
+                            SpecifiedFolder = new DirectoryInfo(FolderBrowser.SelectedPath);
+                        else return;
+                        break;
+                    case BackupType.ToZip:
+                        if (SaveFileDialog.ShowDialog() == DialogResult.OK)
+                            _specifiedFile = new FileInfo(SaveFileDialog.FileName);
+                        else return;
+                        break;
+                }
             var result = await Backup.StartBackup(GamesToBackup.ToList(), BackupType, BackupEnabled, BackupSyncOptions, Interval, SpecifiedFolder, _specifiedFile);
             HandleBackupResult(result);
         }
@@ -553,7 +549,7 @@ namespace Saved_Game_Backup.ViewModel
             var msg = string.Format("{0} added to list.", newGameForJson.Name);
             MessageBox.Show(msg);
             UpdateGamesList();
-        } //Should be split up
+        } 
 
         private void ExecuteShowAbout() {
             MessageBox.Show(About, "About SaveMonkey", MessageBoxButton.OK);
