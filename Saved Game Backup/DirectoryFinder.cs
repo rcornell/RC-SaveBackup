@@ -24,7 +24,7 @@ namespace Saved_Game_Backup
              
         }
 
-        public static void CheckDirectories() {
+        public static void CreateSbtDirectories() {
             _sbtPath = documentsPath + "\\Save Backup Tool\\";
             if (!Directory.Exists(_sbtPath + "Thumbnails\\"))
                 Directory.CreateDirectory(_sbtPath+"Thumbnails\\");
@@ -32,7 +32,7 @@ namespace Saved_Game_Backup
                 Directory.CreateDirectory(_sbtPath + "Error\\");
         }
 
-        public static ObservableCollection<string> CreateHardDriveCollection() {
+        public static ObservableCollection<string> GetHardDriveCollection() {
             HardDrives = new ObservableCollection<string>();
             var drives = DriveInfo.GetDrives();
             foreach (var drive in drives) {
@@ -49,17 +49,7 @@ namespace Saved_Game_Backup
                 : null;
         }
 
-        /// <summary>
-        /// Opens a folder browser dialog and sets the specifiedFolder string to the chosen path.
-        /// </summary>
-        /// <returns></returns>
-        public static string SpecifyFolder() {
-            var dialog = new FolderBrowserDialog() { Description = "Select a folder to save your backups."};
-            dialog.ShowDialog();
-            return dialog.SelectedPath;
-        }
-
-        public static ObservableCollection<Game> PollDirectories(ObservableCollection<Game> gamesList) {
+        public static ObservableCollection<Game> GetInstalledGames(ObservableCollection<Game> gamesList) {
             var listWithModifiedPaths = Backup.ModifyGamePaths(gamesList);
             var detectedGamesList = new ObservableCollection<Game>();
             foreach (var game in listWithModifiedPaths.Where(game => Directory.Exists(game.Path))) {

@@ -364,7 +364,7 @@ namespace Saved_Game_Backup.ViewModel
                 BackupType.ToZip
             };
             BackupType = BackupType.ToFolder;
-            DirectoryFinder.CheckDirectories();
+            DirectoryFinder.CreateSbtDirectories();
             SetUpInterface();
             RegisterAll();
             
@@ -440,7 +440,7 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ExecuteDetectGames() {
-            GamesToBackup = DirectoryFinder.PollDirectories(GamesList);
+            GamesToBackup = DirectoryFinder.GetInstalledGames(GamesList);
         }
 
         private async void ToBackupList() {
