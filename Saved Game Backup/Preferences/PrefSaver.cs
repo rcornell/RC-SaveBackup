@@ -22,10 +22,9 @@ namespace Saved_Game_Backup
         public PrefSaver(){}
 
         public UserPrefs LoadPrefs() {
-            UserPrefs prefs;
+            var prefs = new UserPrefs();
             var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Save Backup Tool\\";
-            if (Directory.Exists(path))
-            {
+            if (Directory.Exists(path)) {
                 try {
                     var fullPath = path + @"UserPrefs.dat";
                     prefs = JsonConvert.DeserializeObject<UserPrefs>(File.ReadAllText(fullPath));
@@ -34,11 +33,11 @@ namespace Saved_Game_Backup
                 catch (SerializationException ex) {
                     SBTErrorLogger.Log(ex.Message);
                 }
-                return new UserPrefs(0,5,null, "");
+                return prefs.GetDefaultPrefs();
             }
 
-            MessageBox.Show("If you see this, something went wrong \r\nloading user preferences.");
-            return new UserPrefs(0,5, new ObservableCollection<Game>(), "");
+            MessageBox.Show("If you see this, something went wrong \r\nloading user preferences.\r\nTry deleting the UserPrefs.dat file\r\ninDocuments\\Save Backup Tool\\");
+            return prefs.GetDefaultPrefs();
         }
 
         public void SavePrefs(UserPrefs prefs) {
@@ -56,9 +55,9 @@ namespace Saved_Game_Backup
             return File.Exists(path);
         }
 
-        public bool SaveDropBoxToken(UserLogin userLogin) {
+        public bool SaveDropboxToken(UserLogin userLogin) {
             if (!CheckForPrefs()) 
-                return CreatePrefs(userLogin);
+                return GetDropboxOnlyPrefs(userLogin);
             var saver = new PrefSaver();
             var prefs = saver.LoadPrefs();
             prefs.UserSecret = userLogin.Secret;
@@ -67,7 +66,7 @@ namespace Saved_Game_Backup
             return true;
         }
 
-        private bool CreatePrefs(UserLogin userLogin = null) {
+        private bool GetDropboxOnlyPrefs(UserLogin userLogin = null) {
             if (userLogin != null) {
                 var prefs = new UserPrefs {UserSecret = userLogin.Secret, UserToken = userLogin.Token};
                 SavePrefs(prefs);
@@ -76,7 +75,7 @@ namespace Saved_Game_Backup
             return false;
         }
 
-        public static void DeleteDropboxLogin() {
+        public static void DeleteDropboxToken() {
             Debug.WriteLine(@"Deleting dropbox key/token");
             var saver = new PrefSaver();
             var prefs = saver.LoadPrefs();

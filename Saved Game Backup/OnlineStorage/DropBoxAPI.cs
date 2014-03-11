@@ -39,7 +39,7 @@ namespace Saved_Game_Backup.OnlineStorage
 
         private void SaveUserLogin(UserLogin userLogin) {
             var saver = new PrefSaver();
-            saver.SaveDropBoxToken(userLogin);
+            saver.SaveDropboxToken(userLogin);
         }
 
         public async Task Initialize() { 
@@ -56,7 +56,7 @@ namespace Saved_Game_Backup.OnlineStorage
             }
             catch (DropboxException ex) { //Fails if user doesn't authorize the app
                 SBTErrorLogger.Log(ex.Message);
-                PrefSaver.DeleteDropboxLogin();
+                PrefSaver.DeleteDropboxToken();
                 MessageBox.Show(@"SaveMonkey not authorized by user");
             }
         }
@@ -99,7 +99,7 @@ namespace Saved_Game_Backup.OnlineStorage
             _client.UploadFileAsync(uploadPath, file.Name, bytes, response => Debug.WriteLine(@"File uploaded successfully"), 
                 error => {
                 if (error.Response.StatusCode.ToString() == @"Forbidden") {//Error with access/authorization. erase auth info and reinitialize.
-                    PrefSaver.DeleteDropboxLogin();
+                    PrefSaver.DeleteDropboxToken();
                     Initialize();
                 }
                 Console.WriteLine(error.Response.StatusCode.ToString());
