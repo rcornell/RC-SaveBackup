@@ -37,6 +37,7 @@ namespace Saved_Game_Backup {
         private static readonly string UserPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         private static readonly CultureInfo Culture = CultureInfo.CurrentCulture;
         private static readonly BackupResultHelper ErrorResultHelper = new BackupResultHelper(){Success = false ,AutobackupEnabled = false, Message=@"Error during operation"};
+        private static BackupResultHelper _resultHelper;
         public static FolderBrowserDialog FolderBrowser = new FolderBrowserDialog() {
             ShowNewFolderButton = true,
             Description = @"Select a target folder for auto-backup to copy to."
@@ -51,18 +52,22 @@ namespace Saved_Game_Backup {
         public Backup() {}
 
         public static async Task<BackupResultHelper> StartBackup(List<Game> games, BackupType backupType, bool backupEnabled, BackupSyncOptions backupSyncOptions, int interval = 0) {
-            if(!GetDirectoryOrFile(backupType, backupEnabled)) return ErrorResultHelper;
-
             //Check for problems with parameters
-            if (!games.Any() && backupType == BackupType.Autobackup && backupEnabled)
-                return HandleBackupResult(true, false, @"Autobackup Disabled", backupType,
-                    DateTime.Now.ToString(Culture));
-            if (!games.Any())
-                return HandleBackupResult(false, false, @"No games selected.", backupType,
-                    DateTime.Now.ToString(Culture));
+            if (!games.Any() && backupType == BackupType.Autobackup && backupEnabled) {
+                _resultHelper = new BackupResultHelper {Message = @"Auto-backup disabled", AutobackupEnabled = false};
+                return _resultHelper;
+            }
+            if (!games.Any()) {
+                ErrorResultHelper.Message = @"No games selected";
+                return ErrorResultHelper;
+            }
 
-            var gamesToBackup = ModifyGamePaths(games);
-            
+            var gamesToBackup= new List<Game>();
+            if (!backupEnabled) {
+                if (!GetDirectoryOrFile(backupType)) return ErrorResultHelper;
+                gamesToBackup = ModifyGamePaths(games);
+            }
+
             switch (backupType) {                  
                 case BackupType.ToZip:
                    return await BackupToZip.BackupAndZip(gamesToBackup, _specifiedFile);
@@ -75,7 +80,7 @@ namespace Saved_Game_Backup {
             return ErrorResultHelper;
         }
 
-        private static bool GetDirectoryOrFile(BackupType backupType, bool backupEnabled) {
+        private static bool GetDirectoryOrFile(BackupType backupType) {
                 switch (backupType)
                 {
                     case BackupType.ToFolder:
@@ -103,7 +108,7 @@ namespace Saved_Game_Backup {
         /// new list.
         /// </summary>
         /// <param name="gamesToBackup"></param>
-        internal static List<Game> ModifyGamePaths(IEnumerable<Game> gamesToBackup) {
+        public static List<Game> ModifyGamePaths(IEnumerable<Game> gamesToBackup) {
             var editedList = new List<Game>();
             try {
                 foreach (var game in gamesToBackup) {
@@ -129,7 +134,7 @@ namespace Saved_Game_Backup {
             return editedList;
         }
 
-        internal static Game ModifyGamePaths(Game game) {
+        public static Game ModifyGamePaths(Game game) {
             var editedGame = new Game();
             try
             {
@@ -204,7 +209,6 @@ namespace Saved_Game_Backup {
             var result = BackupAuto.RemoveFromAutobackup(game);
             return result;
         }
-
 
         public static BackupResultHelper AddToAutobackup(Game game) {
             if (game == null) return ErrorResultHelper;
