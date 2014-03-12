@@ -87,6 +87,8 @@ namespace Saved_Game_Backup {
                     case BackupType.Autobackup:
                         if (FolderBrowser.ShowDialog() == DialogResult.OK) {
                             _specifiedFolder = new DirectoryInfo(FolderBrowser.SelectedPath);
+                            var path = DirectoryFinder.FormatDisplayPath(_specifiedFolder.FullName);
+                            Messenger.Default.Send(new FolderHelper(path));
                             return true;
                         }
                         break;

@@ -111,6 +111,7 @@
     <Compile Include="DirectoryFinder.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameListHandler.cs" />
+    <Compile Include="Helper\FolderHelper.cs" />
     <Compile Include="OnlineStorage\DropBoxAPI.cs" />
     <Compile Include="ThumbnailAPI\GamesDBAPI.cs" />
     <Compile Include="Helper\GamesDBThumbResult.cs" />

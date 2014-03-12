@@ -348,6 +348,8 @@ namespace Saved_Game_Backup.ViewModel
 
         private void RegisterAll() {
 
+            Messenger.Default.Register<FolderHelper>(this, h => DisplaySpecifiedFolder = h.FolderPath);
+
             Messenger.Default.Register<ProgressHelper>(this, p => {
                 PercentComplete = p.PercentComplete;
                 Debug.WriteLine(@"Percent complete is {0}%", PercentComplete * 100);
