@@ -14,6 +14,7 @@ using System.Timers;
 using System.Windows.Forms;
 using System.Windows.Navigation;
 using GalaSoft.MvvmLight.Messaging;
+using Microsoft.Practices.ServiceLocation;
 using Saved_Game_Backup.BackupClasses;
 using Saved_Game_Backup.Helper;
 using Saved_Game_Backup.OnlineStorage;
@@ -61,7 +62,7 @@ namespace Saved_Game_Backup
             if (!GamesToBackup.Any()) return ErrorResultHelper;
             InitializeWatchers();
             var result = InitializePollAutobackup(interval);
-            _backupEnabled = result.Success;
+            _backupEnabled = result.AutobackupEnabled;
             return result;
         }
 
@@ -151,6 +152,16 @@ namespace Saved_Game_Backup
             Debug.WriteLine(@"Finished adding {0} Watchers to list", watcherNumber);
         }
 
+        public static void ShutdownWatchers() {
+            Debug.WriteLine(@"Shutting down Watchers and timers");
+            _fileWatcherList.Clear();
+            _delayTimer.Stop();
+            _delayTimer.Dispose();
+            _canBackupTimer.Stop();
+            _canBackupTimer.Dispose();
+            Debug.WriteLine(@"All Watchers and timers shut down and cleared");
+        }
+
         public static void CreateWatcher(Game game, int watcherNumber = 0) {
             var filePath = new FileInfo(game.Path + "\\");
             _fileWatcherList.Add(new FileSystemWatcher(filePath.FullName));
@@ -171,6 +182,7 @@ namespace Saved_Game_Backup
         /// Returns false if no game files are found
         /// </summary>
         /// <param name="game"></param>
+        /// <param name="updatingDictionary"></param>
         /// <returns></returns>
         private static bool GetSourceFiles(Game game, bool updatingDictionary) {           
             Debug.WriteLine(@"Getting files in source directory for " + game.Name);
@@ -204,16 +216,6 @@ namespace Saved_Game_Backup
             if (GameTargetDictionary.ContainsKey(game)) //Updating dictionary. Remove entry for game, then re-add with updated source.
                 GameTargetDictionary.Remove(game);
             GameTargetDictionary.Add(game, targets);
-        }
-
-        public static void ShutdownWatchers() {
-            Debug.WriteLine(@"Shutting down Watchers and timers");
-            _fileWatcherList.Clear();
-            _delayTimer.Stop();
-            _delayTimer.Dispose();
-            _canBackupTimer.Stop();
-            _canBackupTimer.Dispose();
-            Debug.WriteLine(@"All Watchers and timers shut down and cleared");
         }
 
         private static void OnRenamed(object sender, RenamedEventArgs e) {
@@ -606,7 +608,7 @@ namespace Saved_Game_Backup
             Debug.WriteLine(@"Finished setup for PollAutobackup.");
             Debug.WriteLine(@"Initializing Poll Autobackup Timer.");
             Watch = new Stopwatch();
-            _pollAutobackupTimer = new Timer { Interval = _backupSyncOptions.BackupOnInterval ? 1000 : 60000 }; //Timer interval is one second if interval, 45sec if time.
+            _pollAutobackupTimer = new Timer { Interval = _backupSyncOptions.BackupOnInterval ? 1000 : 60000 }; //Timer interval is one second if interval backup, 1min if time.
             _pollAutobackupTimer.Elapsed += _pollAutobackupTimer_Elapsed;
             _pollAutobackupTimer.Start();
             
@@ -652,8 +654,6 @@ namespace Saved_Game_Backup
                 Debug.WriteLine(@"Finishing Main Backup Loop for " + game.Name + " at {0}", Watch.Elapsed);                
             }
 
-            
-
             var endTime = Watch.Elapsed;
             Debug.WriteLine(@"PollAutobackup ended at {0}", endTime);
             Debug.WriteLine(@"PollAutobackup completed in {0}", (endTime - startTime));
@@ -666,7 +666,7 @@ namespace Saved_Game_Backup
         private async static Task SyncToDropbox() {
             var startTime = Watch.Elapsed;
             Debug.WriteLine(@"Starting SyncToDropbox at {0}", startTime);
-            var drop = new DropBoxAPI();
+            var drop = SingletonHelper.DropBoxAPI;
             await drop.Initialize();
             if (_backupSyncOptions.SyncToZip) { //Find a way to check for existing file
                 Debug.WriteLine(@"Creating and uploading zip file");
@@ -862,7 +862,7 @@ namespace Saved_Game_Backup
             // the same.
             return ((file1Byte - file2Byte) == 0);
         }
-    
+        
         #region Timers
         private static void _pollAutobackupTimer_Elapsed(object sender, ElapsedEventArgs e) {
             if (_backupSyncOptions.BackupOnInterval) {

@@ -13,7 +13,9 @@ using System.Windows.Media;
 using System.Timers;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
+using Microsoft.Practices.ServiceLocation;
 using Saved_Game_Backup.BackupClasses;
 using Saved_Game_Backup.Helper;
 using Saved_Game_Backup.OnlineStorage;
@@ -311,7 +313,7 @@ namespace Saved_Game_Backup.ViewModel
             get { return new RelayCommand(ExecuteDropBoxTest);}
         }
         public async void ExecuteDropBoxTest() {
-            var drop = new DropBoxAPI();
+            var drop = SingletonHelper.DropBoxAPI;
             await drop.Initialize();
             Debug.WriteLine(@"Creating and uploading zip file");     
             if (File.Exists(@"C:\Users\Rob\Desktop\Saves.zip")) File.Delete(@"C:\Users\Rob\Desktop\Saves.zip");
