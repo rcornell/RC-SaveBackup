@@ -40,10 +40,8 @@ namespace Saved_Game_Backup.ViewModel
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
-
-        private const string _about =
-            "I made this program in an attempt to help people keep track of their saved games in case of catastrophe. It should work, but Autobackup can be touchy sometimes. If you have any issues please email me at rob.cornell@gmail.com.";
-        public string About { get { return _about; }}
+    
+        public string About { get { return "I made this program in an attempt to help people keep track of their saved games in case of catastrophe. It should work, but Autobackup can be touchy sometimes. If you have any issues please email me at rob.cornell@gmail.com."; }}
 
         private TimeSpan _span;
         public TimeSpan Span {
@@ -308,21 +306,21 @@ namespace Saved_Game_Backup.ViewModel
             get { return new RelayCommand(CloseApplication); }
         }
 
+        //TEST COMMAND & METHOD
         public RelayCommand DropBoxTest {
             get { return new RelayCommand(ExecuteDropBoxTest);}
         }
-
-        public async void ExecuteDropBoxTest()  { 
+        public async void ExecuteDropBoxTest() {
             var drop = new DropBoxAPI();
             await drop.Initialize();
-                Debug.WriteLine(@"Creating and uploading zip file");     
-                if (File.Exists(@"C:\Users\Rob\Desktop\Saves.zip")) File.Delete(@"C:\Users\Rob\Desktop\Saves.zip");
-                ZipFile.CreateFromDirectory(@"C:\Users\Rob\Desktop\SBTTest", @"C:\Users\Rob\Desktop\Saves.zip");
-                var file = new FileInfo(@"C:\Users\Rob\Desktop\Saves.zip");
-                //await drop.Upload("/", file);
+            Debug.WriteLine(@"Creating and uploading zip file");     
+            if (File.Exists(@"C:\Users\Rob\Desktop\Saves.zip")) File.Delete(@"C:\Users\Rob\Desktop\Saves.zip");
+            ZipFile.CreateFromDirectory(@"C:\Users\Rob\Desktop\SBTTest", @"C:\Users\Rob\Desktop\Saves.zip");
+            var file = new FileInfo(@"C:\Users\Rob\Desktop\Saves.zip");
+            //await drop.Upload("/", file);
             //drop.CheckForSaveFile();
-                await drop.DeleteFile(@"/SaveMonkey/Saves.zip"); //When this fails: System.Net.HttpStatusCode.NotFound
-                Debug.WriteLine(@"Zip uploaded");
+            await drop.DeleteFile(@"/SaveMonkey/Saves.zip"); 
+            Debug.WriteLine(@"Zip uploaded");
         }
 
         public MainViewModel() {
@@ -347,18 +345,21 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void RegisterAll() {
-
+            //Updates autobackup folder in ui
             Messenger.Default.Register<FolderHelper>(this, h => DisplaySpecifiedFolder = h.FolderPath);
 
+            //Updates progress bar
             Messenger.Default.Register<ProgressHelper>(this, p => {
                 PercentComplete = p.PercentComplete;
                 Debug.WriteLine(@"Percent complete is {0}%", PercentComplete * 100);
             });
 
+            //Updates countdown clock
             Messenger.Default.Register<TimeSpan>(this, s => {
                 Span = Span.Subtract(s);
             });
 
+            //Updates number of autobackup events
             try {
                 Messenger.Default.Register<int>(this, i => {
                     NumberOfBackups = i;
@@ -367,6 +368,7 @@ namespace Saved_Game_Backup.ViewModel
                 SBTErrorLogger.Log(ex.Message);
             }
 
+            //Updates last backup time
             Messenger.Default.Register<string>(this, t => {
                 LastBackupTime = t;
             });

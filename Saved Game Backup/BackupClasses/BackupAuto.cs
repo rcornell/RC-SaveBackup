@@ -21,17 +21,14 @@ using Timer = System.Timers.Timer;
 
 namespace Saved_Game_Backup
 {
-    public class BackupAuto
-    {
-        private static readonly string HardDrive = Path.GetPathRoot(Environment.SystemDirectory);
+    public class BackupAuto {
         private static readonly string MyDocuments = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         private static DirectoryInfo _autoBackupDirectoryInfo;
         private static Timer _delayTimer;
         private static Timer _canBackupTimer;
         private static Timer _pollAutobackupTimer;
-        private static DateTime _lastAutoBackupTime;
+        private static DateTime _lastAutoBackupTime; //Resharper says not used bc it is sent via Messenger to MainViewModel
         private static int _numberOfBackups = 0;
-        private static readonly CultureInfo Culture = CultureInfo.CurrentCulture;
         private static bool _watcherCopiedFile;
         private static List<FileSystemWatcher> _fileWatcherList;
         public static Stopwatch Watch;
@@ -43,37 +40,35 @@ namespace Saved_Game_Backup
         public static Dictionary<Game, List<FileInfo>> GameTargetDictionary;
         private static bool _firstPoll;
         private static BackupSyncOptions _backupSyncOptions;
-        private static bool BackupEnabled;
+        private static bool _backupEnabled;
         private static readonly BackupResultHelper ErrorResultHelper = new BackupResultHelper() { Success = false, AutobackupEnabled = false, Message = "Error during operation" };
-        private static readonly BackupResultHelper FilesNotFoundHelper = new BackupResultHelper() {Success = false };
+        private static readonly BackupResultHelper FilesNotFoundHelper = new BackupResultHelper() { Success = false };
         private static ProgressHelper _progress;
         private static int _interval;
         private static int _elapsed;
-        
-
 
         public static BackupResultHelper ToggleAutoBackup(List<Game> gamesToBackup, bool backupEnabled, BackupSyncOptions backupSyncOptions, int interval, DirectoryInfo autobackupDi) {
             if (backupEnabled) return ShutdownAutobackup();
             GamesToBackup = gamesToBackup;
-            BackupEnabled = backupEnabled;
+            _backupEnabled = false;
             _backupSyncOptions = backupSyncOptions;
             _autoBackupDirectoryInfo = autobackupDi;
-            _progress = new ProgressHelper(){FilesComplete = 0, TotalFiles = 0};
-            return InitializeAutobackup(backupEnabled, interval);
+            _progress = new ProgressHelper(){ FilesComplete = 0, TotalFiles = 0};
+            return InitializeAutobackup(interval);
         }
 
-        private static BackupResultHelper InitializeAutobackup(bool backupEnabled, int interval) {
+        private static BackupResultHelper InitializeAutobackup(int interval) {
             if (!GamesToBackup.Any()) return ErrorResultHelper;
             InitializeWatchers();
-            var result = InitializePollAutobackup(backupEnabled, interval);
-            BackupEnabled = true;
+            var result = InitializePollAutobackup(interval);
+            _backupEnabled = result.Success;
             return result;
         }
 
         private static BackupResultHelper ShutdownAutobackup() {
             ShutdownWatchers();
             ShutdownPollAutobackup();
-            BackupEnabled = false;
+            _backupEnabled = false;
             return new BackupResultHelper(){Success = true, AutobackupEnabled = false, ShuttingDownAutobackup = true, Message = @"Auto-backup disabled"};
         }
 
@@ -118,7 +113,7 @@ namespace Saved_Game_Backup
             if (!GetSourceFiles(game, false)) {
                 FilesNotFoundHelper.Message = string.Format("No files found for " + game.Name + ". Game not added.");
                 FilesNotFoundHelper.RemoveFromAutobackup = true;
-                FilesNotFoundHelper.AutobackupEnabled = BackupEnabled;
+                FilesNotFoundHelper.AutobackupEnabled = _backupEnabled;
                 return FilesNotFoundHelper;
             }
             GetTargetFiles(game, false);
@@ -128,7 +123,7 @@ namespace Saved_Game_Backup
         }
 
         public static void InitializeWatchers(Game gameToAdd = null) {
-            if (!BackupEnabled) {
+            if (!_backupEnabled) {
                 _delayTimer = new Timer {Interval = 5000, AutoReset = true};
                 _delayTimer.Elapsed += _delayTimer_Elapsed;
 
@@ -588,21 +583,10 @@ namespace Saved_Game_Backup
             Debug.WriteLine(@"Enabled Watchers after PollAutobackup");
         }
 
-        private static BackupResultHelper InitializePollAutobackup(bool backupEnabled, int interval) {
+        private static BackupResultHelper InitializePollAutobackup(int interval) {
             _elapsed = 0;
             _interval = interval;
             _firstPoll = true;
-            if (backupEnabled) {
-                _pollAutobackupTimer.Stop();
-                _fileWatcherList.Clear();
-                return new BackupResultHelper {
-                    Success = true, 
-                    AutobackupEnabled = false, 
-                    Message = @"Auto-backup disabled", 
-                    BackupDateTime = DateTime.Now.ToLongTimeString(), 
-                    BackupButtonText = "Enable auto-backup"
-                };
-            }
             Debug.WriteLine(@"Starting setup for PollAutobackup");
 
             GameTargetDictionary = new Dictionary<Game, List<FileInfo>>();
@@ -612,7 +596,7 @@ namespace Saved_Game_Backup
                 if (!GetSourceFiles(game, false)) //Returns false and stops the startup process if no source files are found.
                     return new BackupResultHelper {
                         Success = false, 
-                        AutobackupEnabled= BackupEnabled, 
+                        AutobackupEnabled= _backupEnabled, 
                         Message = @"Game directory not found.", 
                         BackupDateTime = DateTime.Now.ToLongTimeString(), 
                         BackupButtonText = @"Enable auto-backup"

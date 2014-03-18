@@ -22,24 +22,24 @@ namespace Saved_Game_Backup.OnlineStorage
         private const string ApiKey = @"zv4hgyhmkkr90xz";
         private const string ApiSecret = @"1h4y0lb43hiu8ci";
         private readonly DropNetClient _client;
+        private readonly PrefSaver _prefSaver;
 
         public DropBoxAPI() {
             _client = new DropNetClient(ApiKey, ApiSecret);
+            _prefSaver = new PrefSaver();
         }
 
         private bool LoadUserLogin() {
-            var prefSaver = new PrefSaver();
-            if (!prefSaver.CheckForPrefs()) return false;
-            var prefs = prefSaver.LoadPrefs();
+            if (!_prefSaver.CheckForPrefs()) return false;
+            var prefs = _prefSaver.LoadPrefs();
             if (!string.IsNullOrEmpty(prefs.UserSecret) && 
                 !string.IsNullOrEmpty(prefs.UserToken))
-                _client.UserLogin = new UserLogin() {Secret = prefs.UserSecret, Token=prefs.UserToken};
+                _client.UserLogin = new UserLogin() { Secret = prefs.UserSecret, Token = prefs.UserToken};
             return true;
         }
 
         private void SaveUserLogin(UserLogin userLogin) {
-            var prefs = new PrefSaver();
-            var result = prefs.SaveDropboxToken(userLogin);
+            var result = _prefSaver.SaveDropboxToken(userLogin);
             if (!result) MessageBox.Show(@"Failed to save Dropbox Token. Contact the app designer.");
         }
 

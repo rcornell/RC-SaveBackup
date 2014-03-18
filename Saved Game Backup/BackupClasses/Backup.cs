@@ -32,24 +32,20 @@ namespace Saved_Game_Backup {
 
         private static DirectoryInfo _specifiedFolder;
         private static FileInfo _specifiedFile;  
-
         private static readonly string HardDrive = Path.GetPathRoot(Environment.SystemDirectory);
         private static readonly string UserPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        private static readonly CultureInfo Culture = CultureInfo.CurrentCulture;
-        private static readonly BackupResultHelper ErrorResultHelper = new BackupResultHelper(){Success = false ,AutobackupEnabled = false, Message=@"Error during operation"};
+        private static readonly BackupResultHelper ErrorResultHelper = new BackupResultHelper(){ Success = false, AutobackupEnabled = false, Message=@"Error during operation" };
         private static BackupResultHelper _resultHelper;
-        public static FolderBrowserDialog FolderBrowser = new FolderBrowserDialog() {
+        private static readonly FolderBrowserDialog FolderBrowser = new FolderBrowserDialog() {
             ShowNewFolderButton = true,
             Description = @"Select a target folder for auto-backup to copy to."
         };
 
-        public static SaveFileDialog SaveFileDialog = new SaveFileDialog() {
+        private static readonly SaveFileDialog SaveFileDialog = new SaveFileDialog() {
             InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer),
             Filter = @"Zip files | *.zip",
             DefaultExt = "zip",
         };
-
-        public Backup() {}
 
         public static async Task<BackupResultHelper> StartBackup(List<Game> games, BackupType backupType, bool backupEnabled, BackupSyncOptions backupSyncOptions, int interval = 0) {
             //Check for problems with parameters
@@ -81,8 +77,7 @@ namespace Saved_Game_Backup {
         }
 
         private static bool GetDirectoryOrFile(BackupType backupType) {
-                switch (backupType)
-                {
+                switch (backupType) {
                     case BackupType.ToFolder:
                     case BackupType.Autobackup:
                         if (FolderBrowser.ShowDialog() == DialogResult.OK) {
@@ -139,8 +134,7 @@ namespace Saved_Game_Backup {
         public static Game ModifyGamePaths(Game game) {
             var editedGame = new Game();
             try
-            {
-                
+            {             
                     if (!game.HasCustomPath && game.Path.Contains("Documents"))
                         editedGame = new Game(game.Name, UserPath + game.Path, game.ID, game.ThumbnailPath,
                             game.HasCustomPath, game.HasThumb, game.RootFolder);
@@ -157,8 +151,7 @@ namespace Saved_Game_Backup {
                         editedGame = game;
                 
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SBTErrorLogger.Log(ex.Message);
             }
             return editedGame;
@@ -181,29 +174,6 @@ namespace Saved_Game_Backup {
                 foreach (var game in games) BackupAuto.RemoveFromAutobackup(game);
             }
             games.Clear();
-        }
-
-        private static BackupResultHelper HandleBackupResult(bool success, bool backupEnabled, string messageToShow,
-            BackupType backupType, string date) {
-            var backupButtonText = "";
-            if (!success) return new BackupResultHelper(success, backupEnabled, messageToShow, date, backupButtonText);
-
-            var message = messageToShow;
-            switch (backupType) {
-                case BackupType.ToFolder:
-                    backupButtonText = "Backup to folder";
-                    break;
-                case BackupType.ToZip:
-                    backupButtonText = "Backup to zip";
-                    break;
-                default:
-                    if (backupEnabled && backupType == BackupType.Autobackup) backupButtonText = "Disable auto-backup";
-                    else backupButtonText = "Enable auto-backup";
-                    break;
-            }
-
-
-            return new BackupResultHelper(success, backupEnabled, message, date, backupButtonText);
         }
 
         public static BackupResultHelper RemoveFromAutobackup(Game game) {
