@@ -18,6 +18,7 @@ namespace Saved_Game_Backup
         protected override void OnStartup(StartupEventArgs e) {
             base.OnStartup(e);
             SimpleIoc.Default.Register<DropBoxAPI>();
+            SimpleIoc.Default.Register<GamesDBAPI>();
         }
     }
 }

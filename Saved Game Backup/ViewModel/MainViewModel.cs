@@ -308,6 +308,8 @@ namespace Saved_Game_Backup.ViewModel
             get { return new RelayCommand(CloseApplication); }
         }
 
+        public GamesDBAPI GamesDbApi;
+
         //TEST COMMAND & METHOD
         public RelayCommand DropBoxTest {
             get { return new RelayCommand(ExecuteDropBoxTest);}
@@ -326,6 +328,7 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         public MainViewModel() {
+            GamesDbApi = SingletonHelper.GamesDBAPI;
             BackupSyncOptions = new BackupSyncOptions();
             PercentComplete = 0;
             NumberOfBackups = 0;
@@ -433,7 +436,7 @@ namespace Saved_Game_Backup.ViewModel
             RaisePropertyChanged(() => GamesToBackup);            
 
             if (!game.ThumbnailPath.Contains("Loading")) return;
-            await GamesDBAPI.GetThumb(game);
+            await GamesDbApi.GetThumb(game);
         }
 
         private void RemoveGameFromBackupList(Game game) {

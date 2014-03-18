@@ -11,5 +11,9 @@ namespace Saved_Game_Backup.Helper {
         public static DropBoxAPI DropBoxAPI {
             get { return SimpleIoc.Default.GetInstance<DropBoxAPI>(); }
         }
+
+        public static GamesDBAPI GamesDBAPI {
+            get { return SimpleIoc.Default.GetInstance<GamesDBAPI>(); }
+        }
     }
 }

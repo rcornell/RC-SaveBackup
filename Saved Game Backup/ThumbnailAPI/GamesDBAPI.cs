@@ -20,17 +20,17 @@ namespace Saved_Game_Backup {
 
     public class GamesDBAPI {
 
-        private static bool gameDataChanged;
+        private bool gameDataChanged;
         private const string GameListPath = @"Assets\Games.json";
-        private static readonly Uri SearchBase = new Uri(@"http://thegamesdb.net/api/GetGamesList.php?name=");
-        private static readonly Uri SearchThumbUrlBase = new Uri(@"http://thegamesdb.net/api/GetArt.php?id=");
-        private static readonly Uri BannerBase = new Uri(@"http://thegamesdb.net/banners/");
+        private readonly Uri SearchBase = new Uri(@"http://thegamesdb.net/api/GetGamesList.php?name=");
+        private readonly Uri SearchThumbUrlBase = new Uri(@"http://thegamesdb.net/api/GetArt.php?id=");
+        private readonly Uri BannerBase = new Uri(@"http://thegamesdb.net/banners/");
 
         public GamesDBAPI() {}
 
 
 
-        public static async Task GetThumb(Game game) {
+        public async Task GetThumb(Game game) {
             //Create path for thumbnails directory and get all files in directory
             var thumbnailDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
                                      "\\Save Backup Tool\\Thumbnails\\";
@@ -68,7 +68,7 @@ namespace Saved_Game_Backup {
         }
 
         //Retrieves GameID if it is the default value 999999 in json file.
-        public static async Task GetGameID(Game game) {
+        public async Task GetGameID(Game game) {
             var fullSearchPath = new Uri(SearchBase + game.Name);
 
             #region JsonMethod
@@ -110,7 +110,7 @@ namespace Saved_Game_Backup {
         }
 
         //Gets the GamesDB thumbnail's web URL
-        private static async Task GetThumbUrl(Game game) {
+        private async Task GetThumbUrl(Game game) {
             var thumbQueryUrl = SearchThumbUrlBase + game.ID.ToString();
             
 
@@ -172,7 +172,7 @@ namespace Saved_Game_Backup {
 
         //Downloads thumbnail using URL
         //And sets game.ThumbnailPath to local thumb cache
-        private static async Task DownloadThumbnail(Game game) {
+        private async Task DownloadThumbnail(Game game) {
             var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             if (string.IsNullOrWhiteSpace(game.ThumbnailPath)) return;
 
@@ -198,7 +198,7 @@ namespace Saved_Game_Backup {
 
         //If something has been changed in the game parameter,
         //Update the json
-        private static async Task UpdateGameInJson(Game game) {
+        private async Task UpdateGameInJson(Game game) {
             var listToReturn = new List<Game>();
             var gameJsonList =
                 await JsonConvert.DeserializeObjectAsync<List<Game>>(File.ReadAllText(GameListPath));
@@ -207,7 +207,7 @@ namespace Saved_Game_Backup {
             File.WriteAllText(GameListPath, fileToWrite);
         }
 
-        public static async Task AddToJson(Game newGameForJson) {
+        public async Task AddToJson(Game newGameForJson) {
             try {
                 var gameJsonList = await JsonConvert.DeserializeObjectAsync<List<Game>>(File.ReadAllText(GameListPath));
                 gameJsonList.Add(newGameForJson);
