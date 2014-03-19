@@ -87,6 +87,7 @@ namespace Saved_Game_Backup.BackupClasses {
 
         public BackupSyncOptions() {
             SyncToDropbox = false;
+            BackupOnInterval = true;
         }
 
     }

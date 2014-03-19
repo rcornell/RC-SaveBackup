@@ -70,36 +70,6 @@ namespace Saved_Game_Backup {
         //Retrieves GameID if it is the default value 999999 in json file.
         public async Task GetGameID(Game game) {
             var fullSearchPath = new Uri(SearchBase + game.Name);
-
-            #region JsonMethod
-            //try {
-            //    var resultString = "";
-            //    using (var httpClient = new HttpClient()) {
-            //        resultString = await httpClient.GetStringAsync(fullSearchPath);
-            //    }
-
-            //    var xmlDoc = new XmlDocument();
-            //    xmlDoc.LoadXml(resultString);
-
-            //    var serializedXml = JsonConvert.SerializeXmlNode(xmlDoc); //XmlSerializer could be used here.
-            //    var convertedJson = JsonConvert.DeserializeObject<dynamic>(serializedXml);
-
-                
-
-            //    if (convertedJson.Data.Game.GetType() == typeof (List<>))
-            //        return;
-
-            //    game.ID = convertedJson.Data.Game[0].id;
-            //    gameDataChanged = true;
-            //}
-            //catch (ArgumentOutOfRangeException ex) {
-            //    SBTErrorLogger.Log(ex);
-            //}
-            //catch (Exception ex) {
-            //    SBTErrorLogger.Log(ex);
-            //}
-            #endregion
-
             var client = new WebClient() { Proxy = null };
             var result = await client.DownloadStringTaskAsync(fullSearchPath);         
             var indexOfFirstTag = result.IndexOf("<id>");
@@ -111,53 +81,7 @@ namespace Saved_Game_Backup {
 
         //Gets the GamesDB thumbnail's web URL
         private async Task GetThumbUrl(Game game) {
-            var thumbQueryUrl = SearchThumbUrlBase + game.ID.ToString();
-            
-
-            #region JsonMethod
-            //try {
-            //    var resultString = "";
-            //    using (var client = new HttpClient())
-            //        resultString = await client.GetStringAsync(thumbQueryUrl);
-
-            //    var xmlDoc = new XmlDocument();
-            //    xmlDoc.LoadXml(resultString);
-
-            //    var serializedXml = JsonConvert.SerializeXmlNode(xmlDoc); //XmlSerializer could be used here.
-            //    var withouAtSignXml = serializedXml.Replace("@", "");
-            //    var withoutPoundSignXml = withouAtSignXml.Replace("#", "");
-            //    var withoutQuestionMarkXml = withoutPoundSignXml.Replace("?", "");
-            //    var dynamicResult = JsonConvert.DeserializeObject<dynamic>(withoutQuestionMarkXml);
-
-            //    string gamesDBString = dynamicResult.ToString();
-            //    var count = Regex.Matches(gamesDBString, "boxart").Count;
-            //    var endOfUrl = "";
-            //    if (count > 3) { //If true, the boxart is a List<Boxart>
-            //        withoutQuestionMarkXml.Replace("Images", "ImagesWithList");
-            //        withoutQuestionMarkXml.Replace("Data", "DataWithList");
-            //        var gamesDBResult = JsonConvert.DeserializeObject<GamesDBThumbResultList>(withoutQuestionMarkXml);
-            //        var boxList = gamesDBResult.Data.Images.boxart;
-            //        foreach (var boxItem in boxList.Where(boxItem => boxItem.thumb.Contains("front")))
-            //            endOfUrl = boxItem.thumb;                 
-            //    } else { //else, there is only one boxart in the result
-            //        var gamesDBResult = JsonConvert.DeserializeObject<GamesDBThumbResult>(withoutQuestionMarkXml);
-            //        endOfUrl = gamesDBResult.Data.Images.boxart.thumb;
-            //    }
-              
-            
-            //    game.ThumbnailPath = BannerBase + endOfUrl;
-
-            //}
-            //catch (RuntimeBinderException ex) {
-            //    SBTErrorLogger.Log(ex);
-            //    game.ThumbnailPath = @"pack://application:,,,/Assets/NoThumb.jpg";
-            //}
-            //catch (Exception ex) {
-            //    SBTErrorLogger.Log(ex);
-            //    game.ThumbnailPath = @"pack://application:,,,/Assets/NoThumb.jpg";
-            //}
-            #endregion
-
+            var thumbQueryUrl = SearchThumbUrlBase + game.ID.ToString();          
             var client = new WebClient() { Proxy = null }; ;
             var artResponseString = await client.DownloadStringTaskAsync(thumbQueryUrl);
             var index = artResponseString.IndexOf("boxart/thumb/original/front/");
