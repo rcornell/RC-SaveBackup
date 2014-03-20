@@ -667,15 +667,22 @@ namespace Saved_Game_Backup
             var startTime = Watch.Elapsed;
             Debug.WriteLine(@"Starting SyncToDropbox at {0}", startTime);
             var drop = SingletonHelper.DropBoxAPI;
-            await drop.Initialize();
+            if (!drop.IsInitialized) await drop.Initialize();
             if (_backupSyncOptions.SyncToZip) { //Find a way to check for existing file
-                Debug.WriteLine(@"Creating and uploading zip file");
-                var zipDestPath = MyDocuments + @"\Save Backup Tool\Saves.zip";
-                if (File.Exists(zipDestPath)) File.Delete(zipDestPath);
-                await Task.Run(() => ZipFile.CreateFromDirectory(_autoBackupDirectoryInfo.FullName, zipDestPath)); 
-                var file = new FileInfo(@"C:\Users\Rob\Desktop\Saves.zip");
-                await drop.Upload("/", file);
-                Debug.WriteLine(@"Zip uploaded");
+                try {
+                    Debug.WriteLine(@"Creating and uploading zip file");
+                    var zipDestPath = MyDocuments + @"\Save Backup Tool\Saves.zip";
+                    if (File.Exists(zipDestPath)) File.Delete(zipDestPath);
+                    await Task.Run(() => ZipFile.CreateFromDirectory(_autoBackupDirectoryInfo.FullName, zipDestPath));
+                    var file = new FileInfo(zipDestPath);
+                    await drop.DeleteFile("/", file);
+                    await drop.Upload("/", file);
+                    Debug.WriteLine(@"Zip uploaded");
+                }
+                catch (Exception ex) {
+                    SBTErrorLogger.Log(ex.Message);
+                    MessageBox.Show(@"Error during Dropbox sync. Contact the author.");
+                }
             }
             else {//Commented bc dropbox permissions don't allow these files.
                 

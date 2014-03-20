@@ -23,6 +23,7 @@ namespace Saved_Game_Backup.OnlineStorage
         private const string ApiSecret = @"1h4y0lb43hiu8ci";
         private readonly DropNetClient _client;
         private readonly PrefSaver _prefSaver;
+        public bool IsInitialized;
 
         public DropBoxAPI() {
             _client = new DropNetClient(ApiKey, ApiSecret);
@@ -32,10 +33,9 @@ namespace Saved_Game_Backup.OnlineStorage
         private bool LoadUserLogin() {
             if (!_prefSaver.CheckForPrefs()) return false;
             var prefs = _prefSaver.LoadPrefs();
-            if (!string.IsNullOrEmpty(prefs.UserSecret) && 
-                !string.IsNullOrEmpty(prefs.UserToken))
-                _client.UserLogin = new UserLogin() { Secret = prefs.UserSecret, Token = prefs.UserToken};
-            return true;
+            if (string.IsNullOrEmpty(prefs.UserSecret) || string.IsNullOrEmpty(prefs.UserToken)) return false;
+            _client.UserLogin = new UserLogin() {Secret = prefs.UserSecret, Token = prefs.UserToken};
+            return IsInitialized = true;
         }
 
         private void SaveUserLogin(UserLogin userLogin) {
@@ -54,6 +54,7 @@ namespace Saved_Game_Backup.OnlineStorage
             try {
                 var accessToken = _client.GetAccessToken();
                 SaveUserLogin(accessToken);
+                IsInitialized = true;
             }
             catch (DropboxException ex) { //Fails if user doesn't authorize the app
                 SBTErrorLogger.Log(ex.Message);
@@ -104,6 +105,8 @@ namespace Saved_Game_Backup.OnlineStorage
                     Initialize();
                 }
                 Console.WriteLine(error.Response.StatusCode.ToString());
+                Console.WriteLine(error.Message);
+                Console.WriteLine(error.StackTrace.ToString());
                 MessageBox.Show(@"Look for error in output"); //Remove after testing
                 SBTErrorLogger.Log(error.Response.StatusCode.ToString());
             });
@@ -115,9 +118,11 @@ namespace Saved_Game_Backup.OnlineStorage
             (error) => SBTErrorLogger.Log(error.Message) );
         }
 
-        public async Task<bool> DeleteFile(string path) {
+        public async Task<bool> DeleteFile(string folderPath, FileInfo file)
+        {
             try {
-                await Task.Run(()=>_client.Delete(path));
+                var deletePath = @"/SaveMonkey" + folderPath + file.Name;
+                await Task.Run(()=>_client.Delete(deletePath));
                 return true;
             }
             catch (DropboxException ex) {

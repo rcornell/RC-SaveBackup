@@ -323,7 +323,7 @@ namespace Saved_Game_Backup.ViewModel
             var file = new FileInfo(@"C:\Users\Rob\Desktop\Saves.zip");
             //await drop.Upload("/", file);
             //drop.CheckForSaveFile();
-            await drop.DeleteFile(@"/SaveMonkey/Saves.zip"); 
+            //await drop.DeleteFile(@"/SaveMonkey/Saves.zip"); 
             Debug.WriteLine(@"Zip uploaded");
         }
 
