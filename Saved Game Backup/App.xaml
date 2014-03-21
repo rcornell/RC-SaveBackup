@@ -245,8 +245,8 @@
 
         <!--  BUTTON STYLE GOES HERE  -->
         <LinearGradientBrush x:Key="MyButtonBrush" StartPoint="0.5,0" EndPoint="0.5,1">
-            <GradientStop Offset="0" Color="#32FFFFFF" />
-            <GradientStop Offset="1" Color="#3CFFFFFF" />
+            <GradientStop Offset="0" Color="{Binding Path=Main.Theme.ButtonGradientTop, Source={StaticResource Locator}}" />
+            <GradientStop Offset="1" Color="{Binding Path=Main.Theme.ButtonGradientBottom, Source={StaticResource Locator}}" />
         </LinearGradientBrush>
         <LinearGradientBrush x:Key="BorderBackgroundBrush" StartPoint="0,0" EndPoint="0,1">
             <GradientStop x:Name="Stop1" Offset="0" Color="#CC363636" />

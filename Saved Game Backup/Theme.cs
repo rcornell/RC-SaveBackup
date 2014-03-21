@@ -42,10 +42,15 @@ namespace Saved_Game_Backup {
             }
         }
 
-        public Theme(ImageBrush imagebrush, Brush listBoxBackgroundBrush, Brush textBrush) {
+        public Brush ButtonGradientTop { get; set; }
+        public Brush ButtonGradientBottom { get; set; }
+
+        public Theme(ImageBrush imagebrush, Brush listBoxBackgroundBrush, Brush textBrush, Brush buttonTop, Brush buttonBottom) {
             BackgroundImage = imagebrush;
             ListBoxBackgroundBrush = listBoxBackgroundBrush;
             TextBrush = textBrush;
+            ButtonGradientTop = buttonTop;
+            ButtonGradientBottom = buttonBottom;
         }
     }
 }
