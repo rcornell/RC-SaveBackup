@@ -48,6 +48,7 @@
                     <MenuItem Command="{Binding SetThemeLight}" Header="_Blue" />
                     <MenuItem Command="{Binding SetThemeDark}" Header="_Black" />
                     <MenuItem Command="{Binding SetThemeRap}" Header="_Light" />
+                    <!--<MenuItem Command="{Binding Source={StaticResource Locator}, Path=ThemeSelector.BackgroundImage}}" Header="_Test" />-->
                 </MenuItem>
                 <MenuItem Command="{Binding Close}" Header="_Exit" />
             </MenuItem>
@@ -119,12 +120,6 @@
                         Command="{Binding StartBackup}"
                         Content="{Binding BackupButtonText}"
                         Style="{StaticResource SbtButtonStyle}" >
-                    <!--<Button.Background>
-                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                            <GradientStop Color="#7FFFFFFF" Offset="0"/>
-                            <GradientStop Color="#7FE8E8E8" Offset="1"/>
-                        </LinearGradientBrush>
-                    </Button.Background>-->
                 </Button>
 
                 <ComboBox Margin="3"

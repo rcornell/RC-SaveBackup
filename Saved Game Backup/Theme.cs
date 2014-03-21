@@ -20,8 +20,8 @@ namespace Saved_Game_Backup {
             }
         }
 
-        private Brush _listBoxBackgroundBrush;
-        public Brush ListBoxBackgroundBrush
+        private Color _listBoxBackgroundBrush;
+        public Color ListBoxBackgroundBrush
         {
             get { return _listBoxBackgroundBrush; }
             set
@@ -31,8 +31,8 @@ namespace Saved_Game_Backup {
             }
         }
 
-        private Brush _textBrush;
-        public Brush TextBrush
+        private Color _textBrush;
+        public Color TextBrush
         {
             get { return _textBrush; }
             set
@@ -42,10 +42,30 @@ namespace Saved_Game_Backup {
             }
         }
 
-        public Brush ButtonGradientTop { get; set; }
-        public Brush ButtonGradientBottom { get; set; }
+        private Color _buttonGradientTop;
+        public Color ButtonGradientTop { 
+            get { return _buttonGradientTop; }
+            set {
+                _buttonGradientTop = value;
+                RaisePropertyChanged(() => ButtonGradientTop);
+            } 
+        }
 
-        public Theme(ImageBrush imagebrush, Brush listBoxBackgroundBrush, Brush textBrush, Brush buttonTop, Brush buttonBottom) {
+        private Color _buttonGradientBottom;
+        public Color ButtonGradientBottom 
+            { 
+            get { return _buttonGradientBottom; }
+            set {
+                _buttonGradientBottom = value;
+                RaisePropertyChanged(() => ButtonGradientBottom);
+            } 
+        }
+
+        public SolidColorBrush GradientTopColor {
+            get { return new SolidColorBrush(ButtonGradientTop);}
+        }
+
+        public Theme(ImageBrush imagebrush, Color listBoxBackgroundBrush, Color textBrush, Color buttonTop, Color buttonBottom) {
             BackgroundImage = imagebrush;
             ListBoxBackgroundBrush = listBoxBackgroundBrush;
             TextBrush = textBrush;
