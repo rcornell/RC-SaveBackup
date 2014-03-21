@@ -22,11 +22,11 @@
         <savedGameBackup:BackupTypeToStringConverter x:Key="BackupConverter" />
         <savedGameBackup:StringToBackupTypeConverter x:Key="StringConverter" />
         <Style x:Key="ListBoxStyle" TargetType="ListBox">
-            <Setter Property="Background" Value="{Binding Brushes[1]}" />
-            <Setter Property="Foreground" Value="{Binding Brushes[2]}" />
+            <Setter Property="Background" Value="{Binding Theme.ListBoxBackgroundBrush}" />
+            <Setter Property="Foreground" Value="{Binding Theme.TextBrush}" />
         </Style>
     </Window.Resources>
-    <Grid Background="{Binding Brushes[0]}">
+    <Grid Background="{Binding Theme.BackgroundImage}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />

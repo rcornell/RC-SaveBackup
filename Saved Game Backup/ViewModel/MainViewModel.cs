@@ -122,24 +122,14 @@ namespace Saved_Game_Backup.ViewModel
             }
         }
 
-        public Theme Theme { get; set; }
-
-        //private Brush _background;
-        //public Brush Background {
-        //    get { return _background; }
-        //    set {
-        //        _background = value; 
-        //        RaisePropertyChanged(() => Background);
-        //    }
-        //}
-        //private Brush _listBoxBackground;
-        //public Brush ListBoxBackground {
-        //    get { return _listBoxBackground; }
-        //    set {
-        //        _listBoxBackground = value;
-        //        RaisePropertyChanged(() => ListBoxBackground);
-        //    }
-        //}
+        private Theme _theme;
+        public Theme Theme {
+            get { return _theme; }
+            set {
+                _theme = value;
+                RaisePropertyChanged(() => Theme);
+            }
+        }
 
         private BackupType _backupType;
         public BackupType BackupType {
