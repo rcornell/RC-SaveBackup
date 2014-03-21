@@ -64,6 +64,10 @@ namespace Saved_Game_Backup {
         public SolidColorBrush GradientTopColor {
             get { return new SolidColorBrush(ButtonGradientTop);}
         }
+        public SolidColorBrush GradientBottomColor
+        {
+            get { return new SolidColorBrush(ButtonGradientBottom);}
+        }
 
         public Theme(ImageBrush imagebrush, Color listBoxBackgroundBrush, Color textBrush, Color buttonTop, Color buttonBottom) {
             BackgroundImage = imagebrush;

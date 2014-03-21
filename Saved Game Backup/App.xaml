@@ -245,12 +245,12 @@
 
         <!--  BUTTON STYLE GOES HERE  -->
         
-        <SolidColorBrush x:Key="GradientTopBrush" Color="{Binding Path=Main.Theme.ButtonGradientTop, Source={StaticResource Locator}}"/>
-        <SolidColorBrush x:Key="GradientBottomBrush" Color="{Binding Path=Main.Theme.ButtonGradientBottom, Source={StaticResource Locator}}"/>
+        <!--<SolidColorBrush x:Key="GradientTop" Color="{Binding Path=Main.Theme.GradientTopColor, Source={StaticResource Locator}}"/>
+        <SolidColorBrush x:Key="GradientBottom" Color="{Binding Path=Main.Theme.GradientBottomColor, Source={StaticResource Locator}}"/>-->
         
         <LinearGradientBrush x:Key="MyButtonBrush" StartPoint="0.5,0" EndPoint="0.5,1">
-            <GradientStop Offset="0" Color="{StaticResource GradientTopBrush}"></GradientStop>
-            <GradientStop Offset="1" Color="{Binding Path=Main.Theme.ButtonGradientBottom, Source={StaticResource Locator}}"></GradientStop>
+            <GradientStop Offset="0" Color="{Binding Path=Main.Theme.GradientTopColor.Color, Source={StaticResource Locator}}"></GradientStop>
+            <GradientStop Offset="1" Color="{Binding Path=Main.Theme.GradientBottomColor.Color, Source={StaticResource Locator}}"></GradientStop>
         </LinearGradientBrush>
         <LinearGradientBrush x:Key="BorderBackgroundBrush" StartPoint="0,0" EndPoint="0,1" >
             <GradientStop x:Name="Stop1" Offset="0" Color="#CC363636" />
@@ -286,7 +286,7 @@
                                               VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
-                            <EventTrigger RoutedEvent="Button.MouseEnter">
+                            <!--<EventTrigger RoutedEvent="Button.MouseEnter">
                                 <BeginStoryboard>
                                     <Storyboard>
                                         <ColorAnimation Duration="0:0:0.25"
@@ -387,7 +387,7 @@
                                     </Storyboard>
                                 </BeginStoryboard>
 
-                            </EventTrigger>
+                            </EventTrigger>-->
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
