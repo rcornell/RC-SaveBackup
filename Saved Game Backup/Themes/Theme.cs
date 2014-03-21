@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using GalaSoft.MvvmLight;
 
-namespace Saved_Game_Backup {
+namespace Saved_Game_Backup.Themes {
     public class Theme : ObservableObject {
 
         private ImageBrush _backgroundImage;

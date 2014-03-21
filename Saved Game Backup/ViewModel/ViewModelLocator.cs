@@ -16,6 +16,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
 using Saved_Game_Backup.OnlineStorage;
+using Saved_Game_Backup.Themes;
 
 namespace Saved_Game_Backup.ViewModel
 {

@@ -18,6 +18,7 @@ using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Practices.ServiceLocation;
 using Saved_Game_Backup.BackupClasses;
 using Saved_Game_Backup.Helper;
+using Saved_Game_Backup.Themes;
 using Saved_Game_Backup.OnlineStorage;
 using Saved_Game_Backup.Preferences;
 using Application = System.Windows.Application;
