@@ -63,7 +63,7 @@ namespace Saved_Game_Backup.ViewModel {
 
       
         public AddGameViewModel(MainViewModel mainview) {
-            Background = mainview.Background;
+            Background = mainview.Theme.BackgroundImage;
             NameCheckVisibility = Visibility.Hidden;
             PathCheckVisibility = Visibility.Hidden;
         }

@@ -122,22 +122,24 @@ namespace Saved_Game_Backup.ViewModel
             }
         }
 
-        private Brush _background;
-        public Brush Background {
-            get { return _background; }
-            set {
-                _background = value; 
-                RaisePropertyChanged(() => Background);
-            }
-        }
-        private Brush _listBoxBackground;
-        public Brush ListBoxBackground {
-            get { return _listBoxBackground; }
-            set {
-                _listBoxBackground = value;
-                RaisePropertyChanged(() => ListBoxBackground);
-            }
-        }
+        public Theme Theme { get; set; }
+
+        //private Brush _background;
+        //public Brush Background {
+        //    get { return _background; }
+        //    set {
+        //        _background = value; 
+        //        RaisePropertyChanged(() => Background);
+        //    }
+        //}
+        //private Brush _listBoxBackground;
+        //public Brush ListBoxBackground {
+        //    get { return _listBoxBackground; }
+        //    set {
+        //        _listBoxBackground = value;
+        //        RaisePropertyChanged(() => ListBoxBackground);
+        //    }
+        //}
 
         private BackupType _backupType;
         public BackupType BackupType {
@@ -392,7 +394,8 @@ namespace Saved_Game_Backup.ViewModel
             LastBackupTime = prefs.LastBackupTime;
             BackupSyncOptions = prefs.BackupSyncOptions ?? new BackupSyncOptions();
             GamesToBackup = prefs.SelectedGames ?? new ObservableCollection<Game>();
-            Brushes = Theme.ToggleTheme(ThemeInt);
+            var themeSelector = new ThemeSelector();
+            Theme = themeSelector.ToggleTheme(ThemeInt);
             AutoBackupVisibility = Visibility.Hidden;
         }
 
@@ -493,12 +496,14 @@ namespace Saved_Game_Backup.ViewModel
 
         private void ExecuteSetThemeLight() {
             _themeInt = 0;
-            Brushes = Theme.ToggleTheme(_themeInt);
+            var themeSelector = new ThemeSelector();
+            Theme = themeSelector.ToggleTheme(_themeInt);
         }
         
         private void ExecuteSetThemeDark() {
             _themeInt = 1;
-            Brushes = Theme.ToggleTheme(_themeInt);
+            var themeSelector = new ThemeSelector();
+            Theme = themeSelector.ToggleTheme(_themeInt);
         }
 
         private void CloseApplication() {

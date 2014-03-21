@@ -110,10 +110,10 @@
     <Compile Include="BackupClasses\BackupType.cs" />
     <Compile Include="DirectoryFinder.cs" />
     <Compile Include="Game.cs" />
-    <Compile Include="GameListHandler.cs" />
     <Compile Include="Helper\FolderHelper.cs" />
     <Compile Include="Helper\SingletonHelper.cs" />
     <Compile Include="OnlineStorage\DropBoxAPI.cs" />
+    <Compile Include="Theme.cs" />
     <Compile Include="ThumbnailAPI\GamesDBAPI.cs" />
     <Compile Include="Helper\GamesDBThumbResult.cs" />
     <Compile Include="ThumbnailAPI\GiantBombAPI.cs" />
@@ -132,7 +132,7 @@
     <Compile Include="ViewModel\AddGameViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\OptionsViewModel.cs" />
-    <Compile Include="Theme.cs" />
+    <Compile Include="ThemeSelector.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="WrapPanelGame.cs" />
     <Page Include="AddGameWindow.xaml">
@@ -208,6 +208,7 @@
     <Resource Include="Assets\Loading.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\rap.jpg" />
     <Content Include="Assets\SGBIcon.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

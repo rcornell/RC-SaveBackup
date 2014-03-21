@@ -88,7 +88,7 @@ namespace Saved_Game_Backup.ViewModel {
                 BackupType.ToFolder,
                 BackupType.ToZip
             };
-            _background = main.Background;
+            _background = main.Theme.BackgroundImage;
         }
 
         private void ExecuteChooseFolder() {

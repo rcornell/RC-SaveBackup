@@ -43,6 +43,7 @@
         <ImageBrush x:Key="Metro"
                     ImageSource="Assets/metro.jpg"
                     Stretch="Fill" />
+        <ImageBrush x:Key="Rap" ImageSource="Assets/rap.jpg" Stretch="Fill"/>
 
         <!--  Brushes go Here  -->
         <SolidColorBrush x:Key="CheckBoxBrush" Color="Lime" />
