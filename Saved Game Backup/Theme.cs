@@ -42,6 +42,16 @@ namespace Saved_Game_Backup {
             }
         }
 
+        private Color _mouseEnter;
+        public Color MouseEnter {
+            get { return _mouseEnter; }
+            set {
+                _mouseEnter = value;
+                RaisePropertyChanged(() => MouseEnter);
+            }
+        
+        }
+
         private Color _buttonGradientTop;
         public Color ButtonGradientTop { 
             get { return _buttonGradientTop; }
@@ -69,12 +79,14 @@ namespace Saved_Game_Backup {
             get { return new SolidColorBrush(ButtonGradientBottom);}
         }
 
-        public Theme(ImageBrush imagebrush, Color listBoxBackgroundBrush, Color textBrush, Color buttonTop, Color buttonBottom) {
+        public Theme(ImageBrush imagebrush, Color listBoxBackgroundBrush, Color textBrush, Color buttonTop, Color buttonBottom, Color mouseEnter) {
             BackgroundImage = imagebrush;
             ListBoxBackgroundBrush = listBoxBackgroundBrush;
             TextBrush = textBrush;
             ButtonGradientTop = buttonTop;
             ButtonGradientBottom = buttonBottom;
+            MouseEnter = mouseEnter;
+            //MouseLeave = mouseLeave;
         }
     }
 }
