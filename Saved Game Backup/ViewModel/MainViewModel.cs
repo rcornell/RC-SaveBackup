@@ -292,6 +292,9 @@ namespace Saved_Game_Backup.ViewModel
         {
             get { return new RelayCommand(ExecuteSetThemeDark); }
         }
+        public RelayCommand SetThemeRap {
+            get { return new RelayCommand(ExecuteSetThemeRap); }
+        }
         public RelayCommand OpenAddGameWindow
         {
             get { return new RelayCommand(ExecuteOpenAddGameWindow); }
@@ -485,15 +488,21 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ExecuteSetThemeLight() {
-            _themeInt = 0;
+            ThemeInt = 0;
             var themeSelector = new ThemeSelector();
-            Theme = themeSelector.ToggleTheme(_themeInt);
+            Theme = themeSelector.ToggleTheme(ThemeInt);
         }
         
         private void ExecuteSetThemeDark() {
-            _themeInt = 1;
+            ThemeInt = 1;
             var themeSelector = new ThemeSelector();
-            Theme = themeSelector.ToggleTheme(_themeInt);
+            Theme = themeSelector.ToggleTheme(ThemeInt);
+        }
+
+        private void ExecuteSetThemeRap() {
+            ThemeInt = 2;
+            var themeSelector = new ThemeSelector();
+            Theme = themeSelector.ToggleTheme(ThemeInt);
         }
 
         private void CloseApplication() {
