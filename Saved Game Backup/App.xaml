@@ -24,14 +24,16 @@
 
         <!--  FONT STYLES GO HERE  -->
 
+        <SolidColorBrush x:Key="TextBrush" Color="{Binding Path=Main.Theme.TextBrush, Source={StaticResource Locator}}"/>
+        <SolidColorBrush x:Key="ListBackgroundBrush" Color="{Binding Path=Main.Theme.ListBoxBackgroundBrush, Source={StaticResource Locator}}"/>
 
         <Style x:Key="FontStyle" TargetType="Control">
             <Setter Property="FontFamily" Value="Segoe UI Light" />
-            <Setter Property="Foreground" Value="{Binding Path=Main.Theme.TextBrush, Source={StaticResource Locator}}" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
         </Style>
         <Style x:Key="TextStyle" TargetType="TextBlock">
             <Setter Property="FontFamily" Value="Segoe UI" />
-            <Setter Property="Foreground" Value="{Binding Path=Main.Theme.TextBrush, Source={StaticResource Locator}}" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
             <Setter Property="FontSize" Value="14" />
             <Setter Property="TextOptions.TextRenderingMode" Value="ClearType" />
             <Setter Property="TextOptions.TextHintingMode" Value="Animated" />
@@ -62,7 +64,7 @@
 
         <!--  WrapPanelGame Style Goes Here  -->
         <Style TargetType="savedGameBackup:WrapPanelGame">
-            <Setter Property="Foreground" Value="{Binding Path=Main.Theme.TextBrush, Source={StaticResource Locator}}" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
             <Setter Property="RenderTransformOrigin" Value="0.5, 0.5" />
             <Setter Property="RenderTransform">
                 <Setter.Value>
@@ -260,8 +262,7 @@
         <Style x:Key="SbtButtonStyle" TargetType="{x:Type Button}">
             <Setter Property="Background" Value="{StaticResource MyButtonBrush}" />
             <Setter Property="BorderBrush" Value="{StaticResource BorderBackgroundBrush}" />
-            <Setter Property="Foreground" Value="{Binding Path=Main.Theme.TextBrush,
-                              Source={StaticResource Locator}}" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
             <Setter Property="Width" Value="Auto" />
             <Setter Property="FontFamily" Value="Segoe UI Light" />
             <Setter Property="FontSize" Value="18" />
