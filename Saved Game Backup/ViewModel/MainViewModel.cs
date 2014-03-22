@@ -1,5 +1,6 @@
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
@@ -7,6 +8,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media;
@@ -193,6 +195,26 @@ namespace Saved_Game_Backup.ViewModel
             set {
                 _backupButtonText = value;
                 RaisePropertyChanged(() => BackupButtonText);
+            }
+        }
+        private string _selectedTheme;
+        public string SelectedTheme
+        {
+            get { return _selectedTheme; }
+            set
+            {
+                _selectedTheme = value;
+                RaisePropertyChanged(SelectedTheme);
+                ChangeTheme(_selectedTheme);
+            }
+        }
+
+        public Dictionary<string, string> Themes {
+            get {
+                var dict = new Dictionary<string, string>();
+                dict.Add("Default", "MainSkin.xaml");
+                dict.Add("Alternate", "AlternateSkin.xaml");
+                return dict;
             }
         }
 
@@ -495,15 +517,31 @@ namespace Saved_Game_Backup.ViewModel
         }
         
         private void ExecuteSetThemeDark() {
-            ThemeInt = 1;
-            var themeSelector = new ThemeSelector();
-            Theme = themeSelector.ToggleTheme(ThemeInt);
+            //ThemeInt = 1;
+            //var themeSelector = new ThemeSelector();
+            //Theme = themeSelector.ToggleTheme(ThemeInt);
+            ChangeTheme(@"DarkTheme.xaml");
         }
 
         private void ExecuteSetThemeRap() {
-            ThemeInt = 2;
-            var themeSelector = new ThemeSelector();
-            Theme = themeSelector.ToggleTheme(ThemeInt);
+            //ThemeInt = 2;
+            //var themeSelector = new ThemeSelector();
+            //Theme = themeSelector.ToggleTheme(ThemeInt);
+            ChangeTheme(@"LightTheme.xaml");
+        }
+
+
+        private void ChangeTheme(string themeName) {
+            var mergedDictionaries = App.Current.Resources.MergedDictionaries;
+            if (!mergedDictionaries.Any(rd => rd.Source.OriginalString.Contains(themeName))) {
+                var encoded =
+                    Uri.EscapeUriString(
+                        Encoding.UTF8.GetString(
+                            Encoding.ASCII.GetBytes(
+                                string.Format("pack://application:,,,/Saved Game Backup;component/Skins/{0}", themeName))));
+                var uri = new Uri(encoded, UriKind.RelativeOrAbsolute);
+                mergedDictionaries[0] = new ResourceDictionary{ Source = uri};
+            }
         }
 
         private void CloseApplication() {

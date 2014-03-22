@@ -13,8 +13,8 @@
                 <ResourceDictionary Source="Skins\MainStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <vm:ViewModelLocator xmlns:vm="clr-namespace:Saved_Game_Backup.ViewModel"
-                             x:Key="Locator"
-                             d:IsDataSource="True" />
+                                 x:Key="Locator"
+                                 d:IsDataSource="True" />
 
             <!--  IMAGEBRUSHES GO HERE  -->
             <ImageBrush x:Key="MetroSmall" ImageSource="Assets\metroSmall.jpg" />
