@@ -2,6 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:savedGameBackup="clr-namespace:Saved_Game_Backup">
 
+    <ImageBrush x:Key="Background.Brush" ImageSource="{DynamicResource Background.ImageSource}"/>
+    
     <!--  FONT STYLES GO HERE  -->
     <Style x:Key="FontStyle" TargetType="Control">
         <Setter Property="FontFamily" Value="Segoe UI Light" />
@@ -176,7 +178,7 @@
 
     <!--  WrapPanelGame Style Goes Here  -->
     <Style TargetType="savedGameBackup:WrapPanelGame">
-        <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
         <Setter Property="RenderTransformOrigin" Value="0.5, 0.5" />
         <Setter Property="RenderTransform">
             <Setter.Value>

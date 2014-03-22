@@ -11,7 +11,6 @@
         Height="640"
         MinWidth="800"
         MinHeight="640"
-        Background="{StaticResource Rap}"
         DataContext="{Binding Path=Main,
                               Source={StaticResource Locator}}"
         Icon="Assets/SGBIcon.ico"
@@ -23,10 +22,10 @@
         <savedGameBackup:StringToBackupTypeConverter x:Key="StringConverter" />
         <Style x:Key="ListBoxStyle" TargetType="ListBox">
             <Setter Property="Background" Value="{DynamicResource ListBackground}" />
-            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
         </Style>
     </Window.Resources>
-    <Grid Background="{Binding Theme.BackgroundImage}">
+    <Grid Background="{DynamicResource Background.Brush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -45,9 +44,9 @@
               IsMainMenu="True">
             <MenuItem Header="_File">
                 <MenuItem Header="_Theme">
-                    <MenuItem Command="{Binding SetThemeLight}" Header="_Blue" />
+                    <MenuItem Command="{Binding SetThemeBlue}" Header="_Blue" />
                     <MenuItem Command="{Binding SetThemeDark}" Header="_Black" />
-                    <MenuItem Command="{Binding SetThemeRap}" Header="_Light" />
+                    <MenuItem Command="{Binding SetThemeLight}" Header="_Light" />
                     <!--  <MenuItem Command="{Binding Source={StaticResource Locator}, Path=ThemeSelector.BackgroundImage}}" Header="_Test" />  -->
                 </MenuItem>
                 <MenuItem Command="{Binding Close}" Header="_Exit" />
@@ -277,7 +276,7 @@
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"
                                Foreground="Black"
-                               Style="{StaticResource TextStyle}"
+                               Style="{DynamicResource TextStyle}"
                                Text="Backup progress" />
                 </Grid>
 
@@ -287,7 +286,7 @@
                    Grid.Column="3"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Bottom"
-                   Style="{StaticResource TextStyle}"
+                   Style="{DynamicResource TextStyle}"
                    Text="Games to Back Up" />
         <ListBox x:Name="WrapPaneListBox"
                  Grid.Row="2"

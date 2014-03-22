@@ -197,23 +197,26 @@ namespace Saved_Game_Backup.ViewModel
                 RaisePropertyChanged(() => BackupButtonText);
             }
         }
-        private string _selectedTheme;
-        public string SelectedTheme
-        {
-            get { return _selectedTheme; }
-            set
-            {
-                _selectedTheme = value;
-                RaisePropertyChanged(SelectedTheme);
-                ChangeTheme(_selectedTheme);
-            }
-        }
+        //private string _selectedTheme;
+        //public string SelectedTheme
+        //{
+        //    get { return _selectedTheme; }
+        //    set
+        //    {
+        //        _selectedTheme = value;
+        //        RaisePropertyChanged(SelectedTheme);
+        //        ChangeTheme(_selectedTheme);
+        //    }
+        //}
 
         public Dictionary<string, string> Themes {
             get {
-                var dict = new Dictionary<string, string>();
-                dict.Add("Default", "MainSkin.xaml");
-                dict.Add("Alternate", "AlternateSkin.xaml");
+                var dict = new Dictionary<string, string> {
+                    {"Default", "MainSkin.xaml"},
+                    {"Blue", "BlueTheme.xaml"},
+                    {"Light", "LightTheme.xaml"},
+                    {"Dark", "DarkTheme.xaml"}
+                };
                 return dict;
             }
         }
@@ -308,15 +311,15 @@ namespace Saved_Game_Backup.ViewModel
         public RelayCommand DetectGames {
             get { return new RelayCommand(ExecuteDetectGames); }
         }
-        public RelayCommand SetThemeLight {
-            get { return new RelayCommand(ExecuteSetThemeLight); }
+        public RelayCommand SetThemeBlue {
+            get { return new RelayCommand(ExecuteSetThemeBlue); }
         }
         public RelayCommand SetThemeDark
         {
             get { return new RelayCommand(ExecuteSetThemeDark); }
         }
-        public RelayCommand SetThemeRap {
-            get { return new RelayCommand(ExecuteSetThemeRap); }
+        public RelayCommand SetThemeLight {
+            get { return new RelayCommand(ExecuteSetThemeLight); }
         }
         public RelayCommand OpenAddGameWindow
         {
@@ -406,12 +409,12 @@ namespace Saved_Game_Backup.ViewModel
             var prefSaver = new PrefSaver();
             var prefs = prefSaver.CheckForPrefs() ? prefSaver.LoadPrefs() : UserPrefs.GetDefaultPrefs();
             MaxBackups = prefs.MaxBackups;
-            ThemeInt = prefs.Theme;
+            //ThemeInt = prefs.Theme;
             LastBackupTime = prefs.LastBackupTime;
             BackupSyncOptions = prefs.BackupSyncOptions ?? new BackupSyncOptions();
             GamesToBackup = prefs.SelectedGames ?? new ObservableCollection<Game>();
-            var themeSelector = new ThemeSelector();
-            Theme = themeSelector.ToggleTheme(ThemeInt);
+            //var themeSelector = new ThemeSelector();
+            //Theme = themeSelector.ToggleTheme(ThemeInt);
             AutoBackupVisibility = Visibility.Hidden;
         }
 
@@ -510,10 +513,11 @@ namespace Saved_Game_Backup.ViewModel
             SelectedBackupGame = null;
         }
 
-        private void ExecuteSetThemeLight() {
-            ThemeInt = 0;
-            var themeSelector = new ThemeSelector();
-            Theme = themeSelector.ToggleTheme(ThemeInt);
+        private void ExecuteSetThemeBlue() {
+            //ThemeInt = 0;
+            //var themeSelector = new ThemeSelector();
+            //Theme = themeSelector.ToggleTheme(ThemeInt);
+            ChangeTheme(@"BlueTheme.xaml");
         }
         
         private void ExecuteSetThemeDark() {
@@ -523,7 +527,7 @@ namespace Saved_Game_Backup.ViewModel
             ChangeTheme(@"DarkTheme.xaml");
         }
 
-        private void ExecuteSetThemeRap() {
+        private void ExecuteSetThemeLight() {
             //ThemeInt = 2;
             //var themeSelector = new ThemeSelector();
             //Theme = themeSelector.ToggleTheme(ThemeInt);
