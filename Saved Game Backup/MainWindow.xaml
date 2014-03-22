@@ -22,7 +22,7 @@
         <savedGameBackup:BackupTypeToStringConverter x:Key="BackupConverter" />
         <savedGameBackup:StringToBackupTypeConverter x:Key="StringConverter" />
         <Style x:Key="ListBoxStyle" TargetType="ListBox">
-            <Setter Property="Background" Value="{StaticResource ListBackgroundBrush}" />
+            <Setter Property="Background" Value="{DynamicResource ListBackground}" />
             <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
         </Style>
     </Window.Resources>
@@ -108,7 +108,7 @@
                                    Text="Backup time" />
                         <xctk:TimePicker Width="100"
                                          Margin="3"
-                                         Background="{StaticResource MyButtonBrush}"
+                                         Background="{DynamicResource Button.BackgroundBrush}"
                                          FontFamily="Segoe UI"
                                          Foreground="Black"
                                          Visibility="Visible"
@@ -267,7 +267,7 @@
                     <ProgressBar Height="20"
                                  Margin="3"
                                  HorizontalAlignment="Stretch"
-                                 Background="{StaticResource MyButtonBrush}"
+                                 Background="{DynamicResource Button.BackgroundBrush}"
                                  Foreground="DarkCyan"
                                  IsIndeterminate="False"
                                  Maximum="1"
