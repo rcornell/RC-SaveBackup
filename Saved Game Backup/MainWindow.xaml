@@ -48,52 +48,72 @@
                     <MenuItem Command="{Binding SetThemeLight}" Header="_Blue" />
                     <MenuItem Command="{Binding SetThemeDark}" Header="_Black" />
                     <MenuItem Command="{Binding SetThemeRap}" Header="_Light" />
-                    <!--<MenuItem Command="{Binding Source={StaticResource Locator}, Path=ThemeSelector.BackgroundImage}}" Header="_Test" />-->
+                    <!--  <MenuItem Command="{Binding Source={StaticResource Locator}, Path=ThemeSelector.BackgroundImage}}" Header="_Test" />  -->
                 </MenuItem>
                 <MenuItem Command="{Binding Close}" Header="_Exit" />
             </MenuItem>
             <MenuItem Header="_Options">
-                <MenuItem Header="_Cloud storage settings" >
+                <MenuItem Header="_Cloud storage settings">
                     <StackPanel Orientation="Horizontal">
-                        <CheckBox Margin="3"  VerticalAlignment="Center" IsChecked="{Binding BackupSyncOptions.SyncToDropbox}"/>
-                        <TextBlock Text="Sync to Dropbox" Margin="3" VerticalAlignment="Center"/>
+                        <CheckBox Margin="3"
+                                  VerticalAlignment="Center"
+                                  IsChecked="{Binding BackupSyncOptions.SyncToDropbox}" />
+                        <TextBlock Margin="3"
+                                   VerticalAlignment="Center"
+                                   Text="Sync to Dropbox" />
                     </StackPanel>
-                    <Separator/>
-                    <StackPanel Orientation="Horizontal" IsEnabled="{Binding BackupSyncOptions.SyncEnabled}">
-                        <CheckBox Margin="3"  VerticalAlignment="Center" IsChecked="{Binding BackupSyncOptions.SyncToFolder}"/>
-                        <TextBlock Text="Sync to Folder" Margin="3" VerticalAlignment="Center"/>
+                    <Separator />
+                    <StackPanel IsEnabled="{Binding BackupSyncOptions.SyncEnabled}" Orientation="Horizontal">
+                        <CheckBox Margin="3"
+                                  VerticalAlignment="Center"
+                                  IsChecked="{Binding BackupSyncOptions.SyncToFolder}" />
+                        <TextBlock Margin="3"
+                                   VerticalAlignment="Center"
+                                   Text="Sync to Folder" />
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" IsEnabled="{Binding BackupSyncOptions.SyncEnabled}">
-                        <CheckBox Margin="3"  VerticalAlignment="Center" IsChecked="{Binding BackupSyncOptions.SyncToZip}"/>
-                        <TextBlock Text="Sync to Zip" Margin="3" VerticalAlignment="Center"/>
+                    <StackPanel IsEnabled="{Binding BackupSyncOptions.SyncEnabled}" Orientation="Horizontal">
+                        <CheckBox Margin="3"
+                                  VerticalAlignment="Center"
+                                  IsChecked="{Binding BackupSyncOptions.SyncToZip}" />
+                        <TextBlock Margin="3"
+                                   VerticalAlignment="Center"
+                                   Text="Sync to Zip" />
                     </StackPanel>
                 </MenuItem>
-                <MenuItem Header="_Auto-backup settings" >
-                    <StackPanel Orientation="Horizontal" >
-                        <CheckBox Margin="3"  VerticalAlignment="Center" IsChecked="{Binding BackupSyncOptions.BackupOnInterval}"/>
-                        <TextBlock Text="Backup on interval" Margin="3" VerticalAlignment="Center"/>
+                <MenuItem Header="_Auto-backup settings">
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox Margin="3"
+                                  VerticalAlignment="Center"
+                                  IsChecked="{Binding BackupSyncOptions.BackupOnInterval}" />
+                        <TextBlock Margin="3"
+                                   VerticalAlignment="Center"
+                                   Text="Backup on interval" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <CheckBox Margin="3"  VerticalAlignment="Center" IsChecked="{Binding BackupSyncOptions.BackupAtTime}"/>
-                        <TextBlock Text="Backup at specified time" Margin="3" VerticalAlignment="Center"/>
+                        <CheckBox Margin="3"
+                                  VerticalAlignment="Center"
+                                  IsChecked="{Binding BackupSyncOptions.BackupAtTime}" />
+                        <TextBlock Margin="3"
+                                   VerticalAlignment="Center"
+                                   Text="Backup at specified time" />
                     </StackPanel>
-                    <Separator/>
-                    <StackPanel Orientation="Horizontal" 
-                                Margin="3" 
+                    <Separator />
+                    <StackPanel Margin="3"
                                 HorizontalAlignment="Center"
-                                IsEnabled="{Binding BackupSyncOptions.BackupAtTime}">
-                        <TextBlock Text="Backup time" 
-                               Margin="3"
-                               FontSize="12"
-                               Foreground="Black"></TextBlock>
-                        <xctk:TimePicker Margin="3" 
-                                 Visibility="Visible"
-                                 Value="{Binding BackupSyncOptions.BackupTime}"
-                                 Background="{StaticResource MyButtonBrush}"
-                                 FontFamily="Segoe UI"
-                                 Foreground="Black"
-                                 Width="100"/>
-                        
+                                IsEnabled="{Binding BackupSyncOptions.BackupAtTime}"
+                                Orientation="Horizontal">
+                        <TextBlock Margin="3"
+                                   FontSize="12"
+                                   Foreground="Black"
+                                   Text="Backup time" />
+                        <xctk:TimePicker Width="100"
+                                         Margin="3"
+                                         Background="{StaticResource MyButtonBrush}"
+                                         FontFamily="Segoe UI"
+                                         Foreground="Black"
+                                         Visibility="Visible"
+                                         Value="{Binding BackupSyncOptions.BackupTime}" />
+
                     </StackPanel>
                 </MenuItem>
             </MenuItem>
@@ -119,8 +139,7 @@
                         VerticalAlignment="Center"
                         Command="{Binding StartBackup}"
                         Content="{Binding BackupButtonText}"
-                        Style="{StaticResource SbtButtonStyle}" >
-                </Button>
+                        Style="{StaticResource SbtButtonStyle}" />
 
                 <ComboBox Margin="3"
                           HorizontalAlignment="Stretch"
@@ -134,35 +153,37 @@
                                                  Mode=TwoWay}"
                           Text="Backup Method" />
                 <StackPanel Margin="3"
-                            Orientation="Vertical"
                             HorizontalAlignment="Center"
+                            Orientation="Vertical"
                             Visibility="{Binding AutoBackupVisibility}">
-                    <TextBlock VerticalAlignment="Center"
-                               HorizontalAlignment="Center"
+                    <TextBlock HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
                                Style="{StaticResource TextStyle}"
                                Text="Auto-backup interval"
                                TextWrapping="Wrap" />
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                         <xctk:IntegerUpDown Margin="3"
-                                            Minimum="0"
                                             DefaultValue="6"
+                                            Minimum="0"
                                             ToolTip="Scanning can be CPU/Hard Drive intensive. A longer interval will have less impact on performance." />
                         <TextBlock VerticalAlignment="Center"
-                               Style="{StaticResource TextStyle}"
-                               Text="Hours"
-                               TextWrapping="Wrap" />
+                                   Style="{StaticResource TextStyle}"
+                                   Text="Hours"
+                                   TextWrapping="Wrap" />
                         <xctk:IntegerUpDown Margin="3"
                                             DefaultValue="30"
                                             Minimum="1"
-                                            Text="{Binding Interval, UpdateSourceTrigger=PropertyChanged, Delay=100}"
+                                            Text="{Binding Interval,
+                                                           UpdateSourceTrigger=PropertyChanged,
+                                                           Delay=100}"
                                             ToolTip="Scanning can be CPU/Hard Drive intensive. A longer interval will have less impact on performance." />
                         <TextBlock VerticalAlignment="Center"
-                               Style="{StaticResource TextStyle}"
-                               Text="Minutes"
-                               TextWrapping="Wrap" />
-                    </StackPanel>                                      
+                                   Style="{StaticResource TextStyle}"
+                                   Text="Minutes"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
                 </StackPanel>
-                
+
             </StackPanel>
             <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
 
@@ -247,11 +268,11 @@
                                  Margin="3"
                                  HorizontalAlignment="Stretch"
                                  Background="{StaticResource MyButtonBrush}"
+                                 Foreground="DarkCyan"
                                  IsIndeterminate="False"
                                  Maximum="1"
                                  Minimum="0"
-                                 Value="{Binding PercentComplete}"
-                                 Foreground="DarkCyan"/>
+                                 Value="{Binding PercentComplete}" />
                     <TextBlock Margin="3,3,3,4"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"
