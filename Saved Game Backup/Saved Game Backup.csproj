@@ -225,7 +225,9 @@
     <Resource Include="Assets\Loading.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Assets\rap.jpg" />
+    <Resource Include="Assets\rap.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Content Include="Assets\SGBIcon.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

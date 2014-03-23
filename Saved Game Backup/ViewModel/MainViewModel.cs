@@ -13,6 +13,7 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media;
 using System.Timers;
+using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
@@ -197,17 +198,7 @@ namespace Saved_Game_Backup.ViewModel
                 RaisePropertyChanged(() => BackupButtonText);
             }
         }
-        //private string _selectedTheme;
-        //public string SelectedTheme
-        //{
-        //    get { return _selectedTheme; }
-        //    set
-        //    {
-        //        _selectedTheme = value;
-        //        RaisePropertyChanged(SelectedTheme);
-        //        ChangeTheme(_selectedTheme);
-        //    }
-        //}
+        private string _themeName;
 
         public Dictionary<string, string> Themes {
             get {
@@ -219,6 +210,17 @@ namespace Saved_Game_Backup.ViewModel
                 };
                 return dict;
             }
+        }
+
+
+
+        private ImageBrush _backgroundBrush;
+        public ImageBrush BackgroundBrush {
+            get { return _backgroundBrush; }
+            set {
+                _backgroundBrush = value;
+                RaisePropertyChanged(() => BackgroundBrush);
+            }        
         }
 
         private bool _backupEnabled;
@@ -409,12 +411,9 @@ namespace Saved_Game_Backup.ViewModel
             var prefSaver = new PrefSaver();
             var prefs = prefSaver.CheckForPrefs() ? prefSaver.LoadPrefs() : UserPrefs.GetDefaultPrefs();
             MaxBackups = prefs.MaxBackups;
-            //ThemeInt = prefs.Theme;
             LastBackupTime = prefs.LastBackupTime;
             BackupSyncOptions = prefs.BackupSyncOptions ?? new BackupSyncOptions();
             GamesToBackup = prefs.SelectedGames ?? new ObservableCollection<Game>();
-            //var themeSelector = new ThemeSelector();
-            //Theme = themeSelector.ToggleTheme(ThemeInt);
             AutoBackupVisibility = Visibility.Hidden;
         }
 
@@ -423,7 +422,6 @@ namespace Saved_Game_Backup.ViewModel
             if (prefSaver.CheckForPrefs()) {
                 var prefs = prefSaver.LoadPrefs();
                 prefs.MaxBackups = MaxBackups;
-                prefs.Theme = ThemeInt;
                 prefs.SelectedGames = GamesToBackup;
                 prefs.LastBackupTime = LastBackupTime;
                 prefs.BackupSyncOptions = BackupSyncOptions;
@@ -435,7 +433,6 @@ namespace Saved_Game_Backup.ViewModel
                 LastBackupTime = LastBackupTime,
                 MaxBackups = MaxBackups,
                 SelectedGames = GamesToBackup,
-                Theme = ThemeInt
             };
             prefSaver.SavePrefs(newPrefs);
         }
@@ -514,26 +511,19 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ExecuteSetThemeBlue() {
-            //ThemeInt = 0;
-            //var themeSelector = new ThemeSelector();
-            //Theme = themeSelector.ToggleTheme(ThemeInt);
-            ChangeTheme(@"BlueTheme.xaml");
+            _themeName = @"BlueTheme.xaml"; 
+            ChangeTheme(_themeName);
         }
         
         private void ExecuteSetThemeDark() {
-            //ThemeInt = 1;
-            //var themeSelector = new ThemeSelector();
-            //Theme = themeSelector.ToggleTheme(ThemeInt);
-            ChangeTheme(@"DarkTheme.xaml");
+            _themeName = @"DarkTheme.xaml";
+            ChangeTheme(_themeName);
         }
 
         private void ExecuteSetThemeLight() {
-            //ThemeInt = 2;
-            //var themeSelector = new ThemeSelector();
-            //Theme = themeSelector.ToggleTheme(ThemeInt);
-            ChangeTheme(@"LightTheme.xaml");
+            _themeName = @"LightTheme.xaml";
+            ChangeTheme(_themeName);
         }
-
 
         private void ChangeTheme(string themeName) {
             var mergedDictionaries = App.Current.Resources.MergedDictionaries;
@@ -545,6 +535,11 @@ namespace Saved_Game_Backup.ViewModel
                                 string.Format("pack://application:,,,/Saved Game Backup;component/Skins/{0}", themeName))));
                 var uri = new Uri(encoded, UriKind.RelativeOrAbsolute);
                 mergedDictionaries[0] = new ResourceDictionary{ Source = uri};
+                var fe = new FrameworkElement();
+                var resource = fe.FindResource(@"Background.Source");
+                var imageUri = new Uri(resource.ToString());
+                var newBackgroundIB = new ImageBrush(new BitmapImage(imageUri));
+                BackgroundBrush = newBackgroundIB;
             }
         }
 

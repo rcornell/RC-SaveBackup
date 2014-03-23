@@ -2,8 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:savedGameBackup="clr-namespace:Saved_Game_Backup">
 
-    <ImageBrush x:Key="Background.Brush" ImageSource="{DynamicResource Background.ImageSource}"/>
-    
+    <ImageBrush x:Key="Background.BrushImage" ImageSource="{DynamicResource Background.Source}" />
+
     <!--  FONT STYLES GO HERE  -->
     <Style x:Key="FontStyle" TargetType="Control">
         <Setter Property="FontFamily" Value="Segoe UI Light" />

@@ -18,12 +18,12 @@
 
             <!--  IMAGEBRUSHES GO HERE  -->
             <ImageBrush x:Key="MetroSmall" ImageSource="Assets\metroSmall.jpg" />
-            <ImageBrush x:Key="Metro"
+            <!--<ImageBrush x:Key="Metro"
                         ImageSource="Assets\metro.jpg"
                         Stretch="Fill" />
             <ImageBrush x:Key="Rap"
                         ImageSource="Assets\rap.jpg"
-                        Stretch="Fill" />
+                        Stretch="Fill" />-->
 
         </ResourceDictionary>
     </Application.Resources>
