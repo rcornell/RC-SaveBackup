@@ -212,8 +212,6 @@ namespace Saved_Game_Backup.ViewModel
             }
         }
 
-
-
         private ImageBrush _backgroundBrush;
         public ImageBrush BackgroundBrush {
             get { return _backgroundBrush; }
@@ -414,7 +412,9 @@ namespace Saved_Game_Backup.ViewModel
             LastBackupTime = prefs.LastBackupTime;
             BackupSyncOptions = prefs.BackupSyncOptions ?? new BackupSyncOptions();
             GamesToBackup = prefs.SelectedGames ?? new ObservableCollection<Game>();
+            _themeName = prefs.ThemeName;
             AutoBackupVisibility = Visibility.Hidden;
+            ChangeTheme(_themeName);
         }
 
         private void SaveUserPrefs() {         
@@ -425,6 +425,7 @@ namespace Saved_Game_Backup.ViewModel
                 prefs.SelectedGames = GamesToBackup;
                 prefs.LastBackupTime = LastBackupTime;
                 prefs.BackupSyncOptions = BackupSyncOptions;
+                prefs.ThemeName = _themeName;
                 prefSaver.SavePrefs(prefs);
                 return;
             }
@@ -527,7 +528,7 @@ namespace Saved_Game_Backup.ViewModel
 
         private void ChangeTheme(string themeName) {
             var mergedDictionaries = App.Current.Resources.MergedDictionaries;
-            if (!mergedDictionaries.Any(rd => rd.Source.OriginalString.Contains(themeName))) {
+           
                 var encoded =
                     Uri.EscapeUriString(
                         Encoding.UTF8.GetString(
@@ -540,7 +541,7 @@ namespace Saved_Game_Backup.ViewModel
                 var imageUri = new Uri(resource.ToString());
                 var newBackgroundIB = new ImageBrush(new BitmapImage(imageUri));
                 BackgroundBrush = newBackgroundIB;
-            }
+            
         }
 
         private void CloseApplication() {

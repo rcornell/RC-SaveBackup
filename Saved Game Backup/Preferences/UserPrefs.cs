@@ -28,11 +28,6 @@ namespace Saved_Game_Backup.Preferences {
             set { _selectedGames = value; }
         } 
 
-        private int _theme;
-        public int Theme {
-            get { return _theme; } 
-            set { _theme = value; }
-        }
         private int _maxBackups;
         public int MaxBackups {
             get { return _maxBackups; } 
@@ -42,13 +37,14 @@ namespace Saved_Game_Backup.Preferences {
         public string UserSecret { get; set; }
         public string UserToken { get; set; }
         public string LastBackupTime;
+        public string ThemeName;
 
         public static UserPrefs GetDefaultPrefs() {
             var prefs = new UserPrefs() {
                 SelectedGames = new ObservableCollection<Game>(),
-                Theme = 0,
                 MaxBackups = 5,
-                BackupSyncOptions = new BackupSyncOptions()
+                BackupSyncOptions = new BackupSyncOptions(),
+                ThemeName = @"DarkTheme.xaml"
             };
             return prefs;
         }
