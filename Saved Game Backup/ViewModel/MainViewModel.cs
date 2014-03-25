@@ -200,17 +200,17 @@ namespace Saved_Game_Backup.ViewModel
         }
         private string _themeName;
 
-        public Dictionary<string, string> Themes {
-            get {
-                var dict = new Dictionary<string, string> {
-                    {"Default", "MainSkin.xaml"},
-                    {"Blue", "BlueTheme.xaml"},
-                    {"Light", "LightTheme.xaml"},
-                    {"Dark", "DarkTheme.xaml"}
-                };
-                return dict;
-            }
-        }
+        //public Dictionary<string, string> Themes {
+        //    get {
+        //        var dict = new Dictionary<string, string> {
+        //            {"Default", "MainSkin.xaml"},
+        //            {"Blue", "BlueTheme.xaml"},
+        //            {"Light", "LightTheme.xaml"},
+        //            {"Dark", "DarkTheme.xaml"}
+        //        };
+        //        return dict;
+        //    }
+        //}
 
         private ImageBrush _backgroundBrush;
         public ImageBrush BackgroundBrush {
@@ -414,7 +414,7 @@ namespace Saved_Game_Backup.ViewModel
             GamesToBackup = prefs.SelectedGames ?? new ObservableCollection<Game>();
             _themeName = prefs.ThemeName;
             AutoBackupVisibility = Visibility.Hidden;
-            if (string.IsNullOrEmpty(_themeName)) _themeName = @"DarkTheme.xaml";
+            if (string.IsNullOrEmpty(_themeName)) _themeName = @"DarkStyle.xaml";
             ChangeTheme(_themeName);
         }
 
@@ -513,17 +513,18 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ExecuteSetThemeBlue() {
-            _themeName = @"BlueTheme.xaml"; 
+            _themeName = @"BlueStyle.xaml";
+            MessageBox.Show(@"Blue style doesn't exist yet");
             ChangeTheme(_themeName);
         }
         
         private void ExecuteSetThemeDark() {
-            _themeName = @"DarkTheme.xaml";
+            _themeName = @"DarkStyle.xaml";
             ChangeTheme(_themeName);
         }
 
         private void ExecuteSetThemeLight() {
-            _themeName = @"LightTheme.xaml";
+            _themeName = @"LightStyle.xaml";
             ChangeTheme(_themeName);
         }
 
@@ -536,11 +537,11 @@ namespace Saved_Game_Backup.ViewModel
                                 string.Format("pack://application:,,,/Saved Game Backup;component/Skins/{0}", themeName))));
                 var uri = new Uri(encoded, UriKind.RelativeOrAbsolute);
                 mergedDictionaries[0] = new ResourceDictionary{ Source = uri };
-                var fe = new FrameworkElement();
-                var resource = fe.FindResource(@"BackgroundSource");
-                var imageUri = new Uri(resource.ToString());
-                var newBackgroundIB = new ImageBrush(new BitmapImage(imageUri));
-                BackgroundBrush = newBackgroundIB;
+                //var fe = new FrameworkElement();
+                //var resource = fe.FindResource(@"BackgroundSource");
+                //var imageUri = new Uri(resource.ToString());
+                //var newBackgroundIB = new ImageBrush(new BitmapImage(imageUri));
+                //BackgroundBrush = newBackgroundIB;
             
         }
 
