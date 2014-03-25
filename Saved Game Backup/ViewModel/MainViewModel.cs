@@ -414,6 +414,7 @@ namespace Saved_Game_Backup.ViewModel
             GamesToBackup = prefs.SelectedGames ?? new ObservableCollection<Game>();
             _themeName = prefs.ThemeName;
             AutoBackupVisibility = Visibility.Hidden;
+            if (string.IsNullOrEmpty(_themeName)) _themeName = @"DarkTheme.xaml";
             ChangeTheme(_themeName);
         }
 
@@ -529,18 +530,23 @@ namespace Saved_Game_Backup.ViewModel
         private void ChangeTheme(string themeName) {
             var mergedDictionaries = App.Current.Resources.MergedDictionaries;
            
-                var encoded =
+                //var encoded =
+                //    Uri.EscapeUriString(
+                //        Encoding.UTF8.GetString(
+                //            Encoding.ASCII.GetBytes(
+                //                string.Format("pack://application:,,,/Saved Game Backup;component/Skins/{0}", themeName))));
+            var encoded =
                     Uri.EscapeUriString(
                         Encoding.UTF8.GetString(
                             Encoding.ASCII.GetBytes(
                                 string.Format("pack://application:,,,/Saved Game Backup;component/Skins/{0}", themeName))));
                 var uri = new Uri(encoded, UriKind.RelativeOrAbsolute);
                 mergedDictionaries[0] = new ResourceDictionary{ Source = uri};
-                var fe = new FrameworkElement();
-                var resource = fe.FindResource(@"Background.Source");
-                var imageUri = new Uri(resource.ToString());
-                var newBackgroundIB = new ImageBrush(new BitmapImage(imageUri));
-                BackgroundBrush = newBackgroundIB;
+                //var fe = new FrameworkElement();
+                //var resource = fe.FindResource(@"BackgroundSource");
+                //var imageUri = new Uri(resource.ToString());
+                //var newBackgroundIB = new ImageBrush(new BitmapImage(imageUri));
+                //BackgroundBrush = newBackgroundIB;
             
         }
 

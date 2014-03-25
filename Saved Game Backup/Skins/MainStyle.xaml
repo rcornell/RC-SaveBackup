@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:savedGameBackup="clr-namespace:Saved_Game_Backup">
 
-    <ImageBrush x:Key="Background.BrushImage" ImageSource="{DynamicResource Background.Source}" />
+    <ImageBrush x:Key="BackgroundBrush" ImageSource="{DynamicResource BackgroundSource}" />
 
     <!--  FONT STYLES GO HERE  -->
     <Style x:Key="FontStyle" TargetType="Control">

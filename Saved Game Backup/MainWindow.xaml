@@ -26,7 +26,7 @@
             <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
         </Style>
     </Window.Resources>
-    <Grid Background="{Binding BackgroundBrush}">
+    <Grid Background="{DynamicResource BackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -48,7 +48,6 @@
                     <MenuItem Command="{Binding SetThemeBlue}" Header="_Blue" />
                     <MenuItem Command="{Binding SetThemeDark}" Header="_Black" />
                     <MenuItem Command="{Binding SetThemeLight}" Header="_Light" />
-                    <!--  <MenuItem Command="{Binding Source={StaticResource Locator}, Path=ThemeSelector.BackgroundImage}}" Header="_Test" />  -->
                 </MenuItem>
                 <MenuItem Command="{Binding Close}" Header="_Exit" />
             </MenuItem>
