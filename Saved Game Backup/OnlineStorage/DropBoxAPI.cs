@@ -100,7 +100,7 @@ namespace Saved_Game_Backup.OnlineStorage
             var uploadPath = @"/SaveMonkey" + folderPath;
             _client.UploadFileAsync(uploadPath, file.Name, bytes, response => Debug.WriteLine(@"File uploaded successfully"), 
                 error => {
-                if (error.Response.StatusCode.ToString() == @"Forbidden") {//Error with access/authorization. erase auth info and reinitialize.
+                if (error.Response.StatusCode.ToString() == @"Forbidden") { //Error with access/authorization. erase auth info and reinitialize.
                     PrefSaver.DeleteDropboxToken();
                     Initialize();
                 }

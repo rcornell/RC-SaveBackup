@@ -1,8 +1,9 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Color x:Key="MouseEnter">#5AFFFFFF</Color>
     <SolidColorBrush x:Key="ListBackground">#99575757</SolidColorBrush>
-    <Color x:Key="Button.GradientTop">#7FFFFFFF</Color>
-    <Color x:Key="Button.GradientBottom">#7FE8E8E8</Color>
+    <Color x:Key="Button.GradientTop">#CBFFFFFF</Color>
+    <Color x:Key="Button.GradientBottom">#E8E8E8</Color>
+    <Color x:Key="Button.GradientBottomMouseEnter">#3CADADAD</Color>
     <SolidColorBrush x:Key="TextBrush">Black</SolidColorBrush>
     <Color x:Key="Button.BorderTop">#CC363636</Color>
     <Color x:Key="Button.BorderBottom">#CC252525</Color>

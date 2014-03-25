@@ -3,6 +3,7 @@
     <SolidColorBrush x:Key="ListBackground">#99575757</SolidColorBrush>
     <Color x:Key="Button.GradientTop">#32FFFFFF</Color>
     <Color x:Key="Button.GradientBottom">#3CFFFFFF</Color>
+    <Color x:Key="Button.GradientBottomMouseEnter">#3CADADAD</Color>
     <SolidColorBrush x:Key="TextBrush">White</SolidColorBrush>
     <Color x:Key="Button.BorderTop">#CC363636</Color>
     <Color x:Key="Button.BorderBottom">#CC252525</Color>

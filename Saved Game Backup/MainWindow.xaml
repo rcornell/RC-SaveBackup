@@ -11,10 +11,10 @@
         Height="640"
         MinWidth="800"
         MinHeight="640"
+        Background="{DynamicResource BackgroundBrush}"
         DataContext="{Binding Path=Main,
                               Source={StaticResource Locator}}"
         Icon="Assets/SGBIcon.ico"
-        Background="Black"
         Padding="3"
         WindowStartupLocation="CenterScreen"
         WindowStyle="SingleBorderWindow">
@@ -26,7 +26,7 @@
             <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
         </Style>
     </Window.Resources>
-    <Grid Background="{DynamicResource BackgroundBrush}">
+    <Grid Background="{Binding BackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />

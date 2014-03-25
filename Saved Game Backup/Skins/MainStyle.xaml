@@ -51,12 +51,11 @@
                         <EventTrigger RoutedEvent="Button.MouseEnter">
                             <BeginStoryboard>
                                 <Storyboard>
-                                    <!--
-                                        <ColorAnimation Duration="0:0:0.25"
-                                        Storyboard.TargetProperty="Background.GradientStops[1].Color"
-                                        To="{Binding Source={StaticResource Locator},
-                                        Path=Main.Theme.MouseEnter}" />
-                                    -->
+
+                                    <!--<ColorAnimation Duration="0:0:0.25"
+                                                    Storyboard.TargetProperty="Background.GradientStops[1].Color"
+                                                    To="Black" />-->
+
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>

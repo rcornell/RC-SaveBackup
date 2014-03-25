@@ -528,25 +528,19 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private void ChangeTheme(string themeName) {
-            var mergedDictionaries = App.Current.Resources.MergedDictionaries;
-           
-                //var encoded =
-                //    Uri.EscapeUriString(
-                //        Encoding.UTF8.GetString(
-                //            Encoding.ASCII.GetBytes(
-                //                string.Format("pack://application:,,,/Saved Game Backup;component/Skins/{0}", themeName))));
-            var encoded =
+            var mergedDictionaries = App.Current.Resources.MergedDictionaries;         
+            var encoded = 
                     Uri.EscapeUriString(
                         Encoding.UTF8.GetString(
                             Encoding.ASCII.GetBytes(
                                 string.Format("pack://application:,,,/Saved Game Backup;component/Skins/{0}", themeName))));
                 var uri = new Uri(encoded, UriKind.RelativeOrAbsolute);
-                mergedDictionaries[0] = new ResourceDictionary{ Source = uri};
-                //var fe = new FrameworkElement();
-                //var resource = fe.FindResource(@"BackgroundSource");
-                //var imageUri = new Uri(resource.ToString());
-                //var newBackgroundIB = new ImageBrush(new BitmapImage(imageUri));
-                //BackgroundBrush = newBackgroundIB;
+                mergedDictionaries[0] = new ResourceDictionary{ Source = uri };
+                var fe = new FrameworkElement();
+                var resource = fe.FindResource(@"BackgroundSource");
+                var imageUri = new Uri(resource.ToString());
+                var newBackgroundIB = new ImageBrush(new BitmapImage(imageUri));
+                BackgroundBrush = newBackgroundIB;
             
         }
 
