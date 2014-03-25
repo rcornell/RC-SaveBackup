@@ -2,37 +2,36 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:savedGameBackup="clr-namespace:Saved_Game_Backup">
 
-    <Color x:Key="MouseEnter">#5AFFFFFF</Color>
-    <SolidColorBrush x:Key="ListBackground">#99575757</SolidColorBrush>
-    <Color x:Key="Button.GradientTop">#32FFFFFF</Color>
-    <Color x:Key="Button.GradientBottom">#3CFFFFFF</Color>
-    <Color x:Key="Button.GradientBottomMouseEnter">#3CADADAD</Color>
-    <SolidColorBrush x:Key="TextBrush">White</SolidColorBrush>
-    <Color x:Key="Button.BorderTop">#CC363636</Color>
-    <Color x:Key="Button.BorderBottom">#CC252525</Color>
+    <Color x:Key="MouseEnterDark">#5AFFFFFF</Color>
+    <SolidColorBrush x:Key="ListBackgroundDark">#99575757</SolidColorBrush>
+    <Color x:Key="Button.GradientTopDark">#32FFFFFF</Color>
+    <Color x:Key="Button.GradientBottomDark">#3CFFFFFF</Color>
+    <SolidColorBrush x:Key="TextBrushDark">White</SolidColorBrush>
+    <Color x:Key="Button.BorderTopDark">#CC363636</Color>
+    <Color x:Key="Button.BorderBottomDark">#CC252525</Color>
 
-    <ImageSource x:Key="BackgroundSource">/Assets/metro.jpg</ImageSource>
+    <ImageSource x:Key="BackgroundSourceDark">/Assets/metro.jpg</ImageSource>
 
-    <LinearGradientBrush x:Key="Button.BorderBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Offset="0" Color="{StaticResource Button.BorderTop}" />
-        <GradientStop Offset="1" Color="{StaticResource Button.BorderBottom}" />
+    <LinearGradientBrush x:Key="Button.BorderBrushDark" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Offset="0" Color="{StaticResource Button.BorderTopDark}" />
+        <GradientStop Offset="1" Color="{StaticResource Button.BorderBottomDark}" />
     </LinearGradientBrush>
 
-    <LinearGradientBrush x:Key="Button.BackgroundBrush" StartPoint="0.5,0" EndPoint="0.5,1">
-        <GradientStop Offset="0" Color="{StaticResource Button.GradientTop}" />
-        <GradientStop Offset="1" Color="{StaticResource Button.GradientBottom}" />
+    <LinearGradientBrush x:Key="Button.BackgroundBrushDark" StartPoint="0.5,0" EndPoint="0.5,1">
+        <GradientStop Offset="0" Color="{StaticResource Button.GradientTopDark}" />
+        <GradientStop Offset="1" Color="{StaticResource Button.GradientBottomDark}" />
     </LinearGradientBrush>
 
-    <ImageBrush x:Key="BackgroundBrush" ImageSource="{StaticResource BackgroundSource}" />
+    <ImageBrush x:Key="BackgroundBrush" ImageSource="{StaticResource BackgroundSourceDark}" />
 
     <!--  FONT STYLES GO HERE  -->
     <Style x:Key="FontStyle" TargetType="Control">
         <Setter Property="FontFamily" Value="Segoe UI Light" />
-        <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource TextBrushDark}" />
     </Style>
     <Style x:Key="TextStyle" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="Segoe UI" />
-        <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource TextBrushDark}" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="TextOptions.TextRenderingMode" Value="ClearType" />
         <Setter Property="TextOptions.TextHintingMode" Value="Animated" />
@@ -41,9 +40,9 @@
 
     <!--  BUTTON STYLE GOES HERE  -->
     <Style x:Key="SbtButtonStyle" TargetType="{x:Type Button}">
-        <Setter Property="Background" Value="{StaticResource Button.BackgroundBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource Button.BorderBrush}" />
-        <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+        <Setter Property="Background" Value="{StaticResource Button.BackgroundBrushDark}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Button.BorderBrushDark}" />
+        <Setter Property="Foreground" Value="{StaticResource TextBrushDark}" />
         <Setter Property="Width" Value="Auto" />
         <Setter Property="FontFamily" Value="Segoe UI Light" />
         <Setter Property="FontSize" Value="18" />
@@ -200,7 +199,7 @@
 
     <!--  WrapPanelGame Style Goes Here  -->
     <Style TargetType="savedGameBackup:WrapPanelGame">
-        <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource TextBrushDark}" />
         <Setter Property="RenderTransformOrigin" Value="0.5, 0.5" />
         <Setter Property="RenderTransform">
             <Setter.Value>

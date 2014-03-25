@@ -106,7 +106,6 @@
                                    Text="Backup time" />
                         <xctk:TimePicker Width="100"
                                          Margin="3"
-                                         Background="{DynamicResource Button.BackgroundBrush}"
                                          FontFamily="Segoe UI"
                                          Foreground="Black"
                                          Visibility="Visible"
@@ -137,7 +136,7 @@
                         VerticalAlignment="Center"
                         Command="{Binding StartBackup}"
                         Content="{Binding BackupButtonText}"
-                        Style="{StaticResource SbtButtonStyle}" />
+                        Style="{DynamicResource SbtButtonStyle}" />
 
                 <ComboBox Margin="3"
                           HorizontalAlignment="Stretch"
@@ -241,31 +240,31 @@
                         VerticalAlignment="Center"
                         Command="{Binding DetectGames}"
                         Content="Find Games"
-                        Style="{StaticResource SbtButtonStyle}" />
+                        Style="{DynamicResource SbtButtonStyle}" />
                 <Button Margin="3"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Center"
                         Command="{Binding ResetList}"
                         Content="Reset Games"
-                        Style="{StaticResource SbtButtonStyle}" />
+                        Style="{DynamicResource SbtButtonStyle}" />
                 <Button Margin="3"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Center"
                         Command="{Binding OpenAddGameWindow}"
                         Content="Add Game to List"
-                        Style="{StaticResource SbtButtonStyle}" />
+                        Style="{DynamicResource SbtButtonStyle}" />
                 <Button Margin="3"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Center"
                         Command="{Binding DropBoxTest}"
                         Content="Upload to Dropbox"
-                        Style="{StaticResource SbtButtonStyle}" />
+                        Style="{DynamicResource SbtButtonStyle}" />
                 <Grid>
 
                     <ProgressBar Height="20"
                                  Margin="3"
                                  HorizontalAlignment="Stretch"
-                                 Background="{DynamicResource Button.BackgroundBrush}"
+                                 Background="LimeGreen"
                                  Foreground="DarkCyan"
                                  IsIndeterminate="False"
                                  Maximum="1"
