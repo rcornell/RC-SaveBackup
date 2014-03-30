@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:savedGameBackup="clr-namespace:Saved_Game_Backup">
-    
+
     <Color x:Key="MouseEnterLight">#5AFFFFFF</Color>
     <SolidColorBrush x:Key="ListBackgroundLight">#99575757</SolidColorBrush>
     <Color x:Key="Button.GradientTopLight">#CBFFFFFF</Color>
@@ -38,6 +38,12 @@
         <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
     </Style>
 
+
+    <Style x:Key="ListBoxStyle" TargetType="ListBox">
+        <Setter Property="Background" Value="{StaticResource ListBackgroundLight}" />
+        <Setter Property="Foreground" Value="{StaticResource TextBrushLight}" />
+    </Style>
+
     <!--  BUTTON STYLE GOES HERE  -->
     <Style x:Key="SbtButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Background" Value="{StaticResource Button.BackgroundBrushLight}" />
@@ -72,9 +78,11 @@
                             <BeginStoryboard>
                                 <Storyboard>
 
-                                    <!--<ColorAnimation Duration="0:0:0.25"
-                                                    Storyboard.TargetProperty="Background.GradientStops[1].Color"
-                                                    To="Black" />-->
+                                    <!--
+                                        <ColorAnimation Duration="0:0:0.25"
+                                        Storyboard.TargetProperty="Background.GradientStops[1].Color"
+                                        To="Black" />
+                                    -->
 
                                 </Storyboard>
                             </BeginStoryboard>

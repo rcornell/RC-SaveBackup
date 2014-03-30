@@ -20,10 +20,6 @@
     <Window.Resources>
         <savedGameBackup:BackupTypeToStringConverter x:Key="BackupConverter" />
         <savedGameBackup:StringToBackupTypeConverter x:Key="StringConverter" />
-        <Style x:Key="ListBoxStyle" TargetType="ListBox">
-            <Setter Property="Background" Value="{DynamicResource ListBackground}" />
-            <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
-        </Style>
     </Window.Resources>
     <Grid Background="{DynamicResource BackgroundBrush}">
         <Grid.RowDefinitions>
@@ -294,7 +290,7 @@
                  Padding="3"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  SelectedItem="{Binding SelectedBackupGame}"
-                 Style="{StaticResource ListBoxStyle}">
+                 Style="{DynamicResource ListBoxStyle}">
             <ItemsControl.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
                     <Style.Resources>
@@ -358,7 +354,7 @@
                  ItemsSource="{Binding GamesList}"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  SelectedItem="{Binding SelectedGame}"
-                 Style="{StaticResource ListBoxStyle}"
+                 Style="{DynamicResource ListBoxStyle}"
                  ToolTip="Double click a game to add it to the backup list.">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">

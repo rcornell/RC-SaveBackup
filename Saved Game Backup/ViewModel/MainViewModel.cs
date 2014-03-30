@@ -514,7 +514,6 @@ namespace Saved_Game_Backup.ViewModel
 
         private void ExecuteSetThemeBlue() {
             _themeName = @"BlueStyle.xaml";
-            MessageBox.Show(@"Blue style doesn't exist yet");
             ChangeTheme(_themeName);
         }
         

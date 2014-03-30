@@ -38,6 +38,11 @@
         <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
     </Style>
 
+    <Style x:Key="ListBoxStyle" TargetType="ListBox">
+        <Setter Property="Background" Value="{StaticResource ListBackgroundDark}" />
+        <Setter Property="Foreground" Value="{StaticResource TextBrushDark}" />
+    </Style>
+
     <!--  BUTTON STYLE GOES HERE  -->
     <Style x:Key="SbtButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Background" Value="{StaticResource Button.BackgroundBrushDark}" />
