@@ -212,15 +212,6 @@ namespace Saved_Game_Backup.ViewModel
         //    }
         //}
 
-        private ImageBrush _backgroundBrush;
-        public ImageBrush BackgroundBrush {
-            get { return _backgroundBrush; }
-            set {
-                _backgroundBrush = value;
-                RaisePropertyChanged(() => BackgroundBrush);
-            }        
-        }
-
         private bool _backupEnabled;
         public bool BackupEnabled {
             get { return _backupEnabled; }

@@ -22,7 +22,7 @@
         <GradientStop Offset="1" Color="{StaticResource Button.GradientBottomDark}" />
     </LinearGradientBrush>
 
-    <ImageBrush x:Key="BackgroundBrush" ImageSource="{StaticResource BackgroundSourceDark}" />
+    <ImageBrush x:Key="BackgroundBrush" ImageSource="{DynamicResource BackgroundSourceDark}" />
 
     <!--  FONT STYLES GO HERE  -->
     <Style x:Key="FontStyle" TargetType="Control">
