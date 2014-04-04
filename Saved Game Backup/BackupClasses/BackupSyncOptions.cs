@@ -5,15 +5,15 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using GalaSoft.MvvmLight;
 using Saved_Game_Backup.Annotations;
 
 namespace Saved_Game_Backup.BackupClasses {
-
     [Serializable]
     public class BackupSyncOptions : ObservableObject {
-
         private bool _syncToDropbox;
+
         public bool SyncToDropbox {
             get { return _syncToDropbox; }
             set {
@@ -22,7 +22,9 @@ namespace Saved_Game_Backup.BackupClasses {
                 SyncEnabled = value;
             }
         }
+
         private bool _syncEnabled;
+
         public bool SyncEnabled {
             get { return _syncEnabled; }
             set {
@@ -30,7 +32,9 @@ namespace Saved_Game_Backup.BackupClasses {
                 RaisePropertyChanged(() => SyncEnabled);
             }
         }
+
         private bool _syncToZip;
+
         public bool SyncToZip {
             get { return _syncToZip; }
             set {
@@ -41,7 +45,9 @@ namespace Saved_Game_Backup.BackupClasses {
                 RaisePropertyChanged(() => SyncToFolder);
             }
         }
+
         private bool _syncToFolder;
+
         public bool SyncToFolder {
             get { return _syncToFolder; }
             set {
@@ -52,31 +58,64 @@ namespace Saved_Game_Backup.BackupClasses {
                 RaisePropertyChanged(() => SyncToFolder);
             }
         }
+
         private bool _backupOnInterval;
-        public bool BackupOnInterval
-        {
+
+        public bool BackupOnInterval {
             get { return _backupOnInterval; }
-            set
-            {
+            set {
                 _backupOnInterval = value;
-                if (value)
+                if (value) {
                     BackupAtTime = false;
+                    BackupAtTimeVisibility = Visibility.Hidden;
+                    BackupOnIntervalVisibility = Visibility.Visible;
+                }
+                else {  
+                    BackupOnIntervalVisibility = Visibility.Hidden;
+                    BackupAtTimeVisibility = Visibility.Visible;
+                }
                 RaisePropertyChanged(() => BackupOnInterval);
-                
             }
         }
+
         private bool _backupAtTime;
         public bool BackupAtTime {
             get { return _backupAtTime; }
             set {
                 _backupAtTime = value;
-                if (value)
+                if (value) {
                     BackupOnInterval = false;
+                    BackupAtTimeVisibility = Visibility.Visible;
+                    BackupOnIntervalVisibility = Visibility.Hidden;
+                }
+                else {
+                    BackupAtTimeVisibility = Visibility.Hidden;
+                    BackupOnIntervalVisibility = Visibility.Visible;
+                }
                 RaisePropertyChanged(() => BackupAtTime);
             }
         }
 
+        private Visibility _backupAtTimeVisibility;
+        public Visibility BackupAtTimeVisibility {
+            get { return _backupAtTimeVisibility; }
+            set {
+                _backupAtTimeVisibility = value;
+                RaisePropertyChanged(() => BackupAtTimeVisibility);
+            }
+        }
+
+        private Visibility _backupOnIntervalVisibility;
+        public Visibility BackupOnIntervalVisibility {
+            get { return _backupOnIntervalVisibility; }
+            set {
+                _backupOnIntervalVisibility = value;
+                RaisePropertyChanged(() => BackupOnIntervalVisibility);
+            }
+        }
+
         private DateTime _backupTime;
+
         public DateTime BackupTime {
             get { return _backupTime; }
             set {
@@ -89,6 +128,5 @@ namespace Saved_Game_Backup.BackupClasses {
             SyncToDropbox = false;
             BackupOnInterval = true;
         }
-
     }
 }

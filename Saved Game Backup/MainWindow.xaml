@@ -91,23 +91,6 @@
                                    VerticalAlignment="Center"
                                    Text="Backup at specified time" />
                     </StackPanel>
-                    <Separator />
-                    <StackPanel Margin="3"
-                                HorizontalAlignment="Center"
-                                IsEnabled="{Binding BackupSyncOptions.BackupAtTime}"
-                                Orientation="Horizontal">
-                        <TextBlock Margin="3"
-                                   FontSize="12"
-                                   Foreground="Black"
-                                   Text="Backup time" />
-                        <xctk:TimePicker Width="100"
-                                         Margin="3"
-                                         FontFamily="Segoe UI"
-                                         Foreground="Black"
-                                         Visibility="Visible"
-                                         Value="{Binding BackupSyncOptions.BackupTime}" />
-
-                    </StackPanel>
                 </MenuItem>
             </MenuItem>
             <MenuItem Command="{Binding ShowAbout}" Header="_About" />
@@ -145,37 +128,59 @@
                                                  Converter={StaticResource StringConverter},
                                                  Mode=TwoWay}"
                           Text="Backup Method" />
-                <StackPanel Margin="3"
-                            HorizontalAlignment="Center"
-                            Orientation="Vertical"
-                            Visibility="{Binding AutoBackupVisibility}">
-                    <TextBlock HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Style="{DynamicResource TextStyle}"
-                               Text="Auto-backup interval"
-                               TextWrapping="Wrap" />
-                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                        <xctk:IntegerUpDown Margin="3"
-                                            DefaultValue="6"
-                                            Minimum="0"
-                                            ToolTip="Scanning can be CPU/Hard Drive intensive. A longer interval will have less impact on performance." />
-                        <TextBlock VerticalAlignment="Center"
+                <Grid>
+                    <StackPanel Margin="3"
+                                HorizontalAlignment="Center"
+                                IsEnabled="{Binding BackupSyncOptions.BackupAtTime}"
+                                Orientation="Horizontal"
+                                Visibility="{Binding BackupSyncOptions.BackupAtTimeVisibility}">
+                        <TextBlock Margin="3"
+                                   VerticalAlignment="Center"
                                    Style="{DynamicResource TextStyle}"
-                                   Text="Hours"
-                                   TextWrapping="Wrap" />
-                        <xctk:IntegerUpDown Margin="3"
-                                            DefaultValue="30"
-                                            Minimum="1"
-                                            Text="{Binding Interval,
-                                                           UpdateSourceTrigger=PropertyChanged,
-                                                           Delay=100}"
-                                            ToolTip="Scanning can be CPU/Hard Drive intensive. A longer interval will have less impact on performance." />
-                        <TextBlock VerticalAlignment="Center"
-                                   Style="{DynamicResource TextStyle}"
-                                   Text="Minutes"
-                                   TextWrapping="Wrap" />
+                                   Text="Backup time" 
+                                   Visibility="{Binding BackupSyncOptions.BackupAtTimeVisibility}"/>
+                        <xctk:TimePicker Width="100"
+                                         Margin="3"
+                                         FontFamily="Segoe UI"
+                                         Foreground="{DynamicResource TextBrush}"
+                                         Value="{Binding BackupSyncOptions.BackupTime}"
+                                         Visibility="{Binding BackupSyncOptions.BackupAtTimeVisibility}"/>
+
                     </StackPanel>
-                </StackPanel>
+
+                    <StackPanel Margin="3"
+                                HorizontalAlignment="Center"
+                                Orientation="Vertical"
+                                Visibility="{Binding BackupSyncOptions.BackupOnIntervalVisibility}">
+                        <TextBlock HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Style="{DynamicResource TextStyle}"
+                                   Text="Auto-backup interval"
+                                   TextWrapping="Wrap" />
+                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                            <xctk:IntegerUpDown Margin="3"
+                                                DefaultValue="6"
+                                                Minimum="0"
+                                                ToolTip="Scanning can be CPU/Hard Drive intensive. A longer interval will have less impact on performance." />
+                            <TextBlock VerticalAlignment="Center"
+                                       Style="{DynamicResource TextStyle}"
+                                       Text="Hours"
+                                       TextWrapping="Wrap" />
+                            <xctk:IntegerUpDown Margin="3"
+                                                DefaultValue="30"
+                                                Minimum="1"
+                                                Text="{Binding Interval,
+                                                               UpdateSourceTrigger=PropertyChanged,
+                                                               Delay=100}"
+                                                ToolTip="Scanning can be CPU/Hard Drive intensive. A longer interval will have less impact on performance." />
+                            <TextBlock VerticalAlignment="Center"
+                                       Style="{DynamicResource TextStyle}"
+                                       Text="Minutes"
+                                       TextWrapping="Wrap" />
+                        </StackPanel>
+                    </StackPanel>
+                    
+                </Grid>
 
             </StackPanel>
             <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
@@ -249,12 +254,14 @@
                         Command="{Binding OpenAddGameWindow}"
                         Content="Add Game to List"
                         Style="{DynamicResource SbtButtonStyle}" />
-                <Button Margin="3"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Center"
-                        Command="{Binding DropBoxTest}"
-                        Content="Upload to Dropbox"
-                        Style="{DynamicResource SbtButtonStyle}" />
+                <!--
+                    <Button Margin="3"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center"
+                    Command="{Binding DropBoxTest}"
+                    Content="Upload to Dropbox"
+                    Style="{DynamicResource SbtButtonStyle}" />
+                -->
                 <Grid>
 
                     <ProgressBar Height="20"

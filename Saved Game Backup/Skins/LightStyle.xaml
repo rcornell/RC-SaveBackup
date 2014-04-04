@@ -7,6 +7,7 @@
     <Color x:Key="Button.GradientTopLight">#E4E4E4</Color>
     <Color x:Key="Button.GradientBottomLight">LightGray</Color>
     <SolidColorBrush x:Key="TextBrushLight">Black</SolidColorBrush>
+    <SolidColorBrush x:Key="TextBrush">Black</SolidColorBrush>
     <Color x:Key="Button.BorderTopLight">#CC363636</Color>
     <Color x:Key="Button.BorderBottomLight">#CC252525</Color>
 

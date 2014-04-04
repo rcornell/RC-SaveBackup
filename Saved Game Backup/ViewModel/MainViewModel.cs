@@ -323,21 +323,21 @@ namespace Saved_Game_Backup.ViewModel
         public GamesDBAPI GamesDbApi;
 
         //TEST COMMAND & METHOD
-        public RelayCommand DropBoxTest {
-            get { return new RelayCommand(ExecuteDropBoxTest);}
-        }
-        public async void ExecuteDropBoxTest() {
-            var drop = SingletonHelper.DropBoxAPI;
-            await drop.Initialize();
-            Debug.WriteLine(@"Creating and uploading zip file");     
-            if (File.Exists(@"C:\Users\Rob\Desktop\Saves.zip")) File.Delete(@"C:\Users\Rob\Desktop\Saves.zip");
-            ZipFile.CreateFromDirectory(@"C:\Users\Rob\Desktop\SBTTest", @"C:\Users\Rob\Desktop\Saves.zip");
-            var file = new FileInfo(@"C:\Users\Rob\Desktop\Saves.zip");
-            //await drop.Upload("/", file);
-            //drop.CheckForSaveFile();
-            //await drop.DeleteFile(@"/SaveMonkey/Saves.zip"); 
-            Debug.WriteLine(@"Zip uploaded");
-        }
+        //public RelayCommand DropBoxTest {
+        //    get { return new RelayCommand(ExecuteDropBoxTest);}
+        //}
+        //public async void ExecuteDropBoxTest() {
+        //    var drop = SingletonHelper.DropBoxAPI;
+        //    await drop.Initialize();
+        //    Debug.WriteLine(@"Creating and uploading zip file");     
+        //    if (File.Exists(@"C:\Users\Rob\Desktop\Saves.zip")) File.Delete(@"C:\Users\Rob\Desktop\Saves.zip");
+        //    ZipFile.CreateFromDirectory(@"C:\Users\Rob\Desktop\SBTTest", @"C:\Users\Rob\Desktop\Saves.zip");
+        //    var file = new FileInfo(@"C:\Users\Rob\Desktop\Saves.zip");
+        //    //await drop.Upload("/", file);
+        //    //drop.CheckForSaveFile();
+        //    //await drop.DeleteFile(@"/SaveMonkey/Saves.zip"); 
+        //    Debug.WriteLine(@"Zip uploaded");
+        //}
 
         public MainViewModel() {
             GamesDbApi = SingletonHelper.GamesDBAPI;
