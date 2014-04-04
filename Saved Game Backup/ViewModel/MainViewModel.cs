@@ -264,15 +264,30 @@ namespace Saved_Game_Backup.ViewModel
                 RaisePropertyChanged(() => MaxBackups);
             }
         }
-        private int _interval;
-        public int Interval {
-            get { return _interval; }
+
+        private int _intervalHour;
+
+        public int IntervalHour {
+            get { return _intervalHour; }
             set {
-                _interval = value;
-                Span = new TimeSpan(0, 0, _interval, 0);
+                _intervalHour = value;
+                Span = new TimeSpan(0, IntervalHour, IntervalMinute, 0);
                 if (BackupEnabled)
-                    BackupAuto.ChangeInterval(Interval);
-                RaisePropertyChanged(() => Interval);
+                    BackupAuto.ChangeInterval(IntervalHour, IntervalMinute);
+                RaisePropertyChanged(() => IntervalHour);
+                RaisePropertyChanged(() => Span);
+            }
+        }
+
+        private int _intervalMinute;
+        public int IntervalMinute {
+            get { return _intervalMinute; }
+            set {
+                _intervalMinute = value;
+                Span = new TimeSpan(0, IntervalHour, IntervalMinute, 0);
+                if (BackupEnabled)
+                    BackupAuto.ChangeInterval(IntervalHour, IntervalMinute);
+                RaisePropertyChanged(() => IntervalMinute);
                 RaisePropertyChanged(() => Span);
             }
         }      
@@ -344,8 +359,8 @@ namespace Saved_Game_Backup.ViewModel
             BackupSyncOptions = new BackupSyncOptions();
             PercentComplete = 0;
             NumberOfBackups = 0;
-            Interval = 5;
-            Span = new TimeSpan(0,0,Interval,0); //Must always be initialized after Interval
+            IntervalMinute = 5;
+            Span = new TimeSpan(0,0,IntervalMinute,0); //Must always be initialized after Interval
             BackupEnabledVisibility = Visibility.Hidden;
             GamesList = DirectoryFinder.GetGamesList();
             GamesToBackup = new ObservableCollection<Game>();
@@ -471,7 +486,7 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private async void ExecuteStartBackup() {
-            var result = await Backup.StartBackup(GamesToBackup.ToList(), BackupType, BackupEnabled, BackupSyncOptions, Interval);
+            var result = await Backup.StartBackup(GamesToBackup.ToList(), BackupType, BackupEnabled, BackupSyncOptions, IntervalMinute);
             HandleBackupResult(result);
         }
 

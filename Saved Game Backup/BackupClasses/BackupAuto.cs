@@ -907,10 +907,10 @@ namespace Saved_Game_Backup
         }
         #endregion
 
-        public static void ChangeInterval(int interval) {
+        public static void ChangeInterval(int intervalHour, int intervalMinute) {
             _pollAutobackupTimer.Stop();
             _elapsed = 0;
-            _interval = interval;
+            _interval = intervalMinute;
             _pollAutobackupTimer.Start();
         }
     }

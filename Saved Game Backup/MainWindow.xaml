@@ -161,7 +161,8 @@
                             <xctk:IntegerUpDown Margin="3"
                                                 DefaultValue="6"
                                                 Minimum="0"
-                                                ToolTip="Scanning can be CPU/Hard Drive intensive. A longer interval will have less impact on performance." />
+                                                ToolTip="Scanning can be CPU/Hard Drive intensive. A longer interval will have less impact on performance."
+                                                Text="{Binding IntervalHour, UpdateSourceTrigger=PropertyChanged, Delay=100}"/>
                             <TextBlock VerticalAlignment="Center"
                                        Style="{DynamicResource TextStyle}"
                                        Text="Hours"
@@ -169,7 +170,7 @@
                             <xctk:IntegerUpDown Margin="3"
                                                 DefaultValue="30"
                                                 Minimum="1"
-                                                Text="{Binding Interval,
+                                                Text="{Binding IntervalMinute,
                                                                UpdateSourceTrigger=PropertyChanged,
                                                                Delay=100}"
                                                 ToolTip="Scanning can be CPU/Hard Drive intensive. A longer interval will have less impact on performance." />
