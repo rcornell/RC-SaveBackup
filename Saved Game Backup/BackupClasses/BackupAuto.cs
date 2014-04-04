@@ -45,8 +45,10 @@ namespace Saved_Game_Backup
         private static readonly BackupResultHelper ErrorResultHelper = new BackupResultHelper() { Success = false, AutobackupEnabled = false, Message = "Error during operation" };
         private static readonly BackupResultHelper FilesNotFoundHelper = new BackupResultHelper() { Success = false };
         private static ProgressHelper _progress;
-        private static int _interval;
+        private static int _intervalMinute;
+        private static int _intervalHour;
         private static int _elapsed;
+        private static TimeSpan _timeSpan;
 
         public static BackupResultHelper ToggleAutoBackup(List<Game> gamesToBackup, bool backupEnabled, BackupSyncOptions backupSyncOptions, int interval, DirectoryInfo autobackupDi) {
             if (backupEnabled) return ShutdownAutobackup();
@@ -587,7 +589,7 @@ namespace Saved_Game_Backup
 
         private static BackupResultHelper InitializePollAutobackup(int interval) {
             _elapsed = 0;
-            _interval = interval;
+            _intervalMinute = interval;
             _firstPoll = true;
             Debug.WriteLine(@"Starting setup for PollAutobackup");
 
@@ -876,13 +878,13 @@ namespace Saved_Game_Backup
                 _elapsed++;
                 Debug.WriteLine(@"Seconds elapsed {0}", _elapsed);
                 Messenger.Default.Send(new TimeSpan(0, 0, 0, 1)); //Send to UI to update timer
-                if (_elapsed/60 < _interval) return; //If false, poll autobackup
+                if (_elapsed/60 < _intervalMinute) return; //If false, poll autobackup
                 _pollAutobackupTimer.Stop();
                 Debug.WriteLine(@"Poll Autobackup timer elapsed.");
                 DisableWatchers();
                 PollAutobackup();
                 _elapsed = 0;
-                Messenger.Default.Send(new TimeSpan(0, 0, -_interval, 0));
+                Messenger.Default.Send(new TimeSpan(0, 0, -_intervalMinute, 0));
                 _pollAutobackupTimer.Start();
                 return;
             }
@@ -910,7 +912,9 @@ namespace Saved_Game_Backup
         public static void ChangeInterval(int intervalHour, int intervalMinute) {
             _pollAutobackupTimer.Stop();
             _elapsed = 0;
-            _interval = intervalMinute;
+            _intervalMinute = intervalMinute;
+            _intervalHour = intervalHour;
+            _timeSpan = new TimeSpan(0,_intervalHour, _intervalMinute,0);
             _pollAutobackupTimer.Start();
         }
     }
