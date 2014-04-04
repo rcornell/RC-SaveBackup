@@ -74,21 +74,21 @@
                     <ControlTemplate.Triggers>
                         <EventTrigger RoutedEvent="Button.MouseEnter">
                             <BeginStoryboard>
-                                <Storyboard>                                   
-                                        <ColorAnimation Duration="0:0:0.25"
-                                        Storyboard.TargetProperty="Background.GradientStops[1].Color"
-                                        To="{StaticResource MouseEnterDark}" />
+                                <Storyboard>
+                                    <ColorAnimation Duration="0:0:0.25"
+                                                    Storyboard.TargetProperty="Background.GradientStops[1].Color"
+                                                    To="{StaticResource MouseEnterDark}" />
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
                         <EventTrigger RoutedEvent="Button.MouseLeave">
                             <BeginStoryboard>
                                 <Storyboard>
-                                    
-                                        <ColorAnimation Duration="0:0:0.25"
-                                        Storyboard.TargetProperty="Background.GradientStops[1].Color"
-                                        To="{StaticResource Button.GradientBottomDark}" />
-                                    
+
+                                    <ColorAnimation Duration="0:0:0.25"
+                                                    Storyboard.TargetProperty="Background.GradientStops[1].Color"
+                                                    To="{StaticResource Button.GradientBottomDark}" />
+
                                     <DoubleAnimation Duration="0:0:0"
                                                      Storyboard.TargetName="ButtonBorder"
                                                      Storyboard.TargetProperty="(Border.RenderTransform).(TransformGroup.Children)[1].(ScaleTransform.ScaleX)"
@@ -103,20 +103,20 @@
                         <EventTrigger RoutedEvent="Button.GotFocus">
                             <BeginStoryboard>
                                 <Storyboard>
-                                    
-                                        <ColorAnimation Duration="0:0:0.25"
-                                        Storyboard.TargetProperty="Background.GradientStops[1].Color"
-                                        To="{StaticResource MouseEnterDark}" />
-                                    
+
+                                    <ColorAnimation Duration="0:0:0.25"
+                                                    Storyboard.TargetProperty="Background.GradientStops[1].Color"
+                                                    To="{StaticResource MouseEnterDark}" />
+
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
                         <EventTrigger RoutedEvent="Button.LostFocus">
                             <BeginStoryboard>
                                 <Storyboard>
-                                        <ColorAnimation Duration="0:0:0.25"
-                                        Storyboard.TargetProperty="Background.GradientStops[1].Color"
-                                        To="{StaticResource Button.GradientBottomDark}" />
+                                    <ColorAnimation Duration="0:0:0.25"
+                                                    Storyboard.TargetProperty="Background.GradientStops[1].Color"
+                                                    To="{StaticResource Button.GradientBottomDark}" />
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
@@ -124,14 +124,14 @@
                         <EventTrigger RoutedEvent="Button.MouseDown">
                             <BeginStoryboard>
                                 <Storyboard>
-                                    
-                                        <ColorAnimation Duration="0:0:0.0"
-                                        Storyboard.TargetProperty="Background.GradientStops[0].Color"
-                                        To="#46FFFFFF" />
-                                        <ColorAnimation Duration="0:0:0.0"
-                                        Storyboard.TargetProperty="Background.GradientStops[1].Color"
-                                        To="{StaticResource MouseEnterDark}" />
-                                    
+
+                                    <ColorAnimation Duration="0:0:0.0"
+                                                    Storyboard.TargetProperty="Background.GradientStops[0].Color"
+                                                    To="#46FFFFFF" />
+                                    <ColorAnimation Duration="0:0:0.0"
+                                                    Storyboard.TargetProperty="Background.GradientStops[1].Color"
+                                                    To="{StaticResource MouseEnterDark}" />
+
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
@@ -139,11 +139,11 @@
                             <BeginStoryboard>
                                 <Storyboard>
                                     <ColorAnimation Duration="0:0:0.0"
-                                        Storyboard.TargetProperty="Background.GradientStops[0].Color"
-                                        To="#46FFFFFF" />
+                                                    Storyboard.TargetProperty="Background.GradientStops[0].Color"
+                                                    To="#46FFFFFF" />
                                     <ColorAnimation Duration="0:0:0.0"
-                                        Storyboard.TargetProperty="Background.GradientStops[1].Color"
-                                        To="{StaticResource MouseEnterDark}" />
+                                                    Storyboard.TargetProperty="Background.GradientStops[1].Color"
+                                                    To="{StaticResource MouseEnterDark}" />
                                     <DoubleAnimation Duration="0:0:0"
                                                      Storyboard.TargetName="ButtonBorder"
                                                      Storyboard.TargetProperty="(Border.RenderTransform).(TransformGroup.Children)[1].(ScaleTransform.ScaleX)"
@@ -157,13 +157,13 @@
                         </EventTrigger>
                         <EventTrigger RoutedEvent="Button.Click">
                             <BeginStoryboard>
-                                <Storyboard>                                    
-                                        <ColorAnimation Duration="0:0:0.0"
-                                        Storyboard.TargetProperty="Background.GradientStops[0].Color"
-                                        To="{StaticResource Button.BorderTopDark}" />
-                                        <ColorAnimation Duration="0:0:0.0"
-                                        Storyboard.TargetProperty="Background.GradientStops[1].Color"
-                                        To="{StaticResource Button.GradientBottomDark}" />                                   
+                                <Storyboard>
+                                    <ColorAnimation Duration="0:0:0.0"
+                                                    Storyboard.TargetProperty="Background.GradientStops[0].Color"
+                                                    To="{StaticResource Button.BorderTopDark}" />
+                                    <ColorAnimation Duration="0:0:0.0"
+                                                    Storyboard.TargetProperty="Background.GradientStops[1].Color"
+                                                    To="{StaticResource Button.GradientBottomDark}" />
                                     <DoubleAnimation Duration="0:0:0"
                                                      Storyboard.TargetName="ButtonBorder"
                                                      Storyboard.TargetProperty="(Border.RenderTransform).(TransformGroup.Children)[1].(ScaleTransform.ScaleX)"

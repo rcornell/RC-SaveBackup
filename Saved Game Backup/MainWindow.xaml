@@ -269,8 +269,8 @@
                     <TextBlock Margin="3,3,3,4"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"
-                               Foreground="Black"
                                FontSize="14"
+                               Foreground="Black"
                                Text="Backup progress" />
                 </Grid>
 

@@ -3,9 +3,9 @@
                     xmlns:savedGameBackup="clr-namespace:Saved_Game_Backup">
 
     <Color x:Key="MouseEnterLight">#5AFFFFFF</Color>
-    <SolidColorBrush x:Key="ListBackgroundLight">#99575757</SolidColorBrush>
-    <Color x:Key="Button.GradientTopLight">#CBFFFFFF</Color>
-    <Color x:Key="Button.GradientBottomLight">#E8E8E8</Color>
+    <SolidColorBrush x:Key="ListBackgroundLight">#99828282</SolidColorBrush>
+    <Color x:Key="Button.GradientTopLight">#E4E4E4</Color>
+    <Color x:Key="Button.GradientBottomLight">LightGray</Color>
     <SolidColorBrush x:Key="TextBrushLight">Black</SolidColorBrush>
     <Color x:Key="Button.BorderTopLight">#CC363636</Color>
     <Color x:Key="Button.BorderBottomLight">#CC252525</Color>
@@ -78,11 +78,11 @@
                             <BeginStoryboard>
                                 <Storyboard>
 
-                                    <!--
-                                        <ColorAnimation Duration="0:0:0.25"
-                                        Storyboard.TargetProperty="Background.GradientStops[1].Color"
-                                        To="Black" />
-                                    -->
+
+                                    <ColorAnimation Duration="0:0:0.25"
+                                                    Storyboard.TargetProperty="Background.GradientStops[1].Color"
+                                                    To="{StaticResource MouseEnterLight}" />
+
 
                                 </Storyboard>
                             </BeginStoryboard>
@@ -92,11 +92,11 @@
                         <EventTrigger RoutedEvent="Button.MouseLeave">
                             <BeginStoryboard>
                                 <Storyboard>
-                                    <!--
-                                        <ColorAnimation Duration="0:0:0.25"
-                                        Storyboard.TargetProperty="Background.GradientStops[1].Color"
-                                        To="{Binding Path=Main.Theme.GradientBottomColor.Color, Source={StaticResource Locator}}" />
-                                    -->
+
+                                    <ColorAnimation Duration="0:0:0.25"
+                                                    Storyboard.TargetProperty="Background.GradientStops[1].Color"
+                                                    To="{StaticResource Button.GradientBottomLight}" />
+
                                     <DoubleAnimation Duration="0:0:0"
                                                      Storyboard.TargetName="ButtonBorder"
                                                      Storyboard.TargetProperty="(Border.RenderTransform).(TransformGroup.Children)[1].(ScaleTransform.ScaleX)"
@@ -113,25 +113,25 @@
                         <EventTrigger RoutedEvent="Button.GotFocus">
                             <BeginStoryboard>
                                 <Storyboard>
-                                    <!--
-                                        <ColorAnimation Duration="0:0:0.25"
-                                        Storyboard.TargetProperty="Background.GradientStops[1].Color"
-                                        To="#5AFFFFFF" />
-                                    -->
+
+                                    <ColorAnimation Duration="0:0:0.25"
+                                                    Storyboard.TargetProperty="Background.GradientStops[1].Color"
+                                                    To="{StaticResource MouseEnterLight}" />
+
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
                         <EventTrigger RoutedEvent="Button.LostFocus">
                             <BeginStoryboard>
                                 <Storyboard>
-                                    <!--
-                                        <ColorAnimation Duration="0:0:0.25"
-                                        Storyboard.TargetProperty="Background.GradientStops[0].Color"
-                                        To="#3CFFFFFF" />
-                                        <ColorAnimation Duration="0:0:0.25"
-                                        Storyboard.TargetProperty="Background.GradientStops[1].Color"
-                                        To="#3CFFFFFF" />
-                                    -->
+
+                                    <ColorAnimation Duration="0:0:0.25"
+                                                    Storyboard.TargetProperty="Background.GradientStops[0].Color"
+                                                    To="{StaticResource Button.GradientTopLight}" />
+                                    <ColorAnimation Duration="0:0:0.25"
+                                                    Storyboard.TargetProperty="Background.GradientStops[1].Color"
+                                                    To="{StaticResource Button.GradientBottomLight}" />
+
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
@@ -139,28 +139,19 @@
                         <EventTrigger RoutedEvent="Button.MouseDown">
                             <BeginStoryboard>
                                 <Storyboard>
-                                    <!--
-                                        <ColorAnimation Duration="0:0:0.0"
-                                        Storyboard.TargetProperty="Background.GradientStops[0].Color"
-                                        To="#46FFFFFF" />
-                                        <ColorAnimation Duration="0:0:0.0"
-                                        Storyboard.TargetProperty="Background.GradientStops[1].Color"
-                                        To="#5AFFFFFF" />
-                                    -->
+                                    <ColorAnimation Duration="0:0:0.0"
+                                                    Storyboard.TargetProperty="Background.GradientStops[1].Color"
+                                                    To="{StaticResource MouseEnterLight}" />
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
                         <EventTrigger RoutedEvent="Button.PreviewMouseDown">
                             <BeginStoryboard>
                                 <Storyboard>
-                                    <!--
-                                        <ColorAnimation Duration="0:0:0.0"
-                                        Storyboard.TargetProperty="Background.GradientStops[0].Color"
-                                        To="#46FFFFFF" />
-                                        <ColorAnimation Duration="0:0:0.0"
-                                        Storyboard.TargetProperty="Background.GradientStops[1].Color"
-                                        To="#5AFFFFFF" />
-                                    -->
+                                    <ColorAnimation Duration="0:0:0.0"
+                                                    Storyboard.TargetProperty="Background.GradientStops[1].Color"
+                                                    To="{StaticResource MouseEnterLight}" />
+
                                     <DoubleAnimation Duration="0:0:0"
                                                      Storyboard.TargetName="ButtonBorder"
                                                      Storyboard.TargetProperty="(Border.RenderTransform).(TransformGroup.Children)[1].(ScaleTransform.ScaleX)"
@@ -175,15 +166,12 @@
                         <EventTrigger RoutedEvent="Button.Click">
                             <BeginStoryboard>
                                 <Storyboard>
-                                    <!--
-                                        <ColorAnimation Duration="0:0:0.0"
-                                        Storyboard.TargetProperty="Background.GradientStops[0].Color"
-                                        To="#3CFFFFFF" />
-                                        <ColorAnimation Duration="0:0:0.0"
-                                        Storyboard.TargetProperty="Background.GradientStops[1].Color"
-                                        To="#3CFFFFFF" />
-                                    -->
-
+                                    <ColorAnimation Duration="0:0:0.0"
+                                                    Storyboard.TargetProperty="Background.GradientStops[0].Color"
+                                                    To="{StaticResource Button.GradientTopLight}" />
+                                    <ColorAnimation Duration="0:0:0.0"
+                                                    Storyboard.TargetProperty="Background.GradientStops[1].Color"
+                                                    To="{StaticResource Button.GradientBottomLight}" />
                                     <DoubleAnimation Duration="0:0:0"
                                                      Storyboard.TargetName="ButtonBorder"
                                                      Storyboard.TargetProperty="(Border.RenderTransform).(TransformGroup.Children)[1].(ScaleTransform.ScaleX)"
