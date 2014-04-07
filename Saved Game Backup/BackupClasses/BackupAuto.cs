@@ -50,20 +50,20 @@ namespace Saved_Game_Backup
         private static int _elapsed;
         private static TimeSpan _timeSpan;
 
-        public static BackupResultHelper ToggleAutoBackup(List<Game> gamesToBackup, bool backupEnabled, BackupSyncOptions backupSyncOptions, int interval, DirectoryInfo autobackupDi) {
+        public static BackupResultHelper ToggleAutoBackup(List<Game> gamesToBackup, bool backupEnabled, BackupSyncOptions backupSyncOptions, int intervalMinute, int intervalHour, DirectoryInfo autobackupDi) {
             if (backupEnabled) return ShutdownAutobackup();
             GamesToBackup = gamesToBackup;
             _backupEnabled = false;
             _backupSyncOptions = backupSyncOptions;
             _autoBackupDirectoryInfo = autobackupDi;
             _progress = new ProgressHelper(){ FilesComplete = 0, TotalFiles = 0};
-            return InitializeAutobackup(interval);
+            return InitializeAutobackup(intervalMinute, intervalHour);
         }
 
-        private static BackupResultHelper InitializeAutobackup(int interval) {
+        private static BackupResultHelper InitializeAutobackup(int intervalMinute, int intervalHour) {
             if (!GamesToBackup.Any()) return ErrorResultHelper;
             InitializeWatchers();
-            var result = InitializePollAutobackup(interval);
+            var result = InitializePollAutobackup(intervalMinute, intervalHour);
             _backupEnabled = result.AutobackupEnabled;
             return result;
         }
@@ -587,9 +587,11 @@ namespace Saved_Game_Backup
             Debug.WriteLine(@"Enabled Watchers after PollAutobackup");
         }
 
-        private static BackupResultHelper InitializePollAutobackup(int interval) {
+        private static BackupResultHelper InitializePollAutobackup(int intervalMinute, int intervalHour) {
             _elapsed = 0;
-            _intervalMinute = interval;
+            _intervalMinute = intervalMinute;
+            _intervalHour = intervalHour;
+            _timeSpan = new TimeSpan(0,_intervalHour, _intervalMinute, 0);
             _firstPoll = true;
             Debug.WriteLine(@"Starting setup for PollAutobackup");
 
@@ -878,13 +880,13 @@ namespace Saved_Game_Backup
                 _elapsed++;
                 Debug.WriteLine(@"Seconds elapsed {0}", _elapsed);
                 Messenger.Default.Send(new TimeSpan(0, 0, 0, 1)); //Send to UI to update timer
-                if (_elapsed/60 < _intervalMinute) return; //If false, poll autobackup
+                if (_elapsed/60 < _timeSpan.TotalMinutes) return; //If false, poll autobackup
                 _pollAutobackupTimer.Stop();
                 Debug.WriteLine(@"Poll Autobackup timer elapsed.");
                 DisableWatchers();
                 PollAutobackup();
                 _elapsed = 0;
-                Messenger.Default.Send(new TimeSpan(0, 0, -_intervalMinute, 0));
+                Messenger.Default.Send(new TimeSpan(0, -_intervalHour, -_intervalMinute, 0));
                 _pollAutobackupTimer.Start();
                 return;
             }

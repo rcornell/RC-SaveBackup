@@ -19,6 +19,7 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
+using System.Xaml;
 using GalaSoft.MvvmLight.Messaging;
 using Saved_Game_Backup.BackupClasses;
 using Saved_Game_Backup.Helper;
@@ -47,7 +48,7 @@ namespace Saved_Game_Backup {
             DefaultExt = "zip",
         };
 
-        public static async Task<BackupResultHelper> StartBackup(List<Game> games, BackupType backupType, bool backupEnabled, BackupSyncOptions backupSyncOptions, int interval = 0) {
+        public static async Task<BackupResultHelper> StartBackup(List<Game> games, BackupType backupType, bool backupEnabled, BackupSyncOptions backupSyncOptions, int intervalMinute = 0, int intervalHour = 0) {
             //Check for problems with parameters
             if (!games.Any() && backupType == BackupType.Autobackup && backupEnabled) {
                 _resultHelper = new BackupResultHelper {Message = @"Auto-backup disabled", AutobackupEnabled = false};
@@ -70,7 +71,7 @@ namespace Saved_Game_Backup {
                 case BackupType.ToFolder:
                     return BackupToFolder.BackupSaves(gamesToBackup, _specifiedFolder);
                 case BackupType.Autobackup:
-                    return BackupAuto.ToggleAutoBackup(gamesToBackup, backupEnabled, backupSyncOptions, interval, _specifiedFolder);
+                    return BackupAuto.ToggleAutoBackup(gamesToBackup, backupEnabled, backupSyncOptions, intervalMinute, intervalHour, _specifiedFolder);
             }
 
             return ErrorResultHelper;

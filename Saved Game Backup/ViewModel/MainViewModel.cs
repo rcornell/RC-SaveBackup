@@ -486,7 +486,7 @@ namespace Saved_Game_Backup.ViewModel
         }
 
         private async void ExecuteStartBackup() {
-            var result = await Backup.StartBackup(GamesToBackup.ToList(), BackupType, BackupEnabled, BackupSyncOptions, IntervalMinute);
+            var result = await Backup.StartBackup(GamesToBackup.ToList(), BackupType, BackupEnabled, BackupSyncOptions, IntervalMinute, IntervalHour);
             HandleBackupResult(result);
         }
 
