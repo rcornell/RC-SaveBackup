@@ -2,10 +2,10 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:savedGameBackup="clr-namespace:Saved_Game_Backup">
 
-    <Color x:Key="MouseEnterLight">#5AFFFFFF</Color>
+    <Color x:Key="MouseEnterLight">#FFF4F4</Color>
     <SolidColorBrush x:Key="ListBackgroundLight">#99828282</SolidColorBrush>
-    <Color x:Key="Button.GradientTopLight">#E4E4E4</Color>
-    <Color x:Key="Button.GradientBottomLight">LightGray</Color>
+    <Color x:Key="Button.GradientTopLight">White</Color>
+    <Color x:Key="Button.GradientBottomLight">#E9E9E9</Color>
     <SolidColorBrush x:Key="TextBrushLight">Black</SolidColorBrush>
     <SolidColorBrush x:Key="TextBrush">Black</SolidColorBrush>
     <Color x:Key="Button.BorderTopLight">#CC363636</Color>
@@ -407,7 +407,7 @@
     <Color x:Key="SelectedBackgroundColor">DimGray</Color>
     <Color x:Key="SelectedUnfocusedColor">#FFDDDDDD</Color>
 
-    <Color x:Key="ControlLightColor">#4C575757</Color>
+    <Color x:Key="ControlLightColor">#4C575757</Color> <!-- test -->  
     <Color x:Key="ControlMediumColor">Black</Color>
     <Color x:Key="ControlDarkColor">#FF211AA9</Color>
 
@@ -450,7 +450,7 @@
                     <VisualState x:Name="MouseOver">
                         <Storyboard>
                             <ColorAnimationUsingKeyFrames Storyboard.TargetName="Border" Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[1].(GradientStop.Color)">
-                                <EasingColorKeyFrame KeyTime="0" Value="{StaticResource ControlMouseOverColor}" />
+                                <EasingColorKeyFrame KeyTime="0" Value="{StaticResource MouseEnterLight}" />
                             </ColorAnimationUsingKeyFrames>
                         </Storyboard>
                     </VisualState>
@@ -473,7 +473,7 @@
                     <VisualState x:Name="Checked">
                         <Storyboard>
                             <ColorAnimationUsingKeyFrames Storyboard.TargetName="Border" Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[1].(GradientStop.Color)">
-                                <EasingColorKeyFrame KeyTime="0" Value="{StaticResource ControlPressedColor}" />
+                                <EasingColorKeyFrame KeyTime="0" Value="{StaticResource MouseEnterLight}" />
                             </ColorAnimationUsingKeyFrames>
                         </Storyboard>
                     </VisualState>
@@ -496,8 +496,8 @@
                     <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                         <LinearGradientBrush.GradientStops>
                             <GradientStopCollection>
-                                <GradientStop Color="{DynamicResource ControlLightColor}" />
-                                <GradientStop Offset="1.0" Color="{DynamicResource ControlMediumColor}" />
+                                <GradientStop Color="{DynamicResource Button.GradientTopLight}" />
+                                <GradientStop Offset="1.0" Color="{DynamicResource Button.GradientBottomLight}" />
                             </GradientStopCollection>
                         </LinearGradientBrush.GradientStops>
                     </LinearGradientBrush>
@@ -508,7 +508,7 @@
                     Margin="1"
                     CornerRadius="2,0,0,2">
                 <Border.Background>
-                    <SolidColorBrush Color="{DynamicResource ControlLightColor}" />
+                    <SolidColorBrush Color="{DynamicResource Button.GradientBottomLight}" />
                 </Border.Background>
             </Border>
             <Path x:Name="Arrow"
@@ -532,9 +532,9 @@
 
 
     <LinearGradientBrush x:Key="MenuPopupBrush" StartPoint="0.5,0" EndPoint="0.5,1">
-        <GradientStop Offset="0" Color="{DynamicResource ControlLightColor}" />
+        <GradientStop Offset="0" Color="{DynamicResource Button.GradientBottomLight}" />
         <GradientStop Offset="0.5" Color="{DynamicResource ControlMediumColor}" />
-        <GradientStop Offset="1" Color="{DynamicResource ControlLightColor}" />
+        <GradientStop Offset="1" Color="{DynamicResource Button.GradientBottomLight}" />
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="ProgressBarIndicatorAnimatedFill" StartPoint="0,0" EndPoint="1,0">
@@ -627,7 +627,7 @@
                                         <SolidColorBrush Color="{DynamicResource BorderMediumColor}" />
                                     </Border.BorderBrush>
                                     <Border.Background>
-                                        <SolidColorBrush Color="{DynamicResource ControlLightColor}" />
+                                        <SolidColorBrush Color="{DynamicResource Button.GradientBottomLight}" />
                                     </Border.Background>
                                 </Border>
                                 <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">

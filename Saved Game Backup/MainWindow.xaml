@@ -120,7 +120,7 @@
                 <ComboBox Margin="3"
                           HorizontalAlignment="Stretch"
                           VerticalAlignment="Center"
-                          Foreground="White"
+                          Foreground="{DynamicResource TextBrush}"
                           ItemsSource="{Binding BackupTypes,
                                                 Converter={StaticResource BackupConverter},
                                                 Mode=TwoWay}"
