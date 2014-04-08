@@ -402,6 +402,7 @@
     <Color x:Key="ControlLightColor">#4C575757</Color>
     <Color x:Key="ControlMediumColor">Black</Color>
     <Color x:Key="ControlDarkColor">#FF211AA9</Color>
+    <Color x:Key="DropDownBackgroundColorDark">#E9575757</Color>
 
     <Color x:Key="ControlMouseOverColor">DarkBlue</Color>
     <Color x:Key="ControlPressedColor">#FF211AA9</Color>
@@ -619,7 +620,7 @@
                                         <SolidColorBrush Color="{DynamicResource BorderMediumColor}" />
                                     </Border.BorderBrush>
                                     <Border.Background>
-                                        <SolidColorBrush Color="{DynamicResource ControlLightColor}" />
+                                        <SolidColorBrush Color="{DynamicResource DropDownBackgroundColorDark}" />
                                     </Border.Background>
                                 </Border>
                                 <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
