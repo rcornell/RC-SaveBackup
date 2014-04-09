@@ -3,7 +3,9 @@
                     xmlns:savedGameBackup="clr-namespace:Saved_Game_Backup">
 
     <Color x:Key="MouseEnterDark">#5AFFFFFF</Color>
-    <SolidColorBrush x:Key="ListBackgroundDark">#99575757</SolidColorBrush>
+    <Color x:Key="ListBackground">#99575757</Color>
+     <SolidColorBrush x:Key="ProgressBarBackgroundBrush" Color="{StaticResource ListBackground}"/>
+    <SolidColorBrush x:Key="ListBackgroundDark" Color="{StaticResource ListBackground}"/>
     <Color x:Key="Button.GradientTopDark">#32FFFFFF</Color>
     <Color x:Key="Button.GradientBottomDark">#3CFFFFFF</Color>
     <SolidColorBrush x:Key="TextBrushDark">White</SolidColorBrush>

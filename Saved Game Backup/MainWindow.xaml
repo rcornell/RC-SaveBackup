@@ -255,20 +255,12 @@
                         Command="{Binding OpenAddGameWindow}"
                         Content="Add Game to List"
                         Style="{DynamicResource SbtButtonStyle}" />
-                <!--
-                    <Button Margin="3"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Center"
-                    Command="{Binding DropBoxTest}"
-                    Content="Upload to Dropbox"
-                    Style="{DynamicResource SbtButtonStyle}" />
-                -->
                 <Grid>
 
                     <ProgressBar Height="20"
                                  Margin="3"
                                  HorizontalAlignment="Stretch"
-                                 Background="LimeGreen"
+                                 Background="{DynamicResource ProgressBarBackgroundBrush}"
                                  Foreground="DarkCyan"
                                  IsIndeterminate="False"
                                  Maximum="1"
@@ -278,7 +270,7 @@
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"
                                FontSize="14"
-                               Foreground="Black"
+                               Foreground="{DynamicResource TextBrush}"
                                Text="Backup progress" />
                 </Grid>
 
