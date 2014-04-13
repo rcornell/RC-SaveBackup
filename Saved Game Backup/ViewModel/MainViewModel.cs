@@ -200,18 +200,6 @@ namespace Saved_Game_Backup.ViewModel
         }
         private string _themeName;
 
-        //public Dictionary<string, string> Themes {
-        //    get {
-        //        var dict = new Dictionary<string, string> {
-        //            {"Default", "MainSkin.xaml"},
-        //            {"Blue", "BlueTheme.xaml"},
-        //            {"Light", "LightTheme.xaml"},
-        //            {"Dark", "DarkTheme.xaml"}
-        //        };
-        //        return dict;
-        //    }
-        //}
-
         private bool _backupEnabled;
         public bool BackupEnabled {
             get { return _backupEnabled; }
@@ -264,9 +252,7 @@ namespace Saved_Game_Backup.ViewModel
                 RaisePropertyChanged(() => MaxBackups);
             }
         }
-
         private int _intervalHour;
-
         public int IntervalHour {
             get { return _intervalHour; }
             set {
@@ -278,7 +264,6 @@ namespace Saved_Game_Backup.ViewModel
                 RaisePropertyChanged(() => Span);
             }
         }
-
         private int _intervalMinute;
         public int IntervalMinute {
             get { return _intervalMinute; }
@@ -337,23 +322,6 @@ namespace Saved_Game_Backup.ViewModel
 
         public GamesDBAPI GamesDbApi;
 
-        //TEST COMMAND & METHOD
-        //public RelayCommand DropBoxTest {
-        //    get { return new RelayCommand(ExecuteDropBoxTest);}
-        //}
-        //public async void ExecuteDropBoxTest() {
-        //    var drop = SingletonHelper.DropBoxAPI;
-        //    await drop.Initialize();
-        //    Debug.WriteLine(@"Creating and uploading zip file");     
-        //    if (File.Exists(@"C:\Users\Rob\Desktop\Saves.zip")) File.Delete(@"C:\Users\Rob\Desktop\Saves.zip");
-        //    ZipFile.CreateFromDirectory(@"C:\Users\Rob\Desktop\SBTTest", @"C:\Users\Rob\Desktop\Saves.zip");
-        //    var file = new FileInfo(@"C:\Users\Rob\Desktop\Saves.zip");
-        //    //await drop.Upload("/", file);
-        //    //drop.CheckForSaveFile();
-        //    //await drop.DeleteFile(@"/SaveMonkey/Saves.zip"); 
-        //    Debug.WriteLine(@"Zip uploaded");
-        //}
-
         public MainViewModel() {
             GamesDbApi = SingletonHelper.GamesDBAPI;
             BackupSyncOptions = new BackupSyncOptions();
@@ -405,11 +373,6 @@ namespace Saved_Game_Backup.ViewModel
                 LastBackupTime = t;
             });
         }
-
-        ///Currently crashing designer.
-        //~MainViewModel() {
-        //  CloseApplication();
-        //}
 
         private void SetUpInterface() {
             var prefSaver = new PrefSaver();
@@ -542,12 +505,6 @@ namespace Saved_Game_Backup.ViewModel
                                 string.Format("pack://application:,,,/Saved Game Backup;component/Skins/{0}", themeName))));
                 var uri = new Uri(encoded, UriKind.RelativeOrAbsolute);
                 mergedDictionaries[0] = new ResourceDictionary{ Source = uri };
-                //var fe = new FrameworkElement();
-                //var resource = fe.FindResource(@"BackgroundSource");
-                //var imageUri = new Uri(resource.ToString());
-                //var newBackgroundIB = new ImageBrush(new BitmapImage(imageUri));
-                //BackgroundBrush = newBackgroundIB;
-            
         }
 
         private void CloseApplication() {
