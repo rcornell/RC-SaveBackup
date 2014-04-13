@@ -21,7 +21,6 @@ using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Practices.ServiceLocation;
 using Saved_Game_Backup.BackupClasses;
 using Saved_Game_Backup.Helper;
-using Saved_Game_Backup.Themes;
 using Saved_Game_Backup.OnlineStorage;
 using Saved_Game_Backup.Preferences;
 using Application = System.Windows.Application;
@@ -123,15 +122,6 @@ namespace Saved_Game_Backup.ViewModel
             set {
                 _gameNames = value;
                 RaisePropertyChanged(() => GameNames); 
-            }
-        }
-
-        private Theme _theme;
-        public Theme Theme {
-            get { return _theme; }
-            set {
-                _theme = value;
-                RaisePropertyChanged(() => Theme);
             }
         }
 

@@ -16,7 +16,6 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
 using Saved_Game_Backup.OnlineStorage;
-using Saved_Game_Backup.Themes;
 
 namespace Saved_Game_Backup.ViewModel
 {
@@ -43,14 +42,9 @@ namespace Saved_Game_Backup.ViewModel
             ////    // Create run time view services and models
             ////    SimpleIoc.Default.Register<IDataService, DataService>();
             ////}
-            SimpleIoc.Default.Register<ThemeSelector>();
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<OptionsViewModel>();
             SimpleIoc.Default.Register<AddGameViewModel>();
-        }
-
-        public ThemeSelector ThemeSelector {
-            get { return ServiceLocator.Current.GetInstance<ThemeSelector>(); }
         }
 
         public MainViewModel Main
