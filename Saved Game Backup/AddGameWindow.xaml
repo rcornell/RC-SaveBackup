@@ -5,7 +5,7 @@
         Title="Add a Game"
         Width="300"
         Height="250"
-        Background="{StaticResource MetroSmall}"
+        Background="{DynamicResource BackgroundBrush}"
         DataContext="{Binding AddGame,
                               Source={StaticResource Locator}}"
         WindowStartupLocation="CenterScreen">
@@ -43,7 +43,7 @@
             <Button VerticalAlignment="Center"
                     Command="{Binding ChoosePath}"
                     Content="Choose Folder"
-                    Style="{StaticResource SbtButtonStyle}" />
+                    Style="{DynamicResource SbtButtonStyle}" />
         </StackPanel>
         <StackPanel Grid.Row="2"
                     Grid.Column="1"
@@ -56,7 +56,7 @@
                     Command="{Binding Add}"
                     CommandParameter="{Binding ElementName=AddWindow}"
                     Content="Add Game"
-                    Style="{StaticResource SbtButtonStyle}" />
+                    Style="{DynamicResource SbtButtonStyle}" />
         </StackPanel>
 
         <Viewbox Grid.Row="1"
@@ -68,7 +68,7 @@
             <Path Width="7"
                   Height="4"
                   Data="F1 M 0,110L 47.6667,62L 102,117.333L 218.667,0L 266,48L 102,212.333L 0,110 Z "
-                  Fill="{StaticResource CheckBoxBrush}"
+                  Fill="Green"
                   Stretch="Uniform"
                   UseLayoutRounding="False" />
         </Viewbox>
@@ -81,7 +81,7 @@
             <Path Width="7"
                   Height="4"
                   Data="F1 M 0,110L 47.6667,62L 102,117.333L 218.667,0L 266,48L 102,212.333L 0,110 Z "
-                  Fill="{StaticResource CheckBoxBrush}"
+                  Fill="Green"
                   Stretch="Uniform"
                   UseLayoutRounding="False" />
         </Viewbox>
