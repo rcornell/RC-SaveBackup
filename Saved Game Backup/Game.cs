@@ -10,30 +10,32 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Media.Imaging;
 using Saved_Game_Backup.Annotations;
 
-namespace Saved_Game_Backup {   
-    
-    [Serializable]    
-    public class Game : INotifyPropertyChanged{
-        
+namespace Saved_Game_Backup {
+    [Serializable]
+    public class Game : INotifyPropertyChanged {
         private string _name;
+
         public string Name {
             get { return _name; }
             set { _name = value; }
         }
 
         private string _path;
+
         public string Path {
             get { return _path; }
             set { _path = value; }
         }
 
         private int _id;
+
         public int ID {
             get { return _id; }
             set { _id = value; }
         }
 
         private string _thumbnailPath;
+
         public string ThumbnailPath {
             get { return _thumbnailPath; }
             set {
@@ -43,8 +45,9 @@ namespace Saved_Game_Backup {
         }
 
         private bool _hasCustomPath;
+
         public bool HasCustomPath {
-            get { return _hasCustomPath; } 
+            get { return _hasCustomPath; }
             set { _hasCustomPath = value; }
         }
 
@@ -52,10 +55,9 @@ namespace Saved_Game_Backup {
 
         public string RootFolder { get; set; }
 
-        public Game() {
-        }
+        public Game() {}
 
-        void OnPropertyChanged(string prop) {
+        private void OnPropertyChanged(string prop) {
             var handler = PropertyChanged;
             if (handler != null) {
                 handler(this, new PropertyChangedEventArgs(prop));
@@ -66,7 +68,7 @@ namespace Saved_Game_Backup {
             Name = name;
             Path = path;
         }
-        
+
         public Game(string name, string path, int id) {
             ID = id;
             Name = name;
@@ -80,8 +82,7 @@ namespace Saved_Game_Backup {
             ThumbnailPath = thumbnailpath;
         }
 
-        public Game(string name, string path, int id, string thumbnailPath, bool customPath, bool hasThumb)
-        {
+        public Game(string name, string path, int id, string thumbnailPath, bool customPath, bool hasThumb) {
             ID = id;
             Name = name;
             Path = path;
@@ -90,8 +91,8 @@ namespace Saved_Game_Backup {
             HasThumb = hasThumb;
         }
 
-        public Game(string name, string path, int id, string thumbnailPath, bool customPath, bool hasThumb, string rootFolder)
-        {
+        public Game(string name, string path, int id, string thumbnailPath, bool customPath, bool hasThumb,
+            string rootFolder) {
             ID = id;
             Name = name;
             Path = path;
@@ -106,6 +107,5 @@ namespace Saved_Game_Backup {
 
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
-
     }
 }

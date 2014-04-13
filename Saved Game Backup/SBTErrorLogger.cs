@@ -16,9 +16,6 @@ namespace Saved_Game_Backup
             Directory.CreateDirectory(MyDocs + SbtPath);
             var sb = new StringBuilder();
             sb.AppendLine(ex);
-            //if (!string.IsNullOrWhiteSpace(ex.InnerException.Message)) sb.AppendLine(ex.InnerException.Message);
-            //if (!string.IsNullOrWhiteSpace(ex.Source)) sb.AppendLine(ex.Source);
-            // if (!string.IsNullOrWhiteSpace(ex.StackTrace)) sb.AppendLine(ex.StackTrace);
             var day = DateTime.Now.Day;
             var month = DateTime.Now.Month;
             var year = DateTime.Now.Year;
