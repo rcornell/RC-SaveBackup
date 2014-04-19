@@ -189,7 +189,7 @@
   },
   {
     "Name":"Borderlands 2",
-    "Path":"\\Documents",
+    "Path":"\\Documents\\My Games\\borderlands 2\\willowgame\\savedata",
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
@@ -450,7 +450,7 @@
   },
   {
     "Name":"FTL Faster Than Light",
-    "Path":"\\Documents",
+    "Path":"\\Documents\\My Games\\fasterthanlight",
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
@@ -847,6 +847,15 @@
   {
     "Name":"XCOM Enemy Within",
     "Path":"\\Documents\\My Games\\XCOM - Enemy Within\\XComGame\\SaveData",
+    "ID":999999,
+    "HasCustomPath":"FALSE",
+    "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
+    "HasThumb":"FALSE",
+    "RootFolder":""
+  },
+  {
+    "Name":"Gnomoria",
+    "Path":"\\Documents\\My Games\\Gnomoria",
     "ID":999999,
     "HasCustomPath":"FALSE",
     "ThumbnailPath":"pack://application:,,,/Assets/Loading.jpg",
