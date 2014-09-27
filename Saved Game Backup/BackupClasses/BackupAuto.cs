@@ -77,7 +77,7 @@ namespace Saved_Game_Backup
 
         public static BackupResultHelper RemoveFromAutobackup(Game game) {
             if (!_fileWatcherList.Any() && !GamesToBackup.Any())
-                return new BackupResultHelper(){ Success = true, AutobackupEnabled = false, BackupDateTime = DateTime.Now.ToLongTimeString(),Message = "No games to remove."};
+                return new BackupResultHelper(){ Success = true, AutobackupEnabled = false, BackupDateTime = DateTime.Now.ToLocalTime().ToString(),Message = "No games to remove."};
 
             for (var i = 0; i < _fileWatcherList.Count; i++) {
                 if (_fileWatcherList[i].Path.Contains(game.Path)) { //Remove watcher from watcher list
@@ -96,7 +96,7 @@ namespace Saved_Game_Backup
 
 
             var message = "";
-            var time = DateTime.Now.ToLongTimeString();
+            var time = DateTime.Now.ToLocalTime().ToString();
             if (_fileWatcherList.Any()) //Games remaining
                 message = string.Format("{0} removed from auto-backup", game.Name);
             else {
@@ -336,7 +336,7 @@ namespace Saved_Game_Backup
 
             if (!_watcherCopiedFile) return;
             Messenger.Default.Send(_numberOfBackups++);
-            Messenger.Default.Send(DateTime.Now.ToLongTimeString());
+            Messenger.Default.Send(DateTime.Now.ToLocalTime().ToString());
             _watcherCopiedFile = false;
         }
 
@@ -603,8 +603,8 @@ namespace Saved_Game_Backup
                     return new BackupResultHelper {
                         Success = false, 
                         AutobackupEnabled= _backupEnabled, 
-                        Message = @"Game directory not found.", 
-                        BackupDateTime = DateTime.Now.ToLongTimeString(), 
+                        Message = @"Game directory not found.",
+                        BackupDateTime = DateTime.Now.ToLocalTime().ToString(), 
                         BackupButtonText = @"Enable auto-backup"
                     };
                 GetTargetFiles(game, false);
@@ -617,7 +617,7 @@ namespace Saved_Game_Backup
             _pollAutobackupTimer.Start();
             
             Debug.WriteLine(@"Finished initializing Poll Autobackup Timer.");
-            return new BackupResultHelper(true, true, "Autobackup enabled", DateTime.Now.ToLongTimeString(), "Disable autobackup");
+            return new BackupResultHelper(true, true, "Autobackup enabled", DateTime.Now.ToLocalTime().ToString(), "Disable autobackup");
         }
 
         private static void ShutdownPollAutobackup() {
@@ -797,7 +797,7 @@ namespace Saved_Game_Backup
                             _numberOfBackups++;
                             _progress.FilesComplete++;
                             Messenger.Default.Send(_progress);
-                            Messenger.Default.Send(DateTime.Now.ToLongTimeString());
+                            Messenger.Default.Send(DateTime.Now.ToLocalTime().ToString());
                         }
                     }
                 }
