@@ -44,7 +44,7 @@ namespace Saved_Game_Backup.Preferences {
                 SelectedGames = new ObservableCollection<Game>(),
                 MaxBackups = 5,
                 BackupSyncOptions = new BackupSyncOptions(),
-                ThemeName = @"DarkTheme.xaml"
+                ThemeName = @"DarkStyle.xaml"
             };
             return prefs;
         }

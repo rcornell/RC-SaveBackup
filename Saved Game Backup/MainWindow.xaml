@@ -40,7 +40,6 @@
               IsMainMenu="True">
             <MenuItem Header="_File">
                 <MenuItem Header="_Theme">
-                    <MenuItem Command="{Binding SetThemeBlue}" Header="_Blue" />
                     <MenuItem Command="{Binding SetThemeDark}" Header="_Black" />
                     <MenuItem Command="{Binding SetThemeLight}" Header="_Light" />
                 </MenuItem>
